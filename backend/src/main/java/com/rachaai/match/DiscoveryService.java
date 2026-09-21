@@ -6,6 +6,7 @@ import com.rachaai.listing.ListingRepository;
 import com.rachaai.listing.ListingType;
 import com.rachaai.match.dto.BrowseItemResponse;
 import com.rachaai.listing.dto.ListingResponse;
+import com.rachaai.moderation.ModerationService;
 import com.rachaai.user.Role;
 import com.rachaai.user.User;
 import com.rachaai.user.UserProfile;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class DiscoveryService {
@@ -30,17 +32,20 @@ public class DiscoveryService {
     private final UserRepository userRepository;
     private final UserProfileRepository userProfileRepository;
     private final CompatibilityCalculator compatibilityCalculator;
+    private final ModerationService moderationService;
 
     public DiscoveryService(
             ListingRepository listingRepository,
             UserRepository userRepository,
             UserProfileRepository userProfileRepository,
-            CompatibilityCalculator compatibilityCalculator
+            CompatibilityCalculator compatibilityCalculator,
+            ModerationService moderationService
     ) {
         this.listingRepository = listingRepository;
         this.userRepository = userRepository;
         this.userProfileRepository = userProfileRepository;
         this.compatibilityCalculator = compatibilityCalculator;
+        this.moderationService = moderationService;
     }
 
     @Transactional(readOnly = true)
@@ -51,8 +56,10 @@ public class DiscoveryService {
                 .filter(l -> l.getType() == ListingType.PROCURANDO)
                 .findFirst()
                 .orElse(null);
+        Set<Long> blocked = moderationService.relatedBlockedIds(userId);
 
         return listingRepository.findAllActiveByTypeExceptUser(ListingType.TEM_VAGA, userId).stream()
+                .filter(listing -> !blocked.contains(listing.getUser().getId()))
                 .map(listing -> {
                     User candidateUser = listing.getUser();
                     UserProfile candidateProfile = userProfileRepository.findByUserId(candidateUser.getId()).orElse(null);
@@ -71,8 +78,10 @@ public class DiscoveryService {
                 .filter(l -> l.getType() == ListingType.PROCURANDO)
                 .findFirst()
                 .orElse(null);
+        Set<Long> blocked = moderationService.relatedBlockedIds(userId);
 
         return listingRepository.findAllActiveByTypeExceptUser(ListingType.ESTABELECIMENTO, userId).stream()
+                .filter(listing -> !blocked.contains(listing.getUser().getId()))
                 .map(listing -> {
                     User ownerUser = listing.getUser();
                     int score = compatibilityCalculator.calculateEstablishment(myProfile, myListing, listing);

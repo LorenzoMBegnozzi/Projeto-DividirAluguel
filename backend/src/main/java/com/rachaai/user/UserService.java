@@ -53,4 +53,11 @@ public class UserService {
         profileRepository.save(profile);
         return userRepository.save(user);
     }
+
+    @Transactional
+    public User acceptSafetyTerms(Long userId) {
+        User user = getById(userId);
+        user.acceptSafetyTerms();
+        return userRepository.save(user);
+    }
 }

@@ -34,4 +34,9 @@ public class UserController {
     public UserResponse getUser(@PathVariable Long id) {
         return UserResponse.from(userService.getById(id));
     }
+
+    @PostMapping("/me/aceitar-termos")
+    public UserResponse acceptSafetyTerms(@AuthenticationPrincipal SecurityUser principal) {
+        return UserResponse.from(userService.acceptSafetyTerms(principal.getId()));
+    }
 }

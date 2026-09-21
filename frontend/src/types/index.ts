@@ -20,6 +20,7 @@ export interface UserProfile {
   allergies: string | null
   musicTaste: string | null
   routine: Routine | null
+  safetyTermsAccepted: boolean
 }
 
 export interface Listing {
@@ -91,4 +92,62 @@ export interface Plan {
   highlightPrice: number
   highlightDays: number
   simulatedMode: boolean
+}
+
+export type ConvivioStatus = 'PENDENTE' | 'CONFIRMADO' | 'RECUSADO'
+
+export interface Convivio {
+  id: number
+  outroUsuarioId: number
+  outroUsuarioNome: string
+  periodoInicio: string
+  periodoFim: string | null
+  status: ConvivioStatus
+  propostoPorMim: boolean
+  avaliadoPorMim: boolean
+  criadoEm: string
+}
+
+export interface Avaliacao {
+  id: number
+  avaliadorId: number
+  avaliadorNome: string
+  notaPontualidade: number
+  notaConvivencia: number
+  comentario: string | null
+  periodoInicio: string
+  periodoFim: string | null
+  criadoEm: string
+}
+
+export interface AvaliacaoResumo {
+  total: number
+  mediaPontualidade: number
+  mediaConvivencia: number
+}
+
+export type NotificationType =
+  | 'NOVA_MENSAGEM'
+  | 'NOVA_CONVERSA'
+  | 'CONVIVIO_PROPOSTO'
+  | 'CONVIVIO_CONFIRMADO'
+  | 'CONVIVIO_RECUSADO'
+  | 'AVALIACAO_RECEBIDA'
+
+export interface AppNotification {
+  id: number
+  type: NotificationType
+  title: string
+  message: string | null
+  link: string | null
+  read: boolean
+  createdAt: string
+}
+
+export type ReportReason = 'COMPORTAMENTO_SUSPEITO' | 'GOLPE_OU_FRAUDE' | 'CONTEUDO_IMPROPRIO' | 'ASSEDIO' | 'OUTRO'
+
+export interface BlockedUser {
+  id: number
+  name: string
+  createdAt: string
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { getConversations } from '../api/discovery'
+import { blockUser } from '../api/moderation'
 import { apiErrorMessage } from '../api/client'
 import type { ConversationSummary } from '../types'
 
@@ -9,6 +10,7 @@ export default function ConversationsPage() {
   const [conversations, setConversations] = useState<ConversationSummary[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [blockedIds, setBlockedIds] = useState<number[]>([])
 
   useEffect(() => {
     getConversations()
@@ -16,6 +18,18 @@ export default function ConversationsPage() {
       .catch((err) => setError(apiErrorMessage(err, 'Não foi possível carregar suas conversas')))
       .finally(() => setLoading(false))
   }, [])
+
+  async function handleBlock(userId: number) {
+    if (!window.confirm('Bloquear essa pessoa? Vocês não vão mais aparecer um para o outro e não poderão trocar novas mensagens.')) {
+      return
+    }
+    try {
+      await blockUser(userId)
+      setBlockedIds((prev) => [...prev, userId])
+    } catch (err) {
+      setError(apiErrorMessage(err, 'Não foi possível bloquear'))
+    }
+  }
 
   if (loading) {
     return <div className="p-8 text-center text-zinc-400">Carregando...</div>
@@ -36,17 +50,42 @@ export default function ConversationsPage() {
 
       <div className="flex flex-col gap-2">
         {conversations.map((conversation) => (
-          <Link
+          <div
             key={conversation.id}
-            to={`/conversas/${conversation.id}`}
             className="flex items-center justify-between rounded-xl bg-white p-4 shadow-sm transition hover:shadow-md"
           >
-            <div>
+            <Link to={`/conversas/${conversation.id}`} className="flex-1">
               <p className="font-semibold text-zinc-800">{conversation.otherUser.name}</p>
               <p className="text-sm text-zinc-500">{conversation.listing.title}</p>
+            </Link>
+            <div className="flex items-center gap-3">
+              <Link
+                to={`/usuarios/${conversation.otherUser.id}`}
+                className="text-xs font-medium text-zinc-400 hover:text-brand-600"
+              >
+                Ver perfil
+              </Link>
+              <Link
+                to={`/convivios?outro=${conversation.otherUser.id}`}
+                className="text-xs font-medium text-zinc-400 hover:text-brand-600"
+              >
+                Registrar convívio
+              </Link>
+              {blockedIds.includes(conversation.otherUser.id) ? (
+                <span className="text-xs font-medium text-zinc-300">Bloqueado</span>
+              ) : (
+                <button
+                  onClick={() => handleBlock(conversation.otherUser.id)}
+                  className="text-xs font-medium text-zinc-400 hover:text-red-500"
+                >
+                  Bloquear
+                </button>
+              )}
+              <Link to={`/conversas/${conversation.id}`}>
+                <ArrowRight className="h-4 w-4 text-brand-600" aria-hidden="true" />
+              </Link>
             </div>
-            <ArrowRight className="h-4 w-4 text-brand-600" aria-hidden="true" />
-          </Link>
+          </div>
         ))}
       </div>
     </div>

@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import { updateProfile } from '../api/profile'
 import { apiErrorMessage } from '../api/client'
 import BoolToggle from '../components/BoolToggle'
+import BlockedUsersSection from '../components/BlockedUsersSection'
 import type { Routine } from '../types'
 
 export default function ProfilePage() {
@@ -150,6 +151,8 @@ export default function ProfilePage() {
           </button>
         </div>
       </form>
+
+      <BlockedUsersSection />
     </div>
   )
 }

@@ -21,3 +21,7 @@ export function updateProfile(payload: ProfilePayload) {
 export function getUser(id: number) {
   return client.get<UserProfile>(`/users/${id}`).then((res) => res.data)
 }
+
+export function acceptSafetyTerms() {
+  return client.post<UserProfile>('/users/me/aceitar-termos').then((res) => res.data)
+}

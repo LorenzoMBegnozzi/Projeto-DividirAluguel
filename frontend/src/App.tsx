@@ -1,9 +1,10 @@
 import { Route, Routes } from 'react-router-dom'
-import { AuthProvider } from './context/AuthContext'
+import { AuthProvider, useAuth } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import RoleRoute from './components/RoleRoute'
 import HomeRedirect from './components/HomeRedirect'
 import NavBar from './components/NavBar'
+import SafetyTermsModal from './components/SafetyTermsModal'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import ProfilePage from './pages/ProfilePage'
@@ -12,11 +13,24 @@ import BrowsePage from './pages/BrowsePage'
 import ConversationsPage from './pages/ConversationsPage'
 import ChatPage from './pages/ChatPage'
 import PaymentsPage from './pages/PaymentsPage'
+import ConviviosPage from './pages/ConviviosPage'
+import UserPublicProfilePage from './pages/UserPublicProfilePage'
 
 export default function App() {
   return (
     <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  )
+}
+
+function AppContent() {
+  const { user } = useAuth()
+
+  return (
+    <>
       <NavBar />
+      {user && !user.safetyTermsAccepted && <SafetyTermsModal />}
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/registro" element={<RegisterPage />} />
@@ -72,8 +86,24 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/convivios"
+          element={
+            <ProtectedRoute>
+              <ConviviosPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/usuarios/:userId"
+          element={
+            <ProtectedRoute>
+              <UserPublicProfilePage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<HomeRedirect />} />
       </Routes>
-    </AuthProvider>
+    </>
   )
 }

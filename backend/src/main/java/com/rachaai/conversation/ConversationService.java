@@ -5,6 +5,9 @@ import com.rachaai.conversation.dto.ConversationResponse;
 import com.rachaai.listing.Listing;
 import com.rachaai.listing.ListingRepository;
 import com.rachaai.listing.ListingType;
+import com.rachaai.moderation.ModerationService;
+import com.rachaai.notification.NotificationService;
+import com.rachaai.notification.NotificationType;
 import com.rachaai.user.Role;
 import com.rachaai.user.User;
 import com.rachaai.user.UserRepository;
@@ -19,15 +22,21 @@ public class ConversationService {
     private final ConversationRepository conversationRepository;
     private final ListingRepository listingRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
+    private final ModerationService moderationService;
 
     public ConversationService(
             ConversationRepository conversationRepository,
             ListingRepository listingRepository,
-            UserRepository userRepository
+            UserRepository userRepository,
+            NotificationService notificationService,
+            ModerationService moderationService
     ) {
         this.conversationRepository = conversationRepository;
         this.listingRepository = listingRepository;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
+        this.moderationService = moderationService;
     }
 
     @Transactional
@@ -46,9 +55,22 @@ public class ConversationService {
         if (listing.getUser().getId().equals(renterId)) {
             throw ApiException.badRequest("Você não pode iniciar uma conversa com o seu próprio anúncio");
         }
+        if (moderationService.isBlockedEitherWay(renterId, listing.getUser().getId())) {
+            throw ApiException.forbidden("Não é possível iniciar essa conversa");
+        }
 
-        Conversation conversation = conversationRepository.findByListingIdAndRenterId(listingId, renterId)
-                .orElseGet(() -> conversationRepository.save(new Conversation(listing, renter)));
+        var existing = conversationRepository.findByListingIdAndRenterId(listingId, renterId);
+        Conversation conversation = existing.orElseGet(() -> conversationRepository.save(new Conversation(listing, renter)));
+
+        if (existing.isEmpty()) {
+            notificationService.notify(
+                    listing.getUser(),
+                    NotificationType.NOVA_CONVERSA,
+                    "Novo interesse no seu anúncio",
+                    renter.getName() + " quer conversar sobre \"" + listing.getTitle() + "\"",
+                    "/conversas/" + conversation.getId()
+            );
+        }
 
         return ConversationResponse.from(conversation, renterId);
     }

@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import NotificationBell from './NotificationBell'
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   `px-3 py-2 rounded-lg text-sm font-medium transition ${
@@ -33,9 +34,13 @@ export default function NavBar() {
           <NavLink to="/conversas" className={linkClass}>
             Conversas
           </NavLink>
+          <NavLink to="/convivios" className={linkClass}>
+            Convívios
+          </NavLink>
           <NavLink to="/perfil" className={linkClass}>
             Meu perfil
           </NavLink>
+          <NotificationBell />
           <button
             onClick={() => {
               logout()

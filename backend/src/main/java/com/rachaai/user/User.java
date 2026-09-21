@@ -25,6 +25,9 @@ public class User {
     @Column(name = "data_nascimento", nullable = false)
     private LocalDate birthDate;
 
+    @Column(name = "cpf", length = 11)
+    private String cpf;
+
     @Convert(converter = RoleConverter.class)
     @Column(name = "papel", nullable = false, length = 20)
     private Role role;
@@ -38,17 +41,21 @@ public class User {
     @Column(name = "criado_em", nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
 
+    @Column(name = "termos_seguranca_aceito_em")
+    private Instant safetyTermsAcceptedAt;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private UserProfile profile;
 
     protected User() {
     }
 
-    public User(String name, String email, String passwordHash, LocalDate birthDate, Role role) {
+    public User(String name, String email, String passwordHash, LocalDate birthDate, String cpf, Role role) {
         this.name = name;
         this.email = email;
         this.passwordHash = passwordHash;
         this.birthDate = birthDate;
+        this.cpf = cpf;
         this.role = role;
     }
 
@@ -76,6 +83,10 @@ public class User {
         return birthDate;
     }
 
+    public String getCpf() {
+        return cpf;
+    }
+
     public Role getRole() {
         return role;
     }
@@ -98,6 +109,14 @@ public class User {
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public Instant getSafetyTermsAcceptedAt() {
+        return safetyTermsAcceptedAt;
+    }
+
+    public void acceptSafetyTerms() {
+        this.safetyTermsAcceptedAt = Instant.now();
     }
 
     public UserProfile getProfile() {

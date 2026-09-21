@@ -1,7 +1,14 @@
 import client from './client'
 import type { AuthResponse, Role } from '../types'
 
-export function register(data: { name: string; email: string; password: string; birthDate: string; role: Role }) {
+export function register(data: {
+  name: string
+  email: string
+  password: string
+  birthDate: string
+  cpf: string
+  role: Role
+}) {
   return client.post<AuthResponse>('/auth/register', data).then((res) => res.data)
 }
 

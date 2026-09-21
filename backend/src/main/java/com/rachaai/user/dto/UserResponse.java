@@ -21,7 +21,8 @@ public record UserResponse(
         Boolean likesAnimals,
         String allergies,
         String musicTaste,
-        Routine routine
+        Routine routine,
+        boolean safetyTermsAccepted
 ) {
     public static UserResponse from(User user) {
         var profile = user.getProfile();
@@ -40,7 +41,8 @@ public record UserResponse(
                 profile != null ? profile.getLikesAnimals() : null,
                 profile != null ? profile.getAllergies() : null,
                 profile != null ? profile.getMusicTaste() : null,
-                profile != null ? profile.getRoutine() : null
+                profile != null ? profile.getRoutine() : null,
+                user.getSafetyTermsAcceptedAt() != null
         );
     }
 }

@@ -1,6 +1,7 @@
 package com.rachaai.auth;
 
 import com.rachaai.common.ApiException;
+import com.rachaai.common.CpfValidator;
 import com.rachaai.security.JwtService;
 import com.rachaai.user.User;
 import com.rachaai.user.UserRepository;
@@ -11,6 +12,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.Period;
 
 @Service
 public class AuthService {
@@ -32,10 +36,23 @@ public class AuthService {
         this.jwtService = jwtService;
     }
 
+    private static final int MINIMUM_AGE = 18;
+
     @Transactional
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmailIgnoreCase(request.email())) {
             throw ApiException.conflict("Já existe uma conta com este e-mail");
+        }
+        if (Period.between(request.birthDate(), LocalDate.now()).getYears() < MINIMUM_AGE) {
+            throw ApiException.badRequest("Você precisa ter " + MINIMUM_AGE + " anos ou mais para se cadastrar");
+        }
+
+        String cpf = CpfValidator.onlyDigits(request.cpf());
+        if (!CpfValidator.isValid(cpf)) {
+            throw ApiException.badRequest("CPF inválido");
+        }
+        if (userRepository.existsByCpf(cpf)) {
+            throw ApiException.conflict("Já existe uma conta com este CPF");
         }
 
         User user = new User(
@@ -43,6 +60,7 @@ public class AuthService {
                 request.email().toLowerCase(),
                 passwordEncoder.encode(request.password()),
                 request.birthDate(),
+                cpf,
                 request.role()
         );
         user = userRepository.save(user);

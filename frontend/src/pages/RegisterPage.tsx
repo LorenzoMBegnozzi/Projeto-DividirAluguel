@@ -6,6 +6,14 @@ import { useAuth } from '../context/AuthContext'
 import { apiErrorMessage } from '../api/client'
 import type { Role } from '../types'
 
+function formatCpf(value: string) {
+  const digits = value.replace(/\D/g, '').slice(0, 11)
+  return digits
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
+}
+
 export default function RegisterPage() {
   const { register } = useAuth()
   const navigate = useNavigate()
@@ -14,6 +22,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [birthDate, setBirthDate] = useState('')
+  const [cpf, setCpf] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -23,7 +32,7 @@ export default function RegisterPage() {
     setError(null)
     setLoading(true)
     try {
-      await register(name, email, password, birthDate, role)
+      await register(name, email, password, birthDate, cpf.replace(/\D/g, ''), role)
       navigate('/perfil')
     } catch (err) {
       setError(apiErrorMessage(err, 'Não foi possível criar a conta'))
@@ -115,6 +124,18 @@ export default function RegisterPage() {
             onChange={(e) => setBirthDate(e.target.value)}
             className="-mt-2 rounded-lg border border-zinc-200 px-3 py-2 outline-none focus:border-brand-500"
           />
+          <label className="text-xs font-medium text-zinc-500">CPF</label>
+          <input
+            required
+            inputMode="numeric"
+            placeholder="000.000.000-00"
+            value={cpf}
+            onChange={(e) => setCpf(formatCpf(e.target.value))}
+            className="-mt-2 rounded-lg border border-zinc-200 px-3 py-2 outline-none focus:border-brand-500"
+          />
+          <p className="-mt-2 text-xs text-zinc-400">
+            Usamos só para confirmar que você é maior de idade — não compartilhamos com ninguém.
+          </p>
           {error && <p className="text-sm text-red-600">{error}</p>}
           <button
             type="submit"

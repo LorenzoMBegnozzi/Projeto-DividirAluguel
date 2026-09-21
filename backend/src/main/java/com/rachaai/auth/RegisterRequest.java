@@ -14,6 +14,7 @@ public record RegisterRequest(
         @NotBlank @Email @Size(max = 180) String email,
         @NotBlank @Size(min = 8, max = 72) String password,
         @NotNull @Past LocalDate birthDate,
+        @NotBlank String cpf,
         @NotNull Role role
 ) {
 }
