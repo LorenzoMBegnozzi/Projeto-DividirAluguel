@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:rachaai;DB_CLOSE_DELAY=-1
+    username: sa
+    password: sa
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  flyway:
+    enabled: false
+
+app:
+  jwt:
+    secret: ZGV2LW9ubHktc2VjcmV0LWNoYW5nZS1tZS1pbi1wcm9kdWN0aW9uLTEyMzQ1Njc4OTA=
+    expiration-minutes: 1440
+  cors:
+    allowed-origins: http://localhost:5173

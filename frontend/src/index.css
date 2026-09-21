@@ -1,0 +1,16 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+@theme {
+  --color-brand-50: #fff1f2;
+  --color-brand-100: #ffe1e3;
+  --color-brand-400: #fb7185;
+  --color-brand-500: #f43f5e;
+  --color-brand-600: #e11d48;
+  --color-brand-700: #be123c;
+}
+
+body {
+  background-color: #fafafa;
+  color: #18181b;
+}
