@@ -23,11 +23,15 @@ public record ListingResponse(
         boolean highlighted,
         Instant highlightedUntil,
         Instant expiresAt,
-        Instant createdAt
+        Instant createdAt,
+        boolean available,
+        Long dealClosedWithUserId,
+        String dealClosedWithUserName
 ) {
     public static ListingResponse from(Listing listing) {
         boolean hasLocation = listing.getType() != ListingType.PROCURANDO;
         boolean isEstablishment = listing.getType() == ListingType.ESTABELECIMENTO;
+        var dealClosedWith = listing.getDealClosedWith();
         return new ListingResponse(
                 listing.getId(),
                 listing.getUser().getId(),
@@ -45,7 +49,10 @@ public record ListingResponse(
                 listing.isHighlighted(),
                 listing.getHighlightedUntil(),
                 listing.getExpiresAt(),
-                listing.getCreatedAt()
+                listing.getCreatedAt(),
+                listing.isAvailable(),
+                dealClosedWith != null ? dealClosedWith.getId() : null,
+                dealClosedWith != null ? dealClosedWith.getName() : null
         );
     }
 }

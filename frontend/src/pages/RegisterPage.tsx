@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { apiErrorMessage } from '../api/client'
-import type { Role } from '../types'
+import type { AdvertiserKind, Role } from '../types'
 
 function formatCpf(value: string) {
   const digits = value.replace(/\D/g, '').slice(0, 11)
@@ -18,6 +18,7 @@ export default function RegisterPage() {
   const { register } = useAuth()
   const navigate = useNavigate()
   const [role, setRole] = useState<Role | null>(null)
+  const [advertiserKind, setAdvertiserKind] = useState<AdvertiserKind | null>(null)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -32,7 +33,7 @@ export default function RegisterPage() {
     setError(null)
     setLoading(true)
     try {
-      await register(name, email, password, birthDate, cpf.replace(/\D/g, ''), role)
+      await register(name, email, password, birthDate, cpf.replace(/\D/g, ''), role, advertiserKind)
       navigate('/perfil')
     } catch (err) {
       setError(apiErrorMessage(err, 'Não foi possível criar a conta'))
@@ -76,11 +77,46 @@ export default function RegisterPage() {
     )
   }
 
+  if (role === 'ADVERTISER' && !advertiserKind) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-brand-50 to-white px-4">
+        <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-lg shadow-brand-100">
+          <button
+            onClick={() => setRole(null)}
+            className="mb-3 inline-flex items-center gap-1 text-sm text-zinc-400 hover:text-zinc-600"
+          >
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+            voltar
+          </button>
+          <h1 className="mb-1 text-center text-2xl font-bold text-brand-600">RachaAi</h1>
+          <p className="mb-6 text-center text-sm text-zinc-500">O que você quer anunciar?</p>
+
+          <div className="flex flex-col gap-3">
+            <button
+              onClick={() => setAdvertiserKind('VAGA')}
+              className="rounded-xl border-2 border-zinc-200 p-4 text-left transition hover:border-brand-500"
+            >
+              <p className="font-semibold text-zinc-800">Tenho vaga pra dividir</p>
+              <p className="text-sm text-zinc-500">Você mora no lugar e busca alguém compatível pra dividir</p>
+            </button>
+            <button
+              onClick={() => setAdvertiserKind('ESTABELECIMENTO')}
+              className="rounded-xl border-2 border-zinc-200 p-4 text-left transition hover:border-brand-500"
+            >
+              <p className="font-semibold text-zinc-800">Tenho um imóvel pra alugar</p>
+              <p className="text-sm text-zinc-500">Você anuncia o imóvel inteiro, como imobiliária ou proprietário</p>
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-brand-50 to-white px-4">
       <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-lg shadow-brand-100">
         <button
-          onClick={() => setRole(null)}
+          onClick={() => (role === 'ADVERTISER' ? setAdvertiserKind(null) : setRole(null))}
           className="mb-3 inline-flex items-center gap-1 text-sm text-zinc-400 hover:text-zinc-600"
         >
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />

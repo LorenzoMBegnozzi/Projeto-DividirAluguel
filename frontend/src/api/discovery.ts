@@ -13,8 +13,18 @@ export function startConversation(listingId: number) {
   return client.post<ConversationSummary>('/conversations', { listingId }).then((res) => res.data)
 }
 
+export function startConversationWithInterested(listingId: number, otherUserId: number) {
+  return client
+    .post<ConversationSummary>('/conversations/interessados', { listingId, otherUserId })
+    .then((res) => res.data)
+}
+
 export function getConversations() {
   return client.get<ConversationSummary[]>('/conversations').then((res) => res.data)
+}
+
+export function getConversation(conversationId: number) {
+  return client.get<ConversationSummary>(`/conversations/${conversationId}`).then((res) => res.data)
 }
 
 export function getMessages(conversationId: number) {

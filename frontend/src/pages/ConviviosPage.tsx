@@ -1,13 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
-import {
-  confirmConvivio,
-  declineConvivio,
-  getMyConvivios,
-  proposeConvivio,
-  rateUser,
-} from '../api/rating'
+import { Link } from 'react-router-dom'
+import { confirmConvivio, declineConvivio, getMyConvivios, rateUser } from '../api/rating'
 import { apiErrorMessage } from '../api/client'
 import StarRating from '../components/StarRating'
 import type { Convivio } from '../types'
@@ -23,16 +17,9 @@ function statusLabel(status: Convivio['status']) {
 }
 
 export default function ConviviosPage() {
-  const [searchParams] = useSearchParams()
   const [convivios, setConvivios] = useState<Convivio[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-
-  const [outroUsuarioId, setOutroUsuarioId] = useState(searchParams.get('outro') ?? '')
-  const [periodoInicio, setPeriodoInicio] = useState('')
-  const [periodoFim, setPeriodoFim] = useState('')
-  const [formError, setFormError] = useState<string | null>(null)
-  const [submitting, setSubmitting] = useState(false)
 
   const [avaliandoId, setAvaliandoId] = useState<number | null>(null)
   const [notaPontualidade, setNotaPontualidade] = useState(5)
@@ -50,27 +37,6 @@ export default function ConviviosPage() {
       .then(setConvivios)
       .catch((err) => setError(apiErrorMessage(err, 'Não foi possível carregar seus convívios')))
       .finally(() => setLoading(false))
-  }
-
-  async function handlePropose(e: FormEvent) {
-    e.preventDefault()
-    setFormError(null)
-    if (!outroUsuarioId || !periodoInicio) {
-      setFormError('Informe o usuário e o início do período')
-      return
-    }
-    setSubmitting(true)
-    try {
-      await proposeConvivio(Number(outroUsuarioId), periodoInicio, periodoFim)
-      setOutroUsuarioId('')
-      setPeriodoInicio('')
-      setPeriodoFim('')
-      load()
-    } catch (err) {
-      setFormError(apiErrorMessage(err, 'Não foi possível registrar o convívio'))
-    } finally {
-      setSubmitting(false)
-    }
   }
 
   async function handleConfirm(id: number) {
@@ -116,51 +82,9 @@ export default function ConviviosPage() {
     <div className="mx-auto max-w-2xl px-4 py-8">
       <h1 className="mb-1 text-2xl font-bold text-zinc-800">Convívios e avaliações</h1>
       <p className="mb-6 text-sm text-zinc-500">
-        Só é possível avaliar quem já morou com você. Registre o convívio, espere a outra pessoa confirmar
-        e depois avalie.
+        Só é possível avaliar quem já morou com você. Para registrar um novo convívio, acesse o perfil da pessoa
+        (pelo perfil público ou por uma conversa) e use a seção "Convívio" lá.
       </p>
-
-      <form onSubmit={handlePropose} className="mb-8 flex flex-col gap-4 rounded-2xl bg-white p-6 shadow-sm">
-        <h2 className="text-sm font-semibold text-zinc-700">Registrar novo convívio</h2>
-        <div>
-          <label className="mb-1 block text-sm font-medium text-zinc-700">ID do usuário com quem morou</label>
-          <input
-            type="number"
-            value={outroUsuarioId}
-            onChange={(e) => setOutroUsuarioId(e.target.value)}
-            placeholder="Ex.: 12"
-            className="w-full rounded-lg border border-zinc-200 px-3 py-2 outline-none focus:border-brand-500"
-          />
-        </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label className="mb-1 block text-sm font-medium text-zinc-700">Início do período</label>
-            <input
-              type="date"
-              value={periodoInicio}
-              onChange={(e) => setPeriodoInicio(e.target.value)}
-              className="w-full rounded-lg border border-zinc-200 px-3 py-2 outline-none focus:border-brand-500"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium text-zinc-700">Fim do período (opcional)</label>
-            <input
-              type="date"
-              value={periodoFim}
-              onChange={(e) => setPeriodoFim(e.target.value)}
-              className="w-full rounded-lg border border-zinc-200 px-3 py-2 outline-none focus:border-brand-500"
-            />
-          </div>
-        </div>
-        {formError && <p className="text-sm text-red-600">{formError}</p>}
-        <button
-          type="submit"
-          disabled={submitting}
-          className="self-start rounded-lg bg-brand-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:opacity-60"
-        >
-          {submitting ? 'Enviando...' : 'Registrar convívio'}
-        </button>
-      </form>
 
       {error && <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{error}</div>}
 

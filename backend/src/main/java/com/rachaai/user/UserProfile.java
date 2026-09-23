@@ -1,9 +1,11 @@
 package com.rachaai.user;
 
-import com.rachaai.common.SimNaoConverter;
 import jakarta.persistence.*;
 
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "perfis_usuario")
@@ -17,26 +19,26 @@ public class UserProfile {
     @JoinColumn(name = "usuario_id", nullable = false, unique = true)
     private User user;
 
-    @Convert(converter = SimNaoConverter.class)
-    @Column(name = "fumante", length = 3)
-    private Boolean smoker;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "habito_fumo", length = 30)
+    private SmokingHabit smokingHabit;
 
-    @Convert(converter = SimNaoConverter.class)
-    @Column(name = "bebe", length = 3)
-    private Boolean drinksAlcohol;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "habito_bebida", length = 30)
+    private DrinkingHabit drinkingHabit;
 
-    @Convert(converter = SimNaoConverter.class)
-    @Column(name = "vegetariano", length = 3)
-    private Boolean vegetarian;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "alimentacao", length = 20)
+    private Diet diet;
 
-    @Convert(converter = SimNaoConverter.class)
-    @Column(name = "tem_pets", length = 3)
-    private Boolean hasPets;
+    /** Chips escolhidos (com.rachaai.user.PetPreference), separados por vírgula. */
+    @Column(name = "pet_preferencias", length = 500)
+    private String petPreferences;
 
-    @Convert(converter = SimNaoConverter.class)
-    @Column(name = "gosta_animais", length = 3)
-    private Boolean likesAnimals;
-
+    /**
+     * Tags de com.rachaai.user.AllergyTag separadas por vírgula; quando inclui "Outro", o
+     * texto livre da pessoa vem como o segmento "OUTRO:texto" no lugar de só "OUTRO".
+     */
     @Column(name = "alergias", length = 500)
     private String allergies;
 
@@ -65,44 +67,46 @@ public class UserProfile {
         return user;
     }
 
-    public Boolean getSmoker() {
-        return smoker;
+    public SmokingHabit getSmokingHabit() {
+        return smokingHabit;
     }
 
-    public void setSmoker(Boolean smoker) {
-        this.smoker = smoker;
+    public void setSmokingHabit(SmokingHabit smokingHabit) {
+        this.smokingHabit = smokingHabit;
     }
 
-    public Boolean getDrinksAlcohol() {
-        return drinksAlcohol;
+    public DrinkingHabit getDrinkingHabit() {
+        return drinkingHabit;
     }
 
-    public void setDrinksAlcohol(Boolean drinksAlcohol) {
-        this.drinksAlcohol = drinksAlcohol;
+    public void setDrinkingHabit(DrinkingHabit drinkingHabit) {
+        this.drinkingHabit = drinkingHabit;
     }
 
-    public Boolean getVegetarian() {
-        return vegetarian;
+    public Diet getDiet() {
+        return diet;
     }
 
-    public void setVegetarian(Boolean vegetarian) {
-        this.vegetarian = vegetarian;
+    public void setDiet(Diet diet) {
+        this.diet = diet;
     }
 
-    public Boolean getHasPets() {
-        return hasPets;
+    public String getPetPreferences() {
+        return petPreferences;
     }
 
-    public void setHasPets(Boolean hasPets) {
-        this.hasPets = hasPets;
+    public void setPetPreferences(String petPreferences) {
+        this.petPreferences = petPreferences;
     }
 
-    public Boolean getLikesAnimals() {
-        return likesAnimals;
+    public List<PetPreference> getPetPreferencesList() {
+        return parseEnumList(petPreferences, PetPreference::valueOf);
     }
 
-    public void setLikesAnimals(Boolean likesAnimals) {
-        this.likesAnimals = likesAnimals;
+    public void setPetPreferencesList(List<PetPreference> values) {
+        this.petPreferences = values == null || values.isEmpty()
+                ? null
+                : values.stream().map(Enum::name).collect(Collectors.joining(","));
     }
 
     public String getAllergies() {
@@ -135,5 +139,76 @@ public class UserProfile {
 
     public void touch() {
         this.updatedAt = Instant.now();
+    }
+
+    // ---- derivados, usados pelo cálculo de compatibilidade (não têm coluna própria) ----
+
+    public Boolean getSmoker() {
+        if (smokingHabit == null) {
+            return null;
+        }
+        return switch (smokingHabit) {
+            case FUMANTE, FUMO_SOCIALMENTE, FUMO_QUANDO_BEBO -> true;
+            case NAO_FUMO, TENTANDO_PARAR -> false;
+        };
+    }
+
+    public Boolean getDrinksAlcohol() {
+        if (drinkingHabit == null) {
+            return null;
+        }
+        return switch (drinkingHabit) {
+            case NAO_CURTO, PAREI_DE_BEBER -> false;
+            case BEBO_COM_MODERACAO, OCASIOES_ESPECIAIS, SOCIALMENTE_FDS, QUASE_TODA_NOITE -> true;
+        };
+    }
+
+    public Boolean getVegetarian() {
+        if (diet == null) {
+            return null;
+        }
+        return switch (diet) {
+            case VEGETARIANO, VEGANO -> true;
+            case ONIVORO, PESCETARIANO, FLEXITARIANO -> false;
+        };
+    }
+
+    public Boolean getHasPets() {
+        List<PetPreference> prefs = getPetPreferencesList();
+        if (prefs.isEmpty()) {
+            return null;
+        }
+        return prefs.stream().anyMatch(PetPreference.TIPOS_DE_ANIMAL::contains);
+    }
+
+    public Boolean getLikesAnimals() {
+        List<PetPreference> prefs = getPetPreferencesList();
+        if (prefs.isEmpty()) {
+            return null;
+        }
+        if (prefs.contains(PetPreference.TENHO_ALERGIA_A_PETS)) {
+            return false;
+        }
+        boolean positivo = prefs.stream()
+                .anyMatch(p -> PetPreference.TIPOS_DE_ANIMAL.contains(p) || PetPreference.SINAL_POSITIVO.contains(p));
+        return positivo;
+    }
+
+    private <E extends Enum<E>> List<E> parseEnumList(String stored, java.util.function.Function<String, E> parser) {
+        if (stored == null || stored.isBlank()) {
+            return List.of();
+        }
+        return Arrays.stream(stored.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(s -> {
+                    try {
+                        return parser.apply(s);
+                    } catch (IllegalArgumentException e) {
+                        return null;
+                    }
+                })
+                .filter(java.util.Objects::nonNull)
+                .toList();
     }
 }

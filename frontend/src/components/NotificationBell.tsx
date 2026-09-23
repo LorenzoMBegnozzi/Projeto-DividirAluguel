@@ -1,13 +1,22 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Bell } from 'lucide-react'
+import { Bell, HeartHandshake, MessageCircle, ShieldCheck, ShieldX, Star, Users } from 'lucide-react'
 import {
   getNotifications,
   getUnreadCount,
   markAllNotificationsRead,
   markNotificationRead,
 } from '../api/notifications'
-import type { AppNotification } from '../types'
+import type { AppNotification, NotificationType } from '../types'
+
+const notificationStyle: Record<NotificationType, { icon: typeof Bell; iconClass: string }> = {
+  NOVA_MENSAGEM: { icon: MessageCircle, iconClass: 'bg-blue-100 text-blue-600' },
+  NOVA_CONVERSA: { icon: Users, iconClass: 'bg-violet-100 text-violet-600' },
+  CONVIVIO_PROPOSTO: { icon: HeartHandshake, iconClass: 'bg-amber-100 text-amber-600' },
+  CONVIVIO_CONFIRMADO: { icon: ShieldCheck, iconClass: 'bg-emerald-100 text-emerald-600' },
+  CONVIVIO_RECUSADO: { icon: ShieldX, iconClass: 'bg-rose-100 text-rose-600' },
+  AVALIACAO_RECEBIDA: { icon: Star, iconClass: 'bg-yellow-100 text-yellow-600' },
+}
 
 function timeAgo(value: string) {
   const diffMs = Date.now() - new Date(value).getTime()
@@ -109,31 +118,45 @@ export default function NotificationBell() {
             )}
           </div>
 
-          <div className="max-h-96 overflow-y-auto">
+          <div className="max-h-96 divide-y divide-zinc-100 overflow-y-auto">
             {notifications.length === 0 ? (
               <p className="px-2 py-6 text-center text-sm text-zinc-400">Sem notificações por aqui.</p>
             ) : (
-              notifications.map((notification) => (
-                <button
-                  key={notification.id}
-                  onClick={() => handleClickNotification(notification)}
-                  className={`flex w-full flex-col gap-0.5 rounded-xl px-3 py-2 text-left transition hover:bg-zinc-50 ${
-                    notification.read ? '' : 'bg-brand-50/60'
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <p
-                      className={`text-sm ${
-                        notification.read ? 'font-medium text-zinc-600' : 'font-semibold text-zinc-800'
-                      }`}
-                    >
-                      {notification.title}
-                    </p>
-                    <span className="shrink-0 text-[11px] text-zinc-400">{timeAgo(notification.createdAt)}</span>
-                  </div>
-                  {notification.message && <p className="text-xs text-zinc-500">{notification.message}</p>}
-                </button>
-              ))
+              notifications.map((notification) => {
+                const style = notificationStyle[notification.type]
+                const Icon = style.icon
+                return (
+                  <button
+                    key={notification.id}
+                    onClick={() => handleClickNotification(notification)}
+                    className={`relative flex w-full items-start gap-2.5 px-3 py-3 text-left transition hover:bg-zinc-50 ${
+                      notification.read ? '' : 'bg-brand-50/60'
+                    }`}
+                  >
+                    {!notification.read && (
+                      <span className="absolute left-1 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-brand-600" />
+                    )}
+                    <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${style.iconClass}`}>
+                      <Icon className="h-4 w-4" aria-hidden="true" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between gap-2">
+                        <p
+                          className={`truncate text-sm ${
+                            notification.read ? 'font-medium text-zinc-600' : 'font-semibold text-zinc-800'
+                          }`}
+                        >
+                          {notification.title}
+                        </p>
+                        <span className="shrink-0 text-[11px] text-zinc-400">{timeAgo(notification.createdAt)}</span>
+                      </div>
+                      {notification.message && (
+                        <p className="mt-0.5 line-clamp-2 text-xs text-zinc-500">{notification.message}</p>
+                      )}
+                    </div>
+                  </button>
+                )
+              })
             )}
           </div>
         </div>

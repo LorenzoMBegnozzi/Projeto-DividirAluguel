@@ -1,14 +1,23 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Clock, Star } from 'lucide-react'
-import { createListing, deleteListing, getMyListings } from '../api/listings'
+import { Banknote, ChevronDown, ChevronUp, Clock, GraduationCap, MapPin, PawPrint, Cigarette, CigaretteOff, Star } from 'lucide-react'
+import {
+  createListing,
+  deleteListing,
+  getMyListings,
+  markListingAvailable,
+  markListingUnavailable,
+} from '../api/listings'
 import { createPayment, getPlan } from '../api/billing'
 import { apiErrorMessage } from '../api/client'
 import { formatDate, formatMoney } from '../utils/format'
 import { useAuth } from '../context/AuthContext'
 import LocationPicker from '../components/LocationPicker'
+import ListingMapPreview from '../components/ListingMapPreview'
+import Fact from '../components/Fact'
 import BoolToggle from '../components/BoolToggle'
+import MarkUnavailableModal from '../components/MarkUnavailableModal'
 import type { Listing, ListingType, Plan } from '../types'
 
 export default function ListingPage() {
@@ -184,13 +193,18 @@ function RenterSearchSection() {
 
 function AdvertiserListingsSection() {
   const navigate = useNavigate()
+  const { user } = useAuth()
+  const lockedType: ListingType | null =
+    user?.advertiserKind === 'VAGA' ? 'TEM_VAGA' : user?.advertiserKind === 'ESTABELECIMENTO' ? 'ESTABELECIMENTO' : null
   const [listings, setListings] = useState<Listing[]>([])
   const [plan, setPlan] = useState<Plan | null>(null)
   const [buying, setBuying] = useState(false)
   const [loadingList, setLoadingList] = useState(true)
   const [listError, setListError] = useState<string | null>(null)
+  const [expandedId, setExpandedId] = useState<number | null>(null)
+  const [unavailableModalListing, setUnavailableModalListing] = useState<Listing | null>(null)
 
-  const [type, setType] = useState<ListingType>('TEM_VAGA')
+  const [type, setType] = useState<ListingType>(lockedType ?? 'TEM_VAGA')
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [preferredNeighborhood, setPreferredNeighborhood] = useState('')
@@ -277,6 +291,22 @@ function AdvertiserListingsSection() {
     }
   }
 
+  async function handleConfirmUnavailable(closedWithUserId: number | null) {
+    if (!unavailableModalListing) return
+    await markListingUnavailable(unavailableModalListing.id, closedWithUserId)
+    setUnavailableModalListing(null)
+    loadListings()
+  }
+
+  async function handleMarkAvailable(id: number) {
+    try {
+      await markListingAvailable(id)
+      loadListings()
+    } catch (err) {
+      setListError(apiErrorMessage(err, 'Não foi possível marcar como disponível'))
+    }
+  }
+
   async function handleBuyExtra() {
     setBuying(true)
     setListError(null)
@@ -317,14 +347,24 @@ function AdvertiserListingsSection() {
 
       {!loadingList && listings.length > 0 && (
         <div className="mb-8 flex flex-col gap-3">
-          {listings.map((listing) => (
+          {listings.map((listing) => {
+            const expanded = expandedId === listing.id
+            return (
             <div key={listing.id} className="rounded-2xl bg-white p-4 shadow-sm">
               <div className="flex items-start justify-between gap-3">
-                <div>
+                <button
+                  onClick={() => setExpandedId(expanded ? null : listing.id)}
+                  className="flex-1 text-left"
+                >
                   <div className="mb-1 flex flex-wrap items-center gap-1.5">
                     <span className="inline-block rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-600">
                       {listing.type === 'TEM_VAGA' ? 'Tenho vaga' : 'Estabelecimento'}
                     </span>
+                    {!listing.available && (
+                      <span className="inline-block rounded-full bg-zinc-700 px-2.5 py-0.5 text-xs font-medium text-white">
+                        Indisponível{listing.dealClosedWithUserName ? ` · alugado para ${listing.dealClosedWithUserName}` : ''}
+                      </span>
+                    )}
                     {listing.expiresAt && (
                       <span className="inline-flex items-center gap-1 rounded-full bg-sky-100 px-2.5 py-0.5 text-xs font-medium text-sky-700">
                         <Clock className="h-3 w-3" aria-hidden="true" />
@@ -338,16 +378,40 @@ function AdvertiserListingsSection() {
                       </span>
                     )}
                   </div>
-                  <p className="font-semibold text-zinc-800">{listing.title}</p>
+                  <p className="flex items-center gap-1 font-semibold text-zinc-800">
+                    {listing.title}
+                    {expanded ? (
+                      <ChevronUp className="h-4 w-4 shrink-0 text-zinc-400" aria-hidden="true" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4 shrink-0 text-zinc-400" aria-hidden="true" />
+                    )}
+                  </p>
                   <p className="text-sm text-zinc-500">{listing.address}</p>
-                </div>
+                </button>
                 <div className="flex shrink-0 flex-col items-end gap-2">
-                  <button
-                    onClick={() => handleDelete(listing.id)}
-                    className="text-sm font-medium text-zinc-400 hover:text-red-600"
-                  >
-                    Remover
-                  </button>
+                  <div className="flex items-center gap-2">
+                    {listing.available ? (
+                      <button
+                        onClick={() => setUnavailableModalListing(listing)}
+                        className="text-sm font-medium text-zinc-400 hover:text-brand-600"
+                      >
+                        Marcar indisponível
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleMarkAvailable(listing.id)}
+                        className="text-sm font-medium text-zinc-400 hover:text-emerald-600"
+                      >
+                        Marcar disponível
+                      </button>
+                    )}
+                    <button
+                      onClick={() => handleDelete(listing.id)}
+                      className="text-sm font-medium text-zinc-400 hover:text-red-600"
+                    >
+                      Remover
+                    </button>
+                  </div>
                   {plan && (
                     <button
                       onClick={() => handleHighlight(listing.id)}
@@ -359,8 +423,31 @@ function AdvertiserListingsSection() {
                   )}
                 </div>
               </div>
+
+              {expanded && (
+                <div className="mt-3 border-t border-zinc-100 pt-3">
+                  {listing.description && <p className="mb-2 text-sm text-zinc-600">{listing.description}</p>}
+                  <div className="mb-3 flex flex-wrap gap-3 text-xs text-zinc-500">
+                    {listing.preferredNeighborhood && <Fact icon={MapPin}>{listing.preferredNeighborhood}</Fact>}
+                    {listing.nearCollege && <Fact icon={GraduationCap}>Perto de {listing.nearCollege}</Fact>}
+                    {listing.price != null && <Fact icon={Banknote}>R$ {listing.price}</Fact>}
+                    {listing.acceptsPets != null && (
+                      <Fact icon={PawPrint}>{listing.acceptsPets ? 'Aceita animais' : 'Não aceita animais'}</Fact>
+                    )}
+                    {listing.acceptsSmoker != null && (
+                      <Fact icon={listing.acceptsSmoker ? Cigarette : CigaretteOff}>
+                        {listing.acceptsSmoker ? 'Aceita fumantes' : 'Não aceita fumantes'}
+                      </Fact>
+                    )}
+                  </div>
+                  {listing.latitude != null && listing.longitude != null && (
+                    <ListingMapPreview latitude={listing.latitude} longitude={listing.longitude} />
+                  )}
+                </div>
+              )}
             </div>
-          ))}
+            )
+          })}
         </div>
       )}
 
@@ -389,26 +476,32 @@ function AdvertiserListingsSection() {
             </p>
           )}
 
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={() => setType('TEM_VAGA')}
-              className={`flex-1 rounded-lg border px-3 py-3 text-sm font-semibold transition ${
-                type === 'TEM_VAGA' ? 'border-brand-600 bg-brand-600 text-white' : 'border-zinc-200 text-zinc-500'
-              }`}
-            >
-              Tenho vaga para dividir
-            </button>
-            <button
-              type="button"
-              onClick={() => setType('ESTABELECIMENTO')}
-              className={`flex-1 rounded-lg border px-3 py-3 text-sm font-semibold transition ${
-                type === 'ESTABELECIMENTO' ? 'border-brand-600 bg-brand-600 text-white' : 'border-zinc-200 text-zinc-500'
-              }`}
-            >
-              Tenho um imóvel pra alugar
-            </button>
-          </div>
+          {lockedType ? (
+            <p className="rounded-lg border border-zinc-200 px-3 py-3 text-sm font-semibold text-zinc-700">
+              {lockedType === 'TEM_VAGA' ? 'Tenho vaga para dividir' : 'Tenho um imóvel pra alugar'}
+            </p>
+          ) : (
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setType('TEM_VAGA')}
+                className={`flex-1 rounded-lg border px-3 py-3 text-sm font-semibold transition ${
+                  type === 'TEM_VAGA' ? 'border-brand-600 bg-brand-600 text-white' : 'border-zinc-200 text-zinc-500'
+                }`}
+              >
+                Tenho vaga para dividir
+              </button>
+              <button
+                type="button"
+                onClick={() => setType('ESTABELECIMENTO')}
+                className={`flex-1 rounded-lg border px-3 py-3 text-sm font-semibold transition ${
+                  type === 'ESTABELECIMENTO' ? 'border-brand-600 bg-brand-600 text-white' : 'border-zinc-200 text-zinc-500'
+                }`}
+              >
+                Tenho um imóvel pra alugar
+              </button>
+            </div>
+          )}
 
           <div>
             <label className="mb-1 block text-sm font-medium text-zinc-700">Título</label>
@@ -505,6 +598,15 @@ function AdvertiserListingsSection() {
             {loading ? 'Salvando...' : 'Publicar anúncio'}
           </button>
         </form>
+      )}
+
+      {unavailableModalListing && (
+        <MarkUnavailableModal
+          listingId={unavailableModalListing.id}
+          listingTitle={unavailableModalListing.title}
+          onClose={() => setUnavailableModalListing(null)}
+          onConfirm={handleConfirmUnavailable}
+        />
       )}
     </div>
   )

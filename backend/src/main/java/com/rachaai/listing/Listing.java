@@ -57,6 +57,14 @@ public class Listing {
     @Column(name = "ativo", nullable = false, length = 3)
     private boolean active = true;
 
+    @Convert(converter = SimNaoConverter.class)
+    @Column(name = "disponivel", nullable = false, length = 3)
+    private boolean available = true;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fechado_com_usuario_id")
+    private User dealClosedWith;
+
     @Column(name = "expira_em")
     private Instant expiresAt;
 
@@ -177,6 +185,22 @@ public class Listing {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+
+    public User getDealClosedWith() {
+        return dealClosedWith;
+    }
+
+    public void setDealClosedWith(User dealClosedWith) {
+        this.dealClosedWith = dealClosedWith;
     }
 
     public Instant getExpiresAt() {

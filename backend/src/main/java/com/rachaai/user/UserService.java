@@ -5,15 +5,27 @@ import com.rachaai.user.dto.ProfileRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Set;
+
 @Service
 public class UserService {
 
+    private static final Set<String> ALLOWED_PHOTO_TYPES = Set.of("image/jpeg", "image/png", "image/webp");
+    private static final long MAX_PHOTO_BYTES = 3L * 1024 * 1024;
+
     private final UserRepository userRepository;
     private final UserProfileRepository profileRepository;
+    private final UserPhotoRepository photoRepository;
 
-    public UserService(UserRepository userRepository, UserProfileRepository profileRepository) {
+    public UserService(
+            UserRepository userRepository,
+            UserProfileRepository profileRepository,
+            UserPhotoRepository photoRepository
+    ) {
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
+        this.photoRepository = photoRepository;
     }
 
     @Transactional(readOnly = true)
@@ -40,12 +52,11 @@ public class UserService {
                     return created;
                 });
 
-        profile.setSmoker(request.smoker());
-        profile.setDrinksAlcohol(request.drinksAlcohol());
-        profile.setVegetarian(request.vegetarian());
-        profile.setHasPets(request.hasPets());
-        profile.setLikesAnimals(request.likesAnimals());
-        profile.setAllergies(request.allergies());
+        profile.setSmokingHabit(request.smokingHabit());
+        profile.setDrinkingHabit(request.drinkingHabit());
+        profile.setDiet(request.diet());
+        profile.setPetPreferencesList(request.petPreferences());
+        profile.setAllergies(AllergyCodec.encode(request.allergyTags(), request.allergyOther()));
         profile.setMusicTaste(request.musicTaste());
         profile.setRoutine(request.routine());
         profile.touch();
@@ -59,5 +70,49 @@ public class UserService {
         User user = getById(userId);
         user.acceptSafetyTerms();
         return userRepository.save(user);
+    }
+
+    @Transactional(readOnly = true)
+    public List<User> search(String query, Long excludeId) {
+        if (query == null || query.isBlank()) {
+            return List.of();
+        }
+        return userRepository.findTop20ByNameContainingIgnoreCaseAndIdNot(query.trim(), excludeId);
+    }
+
+    @Transactional
+    public void uploadPhoto(Long userId, byte[] content, String contentType, long size) {
+        if (content == null || content.length == 0) {
+            throw ApiException.badRequest("Envie um arquivo de imagem");
+        }
+        if (size > MAX_PHOTO_BYTES) {
+            throw ApiException.badRequest("A imagem precisa ter até 3 MB");
+        }
+        if (contentType == null || !ALLOWED_PHOTO_TYPES.contains(contentType.toLowerCase())) {
+            throw ApiException.badRequest("Use uma imagem JPEG, PNG ou WEBP");
+        }
+        getById(userId);
+
+        photoRepository.findByUserId(userId)
+                .ifPresentOrElse(
+                        existing -> existing.replace(content, contentType),
+                        () -> photoRepository.save(new UserPhoto(userId, content, contentType))
+                );
+    }
+
+    @Transactional
+    public void removePhoto(Long userId) {
+        photoRepository.deleteByUserId(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public UserPhoto getPhoto(Long userId) {
+        return photoRepository.findByUserId(userId)
+                .orElseThrow(() -> ApiException.notFound("Esse usuário não tem foto de perfil"));
+    }
+
+    @Transactional(readOnly = true)
+    public boolean hasPhoto(Long userId) {
+        return photoRepository.existsByUserId(userId);
     }
 }

@@ -28,10 +28,13 @@ api() {
   fi
 }
 
-# token EMAIL NOME PAPEL  -> cadastra (ou faz login se ja existe) e imprime o token JWT
+# token EMAIL NOME PAPEL [TIPO_ANUNCIANTE]  -> cadastra (ou faz login se ja existe) e imprime o token JWT
+# TIPO_ANUNCIANTE (so' para PAPEL=ADVERTISER): VAGA | ESTABELECIMENTO
 token() {
-  local email=$1 name=$2 role=$3 res
-  res=$(api POST /auth/register "" "{\"name\":\"$name\",\"email\":\"$email\",\"password\":\"$PASS\",\"birthDate\":\"2001-06-15\",\"role\":\"$role\"}")
+  local email=$1 name=$2 role=$3 kind=${4:-} res
+  local kindJson=""
+  if [ -n "$kind" ]; then kindJson=",\"advertiserKind\":\"$kind\""; fi
+  res=$(api POST /auth/register "" "{\"name\":\"$name\",\"email\":\"$email\",\"password\":\"$PASS\",\"birthDate\":\"2001-06-15\",\"role\":\"$role\"$kindJson}")
   if ! echo "$res" | grep -q '"token"'; then
     res=$(api POST /auth/login "" "{\"email\":\"$email\",\"password\":\"$PASS\"}")
   fi
@@ -76,17 +79,17 @@ listing "$R2" '{"type":"PROCURANDO","title":"Procuro vaga na Zona 2","descriptio
 token novato.alugar@teste.com "Novato Sem Perfil" RENTER > /dev/null
 
 echo "== Contas para ANUNCIAR: tenho vaga =="
-A1=$(token bia.vaga@teste.com "Bia Vaga" ADVERTISER); reset_listings "$A1"
+A1=$(token bia.vaga@teste.com "Bia Vaga" ADVERTISER VAGA); reset_listings "$A1"
 profile "$A1" '{"smoker":false,"drinksAlcohol":false,"vegetarian":true,"hasPets":false,"likesAnimals":true,"allergies":"","musicTaste":"mpb, jazz, rock","routine":"DIURNO","bio":"Moro com mais uma pessoa, casa calma.","occupation":"Direito - UEM"}'
 listing "$A1" '{"type":"TEM_VAGA","title":"Vaga em apê de 2 quartos","description":"Apê mobiliado, perto do mercado.","preferredNeighborhood":"Zona 7","nearCollege":"UEM","price":650,"address":"Av. Colombo, 5000 - Zona 7","latitude":-23.4108,"longitude":-51.9470}' > /dev/null
 listing "$A1" '{"type":"TEM_VAGA","title":"Vaga em república feminina","description":"Quarto compartilhado.","preferredNeighborhood":"Zona 2","nearCollege":"UniCesumar","price":450,"address":"Rua Neo Alves Martins, 300 - Zona 2","latitude":-23.4280,"longitude":-51.9400}' > /dev/null
 
-A2=$(token davi.vaga@teste.com "Davi Vaga" ADVERTISER); reset_listings "$A2"
+A2=$(token davi.vaga@teste.com "Davi Vaga" ADVERTISER VAGA); reset_listings "$A2"
 profile "$A2" '{"smoker":true,"drinksAlcohol":true,"vegetarian":false,"hasPets":true,"likesAnimals":true,"allergies":"","musicTaste":"funk, sertanejo","routine":"NOTURNO","bio":"Casa animada, recebo amigos.","occupation":"Educação Física - UniCesumar"}'
 listing "$A2" '{"type":"TEM_VAGA","title":"Vaga em casa com quintal","description":"Aceito pet.","preferredNeighborhood":"Zona 5","nearCollege":"UniCesumar","price":500,"address":"Rua Santos Dumont, 800 - Zona 5","latitude":-23.4150,"longitude":-51.9250}' > /dev/null
 
 echo "== Contas para ANUNCIAR: estabelecimento =="
-A3=$(token marcos.imoveis@teste.com "Marcos Imóveis" ADVERTISER); reset_listings "$A3"
+A3=$(token marcos.imoveis@teste.com "Marcos Imóveis" ADVERTISER ESTABELECIMENTO); reset_listings "$A3"
 profile "$A3" '{"smoker":false,"drinksAlcohol":false,"vegetarian":false,"hasPets":false,"likesAnimals":false,"allergies":"","musicTaste":"","routine":"DIURNO","bio":"Proprietário de imóveis para aluguel.","occupation":"Proprietário"}'
 listing "$A3" '{"type":"ESTABELECIMENTO","title":"Kitnet mobiliada no Centro","description":"Kitnet 25m², sem pets e sem fumantes.","preferredNeighborhood":"Centro","nearCollege":"UEM","price":900,"address":"Av. Brasil, 1200 - Centro","latitude":-23.4205,"longitude":-51.9333,"acceptsPets":false,"acceptsSmoker":false}' > /dev/null
 CASA=$(listing "$A3" '{"type":"ESTABELECIMENTO","title":"Casa 3 quartos na Zona 7","description":"Aceita pets e fumantes (área externa).","preferredNeighborhood":"Zona 7","nearCollege":"UEM","price":2200,"address":"Rua Mandaguari, 450 - Zona 7","latitude":-23.4100,"longitude":-51.9490,"acceptsPets":true,"acceptsSmoker":true}')

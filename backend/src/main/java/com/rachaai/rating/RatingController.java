@@ -26,31 +26,22 @@ public class RatingController {
             @AuthenticationPrincipal SecurityUser principal,
             @Valid @RequestBody ConvivioRequest request
     ) {
-        Convivio convivio = ratingService.proposeConvivio(principal.getId(), request);
-        return ConvivioResponse.from(convivio, principal.getId(), false);
+        return ratingService.proposeConvivio(principal.getId(), request);
     }
 
     @GetMapping("/api/convivios")
     public List<ConvivioResponse> listMyConvivios(@AuthenticationPrincipal SecurityUser principal) {
-        Long userId = principal.getId();
-        return ratingService.listMine(userId).stream()
-                .map(c -> ConvivioResponse.from(
-                        c, userId,
-                        c.getStatus() == ConvivioStatus.CONFIRMADO && ratingService.jaAvaliei(userId, c.getId())
-                ))
-                .toList();
+        return ratingService.listMine(principal.getId());
     }
 
     @PostMapping("/api/convivios/{id}/confirmar")
     public ConvivioResponse confirmar(@AuthenticationPrincipal SecurityUser principal, @PathVariable Long id) {
-        Convivio convivio = ratingService.confirmar(principal.getId(), id);
-        return ConvivioResponse.from(convivio, principal.getId(), false);
+        return ratingService.confirmar(principal.getId(), id);
     }
 
     @PostMapping("/api/convivios/{id}/recusar")
     public ConvivioResponse recusar(@AuthenticationPrincipal SecurityUser principal, @PathVariable Long id) {
-        Convivio convivio = ratingService.recusar(principal.getId(), id);
-        return ConvivioResponse.from(convivio, principal.getId(), false);
+        return ratingService.recusar(principal.getId(), id);
     }
 
     @PostMapping("/api/avaliacoes")
@@ -58,12 +49,12 @@ public class RatingController {
             @AuthenticationPrincipal SecurityUser principal,
             @Valid @RequestBody AvaliacaoRequest request
     ) {
-        return AvaliacaoResponse.from(ratingService.avaliar(principal.getId(), request));
+        return ratingService.avaliar(principal.getId(), request);
     }
 
     @GetMapping("/api/usuarios/{id}/avaliacoes")
     public List<AvaliacaoResponse> listReceived(@PathVariable Long id) {
-        return ratingService.listRecebidas(id).stream().map(AvaliacaoResponse::from).toList();
+        return ratingService.listRecebidasResponses(id);
     }
 
     @GetMapping("/api/usuarios/{id}/avaliacoes/resumo")

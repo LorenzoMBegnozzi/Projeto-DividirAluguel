@@ -2,13 +2,21 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 import type { ReactNode } from 'react'
 import { TOKEN_KEY } from '../api/client'
 import { fetchMe, login as loginRequest, register as registerRequest } from '../api/auth'
-import type { Role, UserProfile } from '../types'
+import type { AdvertiserKind, Role, UserProfile } from '../types'
 
 interface AuthContextValue {
   user: UserProfile | null
   loading: boolean
   login: (email: string, password: string) => Promise<void>
-  register: (name: string, email: string, password: string, birthDate: string, cpf: string, role: Role) => Promise<void>
+  register: (
+    name: string,
+    email: string,
+    password: string,
+    birthDate: string,
+    cpf: string,
+    role: Role,
+    advertiserKind: AdvertiserKind | null,
+  ) => Promise<void>
   logout: () => void
   refreshUser: () => Promise<void>
 }
@@ -44,8 +52,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(res.user)
   }
 
-  async function register(name: string, email: string, password: string, birthDate: string, cpf: string, role: Role) {
-    const res = await registerRequest({ name, email, password, birthDate, cpf, role })
+  async function register(
+    name: string,
+    email: string,
+    password: string,
+    birthDate: string,
+    cpf: string,
+    role: Role,
+    advertiserKind: AdvertiserKind | null,
+  ) {
+    const res = await registerRequest({ name, email, password, birthDate, cpf, role, advertiserKind })
     localStorage.setItem(TOKEN_KEY, res.token)
     setUser(res.user)
   }

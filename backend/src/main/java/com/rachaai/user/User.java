@@ -32,6 +32,10 @@ public class User {
     @Column(name = "papel", nullable = false, length = 20)
     private Role role;
 
+    @Convert(converter = AdvertiserKindConverter.class)
+    @Column(name = "tipo_anunciante", length = 20)
+    private AdvertiserKind advertiserKind;
+
     @Column(name = "ocupacao", length = 160)
     private String occupation;
 
@@ -50,13 +54,14 @@ public class User {
     protected User() {
     }
 
-    public User(String name, String email, String passwordHash, LocalDate birthDate, String cpf, Role role) {
+    public User(String name, String email, String passwordHash, LocalDate birthDate, String cpf, Role role, AdvertiserKind advertiserKind) {
         this.name = name;
         this.email = email;
         this.passwordHash = passwordHash;
         this.birthDate = birthDate;
         this.cpf = cpf;
         this.role = role;
+        this.advertiserKind = advertiserKind;
     }
 
     public Long getId() {
@@ -79,6 +84,10 @@ public class User {
         return passwordHash;
     }
 
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
     public LocalDate getBirthDate() {
         return birthDate;
     }
@@ -89,6 +98,10 @@ public class User {
 
     public Role getRole() {
         return role;
+    }
+
+    public AdvertiserKind getAdvertiserKind() {
+        return advertiserKind;
     }
 
     public String getOccupation() {

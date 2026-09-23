@@ -39,7 +39,7 @@ export default function ReportUserModal({ userName, onClose, onSubmit }: Props) 
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/50 px-4">
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-zinc-900/50 px-4">
       <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
         {done ? (
           <>

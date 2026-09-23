@@ -7,6 +7,8 @@ import NavBar from './components/NavBar'
 import SafetyTermsModal from './components/SafetyTermsModal'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
+import ResetPasswordPage from './pages/ResetPasswordPage'
 import ProfilePage from './pages/ProfilePage'
 import ListingPage from './pages/ListingPage'
 import BrowsePage from './pages/BrowsePage'
@@ -15,6 +17,7 @@ import ChatPage from './pages/ChatPage'
 import PaymentsPage from './pages/PaymentsPage'
 import ConviviosPage from './pages/ConviviosPage'
 import UserPublicProfilePage from './pages/UserPublicProfilePage'
+import UserSearchPage from './pages/UserSearchPage'
 
 export default function App() {
   return (
@@ -34,6 +37,8 @@ function AppContent() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/registro" element={<RegisterPage />} />
+        <Route path="/esqueci-senha" element={<ForgotPasswordPage />} />
+        <Route path="/redefinir-senha/:token" element={<ResetPasswordPage />} />
         <Route
           path="/perfil"
           element={
@@ -91,6 +96,14 @@ function AppContent() {
           element={
             <ProtectedRoute>
               <ConviviosPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/pessoas"
+          element={
+            <ProtectedRoute>
+              <UserSearchPage />
             </ProtectedRoute>
           }
         />

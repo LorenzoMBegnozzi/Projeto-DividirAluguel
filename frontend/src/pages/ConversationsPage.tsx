@@ -4,6 +4,7 @@ import { ArrowRight } from 'lucide-react'
 import { getConversations } from '../api/discovery'
 import { blockUser } from '../api/moderation'
 import { apiErrorMessage } from '../api/client'
+import Avatar from '../components/Avatar'
 import type { ConversationSummary } from '../types'
 
 export default function ConversationsPage() {
@@ -54,9 +55,12 @@ export default function ConversationsPage() {
             key={conversation.id}
             className="flex items-center justify-between rounded-xl bg-white p-4 shadow-sm transition hover:shadow-md"
           >
-            <Link to={`/conversas/${conversation.id}`} className="flex-1">
-              <p className="font-semibold text-zinc-800">{conversation.otherUser.name}</p>
-              <p className="text-sm text-zinc-500">{conversation.listing.title}</p>
+            <Link to={`/conversas/${conversation.id}`} className="flex flex-1 items-center gap-3">
+              <Avatar photoUrl={conversation.otherUser.photoUrl} name={conversation.otherUser.name} size={40} />
+              <div>
+                <p className="font-semibold text-zinc-800">{conversation.otherUser.name}</p>
+                <p className="text-sm text-zinc-500">{conversation.listing.title}</p>
+              </div>
             </Link>
             <div className="flex items-center gap-3">
               <Link
@@ -64,12 +68,6 @@ export default function ConversationsPage() {
                 className="text-xs font-medium text-zinc-400 hover:text-brand-600"
               >
                 Ver perfil
-              </Link>
-              <Link
-                to={`/convivios?outro=${conversation.otherUser.id}`}
-                className="text-xs font-medium text-zinc-400 hover:text-brand-600"
-              >
-                Registrar convívio
               </Link>
               {blockedIds.includes(conversation.otherUser.id) ? (
                 <span className="text-xs font-medium text-zinc-300">Bloqueado</span>

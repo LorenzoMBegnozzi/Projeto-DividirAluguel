@@ -4,8 +4,10 @@ import com.rachaai.common.ApiException;
 import com.rachaai.notification.NotificationService;
 import com.rachaai.notification.NotificationType;
 import com.rachaai.rating.dto.AvaliacaoRequest;
+import com.rachaai.rating.dto.AvaliacaoResponse;
 import com.rachaai.rating.dto.AvaliacaoResumoResponse;
 import com.rachaai.rating.dto.ConvivioRequest;
+import com.rachaai.rating.dto.ConvivioResponse;
 import com.rachaai.user.User;
 import com.rachaai.user.UserRepository;
 import org.springframework.stereotype.Service;
@@ -34,7 +36,7 @@ public class RatingService {
     }
 
     @Transactional
-    public Convivio proposeConvivio(Long userId, ConvivioRequest request) {
+    public ConvivioResponse proposeConvivio(Long userId, ConvivioRequest request) {
         if (request.outroUsuarioId().equals(userId)) {
             throw ApiException.badRequest("Você não pode registrar um convívio com você mesmo");
         }
@@ -64,16 +66,21 @@ public class RatingService {
                 "/convivios"
         );
 
-        return convivio;
+        return ConvivioResponse.from(convivio, userId, false);
     }
 
     @Transactional(readOnly = true)
-    public List<Convivio> listMine(Long userId) {
-        return convivioRepository.findAllByUsuario(userId);
+    public List<ConvivioResponse> listMine(Long userId) {
+        return convivioRepository.findAllByUsuario(userId).stream()
+                .map(c -> ConvivioResponse.from(
+                        c, userId,
+                        c.getStatus() == ConvivioStatus.CONFIRMADO && jaAvaliei(userId, c.getId())
+                ))
+                .toList();
     }
 
     @Transactional
-    public Convivio confirmar(Long userId, Long convivioId) {
+    public ConvivioResponse confirmar(Long userId, Long convivioId) {
         Convivio convivio = requireParticipante(userId, convivioId);
         if (convivio.getPropostoPorId().equals(userId)) {
             throw ApiException.forbidden("Quem propôs o convívio não pode confirmá-lo");
@@ -91,11 +98,11 @@ public class RatingService {
                 "/convivios"
         );
 
-        return convivio;
+        return ConvivioResponse.from(convivio, userId, false);
     }
 
     @Transactional
-    public Convivio recusar(Long userId, Long convivioId) {
+    public ConvivioResponse recusar(Long userId, Long convivioId) {
         Convivio convivio = requireParticipante(userId, convivioId);
         if (convivio.getPropostoPorId().equals(userId)) {
             throw ApiException.forbidden("Quem propôs o convívio não pode recusá-lo");
@@ -113,7 +120,7 @@ public class RatingService {
                 "/convivios"
         );
 
-        return convivio;
+        return ConvivioResponse.from(convivio, userId, false);
     }
 
     public boolean jaAvaliei(Long userId, Long convivioId) {
@@ -121,7 +128,7 @@ public class RatingService {
     }
 
     @Transactional
-    public Avaliacao avaliar(Long userId, AvaliacaoRequest request) {
+    public AvaliacaoResponse avaliar(Long userId, AvaliacaoRequest request) {
         Convivio convivio = convivioRepository.findById(request.convivioId())
                 .orElseThrow(() -> ApiException.notFound("Convívio não encontrado"));
         if (!convivio.envolve(userId)) {
@@ -149,12 +156,17 @@ public class RatingService {
                 "/usuarios/" + avaliado.getId()
         );
 
-        return avaliacao;
+        return AvaliacaoResponse.from(avaliacao);
     }
 
     @Transactional(readOnly = true)
     public List<Avaliacao> listRecebidas(Long usuarioId) {
         return avaliacaoRepository.findAllByAvaliadoIdOrderByCriadoEmDesc(usuarioId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<AvaliacaoResponse> listRecebidasResponses(Long usuarioId) {
+        return listRecebidas(usuarioId).stream().map(AvaliacaoResponse::from).toList();
     }
 
     @Transactional(readOnly = true)

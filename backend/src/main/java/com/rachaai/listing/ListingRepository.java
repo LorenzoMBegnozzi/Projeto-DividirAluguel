@@ -15,7 +15,7 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
 
     Optional<Listing> findByIdAndUserId(Long id, Long userId);
 
-    @Query("select l from Listing l where l.active = true and l.type = :type and l.user.id <> :userId")
+    @Query("select l from Listing l where l.active = true and l.available = true and l.type = :type and l.user.id <> :userId")
     List<Listing> findAllActiveByTypeExceptUser(ListingType type, Long userId);
 
     /** Anuncios gratis em uso: os pagos (extras) tem validade, os gratis nao. */

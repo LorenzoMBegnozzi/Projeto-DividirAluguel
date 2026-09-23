@@ -2,7 +2,50 @@ export type Routine = 'DIURNO' | 'NOTURNO' | 'MISTO'
 
 export type Role = 'RENTER' | 'ADVERTISER'
 
+export type AdvertiserKind = 'VAGA' | 'ESTABELECIMENTO'
+
 export type ListingType = 'PROCURANDO' | 'TEM_VAGA' | 'ESTABELECIMENTO'
+
+export type SmokingHabit = 'NAO_FUMO' | 'FUMO_SOCIALMENTE' | 'FUMO_QUANDO_BEBO' | 'FUMANTE' | 'TENTANDO_PARAR'
+
+export type DrinkingHabit =
+  | 'NAO_CURTO'
+  | 'PAREI_DE_BEBER'
+  | 'BEBO_COM_MODERACAO'
+  | 'OCASIOES_ESPECIAIS'
+  | 'SOCIALMENTE_FDS'
+  | 'QUASE_TODA_NOITE'
+
+export type Diet = 'ONIVORO' | 'VEGETARIANO' | 'VEGANO' | 'PESCETARIANO' | 'FLEXITARIANO'
+
+export type PetPreference =
+  | 'CACHORRO'
+  | 'GATO'
+  | 'REPTIL'
+  | 'ANFIBIO'
+  | 'PASSARINHO'
+  | 'PEIXE'
+  | 'TARTARUGA'
+  | 'HAMSTER'
+  | 'COELHO'
+  | 'OUTRO_PET'
+  | 'NAO_TENHO_MAS_AMO'
+  | 'NAO_TENHO_PETS'
+  | 'GOSTO_DE_TODOS'
+  | 'QUERO_UM_PET'
+  | 'TENHO_ALERGIA_A_PETS'
+  | 'TENHO_PET_NAO_ESPECIFICADO'
+
+export type AllergyTag =
+  | 'POEIRA'
+  | 'PELO_DE_ANIMAL'
+  | 'POLEN_MOFO'
+  | 'PICADA_DE_INSETO'
+  | 'ALIMENTOS'
+  | 'MEDICAMENTOS'
+  | 'LATEX'
+  | 'NENHUMA'
+  | 'OUTRO'
 
 export interface UserProfile {
   id: number
@@ -10,17 +53,19 @@ export interface UserProfile {
   email: string
   birthDate: string
   role: Role
+  advertiserKind: AdvertiserKind | null
   occupation: string | null
   bio: string | null
-  smoker: boolean | null
-  drinksAlcohol: boolean | null
-  vegetarian: boolean | null
-  hasPets: boolean | null
-  likesAnimals: boolean | null
-  allergies: string | null
+  smokingHabit: SmokingHabit | null
+  drinkingHabit: DrinkingHabit | null
+  diet: Diet | null
+  petPreferences: PetPreference[]
+  allergyTags: AllergyTag[]
+  allergyOther: string | null
   musicTaste: string | null
   routine: Routine | null
   safetyTermsAccepted: boolean
+  photoUrl: string | null
 }
 
 export interface Listing {
@@ -41,6 +86,9 @@ export interface Listing {
   highlightedUntil: string | null
   expiresAt: string | null
   createdAt: string
+  available: boolean
+  dealClosedWithUserId: number | null
+  dealClosedWithUserName: string | null
 }
 
 export interface BrowseItem {

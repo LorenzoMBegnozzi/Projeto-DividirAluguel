@@ -1,5 +1,6 @@
 package com.rachaai.auth;
 
+import com.rachaai.user.AdvertiserKind;
 import com.rachaai.user.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -15,6 +16,7 @@ public record RegisterRequest(
         @NotBlank @Size(min = 8, max = 72) String password,
         @NotNull @Past LocalDate birthDate,
         @NotBlank String cpf,
-        @NotNull Role role
+        @NotNull Role role,
+        AdvertiserKind advertiserKind
 ) {
 }
