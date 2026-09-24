@@ -24,8 +24,4 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
     @Modifying
     @Query("update Listing l set l.active = false where l.active = true and l.expiresAt is not null and l.expiresAt < :now")
     int deactivateExpired(Instant now);
-
-    @Modifying
-    @Query("update Listing l set l.active = false where l.user.id = :userId and l.active = true and l.type = :type")
-    void deactivateAllForUserAndType(Long userId, ListingType type);
 }

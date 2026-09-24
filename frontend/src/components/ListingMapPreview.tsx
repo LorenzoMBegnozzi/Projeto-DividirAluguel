@@ -14,7 +14,7 @@ const defaultIcon = L.icon({
 
 export default function ListingMapPreview({ latitude, longitude }: { latitude: number; longitude: number }) {
   return (
-    <div className="overflow-hidden rounded-lg border border-zinc-200">
+    <div className="overflow-hidden rounded-md border border-line">
       <MapContainer
         center={[latitude, longitude]}
         zoom={15}

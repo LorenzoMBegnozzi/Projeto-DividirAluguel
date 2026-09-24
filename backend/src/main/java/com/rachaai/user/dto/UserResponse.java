@@ -6,7 +6,6 @@ import com.rachaai.user.AllergyTag;
 import com.rachaai.user.Diet;
 import com.rachaai.user.DrinkingHabit;
 import com.rachaai.user.PetPreference;
-import com.rachaai.user.Role;
 import com.rachaai.user.Routine;
 import com.rachaai.user.SmokingHabit;
 import com.rachaai.user.User;
@@ -19,7 +18,8 @@ public record UserResponse(
         String name,
         String email,
         LocalDate birthDate,
-        Role role,
+        boolean renter,
+        boolean advertiser,
         AdvertiserKind advertiserKind,
         String occupation,
         String bio,
@@ -42,7 +42,8 @@ public record UserResponse(
                 user.getName(),
                 user.getEmail(),
                 user.getBirthDate(),
-                user.getRole(),
+                user.isRenter(),
+                user.isAdvertiser(),
                 user.getAdvertiserKind(),
                 user.getOccupation(),
                 user.getBio(),

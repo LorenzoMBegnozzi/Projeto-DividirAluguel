@@ -22,7 +22,7 @@ export default function StarRating({ value, onChange, size = 18 }: Props) {
           <Star
             width={size}
             height={size}
-            className={star <= Math.round(value) ? 'fill-amber-400 text-amber-400' : 'fill-none text-zinc-300'}
+            className={star <= Math.round(value) ? 'fill-star text-star' : 'fill-none text-line-strong'}
           />
         </button>
       ))}

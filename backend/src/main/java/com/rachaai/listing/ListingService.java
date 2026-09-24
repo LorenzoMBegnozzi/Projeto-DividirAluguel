@@ -2,11 +2,10 @@ package com.rachaai.listing;
 
 import com.rachaai.billing.BillingService;
 import com.rachaai.common.ApiException;
+import com.rachaai.common.PhotoValidator;
 import com.rachaai.conversation.ConversationRepository;
 import com.rachaai.listing.dto.ListingRequest;
 import com.rachaai.listing.dto.ListingResponse;
-import com.rachaai.user.AdvertiserKind;
-import com.rachaai.user.Role;
 import com.rachaai.user.User;
 import com.rachaai.user.UserService;
 import com.rachaai.user.dto.UserResponse;
@@ -18,18 +17,23 @@ import java.util.List;
 @Service
 public class ListingService {
 
+    private static final int MAX_PHOTOS_PER_LISTING = 6;
+
     private final ListingRepository listingRepository;
+    private final ListingPhotoRepository listingPhotoRepository;
     private final UserService userService;
     private final BillingService billingService;
     private final ConversationRepository conversationRepository;
 
     public ListingService(
             ListingRepository listingRepository,
+            ListingPhotoRepository listingPhotoRepository,
             UserService userService,
             BillingService billingService,
             ConversationRepository conversationRepository
     ) {
         this.listingRepository = listingRepository;
+        this.listingPhotoRepository = listingPhotoRepository;
         this.userService = userService;
         this.billingService = billingService;
         this.conversationRepository = conversationRepository;
@@ -40,35 +44,36 @@ public class ListingService {
         return listingRepository.findAllByUserIdAndActiveTrue(userId).stream().map(ListingResponse::from).toList();
     }
 
+    @Transactional(readOnly = true)
+    public ListingResponse getById(Long listingId) {
+        Listing listing = listingRepository.findById(listingId)
+                .orElseThrow(() -> ApiException.notFound("Anúncio não encontrado"));
+        return ListingResponse.from(listing);
+    }
+
     @Transactional
     public Listing create(Long userId, ListingRequest request) {
         User user = userService.getById(userId);
         validateRoleForType(user, request.type());
 
-        if (request.type() != ListingType.PROCURANDO
-                && (request.latitude() == null || request.longitude() == null || isBlank(request.address()))) {
+        if (request.latitude() == null || request.longitude() == null || isBlank(request.address())) {
             throw ApiException.badRequest("Informe endereço e localização no mapa");
         }
 
-        boolean needsExtraCredit = false;
-        if (request.type() == ListingType.PROCURANDO) {
-            listingRepository.deactivateAllForUserAndType(userId, ListingType.PROCURANDO);
-        } else {
-            long freeInUse = listingRepository.countByUserIdAndActiveTrueAndTypeInAndExpiresAtIsNull(
-                    userId, BillingService.ADVERTISER_TYPES);
-            needsExtraCredit = freeInUse >= billingService.freeListings();
-        }
+        long freeInUse = listingRepository.countByUserIdAndActiveTrueAndTypeInAndExpiresAtIsNull(
+                userId, BillingService.ADVERTISER_TYPES);
+        boolean needsExtraCredit = freeInUse >= billingService.freeListings();
 
         Listing listing = new Listing(user, request.type(), request.title());
         listing.setDescription(request.description());
         listing.setPreferredNeighborhood(request.preferredNeighborhood());
         listing.setNearCollege(request.nearCollege());
         listing.setPrice(request.price());
-
-        if (request.type() != ListingType.PROCURANDO) {
-            listing.setAddress(request.address());
-            listing.setLatitude(request.latitude());
-            listing.setLongitude(request.longitude());
+        listing.setAddress(request.address());
+        listing.setLatitude(request.latitude());
+        listing.setLongitude(request.longitude());
+        if (request.type() == ListingType.TEM_VAGA) {
+            listing.setAvailableSlots(request.availableSlots());
         }
         if (request.type() == ListingType.ESTABELECIMENTO) {
             listing.setAcceptsPets(request.acceptsPets());
@@ -93,9 +98,6 @@ public class ListingService {
     public ListingResponse markUnavailable(Long userId, Long listingId, Long closedWithUserId) {
         Listing listing = listingRepository.findByIdAndUserId(listingId, userId)
                 .orElseThrow(() -> ApiException.notFound("Anúncio não encontrado"));
-        if (listing.getType() == ListingType.PROCURANDO) {
-            throw ApiException.badRequest("Esse tipo de anúncio não tem essa opção");
-        }
 
         User closedWith = null;
         if (closedWithUserId != null) {
@@ -132,18 +134,45 @@ public class ListingService {
                 .toList();
     }
 
+    @Transactional
+    public void addPhoto(Long userId, Long listingId, byte[] content, String contentType, long size) {
+        listingRepository.findByIdAndUserId(listingId, userId)
+                .orElseThrow(() -> ApiException.notFound("Anúncio não encontrado"));
+        PhotoValidator.validate(content, contentType, size);
+
+        long count = listingPhotoRepository.countByListingId(listingId);
+        if (count >= MAX_PHOTOS_PER_LISTING) {
+            throw ApiException.badRequest("Cada anúncio pode ter até " + MAX_PHOTOS_PER_LISTING + " fotos");
+        }
+
+        listingPhotoRepository.save(new ListingPhoto(listingId, content, contentType, (int) count));
+    }
+
+    @Transactional
+    public void removePhoto(Long userId, Long listingId, Long photoId) {
+        listingRepository.findByIdAndUserId(listingId, userId)
+                .orElseThrow(() -> ApiException.notFound("Anúncio não encontrado"));
+        ListingPhoto photo = listingPhotoRepository.findByIdAndListingId(photoId, listingId)
+                .orElseThrow(() -> ApiException.notFound("Foto não encontrada"));
+        listingPhotoRepository.delete(photo);
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> listPhotoUrls(Long listingId) {
+        return listingPhotoRepository.findByListingIdOrderBySortOrderAscIdAsc(listingId).stream()
+                .map(photo -> "/api/listings/" + listingId + "/fotos/" + photo.getId())
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public ListingPhoto getPhoto(Long listingId, Long photoId) {
+        return listingPhotoRepository.findByIdAndListingId(photoId, listingId)
+                .orElseThrow(() -> ApiException.notFound("Foto não encontrada"));
+    }
+
     private void validateRoleForType(User user, ListingType type) {
-        if (type == ListingType.PROCURANDO && user.getRole() != Role.RENTER) {
-            throw ApiException.forbidden("Apenas contas de aluguel podem publicar um anúncio de busca");
-        }
-        if (BillingService.ADVERTISER_TYPES.contains(type) && user.getRole() != Role.ADVERTISER) {
+        if (BillingService.ADVERTISER_TYPES.contains(type) && !user.isAdvertiser()) {
             throw ApiException.forbidden("Apenas contas de anúncio podem publicar esse tipo de anúncio");
-        }
-        if (user.getAdvertiserKind() == AdvertiserKind.VAGA && type == ListingType.ESTABELECIMENTO) {
-            throw ApiException.forbidden("Sua conta é para anunciar vaga compartilhada, não estabelecimentos");
-        }
-        if (user.getAdvertiserKind() == AdvertiserKind.ESTABELECIMENTO && type == ListingType.TEM_VAGA) {
-            throw ApiException.forbidden("Sua conta é para anunciar estabelecimentos, não vaga compartilhada");
         }
     }
 

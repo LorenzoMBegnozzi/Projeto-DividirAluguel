@@ -5,8 +5,9 @@ import type { Role } from '../types'
 
 export default function RoleRoute({ role, redirectTo, children }: { role: Role; redirectTo: string; children: ReactNode }) {
   const { user } = useAuth()
+  const hasCapability = role === 'RENTER' ? user?.renter : user?.advertiser
 
-  if (user && user.role !== role) {
+  if (user && !hasCapability) {
     return <Navigate to={redirectTo} replace />
   }
 

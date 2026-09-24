@@ -71,14 +71,17 @@ public class AuthService {
             throw ApiException.conflict("Já existe uma conta com este CPF");
         }
 
+        boolean renter = request.role() == Role.RENTER;
+        boolean advertiser = request.role() == Role.ADVERTISER;
         User user = new User(
                 request.name(),
                 request.email().toLowerCase(),
                 passwordEncoder.encode(request.password()),
                 request.birthDate(),
                 cpf,
-                request.role(),
-                request.role() == Role.ADVERTISER ? request.advertiserKind() : null
+                renter,
+                advertiser,
+                advertiser ? request.advertiserKind() : null
         );
         user = userRepository.save(user);
 

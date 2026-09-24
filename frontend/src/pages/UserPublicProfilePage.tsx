@@ -24,6 +24,9 @@ function formatDate(value: string) {
   return new Date(value).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
 }
 
+const inputClass =
+  'w-full rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-3 hover:border-ink-2 focus:border-ink focus:ring-2 focus:ring-focus focus:ring-offset-1'
+
 export default function UserPublicProfilePage() {
   const { userId } = useParams()
   const { user: currentUser } = useAuth()
@@ -148,24 +151,28 @@ export default function UserPublicProfilePage() {
   }
 
   if (loading) {
-    return <div className="p-8 text-center text-zinc-400">Carregando...</div>
+    return <div className="p-8 text-center text-ink-3">Carregando…</div>
   }
 
   if (error || !user) {
-    return <div className="mx-auto max-w-2xl px-4 py-8 text-sm text-red-600">{error ?? 'Usuário não encontrado'}</div>
+    return (
+      <div className="mx-auto max-w-2xl px-4 py-8">
+        <p className="rounded-md bg-danger-tint px-4 py-3 text-sm text-danger">{error ?? 'Usuário não encontrado'}</p>
+      </div>
+    )
   }
 
   const isSelf = currentUser?.id === user.id
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
-      <div className="rounded-2xl bg-white p-6 shadow-sm">
+      <div className="rounded-lg border border-line bg-surface p-6">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
             <Avatar photoUrl={user.photoUrl} name={user.name} size={56} />
             <div>
-              <h1 className="text-2xl font-bold text-zinc-800">{user.name}</h1>
-              {user.occupation && <p className="text-sm text-zinc-500">{user.occupation}</p>}
+              <h1 className="text-2xl font-bold tracking-tight text-ink">{user.name}</h1>
+              {user.occupation && <p className="text-[13px] text-ink-3">{user.occupation}</p>}
             </div>
           </div>
           {!isSelf && (
@@ -173,7 +180,7 @@ export default function UserPublicProfilePage() {
               <button
                 onClick={() => setShowReport(true)}
                 title="Denunciar"
-                className="rounded-lg p-2 text-zinc-400 transition hover:bg-red-50 hover:text-red-500"
+                className="rounded-md p-2 text-ink-3 transition hover:bg-danger-tint hover:text-danger"
               >
                 <Flag className="h-4 w-4" aria-hidden="true" />
               </button>
@@ -181,16 +188,16 @@ export default function UserPublicProfilePage() {
                 onClick={handleBlock}
                 disabled={blocked}
                 title={blocked ? 'Bloqueado' : 'Bloquear'}
-                className="rounded-lg p-2 text-zinc-400 transition hover:bg-red-50 hover:text-red-500 disabled:opacity-40"
+                className="rounded-md p-2 text-ink-3 transition hover:bg-danger-tint hover:text-danger disabled:opacity-40"
               >
                 <ShieldOff className="h-4 w-4" aria-hidden="true" />
               </button>
             </div>
           )}
         </div>
-        {user.bio && <p className="mt-3 text-sm text-zinc-600">{user.bio}</p>}
-        {blocked && <p className="mt-3 text-xs text-emerald-600">Você bloqueou {user.name}.</p>}
-        {blockError && <p className="mt-3 text-xs text-red-600">{blockError}</p>}
+        {user.bio && <p className="mt-3 text-ink-2">{user.bio}</p>}
+        {blocked && <p className="mt-3 text-[13px] text-leaf">Você bloqueou {user.name}.</p>}
+        {blockError && <p className="mt-3 text-[13px] text-danger">{blockError}</p>}
       </div>
 
       {showReport && (
@@ -204,47 +211,47 @@ export default function UserPublicProfilePage() {
       )}
 
       {!isSelf && (
-        <div className="mt-6 rounded-2xl bg-white p-6 shadow-sm">
-          <h2 className="mb-3 text-sm font-semibold text-zinc-700">Convívio</h2>
+        <div className="mt-6 rounded-lg border border-line bg-surface p-6">
+          <h2 className="mb-3 text-[16px] font-bold text-ink">Convívio</h2>
 
           {!convivio && (
             <form onSubmit={handlePropose} className="flex flex-col gap-3">
-              <p className="text-sm text-zinc-500">
+              <p className="text-sm text-ink-3">
                 Vocês já dividiram moradia? Registre o período para poder avaliar {user.name} depois.
               </p>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-zinc-700">Início do período</label>
+                  <label className="mb-1 block text-xs font-semibold text-ink">Início do período</label>
                   <input
                     type="date"
                     value={periodoInicio}
                     onChange={(e) => setPeriodoInicio(e.target.value)}
-                    className="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm outline-none focus:border-brand-500"
+                    className={inputClass}
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-zinc-700">Fim do período (opcional)</label>
+                  <label className="mb-1 block text-xs font-semibold text-ink">Fim do período (opcional)</label>
                   <input
                     type="date"
                     value={periodoFim}
                     onChange={(e) => setPeriodoFim(e.target.value)}
-                    className="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm outline-none focus:border-brand-500"
+                    className={inputClass}
                   />
                 </div>
               </div>
-              {convivioError && <p className="text-sm text-red-600">{convivioError}</p>}
+              {convivioError && <p className="rounded-md bg-danger-tint px-3 py-2 text-sm text-danger">{convivioError}</p>}
               <button
                 type="submit"
                 disabled={proposing}
-                className="self-start rounded-lg bg-brand-600 px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:opacity-60"
+                className="h-[34px] self-start rounded-md bg-brand px-4 text-sm font-semibold text-on-brand transition hover:bg-brand-strong disabled:opacity-60"
               >
-                {proposing ? 'Enviando...' : 'Registrar convívio'}
+                {proposing ? 'Enviando…' : 'Registrar convívio'}
               </button>
             </form>
           )}
 
           {convivio?.status === 'PENDENTE' && convivio.propostoPorMim && (
-            <p className="text-sm text-zinc-500">
+            <p className="text-sm text-ink-3">
               Você propôs um convívio a partir de {formatDate(convivio.periodoInicio)}. Aguardando {user.name}{' '}
               confirmar.
             </p>
@@ -252,21 +259,23 @@ export default function UserPublicProfilePage() {
 
           {convivio?.status === 'PENDENTE' && !convivio.propostoPorMim && (
             <div>
-              <p className="mb-3 text-sm text-zinc-500">
+              <p className="mb-3 text-sm text-ink-3">
                 {user.name} registrou que vocês moraram juntos de {formatDate(convivio.periodoInicio)}
                 {convivio.periodoFim ? ` até ${formatDate(convivio.periodoFim)}` : ' até hoje'}. Confirma?
               </p>
-              {convivioError && <p className="mb-2 text-sm text-red-600">{convivioError}</p>}
+              {convivioError && (
+                <p className="mb-2 rounded-md bg-danger-tint px-3 py-2 text-sm text-danger">{convivioError}</p>
+              )}
               <div className="flex gap-2">
                 <button
                   onClick={handleConfirm}
-                  className="rounded-lg bg-brand-600 px-4 py-1.5 text-sm font-semibold text-white hover:bg-brand-700"
+                  className="h-[34px] rounded-md bg-brand px-4 text-sm font-semibold text-on-brand hover:bg-brand-strong"
                 >
                   Confirmar
                 </button>
                 <button
                   onClick={handleDecline}
-                  className="rounded-lg border border-zinc-200 px-4 py-1.5 text-sm font-medium text-zinc-500 hover:border-red-300 hover:text-red-500"
+                  className="h-[34px] rounded-md border border-line-strong px-4 text-sm font-semibold text-ink-2 hover:border-danger hover:text-danger"
                 >
                   Recusar
                 </button>
@@ -274,50 +283,44 @@ export default function UserPublicProfilePage() {
             </div>
           )}
 
-          {convivio?.status === 'RECUSADO' && <p className="text-sm text-zinc-400">Convívio recusado.</p>}
+          {convivio?.status === 'RECUSADO' && <p className="text-sm text-ink-3">Convívio recusado.</p>}
 
           {convivio?.status === 'CONFIRMADO' && !convivio.avaliadoPorMim && !rating && (
             <button
               onClick={() => setRating(true)}
-              className="rounded-lg bg-brand-600 px-4 py-1.5 text-sm font-semibold text-white hover:bg-brand-700"
+              className="h-[34px] rounded-md bg-brand px-4 text-sm font-semibold text-on-brand hover:bg-brand-strong"
             >
               Avaliar {user.name}
             </button>
           )}
 
           {convivio?.status === 'CONFIRMADO' && convivio.avaliadoPorMim && (
-            <p className="text-sm text-emerald-600">Você já avaliou esse convívio.</p>
+            <p className="text-sm text-leaf">Você já avaliou esse convívio.</p>
           )}
 
           {rating && convivio && (
-            <form onSubmit={handleRate} className="mt-3 flex flex-col gap-3 border-t border-zinc-100 pt-4">
+            <form onSubmit={handleRate} className="mt-3 flex flex-col gap-3 border-t border-line pt-4">
               <div>
-                <p className="mb-1 text-sm font-medium text-zinc-700">Pagamentos em dia</p>
+                <p className="mb-1 text-[13px] font-semibold text-ink">Pagamentos em dia</p>
                 <StarRating value={notaPontualidade} onChange={setNotaPontualidade} />
               </div>
               <div>
-                <p className="mb-1 text-sm font-medium text-zinc-700">Qualidade do convívio</p>
+                <p className="mb-1 text-[13px] font-semibold text-ink">Qualidade do convívio</p>
                 <StarRating value={notaConvivencia} onChange={setNotaConvivencia} />
               </div>
-              <textarea
-                value={comentario}
-                onChange={(e) => setComentario(e.target.value)}
-                rows={2}
-                placeholder="Comentário (opcional)"
-                className="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm outline-none focus:border-brand-500"
-              />
-              {convivioError && <p className="text-sm text-red-600">{convivioError}</p>}
+              <textarea value={comentario} onChange={(e) => setComentario(e.target.value)} rows={2} placeholder="Comentário (opcional)" className={inputClass} />
+              {convivioError && <p className="rounded-md bg-danger-tint px-3 py-2 text-sm text-danger">{convivioError}</p>}
               <div className="flex gap-2">
                 <button
                   type="submit"
-                  className="rounded-lg bg-brand-600 px-4 py-1.5 text-sm font-semibold text-white hover:bg-brand-700"
+                  className="h-[34px] rounded-md bg-brand px-4 text-sm font-semibold text-on-brand hover:bg-brand-strong"
                 >
                   Enviar avaliação
                 </button>
                 <button
                   type="button"
                   onClick={() => setRating(false)}
-                  className="rounded-lg border border-zinc-200 px-4 py-1.5 text-sm font-medium text-zinc-500"
+                  className="h-[34px] rounded-md px-4 text-sm font-semibold text-ink-2 hover:bg-surface-sunk hover:text-ink"
                 >
                   Cancelar
                 </button>
@@ -327,27 +330,27 @@ export default function UserPublicProfilePage() {
         </div>
       )}
 
-      <div className="mt-6 rounded-2xl bg-white p-6 shadow-sm">
-        <h2 className="mb-3 text-sm font-semibold text-zinc-700">Avaliações de quem já morou junto</h2>
+      <div className="mt-6 rounded-lg border border-line bg-surface p-6">
+        <h2 className="mb-3 text-[16px] font-bold text-ink">Avaliações de quem já morou junto</h2>
         {!resumo || resumo.total === 0 ? (
-          <p className="text-sm text-zinc-400">Ainda sem avaliações.</p>
+          <p className="text-sm text-ink-3">Ainda sem avaliações.</p>
         ) : (
           <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:gap-8">
             <div>
-              <p className="text-xs text-zinc-500">Pagamentos em dia</p>
+              <p className="text-xs text-ink-3">Pagamentos em dia</p>
               <div className="flex items-center gap-2">
                 <StarRating value={resumo.mediaPontualidade} />
-                <span className="text-sm text-zinc-600">{resumo.mediaPontualidade.toFixed(1)}</span>
+                <span className="text-sm tabular-nums text-ink-2">{resumo.mediaPontualidade.toFixed(1)}</span>
               </div>
             </div>
             <div>
-              <p className="text-xs text-zinc-500">Qualidade do convívio</p>
+              <p className="text-xs text-ink-3">Qualidade do convívio</p>
               <div className="flex items-center gap-2">
                 <StarRating value={resumo.mediaConvivencia} />
-                <span className="text-sm text-zinc-600">{resumo.mediaConvivencia.toFixed(1)}</span>
+                <span className="text-sm tabular-nums text-ink-2">{resumo.mediaConvivencia.toFixed(1)}</span>
               </div>
             </div>
-            <p className="text-xs text-zinc-400 sm:self-end">
+            <p className="text-xs text-ink-3 sm:self-end">
               {resumo.total} avaliaç{resumo.total === 1 ? 'ão' : 'ões'}
             </p>
           </div>
@@ -355,25 +358,25 @@ export default function UserPublicProfilePage() {
 
         <div className="flex flex-col gap-3">
           {avaliacoes.map((avaliacao) => (
-            <div key={avaliacao.id} className="rounded-xl border border-zinc-100 p-3">
+            <div key={avaliacao.id} className="rounded-md border border-line p-3">
               <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-zinc-700">{avaliacao.avaliadorNome}</p>
-                <p className="text-xs text-zinc-400">
+                <p className="text-sm font-semibold text-ink">{avaliacao.avaliadorNome}</p>
+                <p className="text-xs text-ink-3">
                   {formatDate(avaliacao.periodoInicio)}
                   {avaliacao.periodoFim ? ` até ${formatDate(avaliacao.periodoFim)}` : ' até hoje'}
                 </p>
               </div>
               <div className="mt-1 flex gap-4">
                 <div className="flex items-center gap-1">
-                  <span className="text-xs text-zinc-500">Pontualidade</span>
+                  <span className="text-xs text-ink-3">Pontualidade</span>
                   <StarRating value={avaliacao.notaPontualidade} size={14} />
                 </div>
                 <div className="flex items-center gap-1">
-                  <span className="text-xs text-zinc-500">Convívio</span>
+                  <span className="text-xs text-ink-3">Convívio</span>
                   <StarRating value={avaliacao.notaConvivencia} size={14} />
                 </div>
               </div>
-              {avaliacao.comentario && <p className="mt-2 text-sm text-zinc-600">{avaliacao.comentario}</p>}
+              {avaliacao.comentario && <p className="mt-2 text-sm text-ink-2">{avaliacao.comentario}</p>}
             </div>
           ))}
         </div>

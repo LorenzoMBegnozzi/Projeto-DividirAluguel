@@ -1,12 +1,19 @@
 import client from './client'
 import type { BrowseItem, ConversationSummary, Message } from '../types'
 
-export function browseRoommates() {
-  return client.get<BrowseItem[]>('/browse/roommates').then((res) => res.data)
+export interface BrowseFilters {
+  bairro?: string
+  lat?: number
+  lng?: number
+  precoMax?: number
 }
 
-export function browseEstablishments() {
-  return client.get<BrowseItem[]>('/browse/establishments').then((res) => res.data)
+export function browseRoommates(filters: BrowseFilters = {}) {
+  return client.get<BrowseItem[]>('/browse/roommates', { params: filters }).then((res) => res.data)
+}
+
+export function browseEstablishments(filters: BrowseFilters = {}) {
+  return client.get<BrowseItem[]>('/browse/establishments', { params: filters }).then((res) => res.data)
 }
 
 export function startConversation(listingId: number) {

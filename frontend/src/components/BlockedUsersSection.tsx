@@ -33,20 +33,17 @@ export default function BlockedUsersSection() {
   }
 
   return (
-    <div className="mx-auto mt-6 max-w-2xl rounded-2xl bg-white p-6 shadow-sm">
-      <h2 className="mb-1 text-sm font-semibold text-zinc-700">Usuários bloqueados</h2>
-      <p className="mb-4 text-xs text-zinc-400">Vocês não aparecem um para o outro enquanto o bloqueio existir.</p>
+    <div className="mx-auto mt-6 max-w-2xl rounded-lg border border-line bg-surface p-6">
+      <h2 className="mb-1 text-[16px] font-bold text-ink">Usuários bloqueados</h2>
+      <p className="mb-4 text-[13px] text-ink-3">Vocês não aparecem um para o outro enquanto o bloqueio existir.</p>
 
-      {error && <p className="mb-3 text-sm text-red-600">{error}</p>}
+      {error && <p className="mb-3 rounded-md bg-danger-tint px-3 py-2 text-sm text-danger">{error}</p>}
 
       <div className="flex flex-col gap-2">
         {blocked.map((user) => (
-          <div key={user.id} className="flex items-center justify-between rounded-xl border border-zinc-100 px-3 py-2">
-            <span className="text-sm text-zinc-700">{user.name}</span>
-            <button
-              onClick={() => handleUnblock(user.id)}
-              className="text-xs font-medium text-brand-600 hover:underline"
-            >
+          <div key={user.id} className="flex items-center justify-between rounded-md border border-line px-3 py-2">
+            <span className="text-sm text-ink">{user.name}</span>
+            <button onClick={() => handleUnblock(user.id)} className="text-xs font-semibold text-brand hover:underline">
               Desbloquear
             </button>
           </div>

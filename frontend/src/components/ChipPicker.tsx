@@ -4,8 +4,10 @@ interface Option<T extends string> {
 }
 
 const chipClass = (selected: boolean) =>
-  `rounded-full border px-3.5 py-1.5 text-sm font-medium transition ${
-    selected ? 'border-brand-600 bg-brand-600 text-white' : 'border-zinc-200 text-zinc-600 hover:border-brand-300'
+  `inline-flex h-[34px] items-center gap-1.5 rounded-sm border px-3 text-[13px] font-semibold transition ${
+    selected
+      ? 'border-inverse bg-inverse text-on-inverse'
+      : 'border-line-strong bg-surface text-ink-2 hover:border-ink hover:text-ink'
   }`
 
 /** Seleção única: clicar de novo no chip selecionado limpa a escolha. */

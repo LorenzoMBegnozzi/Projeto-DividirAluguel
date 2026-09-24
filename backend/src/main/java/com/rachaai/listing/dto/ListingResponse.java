@@ -15,6 +15,7 @@ public record ListingResponse(
         String preferredNeighborhood,
         String nearCollege,
         BigDecimal price,
+        Integer availableSlots,
         String address,
         Double latitude,
         Double longitude,
@@ -29,7 +30,6 @@ public record ListingResponse(
         String dealClosedWithUserName
 ) {
     public static ListingResponse from(Listing listing) {
-        boolean hasLocation = listing.getType() != ListingType.PROCURANDO;
         boolean isEstablishment = listing.getType() == ListingType.ESTABELECIMENTO;
         var dealClosedWith = listing.getDealClosedWith();
         return new ListingResponse(
@@ -41,9 +41,10 @@ public record ListingResponse(
                 listing.getPreferredNeighborhood(),
                 listing.getNearCollege(),
                 listing.getPrice(),
-                hasLocation ? listing.getAddress() : null,
-                hasLocation ? listing.getLatitude() : null,
-                hasLocation ? listing.getLongitude() : null,
+                listing.getAvailableSlots(),
+                listing.getAddress(),
+                listing.getLatitude(),
+                listing.getLongitude(),
                 isEstablishment ? listing.getAcceptsPets() : null,
                 isEstablishment ? listing.getAcceptsSmoker() : null,
                 listing.isHighlighted(),

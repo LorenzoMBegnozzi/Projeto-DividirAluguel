@@ -1,16 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
 
 @theme {
-  --color-brand-50: #fff1f2;
-  --color-brand-100: #ffe1e3;
-  --color-brand-400: #fb7185;
-  --color-brand-500: #f43f5e;
-  --color-brand-600: #e11d48;
-  --color-brand-700: #be123c;
+  --font-sans: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+
+  --color-paper: #f6f2ec;
+  --color-surface: #ffffff;
+  --color-surface-sunk: #eee8df;
+
+  --color-line: #e3dcd2;
+  --color-line-strong: #8f857a;
+
+  --color-ink: #1d1a17;
+  --color-ink-2: #4f4842;
+  --color-ink-3: #6f665e;
+
+  --color-brand: #c23f27;
+  --color-brand-strong: #9e3019;
+  --color-brand-tint: #fbe6de;
+  --color-on-brand: #ffffff;
+
+  --color-leaf: #1e6a4d;
+  --color-leaf-tint: #dcefe4;
+
+  --color-mel: #8a5300;
+  --color-mel-tint: #fcefd3;
+  --color-star: #b07408;
+
+  --color-danger: #b3261e;
+  --color-danger-tint: #fdebe8;
+
+  --color-inverse: #1d1a17;
+  --color-on-inverse: #f6f2ec;
+
+  --color-scrim: rgba(29, 26, 23, 0.55);
+  --color-focus: #1d1a17;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --shadow-pop: 0 18px 40px -16px rgba(29, 26, 23, 0.35), 0 2px 6px rgba(29, 26, 23, 0.08);
+}
+
+:root[data-theme='dark'] {
+  --color-paper: #17171a;
+  --color-surface: #1f1f23;
+  --color-surface-sunk: #2a2a2f;
+
+  --color-line: #38383e;
+  --color-line-strong: #75757d;
+
+  --color-ink: #ededf0;
+  --color-ink-2: #c6c6cc;
+  --color-ink-3: #98989f;
+
+  --color-brand: #f07a5e;
+  --color-brand-strong: #f59a83;
+  --color-brand-tint: #3b221b;
+  --color-on-brand: #1d0f0a;
+
+  --color-leaf: #6ccaa1;
+  --color-leaf-tint: #15301f;
+
+  --color-mel: #f0bd62;
+  --color-mel-tint: #3a2c12;
+  --color-star: #f0bd62;
+
+  --color-danger: #f28b80;
+  --color-danger-tint: #3d1d1a;
+
+  --color-inverse: #ededf0;
+  --color-on-inverse: #17171a;
+
+  --color-scrim: rgba(0, 0, 0, 0.6);
+  --color-focus: #ededf0;
+
+  --shadow-pop: 0 18px 40px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(237, 237, 240, 0.06);
+
+  color-scheme: dark;
+}
+
+html {
+  overflow-x: hidden;
 }
 
 body {
-  background-color: #fafafa;
-  color: #18181b;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  transition: background-color 0.15s, color 0.15s;
+  overflow-x: hidden;
 }

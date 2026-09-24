@@ -24,62 +24,59 @@ export default function SafetyTermsModal() {
   }
 
   return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-zinc-900/50 px-4 backdrop-blur-sm">
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-        <div className="mb-4 flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-50 text-amber-500">
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-scrim px-4">
+      <div className="w-full max-w-md rounded-lg bg-surface p-6 shadow-pop">
+        <h2 className="mb-3 flex items-center gap-3 text-xl font-bold tracking-tight text-ink">
+          <span className="flex h-9 w-9 items-center justify-center rounded-md bg-mel-tint text-mel">
             <ShieldAlert className="h-5 w-5" aria-hidden="true" />
           </span>
-          <h2 className="text-lg font-bold text-zinc-800">Antes de começar</h2>
-        </div>
+          Antes de começar
+        </h2>
 
-        <p className="mb-3 text-sm leading-relaxed text-zinc-600">
+        <p className="mb-3 text-ink-2">
           O RachaAi ajuda você a encontrar pessoas para dividir moradia — mas quem vai morar com você ainda é
           alguém que você não conhece pessoalmente. Alguns cuidados fazem toda a diferença:
         </p>
 
-        <ul className="mb-4 flex flex-col gap-1.5 text-sm text-zinc-600">
-          <li className="flex gap-2">
-            <span className="text-brand-600">•</span>
+        <ol className="mb-4 list-decimal space-y-1.5 pl-5 text-ink-2 marker:font-extrabold marker:text-brand">
+          <li>
             Converse bastante antes de fechar qualquer acordo e, se possível, marque o primeiro encontro em
             local público.
           </li>
-          <li className="flex gap-2">
-            <span className="text-brand-600">•</span>
-            Confira referências e desconfie de propostas urgentes ou de pagamentos fora da plataforma.
-          </li>
-          <li className="flex gap-2">
-            <span className="text-brand-600">•</span>
-            Formalize combinados sobre valores, prazos e convivência por escrito.
-          </li>
-        </ul>
+          <li>Confira referências e desconfie de propostas urgentes ou de pagamentos fora da plataforma.</li>
+          <li>Formalize combinados sobre valores, prazos e convivência por escrito.</li>
+        </ol>
 
-        <p className="mb-4 text-xs leading-relaxed text-zinc-400">
+        <p className="mb-4 text-[13px] leading-relaxed text-ink-3">
           O RachaAi é um espaço de conexão e não faz verificação de antecedentes nem participa dos acordos entre
           usuários. A segurança nos encontros, negociações e na convivência é de responsabilidade de cada pessoa
           envolvida.
         </p>
 
-        <label className="mb-4 flex cursor-pointer items-start gap-2 text-sm text-zinc-700">
+        <label className="mb-4 flex cursor-pointer items-start gap-2 text-sm text-ink">
           <input
             type="checkbox"
             checked={checked}
             onChange={(e) => setChecked(e.target.checked)}
-            className="mt-0.5 h-4 w-4 rounded border-zinc-300 text-brand-600 focus:ring-brand-500"
+            className="mt-0.5 h-[18px] w-[18px] accent-brand"
           />
           Li e estou ciente dos cuidados acima.
         </label>
 
-        {error && <p className="mb-3 text-sm text-red-600">{error}</p>}
+        {error && (
+          <p className="mb-3 rounded-md bg-danger-tint px-3 py-2 text-sm text-danger">{error}</p>
+        )}
 
-        <button
-          type="button"
-          disabled={!checked || loading}
-          onClick={handleAccept}
-          className="w-full rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {loading ? 'Confirmando...' : 'Entendi, continuar'}
-        </button>
+        <div className="flex justify-end">
+          <button
+            type="button"
+            disabled={!checked || loading}
+            onClick={handleAccept}
+            className="h-[42px] rounded-md bg-brand px-4 text-sm font-semibold text-on-brand transition hover:bg-brand-strong disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {loading ? 'Confirmando…' : 'Entendi, continuar'}
+          </button>
+        </div>
       </div>
     </div>
   )

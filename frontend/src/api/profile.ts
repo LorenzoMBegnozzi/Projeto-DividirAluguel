@@ -1,5 +1,5 @@
 import client from './client'
-import type { AllergyTag, Diet, DrinkingHabit, PetPreference, Routine, SmokingHabit, UserProfile } from '../types'
+import type { AdvertiserKind, AllergyTag, Diet, DrinkingHabit, PetPreference, Routine, SmokingHabit, UserProfile } from '../types'
 
 export interface ProfilePayload {
   smokingHabit: SmokingHabit | null
@@ -22,12 +22,16 @@ export function getUser(id: number) {
   return client.get<UserProfile>(`/users/${id}`).then((res) => res.data)
 }
 
-export function searchUsers(query: string) {
-  return client.get<UserProfile[]>('/users', { params: { q: query } }).then((res) => res.data)
-}
-
 export function acceptSafetyTerms() {
   return client.post<UserProfile>('/users/me/aceitar-termos').then((res) => res.data)
+}
+
+export function enableRenter() {
+  return client.post<UserProfile>('/users/me/alugar').then((res) => res.data)
+}
+
+export function enableAdvertiser(advertiserKind: AdvertiserKind) {
+  return client.post<UserProfile>('/users/me/anunciar', { advertiserKind }).then((res) => res.data)
 }
 
 export function uploadPhoto(file: File) {

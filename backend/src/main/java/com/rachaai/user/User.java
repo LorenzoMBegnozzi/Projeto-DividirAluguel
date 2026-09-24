@@ -28,9 +28,11 @@ public class User {
     @Column(name = "cpf", length = 11)
     private String cpf;
 
-    @Convert(converter = RoleConverter.class)
-    @Column(name = "papel", nullable = false, length = 20)
-    private Role role;
+    @Column(name = "alugar", nullable = false)
+    private boolean renter;
+
+    @Column(name = "anunciar", nullable = false)
+    private boolean advertiser;
 
     @Convert(converter = AdvertiserKindConverter.class)
     @Column(name = "tipo_anunciante", length = 20)
@@ -54,13 +56,14 @@ public class User {
     protected User() {
     }
 
-    public User(String name, String email, String passwordHash, LocalDate birthDate, String cpf, Role role, AdvertiserKind advertiserKind) {
+    public User(String name, String email, String passwordHash, LocalDate birthDate, String cpf, boolean renter, boolean advertiser, AdvertiserKind advertiserKind) {
         this.name = name;
         this.email = email;
         this.passwordHash = passwordHash;
         this.birthDate = birthDate;
         this.cpf = cpf;
-        this.role = role;
+        this.renter = renter;
+        this.advertiser = advertiser;
         this.advertiserKind = advertiserKind;
     }
 
@@ -96,8 +99,21 @@ public class User {
         return cpf;
     }
 
-    public Role getRole() {
-        return role;
+    public boolean isRenter() {
+        return renter;
+    }
+
+    public void setRenter(boolean renter) {
+        this.renter = renter;
+    }
+
+    public boolean isAdvertiser() {
+        return advertiser;
+    }
+
+    public void enableAdvertiser(AdvertiserKind advertiserKind) {
+        this.advertiser = true;
+        this.advertiserKind = advertiserKind;
     }
 
     public AdvertiserKind getAdvertiserKind() {

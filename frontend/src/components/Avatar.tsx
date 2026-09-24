@@ -21,7 +21,7 @@ export default function Avatar({ photoUrl, name, size = 40, className = '' }: Pr
     return (
       <div
         style={{ width: size, height: size, fontSize: size * 0.4 }}
-        className={`flex shrink-0 items-center justify-center rounded-full bg-brand-100 font-semibold text-brand-700 ${className}`}
+        className={`flex shrink-0 items-center justify-center rounded-full bg-brand-tint font-bold tracking-tight text-brand-strong ${className}`}
       >
         {initials(name) || '?'}
       </div>

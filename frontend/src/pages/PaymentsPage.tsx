@@ -7,9 +7,9 @@ import { formatDateTime, formatMoney } from '../utils/format'
 import type { Listing, Payment, PaymentStatus, Plan } from '../types'
 
 const statusStyle: Record<PaymentStatus, string> = {
-  PENDENTE: 'bg-amber-100 text-amber-700',
-  PAGO: 'bg-emerald-100 text-emerald-700',
-  CANCELADO: 'bg-zinc-100 text-zinc-500',
+  PENDENTE: 'bg-mel-tint text-mel',
+  PAGO: 'bg-leaf-tint text-leaf',
+  CANCELADO: 'bg-surface-sunk text-ink-2',
 }
 
 const statusLabel: Record<PaymentStatus, string> = {
@@ -66,16 +66,16 @@ export default function PaymentsPage() {
   }
 
   if (loading) {
-    return <div className="p-8 text-center text-zinc-400">Carregando...</div>
+    return <div className="p-8 text-center text-ink-3">Carregando…</div>
   }
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
-      <h1 className="mb-1 text-2xl font-bold text-zinc-800">Pagamentos</h1>
-      <p className="mb-6 text-sm text-zinc-500">Anúncios extras e destaques que você comprou.</p>
+      <h1 className="mb-1 text-[28px] font-extrabold tracking-tight text-ink">Pagamentos</h1>
+      <p className="mb-6 text-sm text-ink-3">Anúncios extras e destaques que você comprou.</p>
 
       {plan?.simulatedMode && (
-        <div className="mb-4 flex items-start gap-2 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        <div className="mb-4 flex items-start gap-2 rounded-md bg-mel-tint px-4 py-3 text-sm text-mel">
           <FlaskConical className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
           <span>
             Ambiente de teste: os pagamentos são simulados. Use o botão "Simular pagamento" para confirmar — nenhuma
@@ -84,40 +84,41 @@ export default function PaymentsPage() {
         </div>
       )}
 
-      {error && <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{error}</div>}
+      {error && <div className="mb-4 rounded-md bg-danger-tint px-4 py-3 text-sm text-danger">{error}</div>}
 
       {plan && (
         <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <div className="rounded-2xl bg-white p-4 shadow-sm">
-            <p className="text-xs font-medium uppercase text-zinc-400">Anúncios grátis</p>
-            <p className="text-lg font-semibold text-zinc-800">
+          <div className="rounded-lg border border-line bg-surface p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-ink-3">Anúncios grátis</p>
+            <p className="text-lg font-bold text-ink">
               {plan.freeListingsUsed} de {plan.freeListings} em uso
             </p>
           </div>
-          <div className="rounded-2xl bg-white p-4 shadow-sm">
-            <p className="text-xs font-medium uppercase text-zinc-400">Créditos de anúncio extra</p>
-            <p className="text-lg font-semibold text-zinc-800">{plan.extraCredits} disponível(is)</p>
+          <div className="rounded-lg border border-line bg-surface p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-ink-3">Créditos de anúncio extra</p>
+            <p className="text-lg font-bold text-ink">{plan.extraCredits} disponível(is)</p>
           </div>
         </div>
       )}
 
       {payments.length === 0 ? (
-        <p className="rounded-2xl bg-white p-8 text-center text-sm text-zinc-400 shadow-sm">
+        <p className="rounded-lg border border-line bg-surface p-8 text-center text-sm text-ink-3">
           Você ainda não fez nenhuma compra. Em "Meus anúncios" dá para comprar um anúncio extra ou destacar um anúncio.
         </p>
       ) : (
         <div className="flex flex-col gap-3">
           {payments.map((payment) => (
-            <div key={payment.id} className="rounded-2xl bg-white p-4 shadow-sm">
+            <div key={payment.id} className="rounded-lg border border-line bg-surface p-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="font-semibold text-zinc-800">{describe(payment)}</p>
-                  <p className="text-sm text-zinc-500">
-                    {formatMoney(payment.amount)} · criado em {formatDateTime(payment.createdAt)}
+                  <p className="font-semibold text-ink">{describe(payment)}</p>
+                  <p className="text-[13px] text-ink-3">
+                    <span className="tabular-nums">{formatMoney(payment.amount)}</span> · criado em{' '}
+                    {formatDateTime(payment.createdAt)}
                     {payment.paidAt && ` · pago em ${formatDateTime(payment.paidAt)}`}
                   </p>
                 </div>
-                <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-bold ${statusStyle[payment.status]}`}>
+                <span className={`shrink-0 rounded-sm px-2 py-1 text-xs font-bold ${statusStyle[payment.status]}`}>
                   {statusLabel[payment.status]}
                 </span>
               </div>
@@ -126,9 +127,9 @@ export default function PaymentsPage() {
                 <button
                   onClick={() => handleSimulate(payment.id)}
                   disabled={confirmingId === payment.id}
-                  className="mt-3 w-full rounded-lg bg-brand-600 py-2 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:opacity-60"
+                  className="mt-3 h-[42px] w-full rounded-md bg-brand text-sm font-semibold text-on-brand transition hover:bg-brand-strong disabled:opacity-60"
                 >
-                  {confirmingId === payment.id ? 'Confirmando...' : 'Simular pagamento'}
+                  {confirmingId === payment.id ? 'Confirmando…' : 'Simular pagamento'}
                 </button>
               )}
             </div>

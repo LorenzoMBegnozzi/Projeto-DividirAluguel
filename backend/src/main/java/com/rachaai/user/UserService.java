@@ -1,18 +1,15 @@
 package com.rachaai.user;
 
 import com.rachaai.common.ApiException;
+import com.rachaai.common.PhotoValidator;
 import com.rachaai.user.dto.ProfileRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class UserService {
-
-    private static final Set<String> ALLOWED_PHOTO_TYPES = Set.of("image/jpeg", "image/png", "image/webp");
-    private static final long MAX_PHOTO_BYTES = 3L * 1024 * 1024;
 
     private final UserRepository userRepository;
     private final UserProfileRepository profileRepository;
@@ -72,25 +69,23 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    @Transactional(readOnly = true)
-    public List<User> search(String query, Long excludeId) {
-        if (query == null || query.isBlank()) {
-            return List.of();
-        }
-        return userRepository.findTop20ByNameContainingIgnoreCaseAndIdNot(query.trim(), excludeId);
+    @Transactional
+    public User enableRenter(Long userId) {
+        User user = getById(userId);
+        user.setRenter(true);
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public User enableAdvertiser(Long userId, AdvertiserKind advertiserKind) {
+        User user = getById(userId);
+        user.enableAdvertiser(advertiserKind);
+        return userRepository.save(user);
     }
 
     @Transactional
     public void uploadPhoto(Long userId, byte[] content, String contentType, long size) {
-        if (content == null || content.length == 0) {
-            throw ApiException.badRequest("Envie um arquivo de imagem");
-        }
-        if (size > MAX_PHOTO_BYTES) {
-            throw ApiException.badRequest("A imagem precisa ter até 3 MB");
-        }
-        if (contentType == null || !ALLOWED_PHOTO_TYPES.contains(contentType.toLowerCase())) {
-            throw ApiException.badRequest("Use uma imagem JPEG, PNG ou WEBP");
-        }
+        PhotoValidator.validate(content, contentType, size);
         getById(userId);
 
         photoRepository.findByUserId(userId)

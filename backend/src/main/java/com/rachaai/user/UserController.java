@@ -2,6 +2,7 @@ package com.rachaai.user;
 
 import com.rachaai.common.ApiException;
 import com.rachaai.security.SecurityUser;
+import com.rachaai.user.dto.EnableAdvertiserRequest;
 import com.rachaai.user.dto.ProfileRequest;
 import com.rachaai.user.dto.UserResponse;
 import jakarta.validation.Valid;
@@ -47,19 +48,24 @@ public class UserController {
         return UserResponse.from(user, userService.hasPhoto(id));
     }
 
-    @GetMapping
-    public List<UserResponse> search(
-            @AuthenticationPrincipal SecurityUser principal,
-            @RequestParam(required = false) String q
-    ) {
-        return userService.search(q, principal.getId()).stream()
-                .map(user -> UserResponse.from(user, userService.hasPhoto(user.getId())))
-                .toList();
-    }
-
     @PostMapping("/me/aceitar-termos")
     public UserResponse acceptSafetyTerms(@AuthenticationPrincipal SecurityUser principal) {
         User user = userService.acceptSafetyTerms(principal.getId());
+        return UserResponse.from(user, userService.hasPhoto(user.getId()));
+    }
+
+    @PostMapping("/me/alugar")
+    public UserResponse enableRenter(@AuthenticationPrincipal SecurityUser principal) {
+        User user = userService.enableRenter(principal.getId());
+        return UserResponse.from(user, userService.hasPhoto(user.getId()));
+    }
+
+    @PostMapping("/me/anunciar")
+    public UserResponse enableAdvertiser(
+            @AuthenticationPrincipal SecurityUser principal,
+            @Valid @RequestBody EnableAdvertiserRequest request
+    ) {
+        User user = userService.enableAdvertiser(principal.getId(), request.advertiserKind());
         return UserResponse.from(user, userService.hasPhoto(user.getId()));
     }
 

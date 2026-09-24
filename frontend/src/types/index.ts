@@ -4,7 +4,7 @@ export type Role = 'RENTER' | 'ADVERTISER'
 
 export type AdvertiserKind = 'VAGA' | 'ESTABELECIMENTO'
 
-export type ListingType = 'PROCURANDO' | 'TEM_VAGA' | 'ESTABELECIMENTO'
+export type ListingType = 'TEM_VAGA' | 'ESTABELECIMENTO'
 
 export type SmokingHabit = 'NAO_FUMO' | 'FUMO_SOCIALMENTE' | 'FUMO_QUANDO_BEBO' | 'FUMANTE' | 'TENTANDO_PARAR'
 
@@ -52,7 +52,8 @@ export interface UserProfile {
   name: string
   email: string
   birthDate: string
-  role: Role
+  renter: boolean
+  advertiser: boolean
   advertiserKind: AdvertiserKind | null
   occupation: string | null
   bio: string | null
@@ -77,6 +78,7 @@ export interface Listing {
   preferredNeighborhood: string | null
   nearCollege: string | null
   price: number | null
+  availableSlots: number | null
   address: string | null
   latitude: number | null
   longitude: number | null

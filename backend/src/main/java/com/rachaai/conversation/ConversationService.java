@@ -9,7 +9,6 @@ import com.rachaai.listing.ListingType;
 import com.rachaai.moderation.ModerationService;
 import com.rachaai.notification.NotificationService;
 import com.rachaai.notification.NotificationType;
-import com.rachaai.user.Role;
 import com.rachaai.user.User;
 import com.rachaai.user.UserPhotoRepository;
 import com.rachaai.user.UserRepository;
@@ -56,13 +55,13 @@ public class ConversationService {
     public ConversationResponse startConversation(Long renterId, Long listingId) {
         User renter = userRepository.findById(renterId)
                 .orElseThrow(() -> ApiException.notFound("Usuário não encontrado"));
-        if (renter.getRole() != Role.RENTER) {
+        if (!renter.isRenter()) {
             throw ApiException.forbidden("Apenas contas de aluguel podem iniciar uma conversa");
         }
 
         Listing listing = listingRepository.findById(listingId)
                 .orElseThrow(() -> ApiException.notFound("Anúncio não encontrado"));
-        if (!listing.isActive() || listing.getType() == ListingType.PROCURANDO) {
+        if (!listing.isActive()) {
             throw ApiException.badRequest("Esse anúncio não aceita conversas");
         }
         if (listing.getUser().getId().equals(renterId)) {

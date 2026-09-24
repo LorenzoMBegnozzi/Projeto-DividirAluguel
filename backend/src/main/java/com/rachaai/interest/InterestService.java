@@ -5,7 +5,6 @@ import com.rachaai.interest.dto.InterestStatusResponse;
 import com.rachaai.listing.Listing;
 import com.rachaai.listing.ListingRepository;
 import com.rachaai.listing.ListingType;
-import com.rachaai.user.Role;
 import com.rachaai.user.User;
 import com.rachaai.user.UserPhotoRepository;
 import com.rachaai.user.UserRepository;
@@ -38,7 +37,7 @@ public class InterestService {
     @Transactional
     public InterestStatusResponse markInterest(Long userId, Long listingId) {
         User user = requireUser(userId);
-        if (user.getRole() != Role.RENTER) {
+        if (!user.isRenter()) {
             throw ApiException.forbidden("Apenas contas de aluguel podem demonstrar interesse");
         }
         Listing listing = requireEstablishment(listingId);

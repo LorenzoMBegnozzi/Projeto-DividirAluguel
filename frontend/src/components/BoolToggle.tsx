@@ -7,22 +7,22 @@ interface Props {
 }
 
 export default function BoolToggle({ label, value, onChange, trueLabel = 'Sim', falseLabel = 'Não' }: Props) {
-  const base = 'flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition'
+  const base = 'h-[34px] flex-1 rounded-[7px] text-sm font-semibold transition'
   return (
     <div>
-      <p className="mb-1 text-sm font-medium text-zinc-700">{label}</p>
-      <div className="flex gap-2">
+      <p className="mb-2 text-[13px] font-semibold text-ink">{label}</p>
+      <div className="inline-grid min-w-[200px] grid-flow-col auto-cols-fr gap-[3px] rounded-md border border-line-strong bg-surface p-[3px]">
         <button
           type="button"
           onClick={() => onChange(value === true ? null : true)}
-          className={`${base} ${value === true ? 'border-brand-600 bg-brand-600 text-white' : 'border-zinc-200 text-zinc-500 hover:border-brand-300'}`}
+          className={`${base} ${value === true ? 'bg-inverse text-on-inverse' : 'text-ink-2 hover:bg-surface-sunk hover:text-ink'}`}
         >
           {trueLabel}
         </button>
         <button
           type="button"
           onClick={() => onChange(value === false ? null : false)}
-          className={`${base} ${value === false ? 'border-brand-600 bg-brand-600 text-white' : 'border-zinc-200 text-zinc-500 hover:border-brand-300'}`}
+          className={`${base} ${value === false ? 'bg-inverse text-on-inverse' : 'text-ink-2 hover:bg-surface-sunk hover:text-ink'}`}
         >
           {falseLabel}
         </button>

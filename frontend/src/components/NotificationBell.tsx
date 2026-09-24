@@ -10,12 +10,12 @@ import {
 import type { AppNotification, NotificationType } from '../types'
 
 const notificationStyle: Record<NotificationType, { icon: typeof Bell; iconClass: string }> = {
-  NOVA_MENSAGEM: { icon: MessageCircle, iconClass: 'bg-blue-100 text-blue-600' },
-  NOVA_CONVERSA: { icon: Users, iconClass: 'bg-violet-100 text-violet-600' },
-  CONVIVIO_PROPOSTO: { icon: HeartHandshake, iconClass: 'bg-amber-100 text-amber-600' },
-  CONVIVIO_CONFIRMADO: { icon: ShieldCheck, iconClass: 'bg-emerald-100 text-emerald-600' },
-  CONVIVIO_RECUSADO: { icon: ShieldX, iconClass: 'bg-rose-100 text-rose-600' },
-  AVALIACAO_RECEBIDA: { icon: Star, iconClass: 'bg-yellow-100 text-yellow-600' },
+  NOVA_MENSAGEM: { icon: MessageCircle, iconClass: 'bg-brand-tint text-brand-strong' },
+  NOVA_CONVERSA: { icon: Users, iconClass: 'bg-surface-sunk text-ink-2' },
+  CONVIVIO_PROPOSTO: { icon: HeartHandshake, iconClass: 'bg-mel-tint text-mel' },
+  CONVIVIO_CONFIRMADO: { icon: ShieldCheck, iconClass: 'bg-leaf-tint text-leaf' },
+  CONVIVIO_RECUSADO: { icon: ShieldX, iconClass: 'bg-danger-tint text-danger' },
+  AVALIACAO_RECEBIDA: { icon: Star, iconClass: 'bg-mel-tint text-star' },
 }
 
 function timeAgo(value: string) {
@@ -96,31 +96,31 @@ export default function NotificationBell() {
     <div className="relative" ref={containerRef}>
       <button
         onClick={toggleOpen}
-        className="relative rounded-lg p-2 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-700"
+        className="relative rounded-md p-2 text-ink-2 transition hover:bg-surface-sunk hover:text-ink"
         aria-label="Notificações"
       >
         <Bell className="h-5 w-5" aria-hidden="true" />
         {unread > 0 && (
-          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
+          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-brand px-1 text-[10px] font-bold text-on-brand ring-2 ring-surface">
             {unread > 9 ? '9+' : unread}
           </span>
         )}
       </button>
 
       {open && (
-        <div className="absolute right-0 z-30 mt-2 w-80 rounded-2xl bg-white p-2 shadow-xl ring-1 ring-black/5">
+        <div className="absolute right-0 z-30 mt-2 w-80 rounded-lg border border-line bg-surface p-2 shadow-pop">
           <div className="flex items-center justify-between px-2 py-1.5">
-            <p className="text-sm font-semibold text-zinc-700">Notificações</p>
+            <p className="text-sm font-bold text-ink">Notificações</p>
             {notifications.some((n) => !n.read) && (
-              <button onClick={handleMarkAllRead} className="text-xs font-medium text-brand-600 hover:underline">
+              <button onClick={handleMarkAllRead} className="text-xs font-semibold text-brand hover:underline">
                 Marcar todas como lidas
               </button>
             )}
           </div>
 
-          <div className="max-h-96 divide-y divide-zinc-100 overflow-y-auto">
+          <div className="max-h-96 divide-y divide-line overflow-y-auto">
             {notifications.length === 0 ? (
-              <p className="px-2 py-6 text-center text-sm text-zinc-400">Sem notificações por aqui.</p>
+              <p className="px-2 py-6 text-center text-sm text-ink-3">Sem notificações por aqui.</p>
             ) : (
               notifications.map((notification) => {
                 const style = notificationStyle[notification.type]
@@ -129,12 +129,12 @@ export default function NotificationBell() {
                   <button
                     key={notification.id}
                     onClick={() => handleClickNotification(notification)}
-                    className={`relative flex w-full items-start gap-2.5 px-3 py-3 text-left transition hover:bg-zinc-50 ${
-                      notification.read ? '' : 'bg-brand-50/60'
+                    className={`relative flex w-full items-start gap-2.5 px-3 py-3 text-left transition hover:bg-surface-sunk ${
+                      notification.read ? '' : 'bg-brand-tint'
                     }`}
                   >
                     {!notification.read && (
-                      <span className="absolute left-1 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-brand-600" />
+                      <span className="absolute left-1 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-brand" />
                     )}
                     <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${style.iconClass}`}>
                       <Icon className="h-4 w-4" aria-hidden="true" />
@@ -143,15 +143,15 @@ export default function NotificationBell() {
                       <div className="flex items-center justify-between gap-2">
                         <p
                           className={`truncate text-sm ${
-                            notification.read ? 'font-medium text-zinc-600' : 'font-semibold text-zinc-800'
+                            notification.read ? 'font-medium text-ink-2' : 'font-semibold text-ink'
                           }`}
                         >
                           {notification.title}
                         </p>
-                        <span className="shrink-0 text-[11px] text-zinc-400">{timeAgo(notification.createdAt)}</span>
+                        <span className="shrink-0 text-[11px] text-ink-3">{timeAgo(notification.createdAt)}</span>
                       </div>
                       {notification.message && (
-                        <p className="mt-0.5 line-clamp-2 text-xs text-zinc-500">{notification.message}</p>
+                        <p className="mt-0.5 line-clamp-2 text-xs text-ink-3">{notification.message}</p>
                       )}
                     </div>
                   </button>

@@ -38,6 +38,9 @@ public class Listing {
     @Column(name = "preco")
     private BigDecimal price;
 
+    @Column(name = "vagas_disponiveis")
+    private Integer availableSlots;
+
     @Column(name = "endereco", length = 255)
     private String address;
 
@@ -137,6 +140,14 @@ public class Listing {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public Integer getAvailableSlots() {
+        return availableSlots;
+    }
+
+    public void setAvailableSlots(Integer availableSlots) {
+        this.availableSlots = availableSlots;
     }
 
     public String getAddress() {

@@ -6,7 +6,6 @@ import com.rachaai.common.ApiException;
 import com.rachaai.listing.Listing;
 import com.rachaai.listing.ListingRepository;
 import com.rachaai.listing.ListingType;
-import com.rachaai.user.Role;
 import com.rachaai.user.User;
 import com.rachaai.user.UserRepository;
 import org.springframework.stereotype.Service;
@@ -142,7 +141,7 @@ public class BillingService {
     private User requireAdvertiser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> ApiException.notFound("Usuário não encontrado"));
-        if (user.getRole() != Role.ADVERTISER) {
+        if (!user.isAdvertiser()) {
             throw ApiException.forbidden("Apenas contas de anúncio podem comprar anúncio extra ou destaque");
         }
         return user;

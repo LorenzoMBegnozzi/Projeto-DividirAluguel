@@ -1,10 +1,13 @@
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
+import { ThemeProvider } from './context/ThemeContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import RoleRoute from './components/RoleRoute'
 import HomeRedirect from './components/HomeRedirect'
 import NavBar from './components/NavBar'
+import BottomNav from './components/BottomNav'
 import SafetyTermsModal from './components/SafetyTermsModal'
+import ThemeToggle from './components/ThemeToggle'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
@@ -15,15 +18,16 @@ import BrowsePage from './pages/BrowsePage'
 import ConversationsPage from './pages/ConversationsPage'
 import ChatPage from './pages/ChatPage'
 import PaymentsPage from './pages/PaymentsPage'
-import ConviviosPage from './pages/ConviviosPage'
 import UserPublicProfilePage from './pages/UserPublicProfilePage'
-import UserSearchPage from './pages/UserSearchPage'
+import ListingDetailPage from './pages/ListingDetailPage'
 
 export default function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </ThemeProvider>
   )
 }
 
@@ -33,7 +37,13 @@ function AppContent() {
   return (
     <>
       <NavBar />
+      {!user && (
+        <div className="fixed right-4 top-4 z-30">
+          <ThemeToggle className="border border-line bg-surface" />
+        </div>
+      )}
       {user && !user.safetyTermsAccepted && <SafetyTermsModal />}
+      <div className={user ? 'pb-16 lg:pb-0' : ''}>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/registro" element={<RegisterPage />} />
@@ -51,7 +61,9 @@ function AppContent() {
           path="/anuncio"
           element={
             <ProtectedRoute>
-              <ListingPage />
+              <RoleRoute role="ADVERTISER" redirectTo="/browse">
+                <ListingPage />
+              </RoleRoute>
             </ProtectedRoute>
           }
         />
@@ -91,19 +103,12 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+        <Route path="/convivios" element={<Navigate to="/perfil" replace />} />
         <Route
-          path="/convivios"
+          path="/anuncios/:listingId"
           element={
             <ProtectedRoute>
-              <ConviviosPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/pessoas"
-          element={
-            <ProtectedRoute>
-              <UserSearchPage />
+              <ListingDetailPage />
             </ProtectedRoute>
           }
         />
@@ -117,6 +122,8 @@ function AppContent() {
         />
         <Route path="*" element={<HomeRedirect />} />
       </Routes>
+      </div>
+      <BottomNav />
     </>
   )
 }

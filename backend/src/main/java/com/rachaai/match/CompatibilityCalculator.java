@@ -10,15 +10,16 @@ import java.util.Set;
 
 /**
  * Calcula um score de compatibilidade (0-100) entre dois usuários, combinando
- * hábitos de convivência (fumo, bebida, dieta, animais, rotina, música) e a
- * sobreposição de preferência de localização entre os dois anúncios.
+ * hábitos de convivência (fumo, bebida, dieta, animais, rotina, música).
+ * Localização e orçamento não entram aqui: são filtros na busca, não pontuação
+ * (ver DiscoveryService), pra não misturar "combina com você" com "está perto".
  * Atributos não preenchidos por nenhum dos dois lados simplesmente não entram
  * na conta, para não penalizar quem ainda não completou o perfil.
  */
 @Component
 public class CompatibilityCalculator {
 
-    public int calculateRoommate(UserProfile a, Listing listingA, UserProfile b, Listing listingB) {
+    public int calculateRoommate(UserProfile a, UserProfile b) {
         double earned = 0;
         double possible = 0;
 
@@ -39,14 +40,14 @@ public class CompatibilityCalculator {
             }
         }
 
-        double petsWeight = 20;
+        double petsWeight = 25;
         Double petsScore = petsCompatibility(a, b);
         if (petsScore != null) {
             possible += petsWeight;
             earned += petsWeight * petsScore;
         }
 
-        double routineWeight = 10;
+        double routineWeight = 15;
         if (a != null && b != null && a.getRoutine() != null && b.getRoutine() != null) {
             possible += routineWeight;
             if (a.getRoutine() == b.getRoutine()) {
@@ -54,18 +55,11 @@ public class CompatibilityCalculator {
             }
         }
 
-        double musicWeight = 15;
+        double musicWeight = 25;
         Double musicScore = textOverlap(a == null ? null : a.getMusicTaste(), b == null ? null : b.getMusicTaste());
         if (musicScore != null) {
             possible += musicWeight;
             earned += musicWeight * musicScore;
-        }
-
-        double locationWeight = 20;
-        Double locationScore = locationOverlap(listingA, listingB);
-        if (locationScore != null) {
-            possible += locationWeight;
-            earned += locationWeight * locationScore;
         }
 
         if (possible == 0) {
@@ -79,11 +73,11 @@ public class CompatibilityCalculator {
      * aqui não se compara hábito com hábito (não é sobre convivência), e sim o
      * hábito do inquilino contra a preferência que o dono declarou aceitar.
      */
-    public int calculateEstablishment(UserProfile renter, Listing renterListing, Listing establishment) {
+    public int calculateEstablishment(UserProfile renter, Listing establishment) {
         double earned = 0;
         double possible = 0;
 
-        double smokerWeight = 40;
+        double smokerWeight = 50;
         if (renter != null && renter.getSmoker() != null && establishment.getAcceptsSmoker() != null) {
             possible += smokerWeight;
             boolean fits = establishment.getAcceptsSmoker() || !renter.getSmoker();
@@ -92,20 +86,13 @@ public class CompatibilityCalculator {
             }
         }
 
-        double petsWeight = 40;
+        double petsWeight = 50;
         if (renter != null && renter.getHasPets() != null && establishment.getAcceptsPets() != null) {
             possible += petsWeight;
             boolean fits = establishment.getAcceptsPets() || !renter.getHasPets();
             if (fits) {
                 earned += petsWeight;
             }
-        }
-
-        double locationWeight = 20;
-        Double locationScore = locationOverlap(renterListing, establishment);
-        if (locationScore != null) {
-            possible += locationWeight;
-            earned += locationWeight * locationScore;
         }
 
         if (possible == 0) {
@@ -149,25 +136,6 @@ public class CompatibilityCalculator {
         Set<String> union = new HashSet<>(tokensA);
         union.addAll(tokensB);
         return union.isEmpty() ? 0.0 : (double) intersection.size() / union.size();
-    }
-
-    private Double locationOverlap(Listing a, Listing b) {
-        if (a == null || b == null) {
-            return null;
-        }
-        Set<String> tokensA = new HashSet<>();
-        tokensA.addAll(tokenize(a.getPreferredNeighborhood()));
-        tokensA.addAll(tokenize(a.getNearCollege()));
-        Set<String> tokensB = new HashSet<>();
-        tokensB.addAll(tokenize(b.getPreferredNeighborhood()));
-        tokensB.addAll(tokenize(b.getNearCollege()));
-
-        if (tokensA.isEmpty() || tokensB.isEmpty()) {
-            return null;
-        }
-        Set<String> intersection = new HashSet<>(tokensA);
-        intersection.retainAll(tokensB);
-        return intersection.isEmpty() ? 0.0 : 1.0;
     }
 
     private Set<String> tokenize(String text) {

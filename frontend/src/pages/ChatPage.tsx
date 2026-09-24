@@ -9,7 +9,6 @@ import Avatar from '../components/Avatar'
 import type { ConversationSummary, Message } from '../types'
 
 const listingTypeLabel: Record<ConversationSummary['listing']['type'], string> = {
-  PROCURANDO: 'Busca',
   TEM_VAGA: 'Tem vaga',
   ESTABELECIMENTO: 'Estabelecimento',
 }
@@ -59,9 +58,9 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="mx-auto flex h-[calc(100vh-64px)] max-w-2xl flex-col px-4 py-4">
-      <div className="mb-3 flex items-center gap-3 rounded-2xl bg-white p-3 shadow-sm">
-        <Link to="/conversas" className="shrink-0 rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600">
+    <div className="mx-auto flex h-[calc(100vh-124px)] max-w-2xl flex-col px-4 py-4 lg:h-[calc(100vh-60px)]">
+      <div className="mb-3 flex items-center gap-3 rounded-lg border border-line bg-surface p-3">
+        <Link to="/conversas" className="shrink-0 rounded-md p-1.5 text-ink-3 hover:bg-surface-sunk hover:text-ink">
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />
         </Link>
         {conversation ? (
@@ -70,33 +69,35 @@ export default function ChatPage() {
             <div className="min-w-0">
               <Link
                 to={`/usuarios/${conversation.otherUser.id}`}
-                className="truncate font-semibold text-zinc-800 hover:text-brand-600"
+                className="truncate font-semibold text-ink hover:text-brand"
               >
                 {conversation.otherUser.name}
               </Link>
-              <p className="truncate text-xs text-zinc-500">
-                <span className="mr-1.5 inline-block rounded-full bg-zinc-100 px-2 py-0.5 font-medium text-zinc-600">
+              <Link to={`/anuncios/${conversation.listing.id}`} className="block truncate text-xs text-ink-3 hover:text-brand">
+                <span className="mr-1.5 inline-block rounded-sm bg-surface-sunk px-2 py-0.5 font-semibold text-ink-2">
                   {listingTypeLabel[conversation.listing.type]}
                 </span>
                 {conversation.listing.title}
-              </p>
+              </Link>
             </div>
           </div>
         ) : (
-          <div className="h-9 w-40 animate-pulse rounded bg-zinc-100" />
+          <div className="h-9 w-40 animate-pulse rounded-md bg-surface-sunk" />
         )}
       </div>
 
-      {error && <div className="mb-2 rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600">{error}</div>}
+      {error && <div className="mb-2 rounded-md bg-danger-tint px-4 py-2 text-sm text-danger">{error}</div>}
 
-      <div className="flex-1 space-y-2 overflow-y-auto rounded-2xl bg-white p-4 shadow-sm">
+      <div className="flex-1 space-y-1.5 overflow-y-auto rounded-lg border border-line bg-surface p-4">
         {messages.map((message) => {
           const mine = message.senderId === user?.id
           return (
             <div key={message.id} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
               <div
-                className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${
-                  mine ? 'bg-brand-600 text-white' : 'bg-zinc-100 text-zinc-800'
+                className={`max-w-[75%] px-3 py-2.5 text-[15px] leading-[21px] ${
+                  mine
+                    ? 'rounded-lg rounded-br-[4px] bg-inverse text-on-inverse'
+                    : 'rounded-lg rounded-bl-[4px] bg-surface-sunk text-ink'
                 }`}
               >
                 {message.content}
@@ -112,12 +113,9 @@ export default function ChatPage() {
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="Escreva uma mensagem..."
-          className="flex-1 rounded-lg border border-zinc-200 px-3 py-2 outline-none focus:border-brand-500"
+          className="h-11 flex-1 rounded-md border border-line-strong bg-surface px-3 text-ink outline-none placeholder:text-ink-3 hover:border-ink-2 focus:border-ink focus:ring-2 focus:ring-focus focus:ring-offset-1"
         />
-        <button
-          type="submit"
-          className="rounded-lg bg-brand-600 px-5 py-2 font-semibold text-white transition hover:bg-brand-700"
-        >
+        <button type="submit" className="h-11 rounded-md bg-brand px-5 font-semibold text-on-brand transition hover:bg-brand-strong">
           Enviar
         </button>
       </form>

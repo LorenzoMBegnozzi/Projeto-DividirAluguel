@@ -27,10 +27,12 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-brand-50 to-white px-4">
-      <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-lg shadow-brand-100">
-        <h1 className="mb-1 text-center text-2xl font-bold text-brand-600">RachaAi</h1>
-        <p className="mb-6 text-center text-sm text-zinc-500">Encontre com quem dividir o aluguel</p>
+    <div className="flex min-h-screen items-center justify-center bg-paper px-4">
+      <div className="w-full max-w-sm rounded-lg border border-line bg-surface p-8">
+        <h1 className="mb-1 text-center text-2xl font-black tracking-tight text-ink">
+          Racha<span className="text-brand">Ai</span>
+        </h1>
+        <p className="mb-6 text-center text-sm text-ink-3">Encontre com quem dividir o aluguel</p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <input
@@ -39,7 +41,7 @@ export default function LoginPage() {
             placeholder="E-mail"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="rounded-lg border border-zinc-200 px-3 py-2 outline-none focus:border-brand-500"
+            className="h-11 rounded-md border border-line-strong bg-surface px-3 text-ink outline-none placeholder:text-ink-3 hover:border-ink-2 focus:border-ink focus:ring-2 focus:ring-focus focus:ring-offset-1"
           />
           <input
             type="password"
@@ -47,24 +49,24 @@ export default function LoginPage() {
             placeholder="Senha"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="rounded-lg border border-zinc-200 px-3 py-2 outline-none focus:border-brand-500"
+            className="h-11 rounded-md border border-line-strong bg-surface px-3 text-ink outline-none placeholder:text-ink-3 hover:border-ink-2 focus:border-ink focus:ring-2 focus:ring-focus focus:ring-offset-1"
           />
-          <Link to="/esqueci-senha" className="-mt-1 text-right text-xs font-medium text-brand-600">
+          <Link to="/esqueci-senha" className="-mt-1 text-right text-xs font-semibold text-brand hover:text-brand-strong">
             Esqueci minha senha
           </Link>
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <p className="rounded-md bg-danger-tint px-3 py-2 text-sm text-danger">{error}</p>}
           <button
             type="submit"
             disabled={loading}
-            className="mt-2 rounded-lg bg-brand-600 py-2 font-semibold text-white transition hover:bg-brand-700 disabled:opacity-60"
+            className="mt-2 h-[42px] rounded-md bg-brand font-semibold text-on-brand transition hover:bg-brand-strong disabled:opacity-60"
           >
-            {loading ? 'Entrando...' : 'Entrar'}
+            {loading ? 'Entrando…' : 'Entrar'}
           </button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-zinc-500">
+        <p className="mt-6 text-center text-sm text-ink-3">
           Ainda não tem conta?{' '}
-          <Link to="/registro" className="font-semibold text-brand-600">
+          <Link to="/registro" className="font-semibold text-brand hover:text-brand-strong">
             Cadastre-se
           </Link>
         </p>

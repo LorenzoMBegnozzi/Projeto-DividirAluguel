@@ -8,6 +8,7 @@ export interface ListingPayload {
   preferredNeighborhood: string
   nearCollege: string
   price: number | null
+  availableSlots: number | null
   address: string | null
   latitude: number | null
   longitude: number | null
@@ -17,6 +18,10 @@ export interface ListingPayload {
 
 export function getMyListings() {
   return client.get<Listing[]>('/listings/mine').then((res) => res.data)
+}
+
+export function getListing(id: number) {
+  return client.get<Listing>(`/listings/${id}`).then((res) => res.data)
 }
 
 export function createListing(payload: ListingPayload) {
@@ -37,4 +42,19 @@ export function markListingUnavailable(id: number, closedWithUserId: number | nu
 
 export function markListingAvailable(id: number) {
   return client.post<Listing>(`/listings/${id}/disponivel`).then((res) => res.data)
+}
+
+export function getListingPhotos(id: number) {
+  return client.get<string[]>(`/listings/${id}/fotos`).then((res) => res.data)
+}
+
+export function uploadListingPhoto(id: number, file: File) {
+  const form = new FormData()
+  form.append('file', file)
+  return client.post(`/listings/${id}/fotos`, form, { headers: { 'Content-Type': 'multipart/form-data' } })
+}
+
+export function deleteListingPhoto(id: number, photoUrl: string) {
+  const photoId = photoUrl.split('/').pop()
+  return client.delete(`/listings/${id}/fotos/${photoId}`)
 }
