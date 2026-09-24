@@ -74,6 +74,9 @@ public class ListingService {
         listing.setLongitude(request.longitude());
         if (request.type() == ListingType.TEM_VAGA) {
             listing.setAvailableSlots(request.availableSlots());
+            if (request.genderPreference() != null) {
+                listing.setGenderPreference(request.genderPreference());
+            }
         }
         if (request.type() == ListingType.ESTABELECIMENTO) {
             listing.setAcceptsPets(request.acceptsPets());

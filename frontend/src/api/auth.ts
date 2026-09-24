@@ -23,7 +23,6 @@ export function fetchMe() {
 
 export interface ForgotPasswordResult {
   message: string
-  resetToken: string | null
 }
 
 export function forgotPassword(email: string) {

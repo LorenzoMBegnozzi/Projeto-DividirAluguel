@@ -1,10 +1,12 @@
 import client from './client'
-import type { AdvertiserKind, AllergyTag, Diet, DrinkingHabit, PetPreference, Routine, SmokingHabit, UserProfile } from '../types'
+import type { AdvertiserKind, AllergyTag, Diet, DrinkingHabit, Gender, PetPreference, Routine, SmokingHabit, UserProfile } from '../types'
 
 export interface ProfilePayload {
   smokingHabit: SmokingHabit | null
   drinkingHabit: DrinkingHabit | null
+  gender: Gender | null
   diet: Diet | null
+  dietOther: string
   petPreferences: PetPreference[]
   allergyTags: AllergyTag[]
   allergyOther: string

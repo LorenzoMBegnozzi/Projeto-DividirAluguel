@@ -22,7 +22,8 @@ import ListingMapPreview from '../components/ListingMapPreview'
 import Fact from '../components/Fact'
 import BoolToggle from '../components/BoolToggle'
 import MarkUnavailableModal from '../components/MarkUnavailableModal'
-import type { Listing, ListingType, Plan } from '../types'
+import { genderPreferenceLabels, genderPreferenceOptions } from '../constants/profileOptions'
+import type { GenderPreference, Listing, ListingType, Plan } from '../types'
 
 const inputClass =
   'w-full rounded-md border border-line-strong bg-surface px-3 py-2.5 text-ink outline-none placeholder:text-ink-3 hover:border-ink-2 focus:border-ink focus:ring-2 focus:ring-focus focus:ring-offset-1'
@@ -45,6 +46,7 @@ export default function ListingPage() {
   const [preferredNeighborhood, setPreferredNeighborhood] = useState('')
   const [price, setPrice] = useState('')
   const [availableSlots, setAvailableSlots] = useState('')
+  const [genderPreference, setGenderPreference] = useState<GenderPreference>('QUALQUER')
   const [address, setAddress] = useState('')
   const [latitude, setLatitude] = useState<number | null>(null)
   const [longitude, setLongitude] = useState<number | null>(null)
@@ -76,6 +78,7 @@ export default function ListingPage() {
     setPreferredNeighborhood('')
     setPrice('')
     setAvailableSlots('')
+    setGenderPreference('QUALQUER')
     setAddress('')
     setLatitude(null)
     setLongitude(null)
@@ -104,6 +107,7 @@ export default function ListingPage() {
         nearCollege: '',
         price: price ? Number(price) : null,
         availableSlots: type === 'TEM_VAGA' && availableSlots ? Number(availableSlots) : null,
+        genderPreference: type === 'TEM_VAGA' ? genderPreference : 'QUALQUER',
         address,
         latitude,
         longitude,
@@ -275,6 +279,9 @@ export default function ListingPage() {
                           {listing.availableSlots} {listing.availableSlots === 1 ? 'vaga disponível' : 'vagas disponíveis'}
                         </Fact>
                       )}
+                      {listing.type === 'TEM_VAGA' && listing.genderPreference !== 'QUALQUER' && (
+                        <Fact icon={Users}>{genderPreferenceLabels[listing.genderPreference]}</Fact>
+                      )}
                       {listing.acceptsPets != null && (
                         <Fact icon={PawPrint}>{listing.acceptsPets ? 'Aceita animais' : 'Não aceita animais'}</Fact>
                       )}
@@ -391,6 +398,28 @@ export default function ListingPage() {
               </div>
             )}
           </div>
+
+          {type === 'TEM_VAGA' && (
+            <div>
+              <p className="mb-2 text-[13px] font-semibold text-ink">Quem pode ocupar a vaga?</p>
+              <div className="flex gap-2">
+                {genderPreferenceOptions.map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => setGenderPreference(option.value)}
+                    className={`flex-1 rounded-md border px-3 py-2.5 text-sm font-semibold transition ${
+                      genderPreference === option.value
+                        ? 'border-inverse bg-inverse text-on-inverse'
+                        : 'border-line-strong text-ink-2 hover:border-ink'
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {type === 'ESTABELECIMENTO' && (
             <div className="grid grid-cols-1 gap-4 rounded-md border border-line bg-surface-sunk p-4 sm:grid-cols-2">

@@ -2,6 +2,7 @@ package com.rachaai.auth;
 
 import com.rachaai.common.ApiException;
 import com.rachaai.common.CpfValidator;
+import com.rachaai.common.EmailService;
 import com.rachaai.security.JwtService;
 import com.rachaai.user.Role;
 import com.rachaai.user.User;
@@ -37,6 +38,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final UserPhotoRepository userPhotoRepository;
+    private final EmailService emailService;
 
     public AuthService(
             UserRepository userRepository,
@@ -44,8 +46,10 @@ public class AuthService {
             AuthenticationManager authenticationManager,
             JwtService jwtService,
             PasswordResetTokenRepository passwordResetTokenRepository,
-            UserPhotoRepository userPhotoRepository
+            UserPhotoRepository userPhotoRepository,
+            EmailService emailService
     ) {
+        this.emailService = emailService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
@@ -104,16 +108,13 @@ public class AuthService {
         return new AuthResponse(token, UserResponse.from(user, userPhotoRepository.existsByUserId(user.getId())));
     }
 
-    /**
-     * Não existe envio de e-mail configurado no projeto ainda, então devolvemos o token
-     * diretamente na resposta (modo simulado). A mensagem nunca revela se o e-mail existe.
-     */
+    /** A mensagem nunca revela se o e-mail existe; o link vai só por e-mail. */
     @Transactional
     public ForgotPasswordResponse forgotPassword(ForgotPasswordRequest request) {
-        String genericMessage = "Se esse e-mail tiver uma conta, geramos um link de redefinição.";
+        var response = new ForgotPasswordResponse("Se esse e-mail tiver uma conta, enviamos um link para redefinir a senha.");
         var userOpt = userRepository.findByEmailIgnoreCase(request.email());
         if (userOpt.isEmpty()) {
-            return new ForgotPasswordResponse(genericMessage, null);
+            return response;
         }
 
         String rawToken = UUID.randomUUID().toString().replace("-", "");
@@ -124,7 +125,8 @@ public class AuthService {
         );
         passwordResetTokenRepository.save(resetToken);
 
-        return new ForgotPasswordResponse(genericMessage, rawToken);
+        emailService.sendPasswordReset(userOpt.get().getEmail(), userOpt.get().getName(), rawToken, RESET_TOKEN_VALID_MINUTES);
+        return response;
     }
 
     @Transactional

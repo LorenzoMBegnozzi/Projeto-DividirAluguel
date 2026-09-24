@@ -1,4 +1,4 @@
-import type { AllergyTag, Diet, DrinkingHabit, PetPreference, SmokingHabit } from '../types'
+import type { AllergyTag, Diet, DrinkingHabit, Gender, GenderPreference, PetPreference, SmokingHabit } from '../types'
 
 interface Option<T extends string> {
   value: T
@@ -22,12 +22,26 @@ export const drinkingHabitOptions: Option<DrinkingHabit>[] = [
   { value: 'QUASE_TODA_NOITE', label: 'Quase toda noite' },
 ]
 
+export const genderOptions: Option<Gender>[] = [
+  { value: 'MASCULINO', label: 'Masculino' },
+  { value: 'FEMININO', label: 'Feminino' },
+  { value: 'OUTRO', label: 'Outro' },
+]
+
+export const genderLabels = buildLabelMap(genderOptions)
+
+export const genderPreferenceOptions: Option<GenderPreference>[] = [
+  { value: 'QUALQUER', label: 'Tanto faz' },
+  { value: 'MASCULINO', label: 'Somente homens' },
+  { value: 'FEMININO', label: 'Somente mulheres' },
+]
+
+export const genderPreferenceLabels = buildLabelMap(genderPreferenceOptions)
+
 export const dietOptions: Option<Diet>[] = [
-  { value: 'ONIVORO', label: 'Onívoro(a)' },
   { value: 'VEGETARIANO', label: 'Vegetariano(a)' },
   { value: 'VEGANO', label: 'Vegano(a)' },
-  { value: 'PESCETARIANO', label: 'Pescetariano(a)' },
-  { value: 'FLEXITARIANO', label: 'Flexitariano(a)' },
+  { value: 'OUTRO', label: 'Outro' },
 ]
 
 export const petPreferenceOptions: Option<PetPreference>[] = [
@@ -51,11 +65,7 @@ export const petPreferenceOptions: Option<PetPreference>[] = [
 export const allergyTagOptions: Option<AllergyTag>[] = [
   { value: 'POEIRA', label: 'Poeira' },
   { value: 'PELO_DE_ANIMAL', label: 'Pelo de animal' },
-  { value: 'POLEN_MOFO', label: 'Pólen / mofo' },
-  { value: 'PICADA_DE_INSETO', label: 'Picada de inseto' },
   { value: 'ALIMENTOS', label: 'Alimentos' },
-  { value: 'MEDICAMENTOS', label: 'Medicamentos' },
-  { value: 'LATEX', label: 'Látex' },
   { value: 'NENHUMA', label: 'Nenhuma alergia' },
   { value: 'OUTRO', label: 'Outro' },
 ]
@@ -66,8 +76,20 @@ function buildLabelMap<T extends string>(options: Option<T>[]): Record<T, string
 
 export const smokingHabitLabels = buildLabelMap(smokingHabitOptions)
 export const drinkingHabitLabels = buildLabelMap(drinkingHabitOptions)
-export const dietLabels = buildLabelMap(dietOptions)
-export const allergyTagLabels = buildLabelMap(allergyTagOptions)
+// valores antigos não aparecem mais como botão, mas perfis já salvos ainda podem tê-los
+export const dietLabels: Record<Diet, string> = {
+  ...buildLabelMap(dietOptions),
+  ONIVORO: 'Onívoro(a)',
+  PESCETARIANO: 'Pescetariano(a)',
+  FLEXITARIANO: 'Flexitariano(a)',
+}
+export const allergyTagLabels: Record<AllergyTag, string> = {
+  ...buildLabelMap(allergyTagOptions),
+  POLEN_MOFO: 'Pólen / mofo',
+  PICADA_DE_INSETO: 'Picada de inseto',
+  MEDICAMENTOS: 'Medicamentos',
+  LATEX: 'Látex',
+}
 
 export const petPreferenceLabels: Record<PetPreference, string> = {
   ...buildLabelMap(petPreferenceOptions),

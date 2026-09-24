@@ -1,5 +1,6 @@
 package com.rachaai.listing.dto;
 
+import com.rachaai.listing.GenderPreference;
 import com.rachaai.listing.Listing;
 import com.rachaai.listing.ListingType;
 
@@ -16,6 +17,7 @@ public record ListingResponse(
         String nearCollege,
         BigDecimal price,
         Integer availableSlots,
+        GenderPreference genderPreference,
         String address,
         Double latitude,
         Double longitude,
@@ -42,6 +44,7 @@ public record ListingResponse(
                 listing.getNearCollege(),
                 listing.getPrice(),
                 listing.getAvailableSlots(),
+                listing.getGenderPreference(),
                 listing.getAddress(),
                 listing.getLatitude(),
                 listing.getLongitude(),

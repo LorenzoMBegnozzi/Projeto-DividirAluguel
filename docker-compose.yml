@@ -37,8 +37,24 @@ services:
       HIGHLIGHT_PRICE: ${HIGHLIGHT_PRICE:-14.90}
       HIGHLIGHT_DAYS: ${HIGHLIGHT_DAYS:-30}
       EXPIRATION_CHECK: ${EXPIRATION_CHECK:-PT10M}
+      APP_BASE_URL: ${APP_BASE_URL:-http://localhost:8081}
+      MAIL_HOST: ${MAIL_HOST:-mailpit}
+      MAIL_PORT: ${MAIL_PORT:-1025}
+      MAIL_USER: ${MAIL_USER:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      MAIL_AUTH: ${MAIL_AUTH:-false}
+      MAIL_STARTTLS: ${MAIL_STARTTLS:-false}
+      MAIL_FROM: ${MAIL_FROM:-RachaAi <nao-responda@rachaai.local>}
     ports:
       - "8080:8080"
+
+  # Servidor de e-mail de teste: captura os e-mails enviados (caixa de entrada em http://localhost:8025).
+  # Em produção, troque as variáveis MAIL_* por um provedor real e remova este serviço.
+  mailpit:
+    image: axllent/mailpit
+    restart: unless-stopped
+    ports:
+      - "8025:8025"
 
   frontend:
     build: ./frontend

@@ -41,6 +41,10 @@ public class Listing {
     @Column(name = "vagas_disponiveis")
     private Integer availableSlots;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "sexo_aceito", nullable = false, length = 20)
+    private GenderPreference genderPreference = GenderPreference.QUALQUER;
+
     @Column(name = "endereco", length = 255)
     private String address;
 
@@ -140,6 +144,14 @@ public class Listing {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public GenderPreference getGenderPreference() {
+        return genderPreference;
+    }
+
+    public void setGenderPreference(GenderPreference genderPreference) {
+        this.genderPreference = genderPreference;
     }
 
     public Integer getAvailableSlots() {

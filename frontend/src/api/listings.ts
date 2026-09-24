@@ -1,5 +1,5 @@
 import client from './client'
-import type { Listing, ListingType, UserProfile } from '../types'
+import type { GenderPreference, Listing, ListingType, UserProfile } from '../types'
 
 export interface ListingPayload {
   type: ListingType
@@ -9,6 +9,7 @@ export interface ListingPayload {
   nearCollege: string
   price: number | null
   availableSlots: number | null
+  genderPreference: GenderPreference
   address: string | null
   latitude: number | null
   longitude: number | null

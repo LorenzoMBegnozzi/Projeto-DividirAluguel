@@ -13,11 +13,12 @@ import Avatar from '../components/Avatar'
 import {
   allergyTagOptions,
   dietOptions,
+  genderOptions,
   drinkingHabitOptions,
   petPreferenceOptions,
   smokingHabitOptions,
 } from '../constants/profileOptions'
-import type { AllergyTag, Diet, DrinkingHabit, PetPreference, Routine, SmokingHabit } from '../types'
+import type { AllergyTag, Diet, DrinkingHabit, Gender, PetPreference, Routine, SmokingHabit } from '../types'
 
 const inputClass =
   'w-full rounded-md border border-line-strong bg-surface px-3 py-2.5 text-ink outline-none placeholder:text-ink-3 hover:border-ink-2 focus:border-ink focus:ring-2 focus:ring-focus focus:ring-offset-1'
@@ -31,7 +32,9 @@ export default function ProfilePage() {
   const [occupation, setOccupation] = useState(user?.occupation ?? '')
   const [smokingHabit, setSmokingHabit] = useState<SmokingHabit | null>(user?.smokingHabit ?? null)
   const [drinkingHabit, setDrinkingHabit] = useState<DrinkingHabit | null>(user?.drinkingHabit ?? null)
+  const [gender, setGender] = useState<Gender | null>(user?.gender ?? null)
   const [diet, setDiet] = useState<Diet | null>(user?.diet ?? null)
+  const [dietOther, setDietOther] = useState(user?.dietOther ?? '')
   const [petPreferences, setPetPreferences] = useState<PetPreference[]>(user?.petPreferences ?? [])
   const [allergyTags, setAllergyTags] = useState<AllergyTag[]>(user?.allergyTags ?? [])
   const [allergyOther, setAllergyOther] = useState(user?.allergyOther ?? '')
@@ -86,7 +89,9 @@ export default function ProfilePage() {
       await updateProfile({
         smokingHabit,
         drinkingHabit,
+        gender,
         diet,
+        dietOther,
         petPreferences,
         allergyTags,
         allergyOther,
@@ -185,6 +190,12 @@ export default function ProfilePage() {
         {!isEstabelecimento && (
           <>
             <div>
+              <p className="mb-2 text-[13px] font-semibold text-ink">Sexo</p>
+              <ChipPicker options={genderOptions} value={gender} onChange={setGender} />
+              <p className="mt-1 text-[13px] text-ink-3">Usado para mostrar vagas feitas para o seu sexo.</p>
+            </div>
+
+            <div>
               <p className="mb-2 text-[13px] font-semibold text-ink">Você fuma?</p>
               <ChipPicker options={smokingHabitOptions} value={smokingHabit} onChange={setSmokingHabit} />
             </div>
@@ -197,6 +208,15 @@ export default function ProfilePage() {
             <div>
               <p className="mb-2 text-[13px] font-semibold text-ink">Alimentação</p>
               <ChipPicker options={dietOptions} value={diet} onChange={setDiet} />
+              {diet === 'OUTRO' && (
+                <input
+                  value={dietOther}
+                  onChange={(e) => setDietOther(e.target.value)}
+                  maxLength={160}
+                  placeholder="Qual?"
+                  className={`mt-2 ${inputClass}`}
+                />
+              )}
             </div>
 
             <div>

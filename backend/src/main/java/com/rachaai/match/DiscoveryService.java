@@ -7,6 +7,7 @@ import com.rachaai.listing.ListingType;
 import com.rachaai.match.dto.BrowseItemResponse;
 import com.rachaai.listing.dto.ListingResponse;
 import com.rachaai.moderation.ModerationService;
+import com.rachaai.user.Gender;
 import com.rachaai.user.User;
 import com.rachaai.user.UserPhotoRepository;
 import com.rachaai.user.UserProfile;
@@ -63,7 +64,10 @@ public class DiscoveryService {
         UserProfile myProfile = userProfileRepository.findByUserId(userId).orElse(null);
         Set<Long> blocked = moderationService.relatedBlockedIds(userId);
 
+        Gender myGender = myProfile != null ? myProfile.getGender() : null;
+
         return filterByLocationAndPrice(listingRepository.findAllActiveByTypeExceptUser(ListingType.TEM_VAGA, userId), bairro, lat, lng, precoMax)
+                .filter(listing -> listing.getGenderPreference().accepts(myGender))
                 .filter(listing -> !blocked.contains(listing.getUser().getId()))
                 .map(listing -> {
                     User candidateUser = listing.getUser();

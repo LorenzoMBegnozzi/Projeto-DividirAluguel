@@ -11,6 +11,7 @@ import com.rachaai.notification.NotificationService;
 import com.rachaai.notification.NotificationType;
 import com.rachaai.user.User;
 import com.rachaai.user.UserPhotoRepository;
+import com.rachaai.user.UserProfileRepository;
 import com.rachaai.user.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,7 @@ public class ConversationService {
     private final ModerationService moderationService;
     private final InterestRepository interestRepository;
     private final UserPhotoRepository userPhotoRepository;
+    private final UserProfileRepository userProfileRepository;
 
     public ConversationService(
             ConversationRepository conversationRepository,
@@ -35,8 +37,10 @@ public class ConversationService {
             NotificationService notificationService,
             ModerationService moderationService,
             InterestRepository interestRepository,
-            UserPhotoRepository userPhotoRepository
+            UserPhotoRepository userPhotoRepository,
+            UserProfileRepository userProfileRepository
     ) {
+        this.userProfileRepository = userProfileRepository;
         this.conversationRepository = conversationRepository;
         this.listingRepository = listingRepository;
         this.userRepository = userRepository;
@@ -69,6 +73,10 @@ public class ConversationService {
         }
         if (moderationService.isBlockedEitherWay(renterId, listing.getUser().getId())) {
             throw ApiException.forbidden("Não é possível iniciar essa conversa");
+        }
+        var renterGender = userProfileRepository.findByUserId(renterId).map(p -> p.getGender()).orElse(null);
+        if (listing.getType() == ListingType.TEM_VAGA && !listing.getGenderPreference().accepts(renterGender)) {
+            throw ApiException.forbidden("Essa vaga é restrita a outro sexo");
         }
 
         var existing = conversationRepository.findByListingIdAndRenterIdAndSecondUserIsNull(listingId, renterId);

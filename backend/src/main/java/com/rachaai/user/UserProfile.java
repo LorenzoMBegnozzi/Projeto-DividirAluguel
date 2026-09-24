@@ -31,6 +31,13 @@ public class UserProfile {
     @Column(name = "alimentacao", length = 20)
     private Diet diet;
 
+    @Column(name = "alimentacao_outro", length = 160)
+    private String dietOther;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "sexo", length = 20)
+    private Gender gender;
+
     /** Chips escolhidos (com.rachaai.user.PetPreference), separados por vírgula. */
     @Column(name = "pet_preferencias", length = 500)
     private String petPreferences;
@@ -89,6 +96,22 @@ public class UserProfile {
 
     public void setDiet(Diet diet) {
         this.diet = diet;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public String getDietOther() {
+        return dietOther;
+    }
+
+    public void setDietOther(String dietOther) {
+        this.dietOther = dietOther;
     }
 
     public String getPetPreferences() {
@@ -170,6 +193,7 @@ public class UserProfile {
         return switch (diet) {
             case VEGETARIANO, VEGANO -> true;
             case ONIVORO, PESCETARIANO, FLEXITARIANO -> false;
+            case OUTRO -> null;
         };
     }
 

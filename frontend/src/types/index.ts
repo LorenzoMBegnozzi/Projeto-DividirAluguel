@@ -16,7 +16,11 @@ export type DrinkingHabit =
   | 'SOCIALMENTE_FDS'
   | 'QUASE_TODA_NOITE'
 
-export type Diet = 'ONIVORO' | 'VEGETARIANO' | 'VEGANO' | 'PESCETARIANO' | 'FLEXITARIANO'
+export type Gender = 'MASCULINO' | 'FEMININO' | 'OUTRO'
+
+export type GenderPreference = 'QUALQUER' | 'MASCULINO' | 'FEMININO'
+
+export type Diet = 'ONIVORO' | 'VEGETARIANO' | 'VEGANO' | 'PESCETARIANO' | 'FLEXITARIANO' | 'OUTRO'
 
 export type PetPreference =
   | 'CACHORRO'
@@ -59,7 +63,9 @@ export interface UserProfile {
   bio: string | null
   smokingHabit: SmokingHabit | null
   drinkingHabit: DrinkingHabit | null
+  gender: Gender | null
   diet: Diet | null
+  dietOther: string | null
   petPreferences: PetPreference[]
   allergyTags: AllergyTag[]
   allergyOther: string | null
@@ -79,6 +85,7 @@ export interface Listing {
   nearCollege: string | null
   price: number | null
   availableSlots: number | null
+  genderPreference: GenderPreference
   address: string | null
   latitude: number | null
   longitude: number | null

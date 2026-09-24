@@ -5,6 +5,7 @@ import com.rachaai.user.AllergyCodec;
 import com.rachaai.user.AllergyTag;
 import com.rachaai.user.Diet;
 import com.rachaai.user.DrinkingHabit;
+import com.rachaai.user.Gender;
 import com.rachaai.user.PetPreference;
 import com.rachaai.user.Routine;
 import com.rachaai.user.SmokingHabit;
@@ -25,7 +26,9 @@ public record UserResponse(
         String bio,
         SmokingHabit smokingHabit,
         DrinkingHabit drinkingHabit,
+        Gender gender,
         Diet diet,
+        String dietOther,
         List<PetPreference> petPreferences,
         List<AllergyTag> allergyTags,
         String allergyOther,
@@ -49,7 +52,9 @@ public record UserResponse(
                 user.getBio(),
                 profile != null ? profile.getSmokingHabit() : null,
                 profile != null ? profile.getDrinkingHabit() : null,
+                profile != null ? profile.getGender() : null,
                 profile != null ? profile.getDiet() : null,
+                profile != null ? profile.getDietOther() : null,
                 profile != null ? profile.getPetPreferencesList() : List.of(),
                 allergies.tags(),
                 allergies.otherText(),

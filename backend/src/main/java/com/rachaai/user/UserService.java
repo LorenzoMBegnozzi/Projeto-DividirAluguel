@@ -51,7 +51,9 @@ public class UserService {
 
         profile.setSmokingHabit(request.smokingHabit());
         profile.setDrinkingHabit(request.drinkingHabit());
+        profile.setGender(request.gender());
         profile.setDiet(request.diet());
+        profile.setDietOther(request.diet() == Diet.OUTRO ? request.dietOther() : null);
         profile.setPetPreferencesList(request.petPreferences());
         profile.setAllergies(AllergyCodec.encode(request.allergyTags(), request.allergyOther()));
         profile.setMusicTaste(request.musicTaste());

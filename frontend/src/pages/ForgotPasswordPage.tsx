@@ -7,7 +7,6 @@ import { apiErrorMessage } from '../api/client'
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState<string | null>(null)
-  const [resetToken, setResetToken] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -15,12 +14,10 @@ export default function ForgotPasswordPage() {
     e.preventDefault()
     setError(null)
     setMessage(null)
-    setResetToken(null)
     setLoading(true)
     try {
       const res = await forgotPassword(email)
       setMessage(res.message)
-      setResetToken(res.resetToken)
     } catch (err) {
       setError(apiErrorMessage(err, 'Não foi possível pedir a redefinição'))
     } finally {
@@ -33,7 +30,7 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-sm rounded-lg border border-line bg-surface p-8">
         <h1 className="mb-1 text-center text-2xl font-extrabold tracking-tight text-ink">Esqueci minha senha</h1>
         <p className="mb-6 text-center text-sm text-ink-3">
-          Informe seu e-mail e a gente gera um link pra você criar uma senha nova.
+          Informe seu e-mail e a gente envia um link pra você criar uma senha nova.
         </p>
 
         {!message && (
@@ -52,7 +49,7 @@ export default function ForgotPasswordPage() {
               disabled={loading}
               className="mt-2 h-[42px] rounded-md bg-brand font-semibold text-on-brand transition hover:bg-brand-strong disabled:opacity-60"
             >
-              {loading ? 'Enviando…' : 'Gerar link de redefinição'}
+              {loading ? 'Enviando…' : 'Enviar link de redefinição'}
             </button>
           </form>
         )}
@@ -60,22 +57,9 @@ export default function ForgotPasswordPage() {
         {message && (
           <div className="flex flex-col gap-3">
             <p className="text-sm text-ink-2">{message}</p>
-
-            {resetToken ? (
-              <div className="rounded-md border border-line bg-mel-tint p-3">
-                <p className="mb-2 text-[13px] font-semibold text-mel">
-                  O projeto ainda não envia e-mail de verdade — aqui está o link (modo simulado):
-                </p>
-                <Link
-                  to={`/redefinir-senha/${resetToken}`}
-                  className="break-all text-sm font-semibold text-brand underline hover:text-brand-strong"
-                >
-                  Clique aqui para criar sua nova senha
-                </Link>
-              </div>
-            ) : (
-              <p className="text-[13px] text-ink-3">Se esse e-mail tiver conta, você teria recebido um link.</p>
-            )}
+            <p className="text-[13px] text-ink-3">
+              Confira sua caixa de entrada (e o spam). O link vale por 30 minutos.
+            </p>
           </div>
         )}
 

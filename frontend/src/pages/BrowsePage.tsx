@@ -26,7 +26,9 @@ import ListingMapPreview from '../components/ListingMapPreview'
 import CompatScore from '../components/CompatScore'
 import LocationAutocomplete from '../components/LocationAutocomplete'
 import PickLocationModal from '../components/PickLocationModal'
-import { dietLabels, petPreferenceLabels, smokingHabitLabels } from '../constants/profileOptions'
+import PhotoLightbox from '../components/PhotoLightbox'
+import { useAuth } from '../context/AuthContext'
+import { dietLabels, genderLabels, genderPreferenceLabels, petPreferenceLabels, smokingHabitLabels } from '../constants/profileOptions'
 import Avatar from '../components/Avatar'
 import type { BrowseItem, UserProfile } from '../types'
 
@@ -35,6 +37,7 @@ type ViewMode = 'list' | 'grid'
 
 export default function BrowsePage() {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [tab, setTab] = useState<Tab>('ROOMMATES')
   const [viewMode, setViewMode] = useState<ViewMode>('list')
   const [bairro, setBairro] = useState('')
@@ -51,7 +54,8 @@ export default function BrowsePage() {
   const [interestedPeople, setInterestedPeople] = useState<Record<number, UserProfile[]>>({})
   const [loadingPeopleId, setLoadingPeopleId] = useState<number | null>(null)
   const [startingPeerId, setStartingPeerId] = useState<number | null>(null)
-  const [coverPhotos, setCoverPhotos] = useState<Record<number, string | null>>({})
+  const [listingPhotos, setListingPhotos] = useState<Record<number, string[]>>({})
+  const [lightbox, setLightbox] = useState<string[] | null>(null)
 
   useEffect(() => {
     const timeout = setTimeout(load, 300)
@@ -79,15 +83,15 @@ export default function BrowsePage() {
     request
       .then((data) => {
         setItems(data)
-        setCoverPhotos({})
+        setListingPhotos({})
         Promise.all(
           data.map((item) =>
             getListingPhotos(item.listing.id)
-              .then((photos) => [item.listing.id, photos[0] ?? null] as const)
-              .catch(() => [item.listing.id, null] as const)
+              .then((photos) => [item.listing.id, photos] as const)
+              .catch(() => [item.listing.id, [] as string[]] as const)
           )
         ).then((entries) => {
-          setCoverPhotos(Object.fromEntries(entries))
+          setListingPhotos(Object.fromEntries(entries))
         })
         if (tab === 'ESTABLISHMENTS') {
           Promise.all(
@@ -169,6 +173,11 @@ export default function BrowsePage() {
     <div className={`mx-auto px-4 py-8 transition-[max-width] ${viewMode === 'grid' ? 'max-w-5xl' : 'max-w-2xl'}`}>
       <h1 className="mb-1 text-[28px] font-extrabold tracking-tight text-ink">Buscar</h1>
       <p className="mb-4 text-sm text-ink-3">Ordenado pela sua compatibilidade.</p>
+      {tab === 'ROOMMATES' && !user?.gender && (
+        <p className="mb-4 rounded-md bg-brand-tint px-3 py-2 text-[13px] text-brand-strong">
+          Informe seu sexo no perfil para ver também as vagas exclusivas para homens ou mulheres.
+        </p>
+      )}
 
       <div className="mb-6 flex gap-2">
         <button
@@ -243,6 +252,8 @@ export default function BrowsePage() {
         </div>
       )}
 
+      {lightbox && <PhotoLightbox photos={lightbox} onClose={() => setLightbox(null)} />}
+
       {showMapPicker && (
         <PickLocationModal
           onClose={() => setShowMapPicker(false)}
@@ -266,12 +277,20 @@ export default function BrowsePage() {
         <div className={viewMode === 'grid' ? 'grid grid-cols-1 gap-4 md:grid-cols-2' : 'flex flex-col gap-4'}>
           {items.map((item) => (
             <div key={item.listing.id} className="flex flex-col rounded-lg border border-line bg-surface p-5">
-              {coverPhotos[item.listing.id] && (
-                <img
-                  src={coverPhotos[item.listing.id] ?? undefined}
-                  alt=""
-                  className="mb-3 h-40 w-full rounded-md object-cover"
-                />
+              {(listingPhotos[item.listing.id] ?? []).length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setLightbox(listingPhotos[item.listing.id])}
+                  aria-label="Ver fotos do anúncio"
+                  className="relative mb-3 block h-40 w-full overflow-hidden rounded-md"
+                >
+                  <img src={listingPhotos[item.listing.id][0]} alt="" className="h-full w-full object-cover" />
+                  {listingPhotos[item.listing.id].length > 1 && (
+                    <span className="absolute bottom-2 right-2 rounded-sm bg-scrim px-2 py-0.5 text-xs font-bold text-on-inverse">
+                      {listingPhotos[item.listing.id].length} fotos
+                    </span>
+                  )}
+                </button>
               )}
               <div className="mb-3 flex items-start justify-between gap-3">
                 <div className="flex min-w-0 items-center gap-3">
@@ -300,8 +319,13 @@ export default function BrowsePage() {
 
               {tab === 'ROOMMATES' && (
                 <div className="mb-3 flex flex-wrap gap-x-3 gap-y-1 text-[13px] text-ink-3">
+                  {item.user.gender && <Fact icon={Users}>{genderLabels[item.user.gender]}</Fact>}
                   {item.user.smokingHabit && <Fact icon={Cigarette}>{smokingHabitLabels[item.user.smokingHabit]}</Fact>}
-                  {item.user.diet && <Fact icon={Salad}>{dietLabels[item.user.diet]}</Fact>}
+                  {item.user.diet && (
+                    <Fact icon={Salad}>
+                      {item.user.diet === 'OUTRO' && item.user.dietOther ? item.user.dietOther : dietLabels[item.user.diet]}
+                    </Fact>
+                  )}
                   {item.user.petPreferences.length > 0 && (
                     <Fact icon={PawPrint}>
                       {item.user.petPreferences.map((p) => petPreferenceLabels[p]).join(', ')}
@@ -336,6 +360,9 @@ export default function BrowsePage() {
                   <Fact icon={Banknote}>
                     <span className="tabular-nums">R$ {item.listing.price}</span>
                   </Fact>
+                )}
+                {tab === 'ROOMMATES' && item.listing.genderPreference !== 'QUALQUER' && (
+                  <Fact icon={Users}>{genderPreferenceLabels[item.listing.genderPreference]}</Fact>
                 )}
                 {item.listing.availableSlots != null && (
                   <Fact icon={Users}>
@@ -379,14 +406,22 @@ export default function BrowsePage() {
                     </button>
                   </div>
 
-                  {(interestStatus[item.listing.id]?.total ?? 0) > 0 && (
+                  {interestStatus[item.listing.id]?.interested && interestStatus[item.listing.id]?.total === 1 && (
+                    <p className="mt-1 flex items-center gap-1 text-[13px] font-semibold text-ink-3">
+                      <Users className="h-3.5 w-3.5" aria-hidden="true" />
+                      Você é o único interessado até o momento
+                    </p>
+                  )}
+
+                  {(interestStatus[item.listing.id]?.total ?? 0) > (interestStatus[item.listing.id]?.interested ? 1 : 0) && (
                     <div className="mt-1">
                       <button
                         onClick={() => handleToggleExpanded(item.listing.id)}
                         className="flex items-center gap-1 text-[13px] font-semibold text-ink-3 hover:text-brand"
                       >
                         <Users className="h-3.5 w-3.5" aria-hidden="true" />
-                        {interestStatus[item.listing.id]?.total} pessoa(s) também se interessaram
+                        {(interestStatus[item.listing.id]?.total ?? 0) - (interestStatus[item.listing.id]?.interested ? 1 : 0)} pessoa(s){' '}
+                        {interestStatus[item.listing.id]?.interested ? 'também se interessaram' : 'se interessaram'}
                       </button>
 
                       {expandedListingId === item.listing.id && (

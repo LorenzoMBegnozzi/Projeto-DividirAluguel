@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import NotificationBell from './NotificationBell'
@@ -27,9 +27,9 @@ export default function NavBar() {
   return (
     <header className="sticky top-0 z-20 border-b border-line bg-surface">
       <div className="mx-auto flex h-[60px] max-w-4xl items-center justify-between px-4">
-        <span className="text-xl font-black tracking-tight text-ink">
+        <Link to="/" aria-label="RachaAi - página inicial" className="text-xl font-black tracking-tight text-ink">
           Racha<span className="text-brand">Ai</span>
-        </span>
+        </Link>
 
         <nav className="hidden items-center gap-0.5 lg:flex">
           {user.renter && (

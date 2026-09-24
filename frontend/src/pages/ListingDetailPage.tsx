@@ -6,6 +6,8 @@ import { getUser } from '../api/profile'
 import { startConversation } from '../api/discovery'
 import { apiErrorMessage } from '../api/client'
 import { useAuth } from '../context/AuthContext'
+import { genderPreferenceLabels } from '../constants/profileOptions'
+import PhotoLightbox from '../components/PhotoLightbox'
 import Fact from '../components/Fact'
 import Avatar from '../components/Avatar'
 import ListingMapPreview from '../components/ListingMapPreview'
@@ -18,6 +20,7 @@ export default function ListingDetailPage() {
   const [listing, setListing] = useState<Listing | null>(null)
   const [owner, setOwner] = useState<UserProfile | null>(null)
   const [photos, setPhotos] = useState<string[]>([])
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [starting, setStarting] = useState(false)
@@ -93,10 +96,16 @@ export default function ListingDetailPage() {
 
         {photos.length > 0 && (
           <div className="mb-4 flex gap-2 overflow-x-auto">
-            {photos.map((photoUrl) => (
-              <img key={photoUrl} src={photoUrl} alt="" className="h-40 w-56 shrink-0 rounded-md object-cover" />
+            {photos.map((photoUrl, i) => (
+              <button key={photoUrl} type="button" onClick={() => setLightboxIndex(i)} aria-label="Ampliar foto" className="shrink-0">
+                <img src={photoUrl} alt="" className="h-40 w-56 rounded-md object-cover" />
+              </button>
             ))}
           </div>
+        )}
+
+        {lightboxIndex !== null && (
+          <PhotoLightbox photos={photos} startIndex={lightboxIndex} onClose={() => setLightboxIndex(null)} />
         )}
 
         {listing.description && <p className="mb-4 text-ink-2">{listing.description}</p>}
@@ -113,6 +122,9 @@ export default function ListingDetailPage() {
             <Fact icon={Users}>
               {listing.availableSlots} {listing.availableSlots === 1 ? 'vaga disponível' : 'vagas disponíveis'}
             </Fact>
+          )}
+          {listing.type === 'TEM_VAGA' && listing.genderPreference !== 'QUALQUER' && (
+            <Fact icon={Users}>{genderPreferenceLabels[listing.genderPreference]}</Fact>
           )}
           {listing.acceptsPets != null && (
             <Fact icon={PawPrint}>{listing.acceptsPets ? 'Aceita animais' : 'Não aceita animais'}</Fact>

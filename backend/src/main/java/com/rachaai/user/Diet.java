@@ -5,5 +5,6 @@ public enum Diet {
     VEGETARIANO,
     VEGANO,
     PESCETARIANO,
-    FLEXITARIANO
+    FLEXITARIANO,
+    OUTRO
 }
