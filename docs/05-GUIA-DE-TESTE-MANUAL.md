@@ -80,6 +80,7 @@ Ajuste:
 | `ORACLE_PASSWORD` | senha do administrador do Oracle |
 | `DB_PASSWORD` | senha do usuário `rachaai` (a que o backend usa) |
 | `JWT_SECRET` | segredo dos logins (gere um novo, comando abaixo) |
+| `MAIL_*` e `APP_BASE_URL` | opcionais: sem mexer, os e-mails vão para a caixa de teste (Mailpit, http://localhost:8025). Veja os comentários do `.env.example` para usar um e-mail de verdade |
 
 **Regra das duas senhas do Oracle:** somente **letras e números**, **começando por letra**
 (ex.: `Rachaai2026Senha`). Hífen, espaço ou símbolo podem fazer o login no banco falhar.
@@ -106,7 +107,7 @@ docker compose config > /dev/null && echo "configuração OK"
 
 ## 3. Subir o Docker
 
-Sobe os 3 containers (banco, backend, frontend), construindo as imagens:
+Sobe os 4 containers (banco, backend, frontend e o Mailpit de e-mails de teste), construindo as imagens:
 
 ```bash
 docker compose up --build -d
@@ -146,7 +147,7 @@ docker compose logs -f backend
 Procure estas linhas:
 
 ```
-Successfully applied 4 migrations to schema "RACHAAI", now at version v4
+Successfully applied 21 migrations to schema "RACHAAI", now at version v21
 Started BackendApplication in ... seconds
 ```
 
@@ -193,15 +194,18 @@ a cobrança (os pagamentos feitos nos testes continuam no banco; para limpá-los
 
 **Senha de todos: `senha123`**
 
-| E-mail | Papel | O que tem |
+| E-mail | Conta | O que tem |
 |---|---|---|
-| `rita.alugar@teste.com` | Alugar | perfil completo (não fuma, vegetariana, sem pet), busca na Zona 7/UEM, **uma conversa já iniciada** |
-| `caio.alugar@teste.com` | Alugar | perfil oposto (fuma, bebe, tem cachorro), busca na Zona 2 |
-| `novato.alugar@teste.com` | Alugar | só a conta, sem perfil nem busca |
-| `bia.vaga@teste.com` | Anunciar | 2 vagas para dividir, perfil parecido com o da Rita |
-| `davi.vaga@teste.com` | Anunciar | 1 vaga, perfil parecido com o do Caio |
-| `marcos.imoveis@teste.com` | Anunciar | 2 imóveis: Kitnet (sem pet/fumante) e Casa (aceita os dois) |
-| `lucia.limite@teste.com` | Anunciar | **já usa os 3 anúncios grátis** |
+| `rita.alugar@teste.com` | Procura vaga | mulher, não fuma, vegetariana, diurna; **uma conversa já iniciada** |
+| `caio.alugar@teste.com` | Procura vaga | homem, fuma, bebe, tem cachorro, noturno (perfil oposto ao da Rita) |
+| `novato.alugar@teste.com` | Procura vaga | só a conta, sem perfil |
+| `bia.vaga@teste.com` | Anuncia | 2 vagas para dividir (uma **só para mulheres**), perfil parecido com o da Rita |
+| `davi.vaga@teste.com` | Anuncia | 1 vaga, perfil parecido com o do Caio |
+| `marcos.imoveis@teste.com` | Anuncia | 2 imóveis: Kitnet (sem pet/fumante) e Casa (aceita os dois) |
+| `lucia.limite@teste.com` | Anuncia | **já usa os 3 anúncios grátis** |
+
+> Se você já criou anúncios pela tela com outras contas, eles também aparecem na busca e podem
+> mudar a contagem de itens das tabelas abaixo (as notas dos itens do seed continuam iguais).
 
 > O script precisa da API no ar. Se aparecer "Nao consegui falar com a API", volte à seção 3/4.
 
@@ -211,64 +215,83 @@ a cobrança (os pagamentos feitos nos testes continuam no banco; para limpá-los
 
 Use uma **janela anônima** por usuário, ou clique em **Sair** entre um teste e outro.
 
-### 6.1 Cadastro e escolha do papel
+### 6.1 Cadastro e escolha do tipo de conta
 
 1. Abra http://localhost:8081/registro.
 2. Aparecem dois cartões: **Quero alugar** e **Quero anunciar**. Clique em **Quero alugar**.
-3. Preencha nome, e-mail novo, senha (mín. 8 caracteres) e data de nascimento → **Criar conta**.
-4. ✔ Vai para **Meu perfil**. O menu mostra **Buscar, Minha busca, Conversas, Meu perfil**
-   (sem "Meus anúncios" nem "Pagamentos").
-5. Clique em **Sair**. Repita escolhendo **Quero anunciar**.
+3. Preencha nome, e-mail novo, senha (mín. 8 caracteres), data de nascimento (18+) e **CPF**
+   → **Criar conta**. (O CPF só tem os dígitos conferidos, não é consultado em lugar nenhum:
+   use um CPF de teste válido. Um CPF já usado dá "Já existe uma conta com este CPF".)
+4. ✔ Vai para **Meu perfil**, com o aviso de segurança na primeira vez (marque a caixa e
+   continue). O menu mostra **Buscar, Conversas, Meu perfil** (sem "Meus anúncios" nem "Pagamentos").
+5. Clique em **Sair**. Repita escolhendo **Quero anunciar** (e depois o tipo: vaga ou imóvel).
 6. ✔ O menu agora é **Meus anúncios, Pagamentos, Conversas, Meu perfil** (sem "Buscar").
 
 Validações a experimentar:
 - senha com menos de 8 caracteres → o navegador bloqueia o envio;
 - e-mail que já existe → mensagem "Já existe uma conta com este e-mail";
+- CPF inválido → "CPF inválido";
 - entrar com senha errada → "E-mail ou senha inválidos".
 
 ### 6.2 Perfil de hábitos
 
 1. Entre como **rita.alugar@teste.com** → **Meu perfil**.
-2. Veja os campos: Fuma, Bebe, Vegetariano, Tem pet, Gosta de animais, Rotina, Alergias,
-   Música, Sobre mim, Curso.
-3. Mude algo (ex.: Fuma → Sim), **Salvar e continuar** → ✔ aparece "Perfil salvo!". Volte para
-   Não e salve de novo (para os scores de testes seguintes ficarem como no guia).
+2. Veja os campos: **Sexo**, Fuma, Bebida, Alimentação (Vegetariano, Vegano, **Outro**), Pets,
+   Rotina, Alergias, Música, Sobre mim, Curso.
+3. Mude algo (ex.: Fuma → Fumante), **Salvar e continuar** → ✔ aparece "Perfil salvo!". Volte para
+   "Não fumo" e salve de novo (para os scores dos testes seguintes ficarem como no guia).
+4. Em **Alimentação**, clique **Outro** → ✔ aparece a caixa **"Qual?"**; escreva algo e salve.
+   Troque para Vegetariano e salve → ✔ o texto some. **Volte para Vegetariano antes de seguir.**
+5. Em **Trocar foto**, escolha uma imagem JPEG/PNG/WEBP de até 3 MB → ✔ a foto aparece no perfil
+   e no seu cartão da busca. **Remover** volta para as iniciais.
+6. Mais abaixo, em **Convívios e avaliações**, ficam os convívios (ver 6.13) e, no fim da página,
+   o botão **Sair**.
 
-### 6.3 Quem aluga: Minha busca
+### 6.3 Filtros da busca (bairro, mapa e orçamento)
 
-1. Como Rita → **Minha busca**.
-2. ✔ Formulário sem mapa: título, descrição, bairro de preferência, faculdade, orçamento.
-   Já vem preenchido com "Procuro apê perto da UEM".
-3. Mude o título e clique **Atualizar busca** → ✔ "Busca publicada!". Só existe **uma** busca
-   ativa por pessoa: publicar de novo substitui a anterior.
+Como Rita → **Buscar**, aba **Preciso de uma vaga**:
+
+1. No campo **"Bairro ou faculdade"** digite `zona` → ✔ aparecem sugestões de Maringá
+   (Zona 02, Zona 04...). Escolha uma → ✔ o texto entra no campo e aparece a linha
+   **"Mostrando lugares perto do ponto marcado no mapa"** (a busca vira "por perto", raio de 3 km).
+   Clique em **limpar** para voltar à lista inteira.
+2. Digitar o texto e **não** escolher sugestão filtra pelo texto do bairro (ex.: `zona 7`
+   mostra só o anúncio da Zona 7; "Zona 07" e "Zona 7" são tratados como iguais).
+3. O botão de **pino** ao lado do campo abre um mapa: clique num ponto e **Usar este local** →
+   ✔ só aparecem anúncios a até 3 km do ponto.
+4. No campo **Orçamento máximo (R$)** digite `500` → ✔ somem os anúncios acima de R$ 500.
+5. O botão de **grade** (canto direito) alterna entre lista e grade.
+
+Local e orçamento **só filtram**; a porcentagem de compatibilidade não muda por causa deles.
 
 ### 6.4 Quem aluga: Buscar (compatibilidade)
 
-Como **Rita** → **Buscar**, aba **Tem vaga**:
+A porcentagem depende **só dos perfis** (hábitos), não do bairro. Como **Rita** → **Buscar**,
+aba **Preciso de uma vaga**:
 
 | Ordem | Anúncio | Compatibilidade esperada |
 |---|---|---|
 | 1º e 2º | Vaga em apê de 2 quartos / Vaga em república feminina (Bia) | **100%** |
-| 3º | Vaga em apê compartilhado (Lúcia) | **54%** |
-| 4º | Vaga em casa com quintal (Davi) | **40%** |
+| 3º | Vaga em apê compartilhado (Lúcia) | **41%** |
+| 4º | Vaga em casa com quintal (Davi) | **25%** |
 
-Cada cartão mostra ícones de hábitos (fuma, vegetariano, pet, música), bairro, faculdade,
-preço, **mapa com o pino** e o endereço.
+Cada cartão mostra a **foto de capa** (se houver), ícones de hábitos, bairro, preço, número de
+**vagas disponíveis**, **mapa com o pino** e o endereço.
 
-Aba **Estabelecimentos**: os 4 imóveis com o que o dono aceita ("Aceita animais", "Não aceita
+Aba **Estabelecimentos**: os imóveis com o que o dono aceita ("Aceita animais", "Não aceita
 fumantes"...). Para a Rita todos dão 100% (ela não fuma e não tem pet).
 
 Agora saia e entre como **caio.alugar@teste.com** → **Buscar**:
 
 | Aba | Esperado |
 |---|---|
-| Tem vaga | Davi **100%**, Lúcia **65%**, Bia **40%** e **40%** |
-| Estabelecimentos | Casa 3 quartos **100%** (aceita pet e fumante), Apartamento Zona 3 **60%**, Kitnet e Sala comercial **0%** (não aceitam pet nem fumante) |
+| Preciso de uma vaga | Davi **100%**, Lúcia **50%**, Bia (apê de 2 quartos) **25%**. **A "república feminina" não aparece** (é só para mulheres) |
+| Estabelecimentos | Casa 3 quartos **100%** (aceita pet e fumante), Apartamento Zona 3 **50%**, Kitnet e Sala comercial **0%** (não aceitam pet nem fumante) |
 
 ✔ Isso confirma que a compatibilidade de imóvel compara **o seu hábito com o que o dono aceita**.
 
-Teste também **novato.alugar@teste.com** (sem perfil): todos os scores ficam em torno de **50%**
-(sem dados para comparar).
+Teste também **novato.alugar@teste.com** (sem perfil): todos os scores ficam em **50%**
+(sem dados para comparar) e ele só vê as vagas "tanto faz", com um aviso para preencher o sexo.
 
 ### 6.5 Conversar
 
@@ -276,7 +299,7 @@ Teste também **novato.alugar@teste.com** (sem perfil): todos os scores ficam em
    com 2 mensagens.
 2. Volte em **Buscar**, escolha um anúncio novo (ex.: Bia) e clique **Conversar** →
    ✔ abre o chat na hora, **sem curtida nem aprovação**.
-3. Escreva uma mensagem e clique **Enviar** → ✔ aparece à direita (rosa).
+3. Escreva uma mensagem e clique **Enviar** → ✔ aparece à direita.
 4. Clique **Conversar** no mesmo anúncio de novo → ✔ reabre a **mesma** conversa (não duplica).
 5. Saia e entre como **bia.vaga@teste.com** → **Conversas** → ✔ a conversa da Rita aparece.
    Abra e responda → ✔ ela vê a resposta em até 4 segundos (o chat consulta a cada 4 s).
@@ -288,13 +311,21 @@ Entre como **marcos.imoveis@teste.com** → **Meus anúncios**:
 1. ✔ Cabeçalho: "2 de 3 anúncios grátis em uso. A partir do 4º, cada anúncio extra custa
    R$ 19,90 por 30 dias."
 2. ✔ Os 2 imóveis aparecem com o botão **Remover** e **Destacar · R$ 14,90 / 30 dias**.
-3. No formulário, escolha **Tenho um imóvel pra alugar**. ✔ Aparecem as perguntas *Aceita
-   animais?* e *Aceita fumantes?*. Com **Tenho vaga para dividir** elas somem.
-4. Preencha título, bairro, faculdade, valor e endereço. **Clique no mapa** para marcar o local
-   (aparece um pino).
-5. **Publicar anúncio** → ✔ "Anúncio publicado!" e o contador vira **3 de 3**.
-6. Tente publicar **sem clicar no mapa** → ✔ erro "Marque o local no mapa e informe o endereço".
-7. Clique **Remover** em um anúncio → ✔ ele some e o contador diminui.
+   Clique no título de um anúncio para **expandir** os detalhes e as **fotos**.
+3. No formulário há dois botões: **Tenho vaga para dividir** e **Tenho um imóvel pra alugar**
+   (qualquer anunciante pode escolher qualquer um a cada anúncio). Com **imóvel** aparecem
+   *Aceita animais?* e *Aceita fumantes?*. Com **vaga** aparecem **Valor médio por pessoa**,
+   **Vagas disponíveis** e **Quem pode ocupar a vaga?** (ver 6.10).
+4. Preencha título, bairro (com sugestões), valor e **Endereço**: escolha uma sugestão →
+   ✔ o **pino no mapa** é marcado sozinho (dá para ajustar clicando).
+5. Em **Fotos (0/6)** clique **Adicionar** e escolha até 6 imagens → ✔ aparecem as miniaturas
+   (passe o mouse para remover uma).
+6. **Publicar anúncio** → ✔ "Anúncio publicado!", o contador vira **3 de 3** e as fotos são
+   enviadas junto.
+7. Tente publicar **sem endereço/mapa** → ✔ erro "Marque o local no mapa e informe o endereço".
+8. Clique **Remover** em um anúncio → ✔ ele some e o contador diminui.
+9. **Marcar indisponível** (com ou sem escolher com quem fechou negócio) tira o anúncio da busca;
+   **Marcar disponível** traz de volta.
 
 ### 6.7 Limite de 3 grátis e anúncio extra (cobrança)
 
@@ -322,26 +353,85 @@ Entre como **lucia.limite@teste.com** → **Meus anúncios**:
    pagamento** → ✔ **Pago**.
 3. **Meus anúncios** → ✔ o anúncio mostra o selo amarelo **"Destaque até dd/mm/aaaa"**
    (30 dias à frente).
-4. Saia e entre como **rita.alugar@teste.com** → **Buscar** → aba **Tem vaga**.
-5. ✔ O anúncio do Davi está **em primeiro**, com o selo **Destaque**, **mesmo com 40%** de
+4. Saia e entre como **rita.alugar@teste.com** → **Buscar** → aba **Preciso de uma vaga**.
+5. ✔ O anúncio do Davi está **em primeiro**, com o selo **Destaque**, **mesmo com 25%** de
    compatibilidade, à frente dos de 100%. Isso é a regra: destaque vale independente da
    compatibilidade.
 6. Compre o destaque do mesmo anúncio de novo e pague → ✔ a data avança **mais 30 dias**
    (soma, não recomeça).
 
-### 6.9 Restrições por papel
+### 6.9 Restrições por capacidade
 
 | Teste | Como | Esperado |
 |---|---|---|
-| Quem aluga abre tela de anunciar | logado como Rita, acesse http://localhost:8081/pagamentos | volta para **/browse** |
-| Quem anuncia abre a busca | logado como Bia, acesse http://localhost:8081/browse | vai para **/anuncio** |
+| Conta sem "anunciar" abre tela de anunciar | logado como Rita, acesse http://localhost:8081/pagamentos | volta para **/browse** |
+| Conta sem "procurar" abre a busca | logado como Bia, acesse http://localhost:8081/browse | vai para **/anuncio** |
 | Sem login | janela anônima em http://localhost:8081/browse | vai para **/login** |
 
 E no backend (a regra vale mesmo sem a tela): use o Swagger (seção 8) ou, com um token,
 chame `POST /api/billing/payments` como Rita → **403 "Apenas contas de anúncio podem
 comprar..."**.
 
-### 6.10 Validade do anúncio extra (opcional)
+### 6.10 Vaga por sexo
+
+1. Como **Bia** → **Meus anúncios** → ✔ a "Vaga em república feminina" foi criada como
+   **Somente mulheres** (aparece ao expandir o anúncio).
+2. Ao publicar uma vaga, em **Quem pode ocupar a vaga?** escolha **Tanto faz**, **Somente homens**
+   ou **Somente mulheres**.
+3. Como **Rita** (mulher) a república feminina aparece; como **Caio** (homem) **não** aparece.
+4. Como **novato** (sem sexo no perfil) só aparecem as vagas "tanto faz", com o aviso *"Informe
+   seu sexo no perfil..."*.
+5. O backend também bloqueia: com o token do Caio, `POST /api/conversations` com o id dessa vaga
+   devolve **403 "Essa vaga é restrita a outro sexo"**.
+
+### 6.11 Fotos e popup
+
+1. Como **Bia**, expanda um anúncio em **Meus anúncios** → **Fotos** → **Adicionar** (até 6).
+2. Como **Rita** → **Buscar** → ✔ a foto de capa aparece no cartão, com o selo **"N fotos"**
+   quando há mais de uma.
+3. Clique na foto → ✔ abre um **popup** com a foto grande e as **miniaturas embaixo**; setas ← →
+   ou clique nas miniaturas para trocar; **Esc** ou clicar fora fecha.
+4. Clique no título do anúncio dentro de uma conversa → ✔ abre a **página do anúncio**
+   (`/anuncios/<id>`) com a galeria.
+
+### 6.12 "Quero também..." (uma conta com as duas capacidades)
+
+1. Entre com uma conta **nova** que só procura vaga → **Meu perfil** → role até
+   **"Quero também..."**.
+2. Clique **Anunciar uma vaga ou imóvel** → escolha o tipo → ✔ o site **leva direto para Meus
+   anúncios** e o menu ganha **Meus anúncios** e **Pagamentos** (sem criar outra conta).
+3. O mesmo vale ao contrário: uma conta que só anuncia pode ligar **Procurar uma vaga**.
+
+> Use uma conta nova: o script de seed não desliga capacidades, então uma conta de exemplo
+> que você converter continua com as duas.
+
+### 6.13 Interesse em imóveis, convívios e denúncias
+
+- **Tenho interesse:** como Rita, aba **Estabelecimentos** → **Tenho interesse** num imóvel.
+  Se só você se interessou, aparece **"Você é o único interessado até o momento"**; se houver
+  mais gente, **"N pessoa(s) também se interessaram"**, que expande a lista para **Conversar**
+  com essas pessoas.
+- **Convívios:** no **perfil público** de alguém (clique no nome em uma conversa) → **Registrar
+  convívio** com o período. A outra pessoa **confirma** no próprio perfil; depois cada uma pode
+  **avaliar** (pagamentos em dia e convivência, 1 a 5).
+- **Bloquear/denunciar:** no perfil público, os ícones de escudo e bandeira. Bloqueados somem da
+  busca e não trocam mensagens; a lista fica em **Meu perfil > Bloqueados**.
+- **Sino** no topo: mostra notificações (nova conversa, mensagem, convívio, avaliação).
+
+### 6.14 Esqueci minha senha (e-mail)
+
+1. Saia (ou use uma janela anônima) → tela de login → **Esqueci minha senha**.
+2. Digite `rita.alugar@teste.com` → **Enviar link de redefinição** → ✔ a tela diz só que
+   "se esse e-mail tiver uma conta, enviamos um link" (a mesma mensagem para qualquer e-mail).
+3. Abra a **caixa de teste em http://localhost:8025** → ✔ chegou o e-mail "RachaAi - redefinição
+   de senha" com o link (válido por 30 minutos). Nenhum e-mail sai para a internet.
+4. Abra o link, defina uma senha nova → ✔ dá para entrar com ela. Abrir o **mesmo link de novo**
+   → ✔ "Link inválido ou expirado". **Volte a senha para `senha123`** ao terminar.
+5. Um e-mail que não existe → ✔ mesma mensagem, e **nenhum** e-mail chega na caixa.
+
+Para receber no e-mail de verdade, veja as variáveis `MAIL_*` no `.env.example`.
+
+### 6.15 Validade do anúncio extra (opcional)
 
 O sistema desativa anúncios extras vencidos a cada 10 minutos. Para ver isso rápido:
 
@@ -390,20 +480,20 @@ Clique **Testar** → "Com êxito" → **Conectar**. Se recusar a conexão, veja
 ### 7.2 Conferir os dados
 
 ```sql
-SELECT id, nome, email, papel FROM usuarios ORDER BY id;
+SELECT id, nome, email, alugar, anunciar, tipo_anunciante FROM usuarios ORDER BY id;
 ```
 
-✔ A coluna `papel` mostra **`ALUGAR`** ou **`ANUNCIAR`** (por extenso, não 0/1).
+✔ `alugar` e `anunciar` são `1` ou `0` (uma conta pode ter os dois ligados).
 
 ```sql
-SELECT u.nome, p.fumante, p.bebe, p.vegetariano, p.tem_pets
+SELECT u.nome, p.sexo, p.habito_fumo, p.alimentacao, p.alimentacao_outro
   FROM perfis_usuario p JOIN usuarios u ON u.id = p.usuario_id;
 ```
 
-✔ Os valores são **`SIM`** / **`NAO`** (vazio = "não informado").
+✔ Os hábitos são códigos por extenso (`FUMANTE`, `VEGETARIANO`...); vazio = "não informado".
 
 ```sql
-SELECT u.nome, a.tipo, a.titulo, a.ativo, a.expira_em, a.destaque_ate
+SELECT u.nome, a.tipo, a.titulo, a.sexo_aceito, a.vagas_disponiveis, a.expira_em, a.destaque_ate
   FROM anuncios a JOIN usuarios u ON u.id = a.usuario_id WHERE a.ativo = 'SIM';
 ```
 
@@ -417,17 +507,16 @@ SELECT u.nome, p.tipo, p.valor, p.status, p.anuncio_id, p.pago_em
 
 ✔ Cada compra com `status` `PENDENTE` ou `PAGO`; o extra usado tem `anuncio_id` preenchido.
 
-Provar que o banco também protege a regra "uma busca ativa por pessoa" (o comando deve
-**falhar**; ele não grava nada por causa do `ROLLBACK`):
+Provar que o banco protege a regra de restrição por sexo (o comando deve **falhar** por causa
+do `CHECK`; nada é gravado):
 
 ```sql
-INSERT INTO anuncios (usuario_id, tipo, titulo, ativo)
-SELECT usuario_id, 'PROCURANDO', 'duplicada', 'SIM' FROM anuncios
- WHERE tipo = 'PROCURANDO' AND ativo = 'SIM' AND ROWNUM = 1;
+INSERT INTO anuncios (usuario_id, tipo, titulo, sexo_aceito)
+SELECT id, 'TEM_VAGA', 'invalido', 'TALVEZ' FROM usuarios WHERE ROWNUM = 1;
 ROLLBACK;
 ```
 
-✔ `ORA-00001: unique constraint (RACHAAI.UQ_ANUNCIOS_UMA_BUSCA_POR_USUARIO) violated`.
+✔ `ORA-02290: check constraint (RACHAAI.CK_ANUNCIOS_SEXO_ACEITO) violated`.
 
 ### 7.3 Pelo terminal (sem SQL Developer)
 
@@ -505,16 +594,20 @@ Marque conforme testar:
 
 - [ ] Sobe com `docker compose up --build -d` e o `db` fica `(healthy)`
 - [ ] Site abre em http://localhost:8081 e o Swagger em :8080
-- [ ] Cadastro pede **alugar ou anunciar** e o menu muda por papel
+- [ ] Cadastro pede **alugar ou anunciar** (e CPF) e o menu muda conforme a conta
 - [ ] Login com senha errada é recusado
-- [ ] Perfil de hábitos salva
-- [ ] Quem aluga: Minha busca (sem mapa), Buscar com 2 abas, scores conforme a tabela 6.4
+- [ ] Perfil salva (sexo, hábitos, alimentação "Outro" com texto, foto)
+- [ ] Buscar com 2 abas, filtros de bairro/mapa/orçamento, scores conforme a tabela 6.4
+- [ ] Vaga só para mulheres some para o Caio e o backend dá 403 na conversa direta
 - [ ] Conversar abre o chat direto; quem anuncia responde
-- [ ] Quem anuncia: cria vaga e imóvel (com mapa), contador de grátis, Remover
+- [ ] Anunciar: vaga e imóvel (endereço com sugestões, mapa, fotos, vagas disponíveis, sexo aceito)
+- [ ] Foto no cartão abre popup com miniaturas
 - [ ] 4º anúncio bloqueado → comprar extra → simular pagamento → publicar → selo "Extra até"
 - [ ] Destaque: pago → selo "Destaque até" → topo da busca mesmo com score menor
-- [ ] Telas de outro papel redirecionam; API devolve 403
-- [ ] Banco mostra `ALUGAR`/`ANUNCIAR` e `SIM`/`NAO`
+- [ ] "Quero também..." liga a outra capacidade e leva para a tela nova
+- [ ] "Esqueci minha senha" entrega o e-mail no Mailpit (:8025) e o link só vale uma vez
+- [ ] Telas sem a capacidade redirecionam; API devolve 403
+- [ ] Banco mostra `alugar`/`anunciar` e `SIM`/`NAO`
 - [ ] `docker compose stop` para tudo; `docker compose up -d` traz os dados de volta
 
 ---

@@ -6,11 +6,17 @@ grupos de WhatsApp. Cada pessoa cria um perfil com hábitos que importam para a 
 (fuma, bebe, vegetariano, pet, rotina, música...) e o sistema ordena os anúncios por
 **compatibilidade**.
 
-No cadastro a conta escolhe, uma vez, um papel:
+No cadastro a conta escolhe começar **procurando** ou **anunciando** e pode ligar a outra
+capacidade depois, no perfil, sem criar outra conta:
 
-- **Quero alugar** — descreve o que procura, navega pelos anúncios e puxa conversa. **Nunca paga.**
-- **Quero anunciar** — publica vaga para dividir ou imóvel inteiro. **Até 3 anúncios grátis**;
-  do 4º em diante paga um *anúncio extra*; pode pagar um *destaque* para aparecer no topo da busca.
+- **Procurar vaga** — navega pelos anúncios (filtro por bairro, mapa e orçamento; vagas por sexo)
+  e puxa conversa. **Nunca paga.**
+- **Anunciar** — publica vaga para dividir ou imóvel inteiro, com fotos. **Até 3 anúncios
+  grátis**; do 4º em diante paga um *anúncio extra*; pode pagar um *destaque* para aparecer no
+  topo da busca.
+
+Também tem: perfil com foto, convívios e avaliações entre quem já morou junto, notificações,
+bloqueio e denúncia, e "esqueci minha senha" por e-mail.
 
 ## Subir em 3 comandos
 
@@ -30,6 +36,7 @@ Abra **http://localhost:8081**. A primeira subida demora (baixa ~1,2 GB do Oracl
 | Site | http://localhost:8081 |
 | API + Swagger | http://localhost:8080/swagger-ui.html |
 | Banco Oracle | `localhost:1522`, serviço `XEPDB1` |
+| E-mails de teste (Mailpit) | http://localhost:8025 |
 
 ## Documentação
 
@@ -51,7 +58,7 @@ rachaai/
 ├── database/           script opcional para usar o Oracle instalado no PC
 ├── scripts/            seed-demo.sh (dados de exemplo)
 ├── docs/               a documentação acima
-├── docker-compose.yml  Oracle + backend + frontend
+├── docker-compose.yml  Oracle + backend + frontend + Mailpit (e-mails de teste)
 └── .env.example        modelo das configurações e senhas
 ```
 
@@ -59,7 +66,7 @@ rachaai/
 
 Java 21 · Spring Boot 3.3.13 · Spring Security + JWT · Hibernate 6.5 · Flyway 10 · Oracle
 Database 21c XE · React 19.3 · TypeScript 6 · Vite 8 · Tailwind 4 · Leaflet/OpenStreetMap ·
-lucide-react · Docker + Nginx. Tabela completa em [docs/01-TECNOLOGIAS.md](docs/01-TECNOLOGIAS.md).
+Spring Mail · lucide-react · Docker + Nginx + Mailpit. Tabela completa em [docs/01-TECNOLOGIAS.md](docs/01-TECNOLOGIAS.md).
 
 ## Usando o Oracle instalado no PC em vez do container
 
@@ -71,8 +78,11 @@ backend com `DB_URL=jdbc:oracle:thin:@localhost:1521/XEPDB1`, `DB_USER=rachaai` 
 
 - **Pagamento é simulado.** Nenhum gateway está conectado; um botão de teste confirma a compra.
   Não use assim com pessoas reais. Como integrar Pix: [docs/06-COBRANCA.md](docs/06-COBRANCA.md).
-- Sem fotos, sem confirmação de e-mail, sem recuperação de senha.
-- Papel da conta é fixo; anúncio extra não renova sozinho nem é reembolsado.
+- **E-mail:** por padrão o "esqueci minha senha" cai no Mailpit (caixa de teste local), não na
+  internet. Para e-mail real, preencha as variáveis `MAIL_*` do `.env`.
+- Sem confirmação de e-mail no cadastro e sem login com Google.
+- Fotos ficam no próprio banco (BLOB); denúncias são só registradas (não há painel de moderação).
+- Endereços e sugestões só para Maringá. Anúncio extra não renova sozinho nem é reembolsado.
 - Driver Oracle fixado em `ojdbc11 21.6` por causa de um bug da série 23.x com datas (`ORA-18716`).
 
 Lista completa em [docs/02-ARQUITETURA.md](docs/02-ARQUITETURA.md).

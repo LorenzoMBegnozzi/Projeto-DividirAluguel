@@ -1,6 +1,6 @@
 # Cobrança: como o RachaAi ganha dinheiro
 
-**Quem paga é quem anuncia.** Quem procura lugar (papel "Quero alugar") nunca paga nada.
+**Quem paga é quem anuncia.** Quem procura lugar (capacidade "procurar vaga") nunca paga nada. Uma conta que também anuncia paga só pelos anúncios extras e destaques que comprar.
 
 ## Regras
 

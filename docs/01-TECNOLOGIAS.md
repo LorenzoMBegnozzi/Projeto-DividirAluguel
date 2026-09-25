@@ -1,4 +1,4 @@
-# Tecnologias, ferramentas e versões
+w# Tecnologias, ferramentas e versões
 
 Este documento lista tudo que o RachaAi usa, com a versão exata. As versões foram
 conferidas no projeto (arquivos `pom.xml`, `package.json`, `Dockerfile`,
@@ -57,10 +57,12 @@ versão sem testar o cadastro de usuário (que grava a data de nascimento).
 | Testes | JUnit Jupiter 5.10.5, Mockito 5.11.0, Spring Security Test | |
 | Banco dos testes | H2 2.2.224 (em memória, só no teste) | não é usado em produção |
 | Hash de senha | BCrypt (`BCryptPasswordEncoder`) | |
+| E-mail | Spring Boot Mail (`spring-boot-starter-mail`, Jakarta Mail) | envia o e-mail de "esqueci minha senha" por SMTP; `@Async` ligado |
 | Lombok | 1.18.38 | declarado no `pom.xml`, mas **não é usado** no código |
 
 Estrutura de pacotes (`backend/src/main/java/com/rachaai`): `auth`, `user`, `listing`,
-`match`, `conversation`, `chat`, `billing`, `security`, `config`, `common`.
+`match`, `conversation`, `chat`, `interest`, `rating`, `notification`, `moderation`, `billing`,
+`security`, `config`, `common`.
 
 ## 4. Frontend
 
@@ -79,6 +81,7 @@ Estrutura de pacotes (`backend/src/main/java/com/rachaai`): `auth`, `user`, `lis
 | Leaflet | ^1.9.4 | **1.9.4** | mapa |
 | react-leaflet | ^5.0.0 | **5.0.0** | Leaflet para React |
 | Mapa (tiles) | OpenStreetMap | | gratuito, sem chave de API |
+| Busca de endereço | Nominatim (OpenStreetMap) | | sugestões de bairro/endereço em Maringá, chamada direto do navegador, sem chave (limite de ~1 requisição por segundo, por isso há espera entre as teclas) |
 | oxlint | ^1.81.0 | 1.83.0 | verificação de código (`npm run lint`) |
 | Node.js (build no Docker) | | imagem `node:20-alpine` | |
 | Node.js / npm (seu PC) | | v24.12.0 / 11.6.2 | só necessário para rodar o front fora do Docker |
@@ -88,7 +91,8 @@ Estrutura de pacotes (`backend/src/main/java/com/rachaai`): `auth`, `user`, `lis
 | Ferramenta | Versão | Para que serve |
 |---|---|---|
 | Docker Engine | **29.5.0** | roda os containers |
-| Docker Compose | **v5.1.3** | sobe os 3 containers de uma vez |
+| Docker Compose | **v5.1.3** | sobe os 4 containers de uma vez |
+| Mailpit | `axllent/mailpit` | servidor de e-mail **de teste** (captura os e-mails; caixa em http://localhost:8025). Só para desenvolvimento |
 | Nginx | `nginx:1.27-alpine` | serve o front e faz proxy de `/api` para o backend |
 | Windows | 11 Home (10.0.26200) | sistema do computador de desenvolvimento |
 | WSL | **2.7.3.0** (kernel 6.6.114.1-1) | Linux dentro do Windows, onde o Docker roda |
@@ -103,6 +107,7 @@ Estrutura de pacotes (`backend/src/main/java/com/rachaai`): `auth`, `user`, `lis
 | 8081 | Frontend (Nginx) | http://localhost:8081 |
 | 8080 | Backend / API / Swagger | http://localhost:8080 e `/swagger-ui.html` |
 | 1522 | Oracle XE | `localhost:1522`, serviço `XEPDB1` |
+| 8025 | Mailpit (caixa de e-mails de teste) | http://localhost:8025 |
 | 5173 | Frontend em modo desenvolvimento (Vite), só se rodar fora do Docker | http://localhost:5173 |
 
 ## 7. Configurações por variável de ambiente
@@ -123,3 +128,8 @@ e podem ser trocadas no arquivo `.env` (raiz do projeto).
 | `EXTRA_LISTING_PRICE` / `EXTRA_LISTING_DAYS` | 19.90 / 30 | preço e validade do anúncio extra |
 | `HIGHLIGHT_PRICE` / `HIGHLIGHT_DAYS` | 14.90 / 30 | preço e duração do destaque |
 | `EXPIRATION_CHECK` | `PT10M` | de quanto em quanto tempo o sistema desativa anúncios extras vencidos |
+| `APP_BASE_URL` | `http://localhost:8081` | endereço público do site, usado nos links enviados por e-mail |
+| `MAIL_HOST` / `MAIL_PORT` | `mailpit` (no Docker) / `1025` | servidor SMTP. Para e-mail real: `smtp.gmail.com` / `587` |
+| `MAIL_USER` / `MAIL_PASSWORD` | vazio | login do SMTP (no Gmail: a **senha de app**, nunca a senha da conta) |
+| `MAIL_AUTH` / `MAIL_STARTTLS` | `false` / `false` | `true` nos dois para provedores reais |
+| `MAIL_FROM` | `RachaAi <nao-responda@rachaai.local>` | remetente que aparece no e-mail |
