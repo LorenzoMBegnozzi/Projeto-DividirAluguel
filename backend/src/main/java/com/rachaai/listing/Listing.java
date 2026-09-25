@@ -60,6 +60,54 @@ public class Listing {
     @Column(name = "aceita_fumante", length = 3)
     private Boolean acceptsSmoker;
 
+    @Column(name = "dormitorios")
+    private Integer bedrooms;
+
+    @Column(name = "suites")
+    private Integer suites;
+
+    @Column(name = "banheiros_sociais")
+    private Integer bathrooms;
+
+    @Column(name = "vagas_garagem")
+    private Integer parkingSpots;
+
+    @Convert(converter = SimNaoConverter.class)
+    @Column(name = "garagem_carro", length = 3)
+    private Boolean parkingForCar;
+
+    @Convert(converter = SimNaoConverter.class)
+    @Column(name = "garagem_moto", length = 3)
+    private Boolean parkingForMotorcycle;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "garagem_disposicao", length = 20)
+    private ParkingLayout parkingLayout;
+
+    @Convert(converter = SimNaoConverter.class)
+    @Column(name = "garagem_coberta", length = 3)
+    private Boolean parkingCovered;
+
+    @Convert(converter = SimNaoConverter.class)
+    @Column(name = "piscina", length = 3)
+    private Boolean hasPool;
+
+    @Convert(converter = SimNaoConverter.class)
+    @Column(name = "salao_festas", length = 3)
+    private Boolean hasPartyRoom;
+
+    @Convert(converter = SimNaoConverter.class)
+    @Column(name = "academia", length = 3)
+    private Boolean hasGym;
+
+    @Convert(converter = SimNaoConverter.class)
+    @Column(name = "playground", length = 3)
+    private Boolean hasPlayground;
+
+    @Convert(converter = SimNaoConverter.class)
+    @Column(name = "portaria_24h", length = 3)
+    private Boolean hasConcierge24h;
+
     @Convert(converter = SimNaoConverter.class)
     @Column(name = "ativo", nullable = false, length = 3)
     private boolean active = true;
@@ -200,6 +248,110 @@ public class Listing {
 
     public void setAcceptsSmoker(Boolean acceptsSmoker) {
         this.acceptsSmoker = acceptsSmoker;
+    }
+
+    public Integer getBedrooms() {
+        return bedrooms;
+    }
+
+    public void setBedrooms(Integer bedrooms) {
+        this.bedrooms = bedrooms;
+    }
+
+    public Integer getSuites() {
+        return suites;
+    }
+
+    public void setSuites(Integer suites) {
+        this.suites = suites;
+    }
+
+    public Integer getBathrooms() {
+        return bathrooms;
+    }
+
+    public void setBathrooms(Integer bathrooms) {
+        this.bathrooms = bathrooms;
+    }
+
+    public Integer getParkingSpots() {
+        return parkingSpots;
+    }
+
+    public void setParkingSpots(Integer parkingSpots) {
+        this.parkingSpots = parkingSpots;
+    }
+
+    public Boolean getParkingForCar() {
+        return parkingForCar;
+    }
+
+    public void setParkingForCar(Boolean parkingForCar) {
+        this.parkingForCar = parkingForCar;
+    }
+
+    public Boolean getParkingForMotorcycle() {
+        return parkingForMotorcycle;
+    }
+
+    public void setParkingForMotorcycle(Boolean parkingForMotorcycle) {
+        this.parkingForMotorcycle = parkingForMotorcycle;
+    }
+
+    public ParkingLayout getParkingLayout() {
+        return parkingLayout;
+    }
+
+    public void setParkingLayout(ParkingLayout parkingLayout) {
+        this.parkingLayout = parkingLayout;
+    }
+
+    public Boolean getParkingCovered() {
+        return parkingCovered;
+    }
+
+    public void setParkingCovered(Boolean parkingCovered) {
+        this.parkingCovered = parkingCovered;
+    }
+
+    public Boolean getHasPool() {
+        return hasPool;
+    }
+
+    public void setHasPool(Boolean hasPool) {
+        this.hasPool = hasPool;
+    }
+
+    public Boolean getHasPartyRoom() {
+        return hasPartyRoom;
+    }
+
+    public void setHasPartyRoom(Boolean hasPartyRoom) {
+        this.hasPartyRoom = hasPartyRoom;
+    }
+
+    public Boolean getHasGym() {
+        return hasGym;
+    }
+
+    public void setHasGym(Boolean hasGym) {
+        this.hasGym = hasGym;
+    }
+
+    public Boolean getHasPlayground() {
+        return hasPlayground;
+    }
+
+    public void setHasPlayground(Boolean hasPlayground) {
+        this.hasPlayground = hasPlayground;
+    }
+
+    public Boolean getHasConcierge24h() {
+        return hasConcierge24h;
+    }
+
+    public void setHasConcierge24h(Boolean hasConcierge24h) {
+        this.hasConcierge24h = hasConcierge24h;
     }
 
     public boolean isActive() {

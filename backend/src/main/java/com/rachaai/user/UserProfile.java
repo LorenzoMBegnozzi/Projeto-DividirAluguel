@@ -1,5 +1,6 @@
 package com.rachaai.user;
 
+import com.rachaai.common.SimNaoConverter;
 import jakarta.persistence.*;
 
 import java.time.Instant;
@@ -55,6 +56,14 @@ public class UserProfile {
     @Enumerated(EnumType.STRING)
     @Column(name = "rotina", length = 20)
     private Routine routine;
+
+    @Convert(converter = SimNaoConverter.class)
+    @Column(name = "precisa_vaga_carro", length = 3)
+    private Boolean needsCarParking;
+
+    @Convert(converter = SimNaoConverter.class)
+    @Column(name = "precisa_vaga_moto", length = 3)
+    private Boolean needsMotorcycleParking;
 
     @Column(name = "atualizado_em", nullable = false)
     private Instant updatedAt = Instant.now();
@@ -154,6 +163,22 @@ public class UserProfile {
 
     public void setRoutine(Routine routine) {
         this.routine = routine;
+    }
+
+    public Boolean getNeedsCarParking() {
+        return needsCarParking;
+    }
+
+    public void setNeedsCarParking(Boolean needsCarParking) {
+        this.needsCarParking = needsCarParking;
+    }
+
+    public Boolean getNeedsMotorcycleParking() {
+        return needsMotorcycleParking;
+    }
+
+    public void setNeedsMotorcycleParking(Boolean needsMotorcycleParking) {
+        this.needsMotorcycleParking = needsMotorcycleParking;
     }
 
     public Instant getUpdatedAt() {

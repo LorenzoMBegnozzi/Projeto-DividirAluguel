@@ -22,6 +22,8 @@ public record ProfileRequest(
         @Size(max = 300) String allergyOther,
         @Size(max = 500) String musicTaste,
         Routine routine,
+        Boolean needsCarParking,
+        Boolean needsMotorcycleParking,
         @Size(max = 1000) String bio,
         @Size(max = 160) String occupation
 ) {

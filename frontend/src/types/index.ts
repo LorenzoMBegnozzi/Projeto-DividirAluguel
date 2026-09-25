@@ -20,6 +20,8 @@ export type Gender = 'MASCULINO' | 'FEMININO' | 'OUTRO'
 
 export type GenderPreference = 'QUALQUER' | 'MASCULINO' | 'FEMININO'
 
+export type ParkingLayout = 'GAVETA' | 'LATERAL'
+
 export type Diet = 'ONIVORO' | 'VEGETARIANO' | 'VEGANO' | 'PESCETARIANO' | 'FLEXITARIANO' | 'OUTRO'
 
 export type PetPreference =
@@ -71,6 +73,8 @@ export interface UserProfile {
   allergyOther: string | null
   musicTaste: string | null
   routine: Routine | null
+  needsCarParking: boolean | null
+  needsMotorcycleParking: boolean | null
   safetyTermsAccepted: boolean
   photoUrl: string | null
 }
@@ -91,6 +95,19 @@ export interface Listing {
   longitude: number | null
   acceptsPets: boolean | null
   acceptsSmoker: boolean | null
+  bedrooms: number | null
+  suites: number | null
+  bathrooms: number | null
+  parkingSpots: number | null
+  parkingForCar: boolean | null
+  parkingForMotorcycle: boolean | null
+  parkingLayout: ParkingLayout | null
+  parkingCovered: boolean | null
+  hasPool: boolean | null
+  hasPartyRoom: boolean | null
+  hasGym: boolean | null
+  hasPlayground: boolean | null
+  hasConcierge24h: boolean | null
   highlighted: boolean
   highlightedUntil: string | null
   expiresAt: string | null
@@ -190,6 +207,8 @@ export type NotificationType =
   | 'CONVIVIO_CONFIRMADO'
   | 'CONVIVIO_RECUSADO'
   | 'AVALIACAO_RECEBIDA'
+  | 'NOVO_INTERESSE'
+  | 'INTERESSE_EM_COMUM'
 
 export interface AppNotification {
   id: number

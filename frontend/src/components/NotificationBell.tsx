@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Bell, HeartHandshake, MessageCircle, ShieldCheck, ShieldX, Star, Users } from 'lucide-react'
+import { Bell, Heart, HeartHandshake, MessageCircle, ShieldCheck, ShieldX, Star, Users } from 'lucide-react'
 import {
   getNotifications,
   getUnreadCount,
@@ -16,6 +16,8 @@ const notificationStyle: Record<NotificationType, { icon: typeof Bell; iconClass
   CONVIVIO_CONFIRMADO: { icon: ShieldCheck, iconClass: 'bg-leaf-tint text-leaf' },
   CONVIVIO_RECUSADO: { icon: ShieldX, iconClass: 'bg-danger-tint text-danger' },
   AVALIACAO_RECEBIDA: { icon: Star, iconClass: 'bg-mel-tint text-star' },
+  NOVO_INTERESSE: { icon: Heart, iconClass: 'bg-brand-tint text-brand-strong' },
+  INTERESSE_EM_COMUM: { icon: Users, iconClass: 'bg-brand-tint text-brand-strong' },
 }
 
 function timeAgo(value: string) {

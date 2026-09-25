@@ -6,7 +6,10 @@ import com.rachaai.common.PhotoValidator;
 import com.rachaai.conversation.ConversationRepository;
 import com.rachaai.listing.dto.ListingRequest;
 import com.rachaai.listing.dto.ListingResponse;
+import com.rachaai.user.Gender;
 import com.rachaai.user.User;
+import com.rachaai.user.UserProfile;
+import com.rachaai.user.UserProfileRepository;
 import com.rachaai.user.UserService;
 import com.rachaai.user.dto.UserResponse;
 import org.springframework.stereotype.Service;
@@ -24,19 +27,22 @@ public class ListingService {
     private final UserService userService;
     private final BillingService billingService;
     private final ConversationRepository conversationRepository;
+    private final UserProfileRepository userProfileRepository;
 
     public ListingService(
             ListingRepository listingRepository,
             ListingPhotoRepository listingPhotoRepository,
             UserService userService,
             BillingService billingService,
-            ConversationRepository conversationRepository
+            ConversationRepository conversationRepository,
+            UserProfileRepository userProfileRepository
     ) {
         this.listingRepository = listingRepository;
         this.listingPhotoRepository = listingPhotoRepository;
         this.userService = userService;
         this.billingService = billingService;
         this.conversationRepository = conversationRepository;
+        this.userProfileRepository = userProfileRepository;
     }
 
     @Transactional(readOnly = true)
@@ -45,9 +51,17 @@ public class ListingService {
     }
 
     @Transactional(readOnly = true)
-    public ListingResponse getById(Long listingId) {
+    public ListingResponse getById(Long viewerId, Long listingId) {
         Listing listing = listingRepository.findById(listingId)
                 .orElseThrow(() -> ApiException.notFound("Anúncio não encontrado"));
+        // Vaga só para um sexo: quem não se encaixa não vê nem pelo link direto (mesma regra da busca).
+        boolean isOwner = listing.getUser().getId().equals(viewerId);
+        if (!isOwner && listing.getType() == ListingType.TEM_VAGA) {
+            Gender viewerGender = userProfileRepository.findByUserId(viewerId).map(UserProfile::getGender).orElse(null);
+            if (!listing.getGenderPreference().accepts(viewerGender)) {
+                throw ApiException.notFound("Anúncio não encontrado");
+            }
+        }
         return ListingResponse.from(listing);
     }
 
@@ -58,6 +72,9 @@ public class ListingService {
 
         if (request.latitude() == null || request.longitude() == null || isBlank(request.address())) {
             throw ApiException.badRequest("Informe endereço e localização no mapa");
+        }
+        if (request.suites() != null && request.bedrooms() != null && request.suites() > request.bedrooms()) {
+            throw ApiException.badRequest("O número de suítes não pode ser maior que o de dormitórios");
         }
 
         long freeInUse = listingRepository.countByUserIdAndActiveTrueAndTypeInAndExpiresAtIsNull(
@@ -72,6 +89,20 @@ public class ListingService {
         listing.setAddress(request.address());
         listing.setLatitude(request.latitude());
         listing.setLongitude(request.longitude());
+        listing.setBedrooms(request.bedrooms());
+        listing.setSuites(request.suites());
+        listing.setBathrooms(request.bathrooms());
+        listing.setParkingSpots(request.parkingSpots());
+        boolean hasParking = request.parkingSpots() != null && request.parkingSpots() > 0;
+        listing.setParkingForCar(hasParking ? request.parkingForCar() : null);
+        listing.setParkingForMotorcycle(hasParking ? request.parkingForMotorcycle() : null);
+        listing.setParkingLayout(hasParking ? request.parkingLayout() : null);
+        listing.setParkingCovered(hasParking ? request.parkingCovered() : null);
+        listing.setHasPool(request.hasPool());
+        listing.setHasPartyRoom(request.hasPartyRoom());
+        listing.setHasGym(request.hasGym());
+        listing.setHasPlayground(request.hasPlayground());
+        listing.setHasConcierge24h(request.hasConcierge24h());
         if (request.type() == ListingType.TEM_VAGA) {
             listing.setAvailableSlots(request.availableSlots());
             if (request.genderPreference() != null) {

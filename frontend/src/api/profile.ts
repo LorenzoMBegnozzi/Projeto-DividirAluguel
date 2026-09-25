@@ -12,6 +12,8 @@ export interface ProfilePayload {
   allergyOther: string
   musicTaste: string
   routine: Routine | null
+  needsCarParking: boolean | null
+  needsMotorcycleParking: boolean | null
   bio: string
   occupation: string
 }

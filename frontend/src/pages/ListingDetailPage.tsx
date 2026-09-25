@@ -9,6 +9,8 @@ import { useAuth } from '../context/AuthContext'
 import { genderPreferenceLabels } from '../constants/profileOptions'
 import PhotoLightbox from '../components/PhotoLightbox'
 import Fact from '../components/Fact'
+import PropertyFacts from '../components/PropertyFacts'
+import InterestSection from '../components/InterestSection'
 import Avatar from '../components/Avatar'
 import ListingMapPreview from '../components/ListingMapPreview'
 import type { Listing, UserProfile } from '../types'
@@ -134,6 +136,7 @@ export default function ListingDetailPage() {
               {listing.acceptsSmoker ? 'Aceita fumantes' : 'Não aceita fumantes'}
             </Fact>
           )}
+          <PropertyFacts listing={listing} />
         </div>
 
         {listing.latitude != null && listing.longitude != null && (
@@ -144,6 +147,12 @@ export default function ListingDetailPage() {
         )}
 
         {error && <p className="mb-3 rounded-md bg-danger-tint px-3 py-2 text-sm text-danger">{error}</p>}
+
+        {listing.type === 'ESTABELECIMENTO' && currentUser && (currentUser.id === listing.userId || currentUser.renter) && (
+          <div className="mb-3">
+            <InterestSection listingId={listing.id} isOwner={currentUser.id === listing.userId} />
+          </div>
+        )}
 
         {owner && currentUser && owner.id !== currentUser.id && (
           <button

@@ -51,13 +51,20 @@ public class UserService {
 
         profile.setSmokingHabit(request.smokingHabit());
         profile.setDrinkingHabit(request.drinkingHabit());
-        profile.setGender(request.gender());
+        // O sexo decide quais vagas a pessoa enxerga; depois de salvo uma vez, não muda mais.
+        if (profile.getGender() == null) {
+            profile.setGender(request.gender());
+        } else if (request.gender() != null && request.gender() != profile.getGender()) {
+            throw ApiException.badRequest("O sexo não pode ser alterado depois de salvo");
+        }
         profile.setDiet(request.diet());
         profile.setDietOther(request.diet() == Diet.OUTRO ? request.dietOther() : null);
         profile.setPetPreferencesList(request.petPreferences());
         profile.setAllergies(AllergyCodec.encode(request.allergyTags(), request.allergyOther()));
         profile.setMusicTaste(request.musicTaste());
         profile.setRoutine(request.routine());
+        profile.setNeedsCarParking(request.needsCarParking());
+        profile.setNeedsMotorcycleParking(request.needsMotorcycleParking());
         profile.touch();
 
         profileRepository.save(profile);

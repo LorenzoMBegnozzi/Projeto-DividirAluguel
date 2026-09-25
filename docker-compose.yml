@@ -62,7 +62,7 @@ services:
     depends_on:
       - backend
     ports:
-      - "8081:80"
+      - "8082:80"
 
 volumes:
   oracle_data:

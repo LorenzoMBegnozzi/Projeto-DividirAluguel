@@ -73,6 +73,7 @@ Hábitos de convivência (1 para 1 com `usuarios`). Alimenta o cálculo de compa
 | `pet_preferencias` | VARCHAR2(500) | opções separadas por vírgula (ex.: `CACHORRO,GATO`) |
 | `alergias` | VARCHAR2(500) | tags separadas por vírgula; `OUTRO:texto livre` guarda o relato da pessoa. Na tela: Poeira, Pelo de animal, Alimentos, Nenhuma, Outro (as tags antigas, como Látex, continuam legíveis) |
 | `gosto_musical` | VARCHAR2(500) | estilos separados por vírgula |
+| `precisa_vaga_carro`, `precisa_vaga_moto` | VARCHAR2(3) | `SIM` / `NAO`: precisa de vaga de garagem para carro/moto. Os dois `NAO` = "não preciso"; nulo = não informado |
 | `rotina` | VARCHAR2(20) | `DIURNO`, `NOTURNO` ou `MISTO` |
 | `atualizado_em` | TIMESTAMP | |
 
@@ -101,6 +102,11 @@ Os dois tipos de anúncio da plataforma. (O tipo antigo `PROCURANDO` foi removid
 | `sexo_aceito` | VARCHAR2(20) | só faz efeito em `TEM_VAGA`: `QUALQUER` (padrão), `MASCULINO` ou `FEMININO` |
 | `endereco`, `latitude`, `longitude` | | obrigatórios; aparecem no mapa e servem para a busca "por perto" |
 | `aceita_pets`, `aceita_fumante` | VARCHAR2(3) | só em `ESTABELECIMENTO`: o que o dono aceita de inquilino |
+| `dormitorios`, `suites`, `banheiros_sociais`, `vagas_garagem` | NUMBER(2) | os dois tipos, opcionais (nulo = não informado; ≥ 0). Suítes não podem passar do número de dormitórios (regra da aplicação) |
+| `garagem_carro`, `garagem_moto` | VARCHAR2(3) | `SIM` / `NAO`: para que serve a garagem. Só gravados quando `vagas_garagem` > 0 |
+| `garagem_disposicao` | VARCHAR2(20) | `GAVETA` (um carro atrás do outro) ou `LATERAL` (lado a lado). Só quando `vagas_garagem` > 0 |
+| `garagem_coberta` | VARCHAR2(3) | `SIM` / `NAO`: vaga coberta. Só quando `vagas_garagem` > 0 |
+| `piscina`, `salao_festas`, `academia`, `playground`, `portaria_24h` | VARCHAR2(3) | condomínio, os dois tipos: `SIM` / `NAO` / nulo (não informado). `playground` = playground e brinquedoteca |
 | `ativo` | VARCHAR2(3) | `SIM` / `NAO`. Remover um anúncio só muda para `NAO` (não apaga a linha) |
 | `disponivel` | VARCHAR2(3) | `SIM` / `NAO`. `NAO` = "marcado como indisponível" (negócio fechado); o anúncio some da busca |
 | `fechado_com_usuario_id` | NUMBER | opcional: com quem o negócio foi fechado (precisa ter conversado com o dono) |
@@ -109,7 +115,8 @@ Os dois tipos de anúncio da plataforma. (O tipo antigo `PROCURANDO` foi removid
 | `criado_em` | TIMESTAMP | |
 
 Regras garantidas pelo próprio banco: `tipo` só aceita `TEM_VAGA`/`ESTABELECIMENTO`;
-`sexo_aceito` só os 3 valores acima; `ativo`, `disponivel` e `aceita_*` só `SIM`/`NAO`.
+`sexo_aceito` só os 3 valores acima; `ativo`, `disponivel`, `aceita_*`, `garagem_*` e as
+comodidades do condomínio só `SIM`/`NAO`; as quantidades não podem ser negativas.
 
 ### `fotos_anuncio`
 Até 6 fotos por anúncio (limite aplicado pela aplicação), na mesma ideia de `fotos_usuario`.
@@ -185,7 +192,9 @@ período em que moraram juntas) e só vale depois que a outra confirma.
 
 ### `notificacoes`
 Avisos dentro do site (o sino no topo). Tipos: `NOVA_MENSAGEM`, `NOVA_CONVERSA`,
-`CONVIVIO_PROPOSTO`, `CONVIVIO_CONFIRMADO`, `CONVIVIO_RECUSADO`, `AVALIACAO_RECEBIDA`.
+`CONVIVIO_PROPOSTO`, `CONVIVIO_CONFIRMADO`, `CONVIVIO_RECUSADO`, `AVALIACAO_RECEBIDA`,
+`NOVO_INTERESSE` (dono: alguém clicou em "Tenho interesse") e `INTERESSE_EM_COMUM` (há outros
+interessados no mesmo imóvel).
 Colunas: `usuario_id`, `tipo`, `titulo`, `mensagem`, `link`, `lida` (`SIM`/`NAO`), `criado_em`.
 O site consulta de tempos em tempos (não há push nem websocket).
 
@@ -226,6 +235,11 @@ apenas no link do e-mail), `usado` (`SIM`/`NAO`, uso único) e `criado_em`. O to
 | V19 | `V19__fotos_anuncio.sql` | cria `fotos_anuncio` |
 | V20 | `V20__alimentacao_outro.sql` | `alimentacao_outro` e a opção `OUTRO` em `alimentacao` |
 | V21 | `V21__sexo_e_vaga_por_sexo.sql` | `sexo` em `perfis_usuario` e `sexo_aceito` em `anuncios` |
+| V22 | `V22__detalhes_imovel.sql` | detalhes do imóvel em `anuncios`: dormitórios, banheiros, garagem e comodidades do condomínio |
+| V23 | `V23__suites.sql` | `suites` em `anuncios` |
+| V24 | `V24__garagem_disposicao_coberta.sql` | `garagem_disposicao` e `garagem_coberta` em `anuncios` |
+| V25 | `V25__notificacoes_interesse.sql` | tipos `NOVO_INTERESSE` e `INTERESSE_EM_COMUM` em `notificacoes` |
+| V26 | `V26__perfil_precisa_garagem.sql` | `precisa_vaga_carro` e `precisa_vaga_moto` em `perfis_usuario` |
 
 Para ver o que já foi aplicado: `SELECT "version", "description", "success" FROM "flyway_schema_history";`
 (o nome da tabela é minúsculo e precisa de aspas).

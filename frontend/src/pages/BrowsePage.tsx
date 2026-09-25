@@ -22,6 +22,7 @@ import {
   X,
 } from 'lucide-react'
 import Fact from '../components/Fact'
+import PropertyFacts from '../components/PropertyFacts'
 import ListingMapPreview from '../components/ListingMapPreview'
 import CompatScore from '../components/CompatScore'
 import LocationAutocomplete from '../components/LocationAutocomplete'
@@ -39,7 +40,10 @@ export default function BrowsePage() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const [tab, setTab] = useState<Tab>('ROOMMATES')
-  const [viewMode, setViewMode] = useState<ViewMode>('list')
+  // No computador (a partir do breakpoint md, onde a grade tem 2 colunas) começa em grade; no celular, em lista.
+  const [viewMode, setViewMode] = useState<ViewMode>(() =>
+    window.matchMedia('(min-width: 768px)').matches ? 'grid' : 'list',
+  )
   const [bairro, setBairro] = useState('')
   const [precoMax, setPrecoMax] = useState('')
   const [mapPoint, setMapPoint] = useState<{ lat: number; lng: number } | null>(null)
@@ -115,9 +119,19 @@ export default function BrowsePage() {
       const current = interestStatus[listingId]
       const updated = current?.interested ? await unmarkInterest(listingId) : await markInterest(listingId)
       setInterestStatus((prev) => ({ ...prev, [listingId]: updated }))
-      if (expandedListingId === listingId) {
-        const people = await getInterestedPeople(listingId)
-        setInterestedPeople((prev) => ({ ...prev, [listingId]: people }))
+      if (updated.interested) {
+        // Ao marcar interesse, a lista de quem mais se interessou já abre sozinha.
+        setExpandedListingId(listingId)
+        setLoadingPeopleId(listingId)
+        try {
+          const people = await getInterestedPeople(listingId)
+          setInterestedPeople((prev) => ({ ...prev, [listingId]: people }))
+        } finally {
+          setLoadingPeopleId(null)
+        }
+      } else if (expandedListingId === listingId) {
+        // Sem interesse a lista não fica mais disponível (o backend recusa).
+        setExpandedListingId(null)
       }
     } catch (err) {
       setError(apiErrorMessage(err, 'Não foi possível registrar seu interesse'))
@@ -369,6 +383,7 @@ export default function BrowsePage() {
                     {item.listing.availableSlots} {item.listing.availableSlots === 1 ? 'vaga disponível' : 'vagas disponíveis'}
                   </Fact>
                 )}
+                <PropertyFacts listing={item.listing} />
               </div>
 
               {item.listing.latitude != null && item.listing.longitude != null && (

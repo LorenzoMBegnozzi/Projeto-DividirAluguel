@@ -1,7 +1,27 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Banknote, ChevronDown, ChevronUp, Clock, GraduationCap, MapPin, PawPrint, Cigarette, CigaretteOff, Star, Users } from 'lucide-react'
+import {
+  Baby,
+  Banknote,
+  Car,
+  ChevronDown,
+  ChevronUp,
+  Heart,
+  Cigarette,
+  CigaretteOff,
+  Clock,
+  Dumbbell,
+  GraduationCap,
+  MapPin,
+  Motorbike,
+  PartyPopper,
+  PawPrint,
+  ShieldCheck,
+  Star,
+  Users,
+  WavesLadder,
+} from 'lucide-react'
 import {
   createListing,
   deleteListing,
@@ -11,6 +31,7 @@ import {
   uploadListingPhoto,
 } from '../api/listings'
 import { createPayment, getPlan } from '../api/billing'
+import { getInterestStatus } from '../api/interest'
 import { apiErrorMessage } from '../api/client'
 import { formatDate, formatMoney } from '../utils/format'
 import { useAuth } from '../context/AuthContext'
@@ -21,9 +42,12 @@ import PhotoPicker from '../components/PhotoPicker'
 import ListingMapPreview from '../components/ListingMapPreview'
 import Fact from '../components/Fact'
 import BoolToggle from '../components/BoolToggle'
+import QuantityPicker from '../components/QuantityPicker'
+import PropertyFacts from '../components/PropertyFacts'
+import InterestSection from '../components/InterestSection'
 import MarkUnavailableModal from '../components/MarkUnavailableModal'
-import { genderPreferenceLabels, genderPreferenceOptions } from '../constants/profileOptions'
-import type { GenderPreference, Listing, ListingType, Plan } from '../types'
+import { genderPreferenceLabels, genderPreferenceOptions, parkingLayoutOptions } from '../constants/profileOptions'
+import type { GenderPreference, Listing, ListingType, ParkingLayout, Plan } from '../types'
 
 const inputClass =
   'w-full rounded-md border border-line-strong bg-surface px-3 py-2.5 text-ink outline-none placeholder:text-ink-3 hover:border-ink-2 focus:border-ink focus:ring-2 focus:ring-focus focus:ring-offset-1'
@@ -33,6 +57,7 @@ export default function ListingPage() {
   const { user } = useAuth()
   const defaultType: ListingType = user?.advertiserKind === 'ESTABELECIMENTO' ? 'ESTABELECIMENTO' : 'TEM_VAGA'
   const [listings, setListings] = useState<Listing[]>([])
+  const [interestCounts, setInterestCounts] = useState<Record<number, number>>({})
   const [plan, setPlan] = useState<Plan | null>(null)
   const [buying, setBuying] = useState(false)
   const [loadingList, setLoadingList] = useState(true)
@@ -52,6 +77,19 @@ export default function ListingPage() {
   const [longitude, setLongitude] = useState<number | null>(null)
   const [acceptsPets, setAcceptsPets] = useState<boolean | null>(null)
   const [acceptsSmoker, setAcceptsSmoker] = useState<boolean | null>(null)
+  const [bedrooms, setBedrooms] = useState('')
+  const [suites, setSuites] = useState('')
+  const [bathrooms, setBathrooms] = useState('')
+  const [parkingSpots, setParkingSpots] = useState('')
+  const [parkingForCar, setParkingForCar] = useState(false)
+  const [parkingForMotorcycle, setParkingForMotorcycle] = useState(false)
+  const [parkingLayout, setParkingLayout] = useState<ParkingLayout | null>(null)
+  const [parkingCovered, setParkingCovered] = useState<boolean | null>(null)
+  const [hasPool, setHasPool] = useState<boolean | null>(null)
+  const [hasPartyRoom, setHasPartyRoom] = useState<boolean | null>(null)
+  const [hasGym, setHasGym] = useState<boolean | null>(null)
+  const [hasPlayground, setHasPlayground] = useState<boolean | null>(null)
+  const [hasConcierge24h, setHasConcierge24h] = useState<boolean | null>(null)
   const [photoFiles, setPhotoFiles] = useState<File[]>([])
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
@@ -67,6 +105,14 @@ export default function ListingPage() {
       .then(([res, planInfo]) => {
         setListings(res)
         setPlan(planInfo)
+        const establishments = res.filter((l) => l.type === 'ESTABELECIMENTO')
+        Promise.all(
+          establishments.map((l) =>
+            getInterestStatus(l.id)
+              .then((st) => [l.id, st.total] as const)
+              .catch(() => [l.id, 0] as const),
+          ),
+        ).then((entries) => setInterestCounts(Object.fromEntries(entries)))
       })
       .catch((err) => setListError(apiErrorMessage(err, 'Não foi possível carregar seus anúncios')))
       .finally(() => setLoadingList(false))
@@ -84,6 +130,19 @@ export default function ListingPage() {
     setLongitude(null)
     setAcceptsPets(null)
     setAcceptsSmoker(null)
+    setBedrooms('')
+    setSuites('')
+    setBathrooms('')
+    setParkingSpots('')
+    setParkingForCar(false)
+    setParkingForMotorcycle(false)
+    setParkingLayout(null)
+    setParkingCovered(null)
+    setHasPool(null)
+    setHasPartyRoom(null)
+    setHasGym(null)
+    setHasPlayground(null)
+    setHasConcierge24h(null)
     setPhotoFiles([])
   }
 
@@ -94,6 +153,17 @@ export default function ListingPage() {
 
     if (latitude == null || longitude == null || !address.trim()) {
       setError('Marque o local no mapa e informe o endereço')
+      return
+    }
+
+    if (bedrooms && suites && Number(suites) > Number(bedrooms)) {
+      setError('O número de suítes não pode ser maior que o de dormitórios')
+      return
+    }
+
+    const spots = parkingSpots ? Number(parkingSpots) : null
+    if (spots != null && spots > 0 && !parkingForCar && !parkingForMotorcycle) {
+      setError('Escolha se a vaga de garagem é para carro, moto ou os dois')
       return
     }
 
@@ -113,6 +183,19 @@ export default function ListingPage() {
         longitude,
         acceptsPets: type === 'ESTABELECIMENTO' ? acceptsPets : null,
         acceptsSmoker: type === 'ESTABELECIMENTO' ? acceptsSmoker : null,
+        bedrooms: bedrooms ? Number(bedrooms) : null,
+        suites: suites ? Number(suites) : null,
+        bathrooms: bathrooms ? Number(bathrooms) : null,
+        parkingSpots: spots,
+        parkingForCar: spots ? parkingForCar : null,
+        parkingForMotorcycle: spots ? parkingForMotorcycle : null,
+        parkingLayout: spots ? parkingLayout : null,
+        parkingCovered: spots ? parkingCovered : null,
+        hasPool,
+        hasPartyRoom,
+        hasGym,
+        hasPlayground,
+        hasConcierge24h,
       })
       if (photoFiles.length > 0) {
         await Promise.all(photoFiles.map((file) => uploadListingPhoto(created.id, file)))
@@ -207,6 +290,12 @@ export default function ListingPage() {
                           Indisponível{listing.dealClosedWithUserName ? ` · alugado para ${listing.dealClosedWithUserName}` : ''}
                         </span>
                       )}
+                      {(interestCounts[listing.id] ?? 0) > 0 && (
+                        <span className="inline-flex h-6 items-center gap-1 rounded-sm bg-brand-tint px-2 text-xs font-bold text-brand-strong">
+                          <Heart className="h-3 w-3" aria-hidden="true" fill="currentColor" />
+                          {interestCounts[listing.id]} {interestCounts[listing.id] === 1 ? 'interessado' : 'interessados'}
+                        </span>
+                      )}
                       {listing.expiresAt && (
                         <span className="inline-flex h-6 items-center gap-1 rounded-sm bg-brand-tint px-2 text-xs font-bold text-brand-strong">
                           <Clock className="h-3 w-3" aria-hidden="true" />
@@ -290,9 +379,15 @@ export default function ListingPage() {
                           {listing.acceptsSmoker ? 'Aceita fumantes' : 'Não aceita fumantes'}
                         </Fact>
                       )}
+                      <PropertyFacts listing={listing} />
                     </div>
                     {listing.latitude != null && listing.longitude != null && (
                       <ListingMapPreview latitude={listing.latitude} longitude={listing.longitude} />
+                    )}
+                    {listing.type === 'ESTABELECIMENTO' && (
+                      <div className="mt-3">
+                        <InterestSection listingId={listing.id} isOwner />
+                      </div>
                     )}
                     <ListingPhotoManager listingId={listing.id} />
                   </div>
@@ -422,11 +517,80 @@ export default function ListingPage() {
           )}
 
           {type === 'ESTABELECIMENTO' && (
-            <div className="grid grid-cols-1 gap-4 rounded-md border border-line bg-surface-sunk p-4 sm:grid-cols-2">
-              <BoolToggle label="Aceita animais de estimação?" value={acceptsPets} onChange={setAcceptsPets} />
-              <BoolToggle label="Aceita fumantes?" value={acceptsSmoker} onChange={setAcceptsSmoker} />
+            <div className="flex flex-col gap-3 rounded-md border border-line bg-surface-sunk p-4">
+              <BoolToggle label="Aceita animais de estimação?" icon={PawPrint} value={acceptsPets} onChange={setAcceptsPets} />
+              <BoolToggle label="Aceita fumantes?" icon={Cigarette} value={acceptsSmoker} onChange={setAcceptsSmoker} />
             </div>
           )}
+
+          <fieldset className="flex flex-col gap-4 rounded-md border border-line bg-surface-sunk p-4">
+            <legend className="px-1 text-[13px] font-bold text-ink">Sobre o apartamento</legend>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <QuantityPicker label="Dormitórios" value={bedrooms} onChange={setBedrooms} />
+              <QuantityPicker label="Suítes" value={suites} onChange={setSuites} />
+              <QuantityPicker label="Banheiros sociais" value={bathrooms} onChange={setBathrooms} />
+              <QuantityPicker label="Vagas de garagem" value={parkingSpots} onChange={setParkingSpots} />
+            </div>
+            {Number(parkingSpots) > 0 && (
+              <div>
+                <p className="mb-2 text-[13px] font-semibold text-ink">A garagem é para</p>
+                <div className="flex gap-2">
+                  {[
+                    { label: 'Carro', icon: Car, value: parkingForCar, set: setParkingForCar },
+                    { label: 'Moto', icon: Motorbike, value: parkingForMotorcycle, set: setParkingForMotorcycle },
+                  ].map(({ label, icon: Icon, value, set }) => (
+                    <button
+                      key={label}
+                      type="button"
+                      aria-pressed={value}
+                      onClick={() => set(!value)}
+                      className={`inline-flex h-[64px] w-[88px] flex-col items-center justify-center gap-1 rounded-md border text-xs font-semibold transition ${
+                        value ? 'border-inverse bg-inverse text-on-inverse' : 'border-line-strong bg-surface text-ink-2 hover:border-ink'
+                      }`}
+                    >
+                      <Icon className="h-6 w-6" aria-hidden="true" />
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            {Number(parkingSpots) > 0 && (
+              <div>
+                <p className="mb-2 text-[13px] font-semibold text-ink">Tipo de vaga</p>
+                <div className="flex gap-2">
+                  {parkingLayoutOptions.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      aria-pressed={parkingLayout === option.value}
+                      onClick={() => setParkingLayout(parkingLayout === option.value ? null : option.value)}
+                      className={`flex-1 rounded-md border px-3 py-2.5 text-sm font-semibold transition sm:flex-none sm:px-6 ${
+                        parkingLayout === option.value
+                          ? 'border-inverse bg-inverse text-on-inverse'
+                          : 'border-line-strong bg-surface text-ink-2 hover:border-ink'
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-1 text-[13px] text-ink-3">Gaveta: um carro atrás do outro. Lateral: lado a lado, sem bloquear.</p>
+              </div>
+            )}
+            {Number(parkingSpots) > 0 && (
+              <BoolToggle label="A vaga é coberta?" icon={Car} value={parkingCovered} onChange={setParkingCovered} />
+            )}
+          </fieldset>
+
+          <fieldset className="flex flex-col gap-3 rounded-md border border-line bg-surface-sunk p-4">
+            <legend className="px-1 text-[13px] font-bold text-ink">Sobre o condomínio</legend>
+            <BoolToggle label="Piscina" icon={WavesLadder} value={hasPool} onChange={setHasPool} />
+            <BoolToggle label="Salão de festas" icon={PartyPopper} value={hasPartyRoom} onChange={setHasPartyRoom} />
+            <BoolToggle label="Academia" icon={Dumbbell} value={hasGym} onChange={setHasGym} />
+            <BoolToggle label="Playground e brinquedoteca" icon={Baby} value={hasPlayground} onChange={setHasPlayground} />
+            <BoolToggle label="Portaria 24 horas" icon={ShieldCheck} value={hasConcierge24h} onChange={setHasConcierge24h} />
+          </fieldset>
 
           <div className="flex flex-col gap-3 rounded-md border border-line bg-surface-sunk p-4">
             <div>

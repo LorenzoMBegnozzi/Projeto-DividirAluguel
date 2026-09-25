@@ -1,5 +1,5 @@
 import client from './client'
-import type { GenderPreference, Listing, ListingType, UserProfile } from '../types'
+import type { GenderPreference, Listing, ListingType, ParkingLayout, UserProfile } from '../types'
 
 export interface ListingPayload {
   type: ListingType
@@ -15,6 +15,19 @@ export interface ListingPayload {
   longitude: number | null
   acceptsPets: boolean | null
   acceptsSmoker: boolean | null
+  bedrooms: number | null
+  suites: number | null
+  bathrooms: number | null
+  parkingSpots: number | null
+  parkingForCar: boolean | null
+  parkingForMotorcycle: boolean | null
+  parkingLayout: ParkingLayout | null
+  parkingCovered: boolean | null
+  hasPool: boolean | null
+  hasPartyRoom: boolean | null
+  hasGym: boolean | null
+  hasPlayground: boolean | null
+  hasConcierge24h: boolean | null
 }
 
 export function getMyListings() {

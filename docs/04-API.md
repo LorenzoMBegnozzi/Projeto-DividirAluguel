@@ -56,15 +56,19 @@ Formato único:
 `PUT /api/users/me/profile` — corpo: `gender` (`MASCULINO`/`FEMININO`/`OUTRO`), `smokingHabit`,
 `drinkingHabit`, `diet` (`VEGETARIANO`, `VEGANO`, `OUTRO`...) e `dietOther` (texto, só vale com
 `diet = OUTRO`), `petPreferences` (lista), `allergyTags` (lista) e `allergyOther`, `musicTaste`,
-`routine` (`DIURNO`/`NOTURNO`/`MISTO`), `bio`, `occupation`. **Substitui o perfil inteiro:** campo
+`routine` (`DIURNO`/`NOTURNO`/`MISTO`), `needsCarParking` / `needsMotorcycleParking` (precisa de vaga de
+garagem; os dois `false` = não precisa), `bio`, `occupation`. **Substitui o perfil inteiro:** campo
 não enviado vira vazio. As opções de cada lista estão em `frontend/src/constants/profileOptions.ts`.
+
+**Exceção: `gender` fica travado.** Depois de salvo uma vez, não muda mais: enviar outro valor dá
+**400** e enviar vazio mantém o que já estava.
 
 ## Anúncios
 
 | Método e rota | Descrição |
 |---|---|
 | `GET /api/listings/mine` | meus anúncios ativos |
-| `GET /api/listings/{id}` | um anúncio (qualquer usuário logado) |
+| `GET /api/listings/{id}` | um anúncio (qualquer usuário logado). Vaga `TEM_VAGA` só para um sexo dá **404** para quem não se encaixa (menos o dono) |
 | `POST /api/listings` | cria anúncio (só quem tem `advertiser`) |
 | `DELETE /api/listings/{id}` | dono: remove (desativa) o anúncio |
 | `POST /api/listings/{id}/indisponivel` | dono: marca como indisponível. Corpo `{ "closedWithUserId": 7 }` (opcional; precisa ser alguém que conversou sobre o anúncio) |
@@ -82,6 +86,17 @@ anuncia, qualquer que seja o `advertiserKind` da conta), `title`, `description`,
 - `TEM_VAGA`: `availableSlots` (vagas disponíveis, ≥ 1) e `genderPreference`
   (`QUALQUER`, `MASCULINO` ou `FEMININO`: quem pode ocupar a vaga).
 - `ESTABELECIMENTO`: `acceptsPets` e `acceptsSmoker`.
+
+Nos dois tipos, todos opcionais (`null` = não informado):
+
+- Apartamento: `bedrooms`, `suites` (não pode passar de `bedrooms`; senão **400**), `bathrooms`
+  (banheiros sociais) e `parkingSpots` (0 a 20);
+  `parkingForCar` / `parkingForMotorcycle`, `parkingLayout` (`GAVETA` ou `LATERAL`) e
+  `parkingCovered` (vaga coberta), todos só guardados quando `parkingSpots` > 0.
+- Condomínio: `hasPool`, `hasPartyRoom`, `hasGym`, `hasPlayground` (playground e
+  brinquedoteca) e `hasConcierge24h` (portaria 24 horas).
+
+A resposta de anúncio devolve os mesmos campos.
 
 `address`, `latitude` e `longitude` são obrigatórios (o pino no mapa).
 
@@ -131,7 +146,7 @@ Iniciar uma conversa não precisa de "curtida" nem de aprovação.
 | Método e rota | Descrição |
 |---|---|
 | `GET /api/listings/{id}/interest` | `{ interested, total }`. O `total` **inclui você** |
-| `POST /api/listings/{id}/interest` | "Tenho interesse" (só `renter`) |
+| `POST /api/listings/{id}/interest` | "Tenho interesse" (só `renter`, não no próprio anúncio). Na 1ª vez notifica o dono (`NOVO_INTERESSE`) e, se já havia interessados, avisa cada um deles e quem acabou de clicar (`INTERESSE_EM_COMUM`); quem tem bloqueio com o recém-chegado fica de fora |
 | `DELETE /api/listings/{id}/interest` | retira o interesse |
 | `GET /api/listings/{id}/interest/people` | quem mais se interessou (só para quem já se interessou ou é o dono) |
 

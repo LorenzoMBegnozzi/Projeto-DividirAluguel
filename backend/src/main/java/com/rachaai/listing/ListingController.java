@@ -34,8 +34,8 @@ public class ListingController {
     }
 
     @GetMapping("/{id}")
-    public ListingResponse getById(@PathVariable Long id) {
-        return listingService.getById(id);
+    public ListingResponse getById(@AuthenticationPrincipal SecurityUser principal, @PathVariable Long id) {
+        return listingService.getById(principal.getId(), id);
     }
 
     @PostMapping

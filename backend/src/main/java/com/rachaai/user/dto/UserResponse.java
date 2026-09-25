@@ -34,6 +34,8 @@ public record UserResponse(
         String allergyOther,
         String musicTaste,
         Routine routine,
+        Boolean needsCarParking,
+        Boolean needsMotorcycleParking,
         boolean safetyTermsAccepted,
         String photoUrl
 ) {
@@ -60,6 +62,8 @@ public record UserResponse(
                 allergies.otherText(),
                 profile != null ? profile.getMusicTaste() : null,
                 profile != null ? profile.getRoutine() : null,
+                profile != null ? profile.getNeedsCarParking() : null,
+                profile != null ? profile.getNeedsMotorcycleParking() : null,
                 user.getSafetyTermsAcceptedAt() != null,
                 hasPhoto ? "/api/users/" + user.getId() + "/foto" : null
         );

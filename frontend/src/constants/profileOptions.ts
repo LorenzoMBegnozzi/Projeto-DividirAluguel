@@ -1,4 +1,13 @@
-import type { AllergyTag, Diet, DrinkingHabit, Gender, GenderPreference, PetPreference, SmokingHabit } from '../types'
+import type {
+  AllergyTag,
+  Diet,
+  DrinkingHabit,
+  Gender,
+  GenderPreference,
+  ParkingLayout,
+  PetPreference,
+  SmokingHabit,
+} from '../types'
 
 interface Option<T extends string> {
   value: T
@@ -37,6 +46,13 @@ export const genderPreferenceOptions: Option<GenderPreference>[] = [
 ]
 
 export const genderPreferenceLabels = buildLabelMap(genderPreferenceOptions)
+
+export const parkingLayoutOptions: Option<ParkingLayout>[] = [
+  { value: 'GAVETA', label: 'Gaveta' },
+  { value: 'LATERAL', label: 'Lateral' },
+]
+
+export const parkingLayoutLabels = buildLabelMap(parkingLayoutOptions)
 
 export const dietOptions: Option<Diet>[] = [
   { value: 'VEGETARIANO', label: 'Vegetariano(a)' },
@@ -95,4 +111,52 @@ export const petPreferenceLabels: Record<PetPreference, string> = {
   ...buildLabelMap(petPreferenceOptions),
   // só existe em perfis migrados do antigo campo sim/não; não aparece como botão selecionável
   TENHO_PET_NAO_ESPECIFICADO: 'Tem pet',
+}
+
+// Gosto musical continua gravado como texto separado por vírgula (o backend compara palavra por
+// palavra para a compatibilidade). Cada estilo é uma palavra só, para um não "casar" com outro.
+export const musicGenreOptions = [
+  'Sertanejo',
+  'Funk',
+  'Pagode',
+  'Samba',
+  'MPB',
+  'Rock',
+  'Pop',
+  'Rap',
+  'Eletrônica',
+  'Forró',
+  'Piseiro',
+  'Axé',
+  'Reggae',
+  'Gospel',
+  'Jazz',
+  'Metal',
+  'Indie',
+  'Clássica',
+  'K-pop',
+].map((genre) => ({ value: genre, label: genre }))
+
+const normalizeGenre = (text: string) =>
+  text.normalize('NFD').replace(/\p{Diacritic}/gu, '').trim().toLowerCase()
+
+/** Separa o texto salvo em estilos da lista e o que sobrar (vai para o campo "Outro"). */
+export function parseMusicTaste(text: string | null | undefined): { genres: string[]; other: string } {
+  const genres: string[] = []
+  const other: string[] = []
+  for (const part of (text ?? '').split(',').map((p) => p.trim()).filter(Boolean)) {
+    const match = musicGenreOptions.find((o) => normalizeGenre(o.value) === normalizeGenre(part))
+    if (match) {
+      if (!genres.includes(match.value)) genres.push(match.value)
+    } else {
+      other.push(part)
+    }
+  }
+  return { genres, other: other.join(', ') }
+}
+
+export function serializeMusicTaste(genres: string[], other: string): string {
+  const ordered = musicGenreOptions.map((o) => o.value).filter((g) => genres.includes(g))
+  const extra = other.split(',').map((p) => p.trim()).filter(Boolean)
+  return [...ordered, ...extra].join(', ')
 }

@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Camera, LogOut, Trash2 } from 'lucide-react'
+import { Ban, Camera, Car, Lock, LogOut, Motorbike, Trash2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { removePhoto, updateProfile, uploadPhoto } from '../api/profile'
 import { apiErrorMessage } from '../api/client'
@@ -13,12 +13,19 @@ import Avatar from '../components/Avatar'
 import {
   allergyTagOptions,
   dietOptions,
+  genderLabels,
   genderOptions,
+  musicGenreOptions,
+  parseMusicTaste,
+  serializeMusicTaste,
   drinkingHabitOptions,
   petPreferenceOptions,
   smokingHabitOptions,
 } from '../constants/profileOptions'
 import type { AllergyTag, Diet, DrinkingHabit, Gender, PetPreference, Routine, SmokingHabit } from '../types'
+
+// Valor interno do chip "Outro" do gosto musical (nunca é salvo).
+const MUSIC_OTHER = '__OUTRO__'
 
 const inputClass =
   'w-full rounded-md border border-line-strong bg-surface px-3 py-2.5 text-ink outline-none placeholder:text-ink-3 hover:border-ink-2 focus:border-ink focus:ring-2 focus:ring-focus focus:ring-offset-1'
@@ -33,13 +40,20 @@ export default function ProfilePage() {
   const [smokingHabit, setSmokingHabit] = useState<SmokingHabit | null>(user?.smokingHabit ?? null)
   const [drinkingHabit, setDrinkingHabit] = useState<DrinkingHabit | null>(user?.drinkingHabit ?? null)
   const [gender, setGender] = useState<Gender | null>(user?.gender ?? null)
+  // Depois de salvo uma vez o sexo fica travado (o backend também recusa a troca).
+  const savedGender = user?.gender ?? null
   const [diet, setDiet] = useState<Diet | null>(user?.diet ?? null)
   const [dietOther, setDietOther] = useState(user?.dietOther ?? '')
   const [petPreferences, setPetPreferences] = useState<PetPreference[]>(user?.petPreferences ?? [])
   const [allergyTags, setAllergyTags] = useState<AllergyTag[]>(user?.allergyTags ?? [])
   const [allergyOther, setAllergyOther] = useState(user?.allergyOther ?? '')
-  const [musicTaste, setMusicTaste] = useState(user?.musicTaste ?? '')
+  const [initialMusic] = useState(() => parseMusicTaste(user?.musicTaste))
+  const [musicGenres, setMusicGenres] = useState<string[]>(initialMusic.genres)
+  const [musicOther, setMusicOther] = useState(initialMusic.other)
+  const [showMusicOther, setShowMusicOther] = useState(initialMusic.other !== '')
   const [routine, setRoutine] = useState<Routine | null>(user?.routine ?? null)
+  const [needsCarParking, setNeedsCarParking] = useState<boolean | null>(user?.needsCarParking ?? null)
+  const [needsMotorcycleParking, setNeedsMotorcycleParking] = useState<boolean | null>(user?.needsMotorcycleParking ?? null)
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -95,8 +109,10 @@ export default function ProfilePage() {
         petPreferences,
         allergyTags,
         allergyOther,
-        musicTaste,
+        musicTaste: serializeMusicTaste(musicGenres, showMusicOther ? musicOther : ''),
         routine,
+        needsCarParking,
+        needsMotorcycleParking,
         bio,
         occupation,
       })
@@ -191,8 +207,25 @@ export default function ProfilePage() {
           <>
             <div>
               <p className="mb-2 text-[13px] font-semibold text-ink">Sexo</p>
-              <ChipPicker options={genderOptions} value={gender} onChange={setGender} />
-              <p className="mt-1 text-[13px] text-ink-3">Usado para mostrar vagas feitas para o seu sexo.</p>
+              {savedGender ? (
+                <>
+                  <span className="inline-flex h-[34px] items-center gap-1.5 rounded-sm border border-line-strong bg-surface-sunk px-3 text-[13px] font-semibold text-ink-2">
+                    <Lock className="h-3.5 w-3.5" aria-hidden="true" />
+                    {genderLabels[savedGender]}
+                  </span>
+                  <p className="mt-1 text-[13px] text-ink-3">
+                    Usado para mostrar vagas feitas para o seu sexo. Depois de salvo, não pode ser alterado.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <ChipPicker options={genderOptions} value={gender} onChange={setGender} />
+                  <p className="mt-1 text-[13px] text-ink-3">
+                    Usado para mostrar vagas feitas para o seu sexo. <strong className="text-ink-2">Atenção:</strong> depois de
+                    salvo, não dá para trocar.
+                  </p>
+                </>
+              )}
             </div>
 
             <div>
@@ -243,6 +276,49 @@ export default function ProfilePage() {
             </div>
 
             <div>
+              <p className="mb-2 text-[13px] font-semibold text-ink">Precisa de vaga de garagem?</p>
+              <div className="flex flex-wrap gap-2">
+                {(
+                  [
+                    { key: 'car', label: 'Carro', icon: Car, active: needsCarParking === true },
+                    { key: 'moto', label: 'Moto', icon: Motorbike, active: needsMotorcycleParking === true },
+                    {
+                      key: 'none',
+                      label: 'Não preciso',
+                      icon: Ban,
+                      active: needsCarParking === false && needsMotorcycleParking === false,
+                    },
+                  ] as const
+                ).map(({ key, label, icon: Icon, active }) => (
+                  <button
+                    key={key}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => {
+                      if (key === 'none') {
+                        setNeedsCarParking(active ? null : false)
+                        setNeedsMotorcycleParking(active ? null : false)
+                        return
+                      }
+                      // Carro e moto podem ser marcados juntos; desmarcar os dois volta para "não informado".
+                      const car = key === 'car' ? !active : needsCarParking === true
+                      const moto = key === 'moto' ? !active : needsMotorcycleParking === true
+                      setNeedsCarParking(car || moto ? car : null)
+                      setNeedsMotorcycleParking(car || moto ? moto : null)
+                    }}
+                    className={`inline-flex h-[64px] w-[96px] flex-col items-center justify-center gap-1 rounded-md border text-xs font-semibold transition ${
+                      active ? 'border-inverse bg-inverse text-on-inverse' : 'border-line-strong bg-surface text-ink-2 hover:border-ink'
+                    }`}
+                  >
+                    <Icon className="h-6 w-6" aria-hidden="true" />
+                    {label}
+                  </button>
+                ))}
+              </div>
+              <p className="mt-1 text-[13px] text-ink-3">Dá para marcar carro e moto juntos.</p>
+            </div>
+
+            <div>
               <p className="mb-2 text-[13px] font-semibold text-ink">Alergias</p>
               <ChipMultiPicker options={allergyTagOptions} values={allergyTags} onChange={setAllergyTags} />
               {allergyTags.includes('OUTRO') && (
@@ -256,16 +332,24 @@ export default function ProfilePage() {
             </div>
 
             <div>
-              <label className="mb-1 block text-[13px] font-semibold text-ink">Tipos de música que curte</label>
-              <input
-                value={musicTaste}
-                onChange={(e) => setMusicTaste(e.target.value)}
-                placeholder="Ex.: sertanejo, rock, funk, mpb"
-                className={inputClass}
+              <p className="mb-2 text-[13px] font-semibold text-ink">Tipos de música que curte</p>
+              <ChipMultiPicker
+                options={[...musicGenreOptions, { value: MUSIC_OTHER, label: 'Outro' }]}
+                values={showMusicOther ? [...musicGenres, MUSIC_OTHER] : musicGenres}
+                onChange={(values) => {
+                  setShowMusicOther(values.includes(MUSIC_OTHER))
+                  setMusicGenres(values.filter((v) => v !== MUSIC_OTHER))
+                }}
               />
-              <p className="mt-1 text-[13px] text-ink-3">
-                Separe por vírgula — usamos isso para calcular compatibilidade.
-              </p>
+              {showMusicOther && (
+                <input
+                  value={musicOther}
+                  onChange={(e) => setMusicOther(e.target.value)}
+                  placeholder="Qual? Ex.: blues, lo-fi"
+                  className={`mt-2 ${inputClass}`}
+                />
+              )}
+              <p className="mt-1 text-[13px] text-ink-3">Escolha quantos quiser. Usamos isso para calcular compatibilidade.</p>
             </div>
           </>
         )}

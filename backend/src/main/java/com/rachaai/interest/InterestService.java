@@ -5,6 +5,9 @@ import com.rachaai.interest.dto.InterestStatusResponse;
 import com.rachaai.listing.Listing;
 import com.rachaai.listing.ListingRepository;
 import com.rachaai.listing.ListingType;
+import com.rachaai.moderation.ModerationService;
+import com.rachaai.notification.NotificationService;
+import com.rachaai.notification.NotificationType;
 import com.rachaai.user.User;
 import com.rachaai.user.UserPhotoRepository;
 import com.rachaai.user.UserRepository;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class InterestService {
@@ -21,17 +25,23 @@ public class InterestService {
     private final ListingRepository listingRepository;
     private final UserRepository userRepository;
     private final UserPhotoRepository userPhotoRepository;
+    private final NotificationService notificationService;
+    private final ModerationService moderationService;
 
     public InterestService(
             InterestRepository interestRepository,
             ListingRepository listingRepository,
             UserRepository userRepository,
-            UserPhotoRepository userPhotoRepository
+            UserPhotoRepository userPhotoRepository,
+            NotificationService notificationService,
+            ModerationService moderationService
     ) {
         this.interestRepository = interestRepository;
         this.listingRepository = listingRepository;
         this.userRepository = userRepository;
         this.userPhotoRepository = userPhotoRepository;
+        this.notificationService = notificationService;
+        this.moderationService = moderationService;
     }
 
     @Transactional
@@ -42,10 +52,55 @@ public class InterestService {
         }
         Listing listing = requireEstablishment(listingId);
 
+        if (listing.getUser().getId().equals(userId)) {
+            throw ApiException.badRequest("Você não pode demonstrar interesse no seu próprio anúncio");
+        }
+
         if (!interestRepository.existsByListingIdAndUserId(listingId, userId)) {
+            // quem tem bloqueio com o recém-chegado (nos dois sentidos) não é avisado nem contado
+            Set<Long> blocked = moderationService.relatedBlockedIds(userId);
+            List<User> othersInterested = interestRepository.findAllByListingId(listingId).stream()
+                    .map(Interest::getUser)
+                    .filter(u -> !blocked.contains(u.getId()))
+                    .toList();
             interestRepository.save(new Interest(listing, user));
+            notifyNewInterest(listing, user, othersInterested);
         }
         return status(userId, listingId);
+    }
+
+    /**
+     * Dono: fica sabendo de cada interessado novo. Quem já tinha interesse: fica sabendo que chegou
+     * mais alguém. Quem acabou de clicar: fica sabendo que não está sozinho (se houver outros).
+     */
+    private void notifyNewInterest(Listing listing, User newcomer, List<User> othersInterested) {
+        String listingLink = "/anuncios/" + listing.getId();
+        notificationService.notify(
+                listing.getUser(),
+                NotificationType.NOVO_INTERESSE,
+                "Nova pessoa interessada no seu anúncio",
+                newcomer.getName() + " tem interesse em \"" + listing.getTitle() + "\"",
+                "/anuncio"
+        );
+        for (User other : othersInterested) {
+            notificationService.notify(
+                    other,
+                    NotificationType.INTERESSE_EM_COMUM,
+                    "Mais alguém se interessou",
+                    newcomer.getName() + " também tem interesse em \"" + listing.getTitle() + "\". Que tal conversar?",
+                    listingLink
+            );
+        }
+        if (!othersInterested.isEmpty()) {
+            int count = othersInterested.size();
+            notificationService.notify(
+                    newcomer,
+                    NotificationType.INTERESSE_EM_COMUM,
+                    count == 1 ? "Outra pessoa também se interessou" : count + " pessoas também se interessaram",
+                    "Veja quem mais tem interesse em \"" + listing.getTitle() + "\" e converse com elas.",
+                    listingLink
+            );
+        }
     }
 
     @Transactional
