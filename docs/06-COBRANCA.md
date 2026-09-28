@@ -44,45 +44,92 @@ conforme o mercado.** O destaque de 30 dias foi a duração escolhida na defini�
 2. Pagamento `PENDENTE` → confirmado (`PAGO`) → o anúncio ganha `destaqueAte` = agora + 30 dias.
 3. Na busca de quem aluga, o anúncio aparece com o selo "Destaque" no topo da lista.
 
-## Modo simulado (situação atual)
+## Modos de cobrança (`BILLING_MODE`)
 
-Ainda **não há um gateway de pagamento conectado**. Por isso o projeto roda em
-`BILLING_MODE=SIMULADO`:
+| Modo | O que acontece | Onde usar |
+|---|---|---|
+| `SIMULADO` | a compra fica pendente e o botão **Simular pagamento** confirma sem cobrar | dev e homolog sem credencial |
+| `MERCADOPAGO` | a compra abre o **checkout do Mercado Pago**: Pix, cartão de crédito ou débito | homolog (credencial de teste) e prod |
+| `DESATIVADO` | nenhuma compra pode ser feita | emergência |
 
-- as compras são criadas normalmente, mas ficam `PENDENTE`;
-- a tela **Pagamentos** mostra um aviso amarelo e o botão **Simular pagamento**, que confirma
-  a compra sem cobrar ninguém (endpoint `POST /api/billing/payments/{id}/simulate`);
-- com qualquer outro valor em `BILLING_MODE`, esse endpoint responde **403** e o botão some.
-  Foi testado: com `BILLING_MODE=PRODUCAO`, a compra fica pendente para sempre até um gateway
-  confirmá-la.
+**Preços atuais são de TESTE: R$ 1,00** (anúncio extra e destaque). Definir os preços reais antes
+de lançar (`EXTRA_LISTING_PRICE` e `HIGHLIGHT_PRICE` no `.env`).
 
-**Não use o modo simulado com usuários reais**: qualquer um "paga" sem pagar.
+## Pagamento pelo Mercado Pago (Checkout Pro)
 
-## Como ligar um pagamento de verdade (Pix)
+A pessoa paga numa **página do próprio Mercado Pago**: o número do cartão nunca passa pelo
+RachaAi (sem obrigação de certificação PCI). Aceita **Pix, cartão de crédito, cartão de débito**
+e saldo do Mercado Pago. Boleto fica de fora (demora dias).
 
-O sistema já está preparado: toda a lógica de "o que acontece quando o pagamento é
-confirmado" está em um único método, `BillingService.applyPaid(Payment)`. Falta trocar quem
-o chama. Passo a passo sugerido:
+```
+"Destacar · R$ 1,00"  →  backend cria a cobrança no Mercado Pago (referência rachaai-<ambiente>-<id>)
+→ navegador vai para o checkout  →  paga  →  volta para /pagamentos/retorno?pagamento=<id>
+→ backend PERGUNTA ao Mercado Pago como está  →  aprovado (no valor certo) → PAGO → efeito aplicado
+```
 
-1. **Escolher o gateway.** Para Pix no Brasil, Mercado Pago, Pagar.me, Asaas ou Stripe
-   atendem. Criar a conta e obter as credenciais (chave de API) e a URL do webhook.
-2. **Ao criar o pagamento** (`BillingService.createPayment`), chamar a API do gateway para gerar
-   a cobrança Pix; guardar o id devolvido em `pagamentos.referencia_externa` e devolver ao
-   front o QR Code / "copia e cola" para mostrar na tela **Pagamentos**.
-3. **Criar um endpoint de webhook** (por exemplo `POST /api/billing/webhook`, **liberado** no
-   `SecurityConfig` porque quem chama é o gateway, não um usuário logado). Ele deve:
-   - **validar a assinatura** do gateway (obrigatório; sem isso qualquer pessoa forjaria
-     pagamentos);
-   - achar o pagamento por `referencia_externa`;
-   - se o status for "aprovado" e o pagamento ainda estiver `PENDENTE`, chamar
-     `billingService.applyPaid(payment)` (é idempotente pelo status: o gateway costuma reenviar
-     o mesmo aviso).
-4. **Guardar as credenciais** em variáveis de ambiente (`.env`), nunca no código.
-5. Colocar `BILLING_MODE` com outro valor (ex.: `PRODUCAO`) para desligar o botão de simulação.
-6. Testar primeiro no ambiente de testes (sandbox) do gateway.
+**Regras de segurança**
+- **Nunca confia no navegador.** O `status=approved` que o Mercado Pago põe na URL de volta é
+  ignorado; o backend consulta a API do Mercado Pago (`/v1/payments/search`).
+- **Valor conferido:** pagamento aprovado com valor menor que o cobrado não é aceito.
+- **Idempotente:** o mesmo aviso repetido não soma dias de destaque nem crédito de novo.
+- **Referência por ambiente:** `rachaai-dev-5`, `rachaai-homolog-5`... dev, homolog e prod podem
+  usar a mesma conta do Mercado Pago sem um confirmar o pagamento do outro.
+- **Aviso automático (webhook)** em `POST /api/billing/webhook/mercadopago`: público (quem chama é o
+  Mercado Pago), confere a assinatura (`MERCADOPAGO_WEBHOOK_SECRET`) e reconsulta o pagamento na API
+  antes de aplicar. Precisa de endereço público com HTTPS, então **só funciona em prod**; em dev a
+  confirmação acontece quando a pessoa volta ao site ou abre a tela **Pagamentos**.
+- Clicar duas vezes em comprar reaproveita a cobrança pendente (não gera duas). A cobrança vale 24 h.
+- Pendente pode ser **cancelado** pela própria pessoa; se ela já tinha pago, o cancelamento vira
+  confirmação.
 
-Cuidados legais e fiscais (emitir nota fiscal, termos de uso, política de privacidade/LGPD,
-regras de reembolso) fazem parte de abrir a cobrança e não estão no código.
+**Configuração (`.env` do ambiente)**
+
+| Variável | O quê |
+|---|---|
+| `BILLING_MODE=MERCADOPAGO` | liga o Mercado Pago |
+| `MERCADOPAGO_ACCESS_TOKEN` | credencial. **Teste** começa com `TEST-` (não cobra ninguém); produção com `APP_USR-` |
+| `MERCADOPAGO_WEBHOOK_SECRET` | "assinatura secreta" das notificações (Suas integrações → Webhooks). Só prod |
+| `MERCADOPAGO_WEBHOOK_URL` | `https://seudominio.com.br/api/billing/webhook/mercadopago`. Só prod |
+
+Sem o Access Token com `BILLING_MODE=MERCADOPAGO`, o backend **não sobe** (avisa no log).
+
+**Testar sem cobrar ninguém**
+1. Credencial de **teste** no `.env.dev` e `BILLING_MODE=MERCADOPAGO`; reiniciar o backend.
+2. Comprar um destaque ou anúncio extra → abre o checkout de teste do Mercado Pago.
+3. Pagar com um **cartão de teste** do Mercado Pago (lista em "Cartões de teste" na documentação
+   deles). O nome do titular decide o resultado: `APRO` = aprovado, `OTHE` = recusado.
+4. Voltar ao site: a página de retorno mostra "Pagamento aprovado" e o efeito já vale.
+
+## Reembolso
+
+No **/admin → aba Pagamentos**, cada pagamento pago tem o botão **Reembolsar** (motivo obrigatório).
+A lista marca **"no prazo de 7 dias"** quando a compra ainda está no prazo de arrependimento do CDC
+(art. 49, compra pela internet); fora dele o admin decide.
+
+- **O dinheiro volta pelo Mercado Pago**, pelo mesmo meio (Pix ou cartão). Se o Mercado Pago recusar,
+  nada é marcado: o pagamento continua PAGO e a mensagem de erro aparece.
+- **A compra é desfeita:** destaque perde os dias daquele pagamento; anúncio extra ainda não usado some
+  dos créditos; se já foi usado, o anúncio publicado com ele sai do ar.
+- Compra do **modo simulado** não tem dinheiro a devolver: o reembolso só desfaz o efeito.
+- **Reembolso feito direto no painel do Mercado Pago, ou estorno pedido no cartão (chargeback),**
+  também é reconhecido pelo aviso automático (webhook): o pagamento vira REEMBOLSADO e a compra é desfeita.
+- Status novo: `REEMBOLSADO` (com data, motivo e quem fez).
+
+**Ainda não feito:** emissão de nota fiscal (ver abaixo).
+
+## Nota fiscal (pendente)
+
+O RachaAi vende serviço digital, então a nota é a **NFS-e** (nota de serviço), emitida por quem
+vende. O Mercado Pago **não** emite por vocês. Decisões pendentes, com o contador:
+
+1. **CNPJ** (MEI, se a atividade for permitida, ou ME no Simples Nacional). Sem CNPJ não há nota.
+2. **Como emitir:**
+   - **Manual** (começo): emitir no Emissor Nacional ou no site da prefeitura. Dá para ter no `/admin`
+     uma lista de vendas pagas sem nota, com nome, CPF e valor de quem comprou.
+   - **Automático** (quando crescer): serviço emissor de NFS-e por API (NFE.io, Focus NFe, eNotas,
+     Nuvem Fiscal...). Pagamento aprovado → emite → PDF por e-mail; reembolso → cancela a nota.
+
+O sistema já guarda o CPF de quem compra, que é o dado exigido do tomador na nota.
 
 ## Onde está no código
 
@@ -93,6 +140,7 @@ regras de reembolso) fazem parte de abrir a cobrança e não estão no código.
 | Cota de 3 grátis e consumo do crédito ao publicar | `backend/.../listing/ListingService.java` |
 | Desativação de anúncios extras vencidos | `backend/.../listing/ListingExpirationJob.java` |
 | Destaque no topo da busca | `backend/.../match/DiscoveryService.java` (`HIGHLIGHT_FIRST_THEN_COMPATIBILITY`) |
-| Tela de pagamentos | `frontend/src/pages/PaymentsPage.tsx` |
+| Tela de pagamentos | `frontend/src/pages/PaymentsPage.tsx` e `PaymentReturnPage.tsx` (volta do checkout) |
+| Integração com o Mercado Pago | `backend/.../billing/gateway/MercadoPagoGateway.java` (contrato em `PaymentGateway.java`) |
 | Compra de extra e botão Destacar | `frontend/src/pages/ListingPage.tsx` |
 | Tabela | `pagamentos` (ver [03-BANCO-DE-DADOS.md](03-BANCO-DE-DADOS.md)) |

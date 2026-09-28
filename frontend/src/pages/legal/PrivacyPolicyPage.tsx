@@ -124,8 +124,9 @@ export default function PrivacyPolicyPage() {
           <li>envio de e-mails (redefinição de senha e avisos da conta);</li>
           <li>meio de pagamento, para processar compras;</li>
           <li>
-            serviço de mapas e busca de endereços (OpenStreetMap), que recebe o endereço digitado ao criar um anúncio e o
-            seu IP ao carregar os mapas. Esse serviço fica fora do Brasil (transferência internacional, art. 33).
+            serviço de mapas e busca de endereços (MapTiler, na Suíça, com dados do OpenStreetMap), que recebe o
+            endereço digitado ao criar um anúncio e o seu IP ao carregar os mapas (transferência internacional, art.
+            33; a Suíça é reconhecida pela União Europeia como país com proteção de dados adequada).
           </li>
         </ul>
         <h3>Autoridades</h3>

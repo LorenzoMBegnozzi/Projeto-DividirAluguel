@@ -148,7 +148,7 @@ export interface AuthResponse {
 
 export type PaymentType = 'ANUNCIO_EXTRA' | 'DESTAQUE'
 
-export type PaymentStatus = 'PENDENTE' | 'PAGO' | 'CANCELADO'
+export type PaymentStatus = 'PENDENTE' | 'PAGO' | 'CANCELADO' | 'REEMBOLSADO'
 
 export interface Payment {
   id: number
@@ -158,7 +158,15 @@ export interface Payment {
   status: PaymentStatus
   createdAt: string
   paidAt: string | null
+  /** Página do Mercado Pago para pagar (pendente pelo gateway). */
+  checkoutUrl: string | null
+  /** pix, credit_card, debit_card, account_money... */
+  method: string | null
+  /** Último status no Mercado Pago (approved, pending, rejected...). */
+  gatewayStatus: string | null
 }
+
+export type PaymentMode = 'SIMULADO' | 'MERCADOPAGO' | 'DESATIVADO'
 
 export interface Plan {
   freeListings: number
@@ -169,6 +177,7 @@ export interface Plan {
   highlightPrice: number
   highlightDays: number
   simulatedMode: boolean
+  paymentMode: PaymentMode
 }
 
 export type ConvivioStatus = 'PENDENTE' | 'CONFIRMADO' | 'RECUSADO'

@@ -21,6 +21,7 @@ import BrowsePage from './pages/BrowsePage'
 import ConversationsPage from './pages/ConversationsPage'
 import ChatPage from './pages/ChatPage'
 import PaymentsPage from './pages/PaymentsPage'
+import PaymentReturnPage from './pages/PaymentReturnPage'
 import UserPublicProfilePage from './pages/UserPublicProfilePage'
 import ListingDetailPage from './pages/ListingDetailPage'
 import HomePage from './pages/HomePage'
@@ -112,6 +113,16 @@ function AppContent() {
             <ProtectedRoute>
               <RoleRoute role="ADVERTISER" redirectTo="/browse">
                 <PaymentsPage />
+              </RoleRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/pagamentos/retorno"
+          element={
+            <ProtectedRoute>
+              <RoleRoute role="ADVERTISER" redirectTo="/browse">
+                <PaymentReturnPage />
               </RoleRoute>
             </ProtectedRoute>
           }

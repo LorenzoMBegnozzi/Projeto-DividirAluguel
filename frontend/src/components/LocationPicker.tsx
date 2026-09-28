@@ -1,8 +1,9 @@
-import { MapContainer, Marker, TileLayer, useMapEvents } from 'react-leaflet'
+import { MapContainer, Marker, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
 import markerIcon from 'leaflet/dist/images/marker-icon.png'
 import markerShadow from 'leaflet/dist/images/marker-shadow.png'
+import MapTiles from './MapTiles'
 
 const defaultIcon = L.icon({
   iconUrl: markerIcon,
@@ -35,10 +36,7 @@ export default function LocationPicker({ latitude, longitude, onChange }: Props)
   return (
     <div className="overflow-hidden rounded-md border border-line">
       <MapContainer center={center} zoom={13} style={{ height: 280, width: '100%' }}>
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+        <MapTiles />
         <ClickCatcher onChange={onChange} />
         {latitude != null && longitude != null && <Marker position={[latitude, longitude]} icon={defaultIcon} />}
       </MapContainer>

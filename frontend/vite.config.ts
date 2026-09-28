@@ -37,6 +37,12 @@ function apiTarget(): string {
 export default defineConfig(({ command }) => {
   // O proxy só existe no "npm run dev"; o build (Docker) não precisa de .env nenhum.
   const target = command === 'serve' ? apiTarget() : undefined
+  // No "npm run dev", a chave do MapTiler vem do mesmo .env do AMBIENTE (no build do Docker ela
+  // chega pela variável VITE_MAPTILER_KEY, ver Dockerfile).
+  if (command === 'serve' && !process.env.VITE_MAPTILER_KEY && !process.env.API_TARGET) {
+    const key = readEnvFile(process.env.AMBIENTE || 'dev').MAPTILER_KEY
+    if (key) process.env.VITE_MAPTILER_KEY = key
+  }
   if (target) console.log(`\n  AMBIENTE=${process.env.AMBIENTE || 'dev'}  →  /api vai para ${target}\n`)
 
   return {

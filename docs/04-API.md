@@ -213,6 +213,8 @@ Quem é admin: `ADMIN_EMAILS` no `.env` do ambiente. Detalhes em [08-SEGURANCA.m
 | `GET /api/admin/usuarios?busca=` | contas por nome/e-mail (até 200) |
 | `POST /api/admin/usuarios/{id}/bloquear` | `{ "reason" }` (obrigatório). Não vale para admins nem para si mesmo |
 | `POST /api/admin/usuarios/{id}/desbloquear` | |
+| `GET /api/admin/pagamentos?status=PAGO` | pagamentos (`PAGO`, `REEMBOLSADO`, `PENDENTE`, `CANCELADO`; sem status = todos), com quem comprou, meio e `withinWithdrawalPeriod` (pago há até 7 dias) |
+| `POST /api/admin/pagamentos/{id}/reembolsar` | `{ "reason" }` (obrigatório). Devolve o dinheiro pelo Mercado Pago e desfaz a compra. Não pago: 409; Mercado Pago recusou: 502 |
 | `GET /api/admin/anuncios?busca=` | anúncios por título/dono, inclusive os fora do ar |
 | `POST /api/admin/anuncios/{id}/desativar` | tira o anúncio do ar |
 

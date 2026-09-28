@@ -86,6 +86,7 @@ notepad .env.homolog
 - `JWT_SECRET`: gere um diferente para cada ambiente (`openssl rand -base64 48` no Git Bash).
 - Nunca reaproveite as senhas de dev em homolog ou prod.
 - **Confirmação de e-mail:** em dev e homolog, contas `@teste.com` (as do `seed`) já nascem confirmadas (`app.email-confirmation.auto-confirm-domain`). Outros e-mails recebem o link no Mailpit. Em prod, todo mundo confirma.
+- `MAPTILER_KEY`: chave dos mapas e da busca de endereço (MapTiler). Vazia = OpenStreetMap gratuito. Depois de mudar, reconstrua o frontend (`.\scripts\ambiente.ps1 dev up frontend`).
 - `ADMIN_EMAILS`: quem pode abrir a área `/admin` (ver [08-SEGURANCA.md](08-SEGURANCA.md)). Em dev e homolog, `admin@teste.com` (criado pelo `seed`).
 
 Neste PC, o `.env.dev` já foi criado com as senhas do antigo `.env` e o `.env.homolog` com senhas
@@ -170,8 +171,7 @@ irreversíveis: passam por homolog primeiro e só vão para prod depois de um ba
   Como ainda não há gateway conectado, compras ficam pendentes até integrar o Pix
   ([06-COBRANCA.md](06-COBRANCA.md)).
 - [ ] Backup do banco agendado (ex.: `expdp` do Oracle ou cópia do volume `rachaai-prod_oracle_data`).
-- [ ] Mapas: os servidores gratuitos do OpenStreetMap não são para tráfego alto; troque por um
-  provedor de mapas antes de ter muitos usuários.
+- [ ] Mapas: `MAPTILER_KEY` no `.env.prod` e, no painel do MapTiler, a chave liberada só para o domínio do site (Allowed HTTP origins).
 
 ## 9. Volumes antigos guardados
 

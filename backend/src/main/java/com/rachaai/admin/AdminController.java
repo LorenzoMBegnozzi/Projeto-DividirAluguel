@@ -58,6 +58,21 @@ public class AdminController {
         return adminService.unblockUser(principal.getId(), id);
     }
 
+    @GetMapping("/pagamentos")
+    public List<AdminDtos.Payment> payments(@RequestParam(required = false) com.rachaai.billing.PaymentStatus status) {
+        return adminService.listPayments(status);
+    }
+
+    /** Devolve o dinheiro pelo Mercado Pago (mesmo meio de pagamento) e desfaz a compra. */
+    @PostMapping("/pagamentos/{id}/reembolsar")
+    public AdminDtos.Payment refund(
+            @AuthenticationPrincipal SecurityUser principal,
+            @PathVariable Long id,
+            @Valid @RequestBody AdminDtos.RefundRequest request
+    ) {
+        return adminService.refund(principal.getId(), id, request);
+    }
+
     @GetMapping("/anuncios")
     public List<AdminDtos.Listing> listings(@RequestParam(required = false) String busca) {
         return adminService.listListings(busca);

@@ -73,6 +73,25 @@ rachaai/
 └── .env.{dev,homolog,prod}.example  modelos das configurações e senhas de cada ambiente
 ```
 
+## Testes automáticos
+
+Na pasta `backend`:
+
+```bash
+./mvnw test            # 39 testes rápidos, banco H2 em memória
+./mvnw test -Poracle   # teste das políticas por linha (RLS) num Oracle de verdade (~2 min, precisa do Docker)
+```
+
+| Arquivo | O que garante |
+|---|---|
+| `auth/AuthAndSessionTest` | aceite dos Termos no cadastro, limite de tentativas (e-mail e IP), logout e troca de senha derrubam o login, "esqueci a senha" não revela contas |
+| `auth/EmailConfirmationTest` | sem confirmar o e-mail não anuncia/conversa/demonstra interesse; link de uso único; reenviar invalida o antigo; limite de reenvio |
+| `user/PrivacyAndAccountTest` | perfil público sem e-mail, nascimento e alergias; sexo travado; "Prefiro não informar"; excluir conta anonimiza e apaga mensagens |
+| `listing/ListingRulesTest` | vaga só para mulheres invisível para homens (busca, link e conversa); suítes ≤ dormitórios; garagem; notificações de interesse |
+| `admin/AdminModerationTest` | só admin acessa `/api/admin`; bloquear derruba o login e esconde anúncios; desbloquear devolve; tirar anúncio do ar |
+| `security/RateLimiterTest`, `user/AllergyCodecTest`, `accesslog/AccessLogFilterTest` | peças isoladas: limitador, gravação das alergias, eventos do Marco Civil |
+| `security/RlsOracleTest` (`-Poracle`) | no Oracle, cada usuário só vê as próprias notificações, conversas e mensagens; denunciado não vê a denúncia; registros de acesso invisíveis; o site segue funcionando |
+
 ## Resumo técnico
 
 Java 21 · Spring Boot 3.3.13 · Spring Security + JWT · Hibernate 6.5 · Flyway 10 · Oracle

@@ -1,31 +1,36 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { FormEvent, ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { Ban, Flag, Home, LayoutDashboard, Search, ShieldCheck, Users } from 'lucide-react'
+import { Ban, Flag, Home, LayoutDashboard, Receipt, RotateCcw, Search, ShieldCheck, Users } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import {
   blockAdminUser,
   closeAdminReport,
   deactivateAdminListing,
   getAdminListings,
+  getAdminPayments,
   getAdminReports,
   getAdminSummary,
   getAdminUsers,
   reportReasonLabels,
+  refundAdminPayment,
   reportStatusLabels,
   unblockAdminUser,
 } from '../api/admin'
-import type { AdminListing, AdminReport, AdminSummary, AdminUser, ReportStatus } from '../api/admin'
+import type { AdminListing, AdminPayment, AdminReport, AdminSummary, AdminUser, ReportStatus } from '../api/admin'
+import { paymentMethodLabels } from '../api/billing'
+import type { PaymentStatus } from '../types'
 import { apiErrorMessage } from '../api/client'
-import { formatDateTime } from '../utils/format'
+import { formatDateTime, formatMoney } from '../utils/format'
 
-type Tab = 'RESUMO' | 'DENUNCIAS' | 'USUARIOS' | 'ANUNCIOS'
+type Tab = 'RESUMO' | 'DENUNCIAS' | 'USUARIOS' | 'ANUNCIOS' | 'PAGAMENTOS'
 
 const TABS: { value: Tab; label: string; icon: LucideIcon }[] = [
   { value: 'RESUMO', label: 'Resumo', icon: LayoutDashboard },
   { value: 'DENUNCIAS', label: 'Denúncias', icon: Flag },
   { value: 'USUARIOS', label: 'Usuários', icon: Users },
   { value: 'ANUNCIOS', label: 'Anúncios', icon: Home },
+  { value: 'PAGAMENTOS', label: 'Pagamentos', icon: Receipt },
 ]
 
 const inputClass =
@@ -67,6 +72,7 @@ export default function AdminPage() {
       {tab === 'DENUNCIAS' && <ReportsTab />}
       {tab === 'USUARIOS' && <UsersTab />}
       {tab === 'ANUNCIOS' && <ListingsTab />}
+      {tab === 'PAGAMENTOS' && <PaymentsTab />}
     </div>
   )
 }
@@ -106,8 +112,8 @@ function SummaryTab({ onOpen }: { onOpen: (tab: Tab) => void }) {
     { label: 'Usuários', value: summary.totalUsers, tab: 'USUARIOS' },
     { label: 'Contas bloqueadas', value: summary.blockedUsers, tab: 'USUARIOS' },
     { label: 'Anúncios ativos', value: summary.activeListings, tab: 'ANUNCIOS' },
-    { label: 'Pagamentos pagos', value: summary.paidPayments },
-    { label: 'Pagamentos pendentes', value: summary.pendingPayments },
+    { label: 'Pagamentos pagos', value: summary.paidPayments, tab: 'PAGAMENTOS' },
+    { label: 'Pagamentos pendentes', value: summary.pendingPayments, tab: 'PAGAMENTOS' },
   ]
 
   return (
@@ -486,6 +492,167 @@ function ListingsTab() {
           ))}
         </div>
       )}
+    </div>
+  )
+}
+
+// ------------------------------------------------------------------ Pagamentos
+
+const paymentStatusLabels: Record<PaymentStatus, string> = {
+  PENDENTE: 'Pendente',
+  PAGO: 'Pago',
+  CANCELADO: 'Cancelado',
+  REEMBOLSADO: 'Reembolsado',
+}
+
+function PaymentsTab() {
+  const [status, setStatus] = useState<PaymentStatus | null>('PAGO')
+  const [payments, setPayments] = useState<AdminPayment[] | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    setPayments(null)
+    getAdminPayments(status)
+      .then(setPayments)
+      .catch((err) => setError(apiErrorMessage(err, 'Não foi possível carregar os pagamentos')))
+  }, [status])
+
+  const filters: { value: PaymentStatus | null; label: string }[] = [
+    { value: 'PAGO', label: 'Pagos' },
+    { value: 'REEMBOLSADO', label: 'Reembolsados' },
+    { value: 'PENDENTE', label: 'Pendentes' },
+    { value: null, label: 'Todos' },
+  ]
+
+  return (
+    <div>
+      <div className="mb-4 flex flex-wrap gap-2">
+        {filters.map((f) => (
+          <button
+            key={f.label}
+            onClick={() => setStatus(f.value)}
+            className={`h-[34px] rounded-sm border px-3 text-[13px] font-semibold transition ${
+              status === f.value ? 'border-inverse bg-inverse text-on-inverse' : 'border-line-strong bg-surface text-ink-2 hover:border-ink'
+            }`}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
+      <ErrorBox message={error} />
+      {!payments ? (
+        <p className="text-ink-3">Carregando…</p>
+      ) : payments.length === 0 ? (
+        <p className="rounded-lg border border-line bg-surface p-6 text-center text-ink-3">Nenhum pagamento aqui.</p>
+      ) : (
+        <div className="flex flex-col gap-2">
+          {payments.map((payment) => (
+            <PaymentRow
+              key={payment.id}
+              payment={payment}
+              onChange={(p) => setPayments((prev) => prev?.map((x) => (x.id === p.id ? p : x)) ?? null)}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function PaymentRow({ payment, onChange }: { payment: AdminPayment; onChange: (p: AdminPayment) => void }) {
+  const [refunding, setRefunding] = useState(false)
+  const [reason, setReason] = useState(payment.withinWithdrawalPeriod ? 'Arrependimento em até 7 dias (CDC, art. 49)' : '')
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  async function refund() {
+    const money = payment.gateway ? ` Os ${formatMoney(payment.amount)} voltam para ${payment.userName} pelo Mercado Pago.` : ''
+    if (!window.confirm(`Reembolsar o pagamento #${payment.id}?${money} A compra é desfeita e não dá para voltar atrás.`)) return
+    setBusy(true)
+    setError(null)
+    try {
+      onChange(await refundAdminPayment(payment.id, reason))
+      setRefunding(false)
+    } catch (err) {
+      setError(apiErrorMessage(err, 'Não foi possível reembolsar'))
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const tone = payment.status === 'PAGO' ? 'leaf' : payment.status === 'PENDENTE' ? 'brand' : 'neutral'
+
+  return (
+    <div className="rounded-lg border border-line bg-surface p-3">
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div className="min-w-0">
+          <p className="flex flex-wrap items-center gap-1.5 font-semibold text-ink">
+            {payment.type === 'DESTAQUE' ? 'Destaque' : 'Anúncio extra'} · <span className="tabular-nums">{formatMoney(payment.amount)}</span>
+            <Badge tone={tone}>{paymentStatusLabels[payment.status]}</Badge>
+            {payment.status === 'PAGO' && payment.withinWithdrawalPeriod && <Badge tone="brand">no prazo de 7 dias</Badge>}
+            {!payment.gateway && <Badge tone="neutral">simulado</Badge>}
+          </p>
+          <p className="truncate text-[13px] text-ink-3">
+            #{payment.id} ·{' '}
+            <Link to={`/usuarios/${payment.userId}`} className="hover:text-brand">
+              {payment.userName}
+            </Link>{' '}
+            ({payment.userEmail})
+            {payment.method && ` · ${paymentMethodLabels[payment.method] ?? payment.method}`}
+            {payment.paidAt && ` · pago em ${formatDateTime(payment.paidAt)}`}
+          </p>
+          {payment.status === 'REEMBOLSADO' && (
+            <p className="mt-1 text-[13px] text-ink-2">
+              Reembolsado{payment.refundedAt && ` em ${formatDateTime(payment.refundedAt)}`}
+              {payment.refundReason && ` · “${payment.refundReason}”`}
+            </p>
+          )}
+        </div>
+        {payment.status === 'PAGO' && !refunding && (
+          <button onClick={() => setRefunding(true)} className={neutralButton}>
+            <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
+            Reembolsar
+          </button>
+        )}
+      </div>
+
+      {refunding && (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            refund()
+          }}
+          className="mt-3 flex flex-col gap-2 border-t border-line pt-3"
+        >
+          <p className="text-[13px] text-ink-3">
+            {payment.type === 'DESTAQUE'
+              ? 'O anúncio perde os dias de destaque deste pagamento.'
+              : payment.listingId
+                ? 'O crédito já foi usado: o anúncio publicado com ele sai do ar.'
+                : 'O crédito de anúncio extra ainda não usado é retirado.'}
+          </p>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <input
+              required
+              autoFocus
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              maxLength={500}
+              placeholder="Motivo do reembolso (obrigatório)"
+              className={inputClass}
+            />
+            <div className="flex gap-2">
+              <button type="submit" disabled={busy || !reason.trim()} className={dangerButton}>
+                {busy ? 'Reembolsando…' : 'Confirmar reembolso'}
+              </button>
+              <button type="button" onClick={() => setRefunding(false)} className={neutralButton}>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </form>
+      )}
+      <ErrorBox message={error} />
     </div>
   )
 }

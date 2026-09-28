@@ -10,6 +10,8 @@ public record PlanResponse(
         int extraListingDays,
         BigDecimal highlightPrice,
         int highlightDays,
-        boolean simulatedMode
+        boolean simulatedMode,
+        /** SIMULADO, MERCADOPAGO ou DESATIVADO. */
+        String paymentMode
 ) {
 }

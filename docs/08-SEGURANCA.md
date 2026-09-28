@@ -114,6 +114,7 @@ No dev e no homolog, o `seed` cria `admin@teste.com`.
 | Denúncias | filtrar por status; **bloquear a conta e resolver**, **resolver sem bloquear** ou **descartar**, com nota |
 | Usuários | buscar por nome/e-mail; ver denúncias recebidas; **bloquear** (motivo obrigatório) e **desbloquear** |
 | Anúncios | buscar por título/dono; **tirar do ar** |
+| Pagamentos | vendas por status, meio de pagamento e prazo de 7 dias do CDC; **reembolsar** (motivo obrigatório; devolve pelo Mercado Pago) |
 
 - Bloquear não apaga nada: desbloquear devolve a conta e os anúncios como estavam.
 - Bloquear uma conta resolve automaticamente as denúncias abertas contra ela.

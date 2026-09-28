@@ -80,8 +80,8 @@ Estrutura de pacotes (`backend/src/main/java/com/rachaai`): `auth`, `user`, `lis
 | lucide-react | ^1.47.0 | **1.47.0** | ícones (no lugar de emojis) |
 | Leaflet | ^1.9.4 | **1.9.4** | mapa |
 | react-leaflet | ^5.0.0 | **5.0.0** | Leaflet para React |
-| Mapa (tiles) | OpenStreetMap | | gratuito, sem chave de API |
-| Busca de endereço | Nominatim (OpenStreetMap) | | sugestões de bairro/endereço em Maringá, chamada direto do navegador, sem chave (limite de ~1 requisição por segundo, por isso há espera entre as teclas) |
+| Mapa (tiles) | **MapTiler** (`streets-v2` e `streets-v2-dark`), com dados do OpenStreetMap | | precisa de `MAPTILER_KEY` no `.env`; sem a chave, cai no OpenStreetMap gratuito (só para desenvolver). Código: `frontend/src/config/maps.ts` |
+| Busca de endereço | **MapTiler Geocoding** | | sugestões de bairro/endereço em Maringá, direto do navegador. Sem chave, cai no Nominatim (OpenStreetMap), limitado a ~1 busca/s |
 | oxlint | ^1.81.0 | 1.83.0 | verificação de código (`npm run lint`) |
 | Node.js (build no Docker) | | imagem `node:20-alpine` | |
 | Node.js / npm (seu PC) | | v24.12.0 / 11.6.2 | só necessário para rodar o front fora do Docker |

@@ -46,6 +46,9 @@ services:
       HIGHLIGHT_PRICE: ${HIGHLIGHT_PRICE:-14.90}
       HIGHLIGHT_DAYS: ${HIGHLIGHT_DAYS:-30}
       EXPIRATION_CHECK: ${EXPIRATION_CHECK:-PT10M}
+      MERCADOPAGO_ACCESS_TOKEN: ${MERCADOPAGO_ACCESS_TOKEN:-}
+      MERCADOPAGO_WEBHOOK_SECRET: ${MERCADOPAGO_WEBHOOK_SECRET:-}
+      MERCADOPAGO_WEBHOOK_URL: ${MERCADOPAGO_WEBHOOK_URL:-}
       APP_BASE_URL: ${APP_BASE_URL:?defina APP_BASE_URL no .env do ambiente}
       ADMIN_EMAILS: ${ADMIN_EMAILS:-}
       MAIL_HOST: ${MAIL_HOST:-mailpit}
@@ -68,7 +71,11 @@ services:
       - "${MAIL_UI_PORT:-8025}:8025"
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        # Mapas e busca de endereço (MapTiler). Vazia = OpenStreetMap gratuito.
+        VITE_MAPTILER_KEY: ${MAPTILER_KEY:-}
     restart: unless-stopped
     depends_on:
       - backend

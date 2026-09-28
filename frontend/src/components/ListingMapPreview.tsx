@@ -1,8 +1,9 @@
-import { MapContainer, Marker, TileLayer } from 'react-leaflet'
+import { MapContainer, Marker } from 'react-leaflet'
 import L from 'leaflet'
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
 import markerIcon from 'leaflet/dist/images/marker-icon.png'
 import markerShadow from 'leaflet/dist/images/marker-shadow.png'
+import MapTiles from './MapTiles'
 
 const defaultIcon = L.icon({
   iconUrl: markerIcon,
@@ -23,9 +24,9 @@ export default function ListingMapPreview({ latitude, longitude }: { latitude: n
         scrollWheelZoom={false}
         doubleClickZoom={false}
         zoomControl={false}
-        attributionControl={false}
       >
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        {/* O crédito do mapa (MapTiler/OpenStreetMap) é obrigatório, então o controle fica ligado. */}
+        <MapTiles />
         <Marker position={[latitude, longitude]} icon={defaultIcon} />
       </MapContainer>
     </div>

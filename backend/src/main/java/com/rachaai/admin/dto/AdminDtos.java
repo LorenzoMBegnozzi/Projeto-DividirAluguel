@@ -1,5 +1,7 @@
 package com.rachaai.admin.dto;
 
+import com.rachaai.billing.PaymentStatus;
+import com.rachaai.billing.PaymentType;
 import com.rachaai.listing.ListingType;
 import com.rachaai.moderation.ReportReason;
 import com.rachaai.moderation.ReportStatus;
@@ -7,6 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 /** Formatos de entrada e saída da área administrativa (/api/admin). */
@@ -69,6 +72,32 @@ public final class AdminDtos {
     }
 
     public record BlockRequest(@NotBlank @Size(max = 500) String reason) {
+    }
+
+    public record Payment(
+            Long id,
+            Long userId,
+            String userName,
+            String userEmail,
+            PaymentType type,
+            Long listingId,
+            BigDecimal amount,
+            PaymentStatus status,
+            /** pix, credit_card, debit_card... (nulo = simulado) */
+            String method,
+            /** MERCADOPAGO ou nulo (modo simulado) */
+            String gateway,
+            String gatewayPaymentId,
+            Instant createdAt,
+            Instant paidAt,
+            Instant refundedAt,
+            String refundReason,
+            /** Pago há no máximo 7 dias: dentro do prazo de arrependimento do CDC. */
+            boolean withinWithdrawalPeriod
+    ) {
+    }
+
+    public record RefundRequest(@NotBlank @Size(max = 500) String reason) {
     }
 
     public record Listing(

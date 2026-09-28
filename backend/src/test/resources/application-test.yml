@@ -10,8 +10,11 @@ spring:
   flyway:
     enabled: false
 
+# Tudo explícito aqui, para os testes não dependerem do .env da máquina (o application.yml
+# importa o ../.env.<AMBIENTE> quando existe).
 app:
   # H2 não tem políticas por linha (RLS); o identificador de sessão do Oracle não se aplica.
+  # O RLS é testado no Oracle de verdade em RlsOracleTest (./mvnw test -Poracle).
   rls:
     enabled: false
   # H2 não tem a tabela registros_acesso (vem de migration Oracle).
@@ -22,3 +25,19 @@ app:
     expiration-minutes: 1440
   cors:
     allowed-origins: http://localhost:5173
+  admin:
+    emails: admin@teste.com
+  # Contas @teste.com nascem confirmadas; os testes de confirmação usam outro domínio.
+  email-confirmation:
+    auto-confirm-domain: teste.com
+  billing:
+    mode: SIMULADO
+  # Limites de produção (os testes usam um IP diferente por pessoa para não se esbarrarem).
+  rate-limit:
+    login-erros-por-email: 5
+    login-por-ip: 20
+    cadastro-por-ip: 5
+    esqueci-senha-por-ip: 5
+    esqueci-senha-por-email: 3
+    redefinir-senha-por-ip: 10
+    reenviar-confirmacao-por-conta: 3

@@ -30,7 +30,7 @@ import {
   markListingUnavailable,
   uploadListingPhoto,
 } from '../api/listings'
-import { createPayment, getPlan } from '../api/billing'
+import { createPayment, getPlan, goToCheckout } from '../api/billing'
 import { getInterestStatus } from '../api/interest'
 import { apiErrorMessage } from '../api/client'
 import { formatDate, formatMoney } from '../utils/format'
@@ -239,8 +239,7 @@ export default function ListingPage() {
     setBuying(true)
     setListError(null)
     try {
-      await createPayment('ANUNCIO_EXTRA')
-      navigate('/pagamentos')
+      goToCheckout(await createPayment('ANUNCIO_EXTRA'), navigate)
     } catch (err) {
       setListError(apiErrorMessage(err, 'Não foi possível iniciar a compra'))
     } finally {
@@ -251,8 +250,7 @@ export default function ListingPage() {
   async function handleHighlight(listingId: number) {
     setListError(null)
     try {
-      await createPayment('DESTAQUE', listingId)
-      navigate('/pagamentos')
+      goToCheckout(await createPayment('DESTAQUE', listingId), navigate)
     } catch (err) {
       setListError(apiErrorMessage(err, 'Não foi possível iniciar o destaque'))
     }

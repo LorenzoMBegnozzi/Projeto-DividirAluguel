@@ -67,15 +67,23 @@ app:
     # E-mails das contas administradoras, separados por vírgula (ver AdminBootstrap).
     emails: ${ADMIN_EMAILS:}
   billing:
-    # SIMULADO: o pagamento é confirmado por um botão de teste (não cobra ninguém).
-    # Para cobrar de verdade, integrar um gateway (ver docs/06-COBRANCA.md).
+    # SIMULADO: botão "Simular pagamento", ninguém é cobrado.
+    # MERCADOPAGO: cobrança pelo Mercado Pago (Pix, crédito e débito). Ver docs/06-COBRANCA.md.
+    # DESATIVADO: nenhuma compra pode ser feita.
     mode: ${BILLING_MODE:SIMULADO}
     free-listings: ${FREE_LISTINGS:3}
-    extra-listing-price: ${EXTRA_LISTING_PRICE:19.90}
+    # Preços de TESTE (R$ 1,00, o mínimo que o Mercado Pago aceita com folga). Definir os reais antes de lançar.
+    extra-listing-price: ${EXTRA_LISTING_PRICE:1.00}
     extra-listing-days: ${EXTRA_LISTING_DAYS:30}
-    highlight-price: ${HIGHLIGHT_PRICE:14.90}
+    highlight-price: ${HIGHLIGHT_PRICE:1.00}
     highlight-days: ${HIGHLIGHT_DAYS:30}
     expiration-check: ${EXPIRATION_CHECK:PT10M}
+    mercadopago:
+      access-token: ${MERCADOPAGO_ACCESS_TOKEN:}
+      webhook-secret: ${MERCADOPAGO_WEBHOOK_SECRET:}
+      # Endereço público do aviso automático (precisa de domínio com HTTPS). Vazio em dev.
+      webhook-url: ${MERCADOPAGO_WEBHOOK_URL:}
+      api-url: https://api.mercadopago.com
 
 springdoc:
   swagger-ui:

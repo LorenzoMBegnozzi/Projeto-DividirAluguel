@@ -1,6 +1,8 @@
 package com.rachaai.admin;
 
 import com.rachaai.admin.dto.AdminDtos;
+import com.rachaai.billing.BillingService;
+import com.rachaai.billing.Payment;
 import com.rachaai.billing.PaymentRepository;
 import com.rachaai.billing.PaymentStatus;
 import com.rachaai.common.ApiException;
@@ -35,13 +37,16 @@ public class AdminService {
     private final ListingRepository listingRepository;
     private final ReportRepository reportRepository;
     private final PaymentRepository paymentRepository;
+    private final BillingService billingService;
 
     public AdminService(
             UserRepository userRepository,
             ListingRepository listingRepository,
             ReportRepository reportRepository,
-            PaymentRepository paymentRepository
+            PaymentRepository paymentRepository,
+            BillingService billingService
     ) {
+        this.billingService = billingService;
         this.userRepository = userRepository;
         this.listingRepository = listingRepository;
         this.reportRepository = reportRepository;
@@ -163,7 +168,35 @@ public class AdminService {
         return toDto(listing);
     }
 
+    // ---------------------------------------------------------------- pagamentos
+
+    /** status nulo = todos. */
+    @Transactional(readOnly = true)
+    public List<AdminDtos.Payment> listPayments(PaymentStatus status) {
+        List<Payment> payments = status == null
+                ? paymentRepository.findAllByOrderByCreatedAtDesc(Limit.of(MAX_LISTED))
+                : paymentRepository.findAllByStatusOrderByCreatedAtDesc(status, Limit.of(MAX_LISTED));
+        return payments.stream().map(this::toDto).toList();
+    }
+
+    /** Devolve o dinheiro (Mercado Pago) e desfaz a compra. Ver BillingService.refund. */
+    @Transactional
+    public AdminDtos.Payment refund(Long adminId, Long paymentId, AdminDtos.RefundRequest request) {
+        return toDto(billingService.refund(adminId, paymentId, request.reason()));
+    }
+
     // ---------------------------------------------------------------- conversões
+
+    private AdminDtos.Payment toDto(Payment p) {
+        boolean withinPeriod = p.getPaidAt() != null
+                && p.getPaidAt().isAfter(java.time.Instant.now().minus(BillingService.WITHDRAWAL_PERIOD));
+        return new AdminDtos.Payment(
+                p.getId(), p.getUser().getId(), p.getUser().getName(), p.getUser().getEmail(),
+                p.getType(), p.getListingId(), p.getAmount(), p.getStatus(), p.getMethod(), p.getGateway(),
+                p.getGatewayPaymentId(), p.getCreatedAt(), p.getPaidAt(), p.getRefundedAt(), p.getRefundReason(),
+                withinPeriod
+        );
+    }
 
     private AdminDtos.Report toDto(Report r, Map<Long, Long> counts) {
         return new AdminDtos.Report(

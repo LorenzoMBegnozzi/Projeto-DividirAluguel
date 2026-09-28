@@ -17,5 +17,9 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     long countByStatus(PaymentStatus status);
 
+    List<Payment> findAllByOrderByCreatedAtDesc(org.springframework.data.domain.Limit limit);
+
+    List<Payment> findAllByStatusOrderByCreatedAtDesc(PaymentStatus status, org.springframework.data.domain.Limit limit);
+
     long countByUserIdAndTypeAndStatusAndListingIdIsNull(Long userId, PaymentType type, PaymentStatus status);
 }

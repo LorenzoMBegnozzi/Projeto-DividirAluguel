@@ -1,5 +1,5 @@
 import client from './client'
-import type { ListingType } from '../types'
+import type { ListingType, PaymentStatus, PaymentType } from '../types'
 
 export type ReportStatus = 'ABERTA' | 'RESOLVIDA' | 'DESCARTADA'
 
@@ -104,6 +104,37 @@ export function blockAdminUser(id: number, reason: string) {
 
 export function unblockAdminUser(id: number) {
   return client.post<AdminUser>(`/admin/usuarios/${id}/desbloquear`).then((res) => res.data)
+}
+
+export interface AdminPayment {
+  id: number
+  userId: number
+  userName: string
+  userEmail: string
+  type: PaymentType
+  listingId: number | null
+  amount: number
+  status: PaymentStatus
+  method: string | null
+  gateway: string | null
+  gatewayPaymentId: string | null
+  createdAt: string
+  paidAt: string | null
+  refundedAt: string | null
+  refundReason: string | null
+  /** Pago há no máximo 7 dias (arrependimento do CDC). */
+  withinWithdrawalPeriod: boolean
+}
+
+export function getAdminPayments(status: PaymentStatus | null) {
+  return client
+    .get<AdminPayment[]>('/admin/pagamentos', { params: status ? { status } : {} })
+    .then((res) => res.data)
+}
+
+/** Devolve o dinheiro pelo Mercado Pago (mesmo meio de pagamento) e desfaz a compra. */
+export function refundAdminPayment(id: number, reason: string) {
+  return client.post<AdminPayment>(`/admin/pagamentos/${id}/reembolsar`, { reason }).then((res) => res.data)
 }
 
 export function getAdminListings(search: string) {

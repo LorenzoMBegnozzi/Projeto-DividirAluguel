@@ -14,7 +14,13 @@ public record PaymentResponse(
         BigDecimal amount,
         PaymentStatus status,
         Instant createdAt,
-        Instant paidAt
+        Instant paidAt,
+        /** Página do Mercado Pago para pagar (só em pagamento pendente pelo gateway). */
+        String checkoutUrl,
+        /** Como pagou: pix, credit_card, debit_card, account_money... */
+        String method,
+        /** Último status no gateway (approved, pending, rejected...), para explicar um pendente. */
+        String gatewayStatus
 ) {
     public static PaymentResponse from(Payment payment) {
         return new PaymentResponse(
@@ -24,7 +30,10 @@ public record PaymentResponse(
                 payment.getAmount(),
                 payment.getStatus(),
                 payment.getCreatedAt(),
-                payment.getPaidAt()
+                payment.getPaidAt(),
+                payment.getStatus() == com.rachaai.billing.PaymentStatus.PENDENTE ? payment.getCheckoutUrl() : null,
+                payment.getMethod(),
+                payment.getGatewayStatus()
         );
     }
 }

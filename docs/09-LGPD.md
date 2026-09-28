@@ -94,5 +94,5 @@ ordem judicial. Tabela `registros_acesso` (migration V31):
 | **Alergia guardada sem uso** | a alergia não entra em nenhum cálculo nem aparece para ninguém; pela LGPD (art. 6º, III, necessidade) dado sensível sem finalidade não deveria ser coletado | decidir: **usar** (ex.: avisar "alergia a pelo × imóvel com pets") ou **tirar o campo** |
 | **Portabilidade** ("baixar meus dados") | direito do art. 18, V | botão que gera um arquivo com os dados da conta |
 | **Prazo das denúncias** | a Política diz 5 anos; não há rotina que apague depois | tarefa agendada que apaga denúncias fechadas com mais de 5 anos |
-| **Mapas fora do Brasil** | OpenStreetMap recebe endereço digitado e IP | já está na Política; ao trocar de provedor, atualizar o texto |
+| **Mapas fora do Brasil** | o MapTiler (Suíça) recebe o endereço digitado e o IP | já está na Política; ao trocar de provedor, atualizar o texto |
 | **Encarregado (DPO)** | é obrigatório indicar alguém e um canal | preencher o e-mail em `legalVersion.ts` e responder em até 15 dias |

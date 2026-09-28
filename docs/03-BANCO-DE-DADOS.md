@@ -248,6 +248,8 @@ apenas no link do e-mail), `usado` (`SIM`/`NAO`, uso único) e `criado_em`. O to
 | V26 | `V26__perfil_precisa_garagem.sql` | `precisa_vaga_carro` e `precisa_vaga_moto` em `perfis_usuario` |
 | V27 | `V27__remove_musica_rotina.sql` | remove `gosto_musical` e `rotina` de `perfis_usuario` |
 | V28 | `V28__admin_bloqueio_sessao.sql` | `admin`, bloqueio e `versao_token` em `usuarios`; `status`, `resolvida_em`, `resolvida_por_id` e `nota_admin` em `denuncias` |
+| V34 | `V34__reembolso.sql` | status `REEMBOLSADO` e `reembolsado_em`, `reembolsado_por_id`, `motivo_reembolso` em `pagamentos` |
+| V33 | `V33__pagamento_gateway.sql` | `gateway`, `link_pagamento`, `gateway_pagamento_id`, `metodo` e `status_gateway` em `pagamentos` (Mercado Pago) |
 | V32 | `V32__confirmacao_email.sql` | `email_confirmado_em` em `usuarios` (contas antigas ficam confirmadas) e tabela `confirmacoes_email` (links, só o hash) |
 | V31 | `V31__registros_acesso.sql` | tabela `registros_acesso` (Marco Civil: IP, porta, data/hora, evento; 6 meses) com RLS. Ver [09-LGPD.md](09-LGPD.md) |
 | V30 | `V30__lgpd_aceite_e_exclusao.sql` | `termos_aceitos_em`, `versao_termos` e `excluido_em` em `usuarios` |
