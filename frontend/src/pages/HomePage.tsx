@@ -1,4 +1,6 @@
 import { Link, Navigate } from 'react-router-dom'
+import LegalLinks from '../components/LegalLinks'
+import { homePath } from '../utils/profile'
 import { Home, MapPinned, MessageCircle, ShieldCheck, Sparkles, Users } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import ThemeToggle from '../components/ThemeToggle'
@@ -34,11 +36,18 @@ export default function HomePage() {
   }
 
   if (user) {
-    return <Navigate to={user.renter ? '/browse' : '/anuncio'} replace />
+    return <Navigate to={homePath(user)} replace />
   }
+
+  const accountDeleted = new URLSearchParams(window.location.search).has('conta-excluida')
 
   return (
     <div className="min-h-screen bg-paper">
+      {accountDeleted && (
+        <p className="bg-leaf-tint px-4 py-3 text-center text-sm font-semibold text-leaf">
+          Sua conta foi excluída e seus dados pessoais foram apagados.
+        </p>
+      )}
       <header className="mx-auto flex max-w-5xl items-center justify-between px-4 py-6">
         <span className="text-xl font-black tracking-tight text-ink">
           Racha<span className="text-brand">Ai</span>
@@ -109,6 +118,10 @@ export default function HomePage() {
           </Link>
         </div>
       </section>
+
+      <footer className="border-t border-line px-4 py-6">
+        <LegalLinks />
+      </footer>
     </div>
   )
 }

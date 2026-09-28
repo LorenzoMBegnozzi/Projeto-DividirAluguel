@@ -56,6 +56,9 @@ public class ListingService {
                 .orElseThrow(() -> ApiException.notFound("Anúncio não encontrado"));
         // Vaga só para um sexo: quem não se encaixa não vê nem pelo link direto (mesma regra da busca).
         boolean isOwner = listing.getUser().getId().equals(viewerId);
+        if (!isOwner && listing.getUser().isBlocked()) {
+            throw ApiException.notFound("Anúncio não encontrado");
+        }
         if (!isOwner && listing.getType() == ListingType.TEM_VAGA) {
             Gender viewerGender = userProfileRepository.findByUserId(viewerId).map(UserProfile::getGender).orElse(null);
             if (!listing.getGenderPreference().accepts(viewerGender)) {
@@ -68,6 +71,7 @@ public class ListingService {
     @Transactional
     public Listing create(Long userId, ListingRequest request) {
         User user = userService.getById(userId);
+        user.requireConfirmedEmail("publicar anúncios");
         validateRoleForType(user, request.type());
 
         if (request.latitude() == null || request.longitude() == null || isBlank(request.address())) {
@@ -164,7 +168,7 @@ public class ListingService {
         return conversationRepository.findOwnerConversationsForListing(listingId, userId).stream()
                 .map(c -> c.getRenter())
                 .distinct()
-                .map(u -> UserResponse.from(u, userService.hasPhoto(u.getId())))
+                .map(u -> UserResponse.publicFrom(u, userService.hasPhoto(u.getId())))
                 .toList();
     }
 

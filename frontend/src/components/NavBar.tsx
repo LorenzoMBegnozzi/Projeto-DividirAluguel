@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { Menu, X } from 'lucide-react'
+import { Menu, ShieldCheck, X } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import NotificationBell from './NotificationBell'
 import Avatar from './Avatar'
@@ -22,7 +22,10 @@ export default function NavBar() {
 
   if (!user) return null
 
-  const isAdvertiser = user.advertiser
+  // Conta de admin só modera: não vê as áreas de anunciar, pagar e conversar.
+  const isAdmin = user.admin
+  const isAdvertiser = user.advertiser && !isAdmin
+  const hasMobileMenu = isAdvertiser
 
   return (
     <header className="sticky top-0 z-20 border-b border-line bg-surface">
@@ -32,7 +35,7 @@ export default function NavBar() {
         </Link>
 
         <nav className="hidden items-center gap-0.5 lg:flex">
-          {user.renter && (
+          {user.renter && !isAdmin && (
             <NavLink to="/browse" className={linkClass}>
               Buscar
             </NavLink>
@@ -47,21 +50,29 @@ export default function NavBar() {
               </NavLink>
             </>
           )}
-          <NavLink to="/conversas" className={linkClass}>
-            Conversas
-          </NavLink>
+          {!isAdmin && (
+            <NavLink to="/conversas" className={linkClass}>
+              Conversas
+            </NavLink>
+          )}
+          {isAdmin && (
+            <NavLink to="/admin" className={linkClass}>
+              <ShieldCheck className="h-4 w-4" aria-hidden="true" />
+              Admin
+            </NavLink>
+          )}
           <NavLink to="/perfil" className={linkClass}>
             <Avatar photoUrl={user.photoUrl} name={user.name} size={24} />
             Meu perfil
           </NavLink>
           <ThemeToggle className="ml-1" />
-          <NotificationBell />
+          {!isAdmin && <NotificationBell />}
         </nav>
 
         <div className="flex items-center gap-1 lg:hidden">
           <ThemeToggle />
-          <NotificationBell />
-          {isAdvertiser && (
+          {!isAdmin && <NotificationBell />}
+          {hasMobileMenu && (
             <button
               onClick={() => setMobileOpen((prev) => !prev)}
               aria-label={mobileOpen ? 'Fechar menu' : 'Abrir menu'}
@@ -74,11 +85,13 @@ export default function NavBar() {
         </div>
       </div>
 
-      {isAdvertiser && mobileOpen && (
+      {hasMobileMenu && mobileOpen && (
         <nav className="flex flex-col gap-0.5 border-t border-line bg-surface px-4 py-2 lg:hidden">
-          <NavLink to="/pagamentos" className={mobileLinkClass} onClick={() => setMobileOpen(false)}>
-            Pagamentos
-          </NavLink>
+          {isAdvertiser && (
+            <NavLink to="/pagamentos" className={mobileLinkClass} onClick={() => setMobileOpen(false)}>
+              Pagamentos
+            </NavLink>
+          )}
         </nav>
       )}
     </header>

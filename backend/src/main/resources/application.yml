@@ -1,8 +1,18 @@
 spring:
   application:
     name: rachaai
+  config:
+    # Rodando fora do Docker (IDE / mvnw), a variável AMBIENTE (dev, homolog ou prod) escolhe o
+    # .env da raiz do projeto de onde vêm porta do banco, senhas e perfil. Sem AMBIENTE, usa dev.
+    # No Docker o arquivo não existe (optional) e tudo vem das variáveis do docker-compose.
+    import:
+      - optional:file:../.env.${AMBIENTE:dev}[.properties]
+      - optional:file:./.env.${AMBIENTE:dev}[.properties]
+  profiles:
+    # No Docker quem define é SPRING_PROFILES_ACTIVE; localmente, o APP_ENV do .env importado.
+    active: ${APP_ENV:dev}
   datasource:
-    url: ${DB_URL:jdbc:oracle:thin:@localhost:1522/XEPDB1}
+    url: ${DB_URL:jdbc:oracle:thin:@localhost:${DB_PORT:1522}/XEPDB1}
     username: ${DB_USER:rachaai}
     password: ${DB_PASSWORD:rachaai}
     driver-class-name: oracle.jdbc.OracleDriver
@@ -42,6 +52,20 @@ app:
   base-url: ${APP_BASE_URL:http://localhost:8081}
   mail:
     from: ${MAIL_FROM:RachaAi <nao-responda@rachaai.local>}
+  # Limite de tentativas (ver RateLimiter). Estes são os valores de produção.
+  rate-limit:
+    login-erros-por-email: 5      # erros de senha por e-mail a cada 15 min
+    login-por-ip: 20              # tentativas de login por IP a cada 5 min
+    cadastro-por-ip: 5            # cadastros por IP por hora
+    esqueci-senha-por-ip: 5       # pedidos de "esqueci a senha" por IP por hora
+    esqueci-senha-por-email: 3    # ... e por e-mail por hora
+    redefinir-senha-por-ip: 10    # tentativas de redefinir por IP por hora
+  # Registros de acesso (Marco Civil, art. 15): por quantos dias guardar. A lei pede 6 meses.
+  access-log:
+    retention-days: ${ACCESS_LOG_RETENTION_DAYS:183}
+  admin:
+    # E-mails das contas administradoras, separados por vírgula (ver AdminBootstrap).
+    emails: ${ADMIN_EMAILS:}
   billing:
     # SIMULADO: o pagamento é confirmado por um botão de teste (não cobra ninguém).
     # Para cobrar de verdade, integrar um gateway (ver docs/06-COBRANCA.md).

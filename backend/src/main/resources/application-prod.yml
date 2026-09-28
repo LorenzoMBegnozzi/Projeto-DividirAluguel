@@ -1,0 +1,23 @@
+# Produção. Nada de valor padrão para segredo: se JWT_SECRET, DB_URL, DB_USER ou DB_PASSWORD
+# faltarem, o backend não sobe (melhor falhar do que rodar com a senha de exemplo).
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+
+# A documentação da API (Swagger) não fica pública em produção.
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+logging:
+  level:
+    root: WARN
+    com.rachaai: INFO

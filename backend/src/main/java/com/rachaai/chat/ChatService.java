@@ -54,6 +54,7 @@ public class ChatService {
         }
 
         User sender = userRepository.getReferenceById(userId);
+        sender.requireConfirmedEmail("enviar mensagens");
         Message message = messageRepository.save(new Message(conversation, sender, content));
 
         notificationService.notify(

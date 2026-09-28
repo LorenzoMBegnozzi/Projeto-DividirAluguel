@@ -1,5 +1,6 @@
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { homePath } from '../utils/profile'
 
 export default function HomeRedirect() {
   const { user, loading } = useAuth()
@@ -12,5 +13,5 @@ export default function HomeRedirect() {
     return <Navigate to="/" replace />
   }
 
-  return <Navigate to={user.renter ? '/browse' : '/anuncio'} replace />
+  return <Navigate to={homePath(user)} replace />
 }

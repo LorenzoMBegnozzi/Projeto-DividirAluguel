@@ -27,6 +27,33 @@ public class EmailService {
         this.baseUrl = baseUrl;
     }
 
+    /** Link de confirmação de e-mail enviado no cadastro (e ao pedir "Reenviar e-mail"). */
+    @Async
+    public void sendEmailConfirmation(String to, String name, String rawToken, int validHours) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(from);
+        message.setTo(to);
+        message.setSubject("RachaAi - confirme seu e-mail");
+        message.setText("""
+                Olá, %s!
+
+                Falta pouco para usar o RachaAi. Confirme que este e-mail é seu acessando o link abaixo
+                (válido por %d horas):
+
+                %s/confirmar-email/%s
+
+                Até confirmar, você já pode entrar e completar o perfil, mas ainda não consegue anunciar
+                nem conversar com outras pessoas.
+
+                Se você não criou uma conta no RachaAi, ignore este e-mail.
+                """.formatted(name, validHours, baseUrl, rawToken));
+        try {
+            mailSender.send(message);
+        } catch (Exception e) {
+            log.error("Falha ao enviar e-mail de confirmação", e);
+        }
+    }
+
     /** Assíncrono para o tempo de resposta não revelar se o e-mail tem conta; falhas só vão pro log. */
     @Async
     public void sendPasswordReset(String to, String name, String rawToken, int validMinutes) {

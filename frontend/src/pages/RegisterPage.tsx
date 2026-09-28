@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import LegalLinks from '../components/LegalLinks'
 import type { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
@@ -30,6 +31,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('')
   const [birthDate, setBirthDate] = useState('')
   const [cpf, setCpf] = useState('')
+  const [acceptTerms, setAcceptTerms] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -39,7 +41,7 @@ export default function RegisterPage() {
     setError(null)
     setLoading(true)
     try {
-      await register(name, email, password, birthDate, cpf.replace(/\D/g, ''), role, advertiserKind)
+      await register(name, email, password, birthDate, cpf.replace(/\D/g, ''), role, advertiserKind, acceptTerms)
       navigate(role === 'RENTER' ? '/onboarding' : '/perfil')
     } catch (err) {
       setError(apiErrorMessage(err, 'Não foi possível criar a conta'))
@@ -168,17 +170,38 @@ export default function RegisterPage() {
             className={`-mt-2 ${inputClass}`}
           />
           <p className="-mt-2 text-[13px] text-ink-3">
-            Usamos só para confirmar que você é maior de idade — não compartilhamos com ninguém.
+            Usamos para evitar contas duplicadas ou falsas. Não aparece para outros usuários.
           </p>
+          <label className="flex cursor-pointer items-start gap-2 text-sm text-ink-2">
+            <input
+              type="checkbox"
+              required
+              checked={acceptTerms}
+              onChange={(e) => setAcceptTerms(e.target.checked)}
+              className="mt-0.5 h-[18px] w-[18px] shrink-0 accent-brand"
+            />
+            <span>
+              Li e aceito os{' '}
+              <a href="/termos" target="_blank" rel="noreferrer" className="font-semibold text-brand hover:text-brand-strong">
+                Termos de Uso
+              </a>{' '}
+              e a{' '}
+              <a href="/privacidade" target="_blank" rel="noreferrer" className="font-semibold text-brand hover:text-brand-strong">
+                Política de Privacidade
+              </a>
+              . Se eu informar alergias (dado de saúde, opcional), autorizo que fiquem guardadas no meu perfil.
+            </span>
+          </label>
           {error && <p className="rounded-md bg-danger-tint px-3 py-2 text-sm text-danger">{error}</p>}
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !acceptTerms}
             className="mt-2 h-[42px] rounded-md bg-brand font-semibold text-on-brand transition hover:bg-brand-strong disabled:opacity-60"
           >
             {loading ? 'Criando…' : 'Criar conta'}
           </button>
         </form>
+        <LegalLinks className="mt-6" />
       </div>
     </div>
   )

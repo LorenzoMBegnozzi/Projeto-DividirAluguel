@@ -1,7 +1,9 @@
 package com.rachaai.user;
 
+import com.rachaai.auth.EmailConfirmationService;
 import com.rachaai.common.ApiException;
 import com.rachaai.security.SecurityUser;
+import com.rachaai.user.dto.DeleteAccountRequest;
 import com.rachaai.user.dto.EnableAdvertiserRequest;
 import com.rachaai.user.dto.ProfileRequest;
 import com.rachaai.user.dto.UserResponse;
@@ -22,9 +24,17 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final AccountDeletionService accountDeletionService;
+    private final EmailConfirmationService emailConfirmationService;
 
-    public UserController(UserService userService) {
+    public UserController(
+            UserService userService,
+            AccountDeletionService accountDeletionService,
+            EmailConfirmationService emailConfirmationService
+    ) {
         this.userService = userService;
+        this.accountDeletionService = accountDeletionService;
+        this.emailConfirmationService = emailConfirmationService;
     }
 
     @GetMapping("/me")
@@ -45,7 +55,33 @@ public class UserController {
     @GetMapping("/{id}")
     public UserResponse getUser(@PathVariable Long id) {
         User user = userService.getById(id);
-        return UserResponse.from(user, userService.hasPhoto(id));
+        if (user.isDeleted()) {
+            throw ApiException.notFound("Usuário não encontrado");
+        }
+        return UserResponse.publicFrom(user, userService.hasPhoto(id));
+    }
+
+    /** "Reenviar e-mail" de confirmação (até 3 por hora). */
+    @PostMapping("/me/reenviar-confirmacao")
+    public ResponseEntity<Void> resendEmailConfirmation(@AuthenticationPrincipal SecurityUser principal) {
+        emailConfirmationService.resend(principal.getId());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/me/aceitar-politicas")
+    public UserResponse acceptLegalTerms(@AuthenticationPrincipal SecurityUser principal) {
+        User user = userService.acceptLegalTerms(principal.getId());
+        return UserResponse.from(user, userService.hasPhoto(user.getId()));
+    }
+
+    /** Exclui a conta (LGPD). Pede a senha de novo para confirmar. Ver AccountDeletionService. */
+    @PostMapping("/me/excluir-conta")
+    public ResponseEntity<Void> deleteAccount(
+            @AuthenticationPrincipal SecurityUser principal,
+            @Valid @RequestBody DeleteAccountRequest request
+    ) {
+        accountDeletionService.deleteAccount(principal.getId(), request.password());
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/me/aceitar-termos")

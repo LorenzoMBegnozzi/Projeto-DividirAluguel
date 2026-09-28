@@ -11,6 +11,12 @@ spring:
     enabled: false
 
 app:
+  # H2 não tem políticas por linha (RLS); o identificador de sessão do Oracle não se aplica.
+  rls:
+    enabled: false
+  # H2 não tem a tabela registros_acesso (vem de migration Oracle).
+  access-log:
+    enabled: false
   jwt:
     secret: ZGV2LW9ubHktc2VjcmV0LWNoYW5nZS1tZS1pbi1wcm9kdWN0aW9uLTEyMzQ1Njc4OTA=
     expiration-minutes: 1440

@@ -34,6 +34,20 @@ public class Report {
     @Column(name = "criado_em", nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 20)
+    private ReportStatus status = ReportStatus.ABERTA;
+
+    @Column(name = "resolvida_em")
+    private Instant resolvedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "resolvida_por_id")
+    private User resolvedBy;
+
+    @Column(name = "nota_admin", length = 1000)
+    private String adminNote;
+
     protected Report() {
     }
 
@@ -71,5 +85,32 @@ public class Report {
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public ReportStatus getStatus() {
+        return status;
+    }
+
+    public Instant getResolvedAt() {
+        return resolvedAt;
+    }
+
+    public User getResolvedBy() {
+        return resolvedBy;
+    }
+
+    public String getAdminNote() {
+        return adminNote;
+    }
+
+    /** Fecha a denúncia (RESOLVIDA ou DESCARTADA), registrando quem decidiu e por quê. */
+    public void close(ReportStatus newStatus, User admin, String note) {
+        if (newStatus == ReportStatus.ABERTA) {
+            throw new IllegalArgumentException("Use RESOLVIDA ou DESCARTADA para fechar uma denúncia");
+        }
+        this.status = newStatus;
+        this.resolvedAt = Instant.now();
+        this.resolvedBy = admin;
+        this.adminNote = note;
     }
 }

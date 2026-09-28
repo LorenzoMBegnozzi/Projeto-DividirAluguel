@@ -18,30 +18,40 @@ capacidade depois, no perfil, sem criar outra conta:
 Também tem: perfil com foto, convívios e avaliações entre quem já morou junto, notificações,
 bloqueio e denúncia, e "esqueci minha senha" por e-mail.
 
-## Subir em 3 comandos
+## Ambientes: dev, homolog e prod
 
-Precisa de Docker (no WSL, no Windows). No Ubuntu do WSL, dentro da pasta do projeto:
+São três ambientes isolados, cada um com o seu banco, senhas e dados. Para trocar de ambiente basta mudar a variável `AMBIENTE` (dev, homolog ou prod). Tudo sobre eles:
+**[docs/07-AMBIENTES.md](docs/07-AMBIENTES.md)**.
 
-```bash
-cp .env.example .env        # só na primeira vez; depois edite as senhas
-docker compose up --build -d
-bash scripts/seed-demo.sh   # cria usuários e anúncios de exemplo (senha: senha123)
+## Subir o ambiente de desenvolvimento
+
+Precisa de Docker. No PowerShell, dentro da pasta do projeto:
+
+```powershell
+Copy-Item .env.dev.example .env.dev    # só na primeira vez; depois edite as senhas
+.\scripts\ambiente.ps1 dev up
+.\scripts\ambiente.ps1 dev seed        # usuários e anúncios de exemplo (senha: senha123)
 ```
 
-Abra **http://localhost:8081**. A primeira subida demora (baixa ~1,2 GB do Oracle).
+(No Git Bash: `bash scripts/ambiente.sh dev up`.) A primeira subida demora (baixa ~1,2 GB do Oracle).
 **Passo a passo completo, com todos os testes: [docs/05-GUIA-DE-TESTE-MANUAL.md](docs/05-GUIA-DE-TESTE-MANUAL.md).**
 
-| O quê | Endereço |
-|---|---|
-| Site | http://localhost:8081 |
-| API + Swagger | http://localhost:8080/swagger-ui.html |
-| Banco Oracle | `localhost:1522`, serviço `XEPDB1` |
-| E-mails de teste (Mailpit) | http://localhost:8025 |
+| O quê | dev | homolog |
+|---|---|---|
+| Site | http://localhost:8082 | http://localhost:8092 |
+| API + Swagger | http://localhost:8080/swagger-ui.html | http://localhost:8090/swagger-ui.html |
+| Banco Oracle | `localhost:1522`, serviço `XEPDB1` | `localhost:1532`, serviço `XEPDB1` |
+| E-mails de teste (Mailpit) | http://localhost:8025 | http://localhost:8035 |
+
+Produção não expõe API nem banco; ver [docs/07-AMBIENTES.md](docs/07-AMBIENTES.md).
 
 ## Documentação
 
 | Documento | Conteúdo |
 |---|---|
+| [09 — LGPD](docs/09-LGPD.md) | termos, privacidade, aceite, exclusão de conta e o que falta antes de publicar |
+| [08 — Segurança e administração](docs/08-SEGURANCA.md) | limite de tentativas, logout, políticas por linha (RLS), área /admin e o que ainda falta |
+| [07 — Ambientes](docs/07-AMBIENTES.md) | dev, homolog e prod: a variável AMBIENTE, portas, senhas, comandos, fluxo de uma mudança, checklist de produção |
 | [05 — Guia de teste manual](docs/05-GUIA-DE-TESTE-MANUAL.md) | do Docker ao fim: subir, dados de exemplo, testar cada tela e regra, banco, parar, problemas |
 | [01 — Tecnologias e versões](docs/01-TECNOLOGIAS.md) | front, back, banco, infraestrutura, portas e variáveis, com as versões exatas |
 | [02 — Arquitetura](docs/02-ARQUITETURA.md) | como o sistema é organizado, segurança, cálculo de compatibilidade |
@@ -56,10 +66,11 @@ rachaai/
 ├── backend/            Spring Boot 3.3 (Java 21): API REST, JWT, Oracle
 ├── frontend/           React 19 + TypeScript + Vite + Tailwind 4
 ├── database/           script opcional para usar o Oracle instalado no PC
-├── scripts/            seed-demo.sh (dados de exemplo)
+├── scripts/            ambiente.ps1 / ambiente.sh (sobe cada ambiente), seed-demo.sh (dados de exemplo)
 ├── docs/               a documentação acima
-├── docker-compose.yml  Oracle + backend + frontend + Mailpit (e-mails de teste)
-└── .env.example        modelo das configurações e senhas
+├── docker-compose.yml       Oracle + backend + frontend + Mailpit, igual para os 3 ambientes
+├── docker-compose.prod.yml  ajustes de produção (fecha API e banco)
+└── .env.{dev,homolog,prod}.example  modelos das configurações e senhas de cada ambiente
 ```
 
 ## Resumo técnico
@@ -79,7 +90,7 @@ backend com `DB_URL=jdbc:oracle:thin:@localhost:1521/XEPDB1`, `DB_USER=rachaai` 
 - **Pagamento é simulado.** Nenhum gateway está conectado; um botão de teste confirma a compra.
   Não use assim com pessoas reais. Como integrar Pix: [docs/06-COBRANCA.md](docs/06-COBRANCA.md).
 - **E-mail:** por padrão o "esqueci minha senha" cai no Mailpit (caixa de teste local), não na
-  internet. Para e-mail real, preencha as variáveis `MAIL_*` do `.env`.
+  internet. Para e-mail real, preencha as variáveis `MAIL_*` do `.env` do ambiente.
 - Sem confirmação de e-mail no cadastro e sem login com Google.
 - Fotos ficam no próprio banco (BLOB); denúncias são só registradas (não há painel de moderação).
 - Endereços e sugestões só para Maringá. Anúncio extra não renova sozinho nem é reembolsado.

@@ -54,6 +54,12 @@ Uma linha por conta.
 | `ocupacao` | VARCHAR2(160) | curso/faculdade ou profissão |
 | `bio` | VARCHAR2(1000) | texto "sobre mim" |
 | `termos_seguranca_aceito_em` | TIMESTAMP | nulo = ainda não aceitou o aviso de segurança |
+| `admin` | NUMBER(1) | `1` = pode abrir a área administrativa (definido por `ADMIN_EMAILS`) |
+| `bloqueado_em`, `motivo_bloqueio`, `bloqueado_por_id` | | preenchidos = conta bloqueada por um admin (quando, por quê, quem) |
+| `versao_token` | NUMBER(10) | versão de sessão; somar 1 derruba todos os logins da conta (sair, redefinir senha, bloqueio) |
+| `termos_aceitos_em`, `versao_termos` | | quando e qual versão dos Termos/Política a pessoa aceitou (prova do consentimento, LGPD) |
+| `email_confirmado_em` | TIMESTAMP | preenchido = confirmou o e-mail pelo link. Sem isso não anuncia, não conversa e não demonstra interesse |
+| `excluido_em` | TIMESTAMP | preenchido = a pessoa excluiu a conta; os dados pessoais da linha foram anonimizados. Ver [09-LGPD.md](09-LGPD.md) |
 | `criado_em` | TIMESTAMP | |
 
 Regra do banco: `CHECK (alugar = 1 OR anunciar = 1)`. **Uma conta pode ter as duas
@@ -240,6 +246,12 @@ apenas no link do e-mail), `usado` (`SIM`/`NAO`, uso único) e `criado_em`. O to
 | V24 | `V24__garagem_disposicao_coberta.sql` | `garagem_disposicao` e `garagem_coberta` em `anuncios` |
 | V25 | `V25__notificacoes_interesse.sql` | tipos `NOVO_INTERESSE` e `INTERESSE_EM_COMUM` em `notificacoes` |
 | V26 | `V26__perfil_precisa_garagem.sql` | `precisa_vaga_carro` e `precisa_vaga_moto` em `perfis_usuario` |
+| V27 | `V27__remove_musica_rotina.sql` | remove `gosto_musical` e `rotina` de `perfis_usuario` |
+| V28 | `V28__admin_bloqueio_sessao.sql` | `admin`, bloqueio e `versao_token` em `usuarios`; `status`, `resolvida_em`, `resolvida_por_id` e `nota_admin` em `denuncias` |
+| V32 | `V32__confirmacao_email.sql` | `email_confirmado_em` em `usuarios` (contas antigas ficam confirmadas) e tabela `confirmacoes_email` (links, só o hash) |
+| V31 | `V31__registros_acesso.sql` | tabela `registros_acesso` (Marco Civil: IP, porta, data/hora, evento; 6 meses) com RLS. Ver [09-LGPD.md](09-LGPD.md) |
+| V30 | `V30__lgpd_aceite_e_exclusao.sql` | `termos_aceitos_em`, `versao_termos` e `excluido_em` em `usuarios` |
+| V29 | `V29__rls_politicas.sql` | **políticas por linha (RLS/VPD)** em `notificacoes`, `pagamentos`, `bloqueios`, `denuncias`, `conversas` e `mensagens`. Ver [08-SEGURANCA.md](08-SEGURANCA.md) |
 
 Para ver o que já foi aplicado: `SELECT "version", "description", "success" FROM "flyway_schema_history";`
 (o nome da tabela é minúsculo e precisa de aspas).

@@ -1,0 +1,18 @@
+# Ambiente de homologação: igual a produção no comportamento, mas com Swagger ligado e
+# pagamento simulado para dar para testar os fluxos. Sem valores padrão de segredo: o .env.homolog
+# precisa trazer os seus.
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+
+  # E-mails @teste.com (contas do "seed") nascem confirmados. Em produção não existe.
+  email-confirmation:
+    auto-confirm-domain: teste.com
+  # O "seed" cria ~10 contas e faz vários logins do mesmo IP: afrouxa só o que ele usa.
+  rate-limit:
+    cadastro-por-ip: 50
+    login-por-ip: 100
+
+logging:
+  level:
+    com.rachaai: INFO

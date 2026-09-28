@@ -17,6 +17,10 @@ public final class AllergyCodec {
         if (tags == null || tags.isEmpty()) {
             return null;
         }
+        // "Prefiro não informar" vale sozinho: não guarda nenhuma alergia junto.
+        if (tags.contains(AllergyTag.PREFIRO_NAO_INFORMAR)) {
+            return AllergyTag.PREFIRO_NAO_INFORMAR.name();
+        }
         List<String> segments = new ArrayList<>();
         for (AllergyTag tag : tags) {
             if (tag == AllergyTag.OUTRO) {

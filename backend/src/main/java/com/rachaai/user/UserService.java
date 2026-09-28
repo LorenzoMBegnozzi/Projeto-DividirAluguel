@@ -69,6 +69,14 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    /** Aceite da versão atual dos Termos de Uso e da Política de Privacidade (registra data e versão). */
+    @Transactional
+    public User acceptLegalTerms(Long userId) {
+        User user = getById(userId);
+        user.acceptLegalTerms(LegalTerms.CURRENT_VERSION);
+        return userRepository.save(user);
+    }
+
     @Transactional
     public User acceptSafetyTerms(Long userId) {
         User user = getById(userId);

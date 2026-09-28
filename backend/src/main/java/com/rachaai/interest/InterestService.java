@@ -47,6 +47,7 @@ public class InterestService {
     @Transactional
     public InterestStatusResponse markInterest(Long userId, Long listingId) {
         User user = requireUser(userId);
+        user.requireConfirmedEmail("demonstrar interesse");
         if (!user.isRenter()) {
             throw ApiException.forbidden("Apenas contas de aluguel podem demonstrar interesse");
         }
@@ -132,7 +133,7 @@ public class InterestService {
         return interestRepository.findAllByListingId(listingId).stream()
                 .map(Interest::getUser)
                 .filter(u -> isOwner || !u.getId().equals(userId))
-                .map(u -> UserResponse.from(u, userPhotoRepository.existsByUserId(u.getId())))
+                .map(u -> UserResponse.publicFrom(u, userPhotoRepository.existsByUserId(u.getId())))
                 .toList();
     }
 

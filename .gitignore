@@ -1,1 +1,4 @@
 .env
+# arquivos de segredo de cada ambiente (os modelos .example vão para o git)
+.env.*
+!.env.*.example

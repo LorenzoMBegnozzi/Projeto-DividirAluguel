@@ -34,11 +34,15 @@ token() {
   local email=$1 name=$2 role=$3 cpf=$4 kind=${5:-} res
   local kindJson=""
   if [ -n "$kind" ]; then kindJson=",\"advertiserKind\":\"$kind\""; fi
-  res=$(api POST /auth/register "" "{\"name\":\"$name\",\"email\":\"$email\",\"password\":\"$PASS\",\"birthDate\":\"2001-06-15\",\"cpf\":\"$cpf\",\"role\":\"$role\"$kindJson}")
+  res=$(api POST /auth/register "" "{\"name\":\"$name\",\"email\":\"$email\",\"password\":\"$PASS\",\"birthDate\":\"2001-06-15\",\"cpf\":\"$cpf\",\"role\":\"$role\"$kindJson,\"acceptTerms\":true}")
   if ! echo "$res" | grep -q '"token"'; then
     res=$(api POST /auth/login "" "{\"email\":\"$email\",\"password\":\"$PASS\"}")
   fi
-  echo "$res" | grep -o '"token":"[^"]*"' | cut -d'"' -f4
+  local tok
+  tok=$(echo "$res" | grep -o '"token":"[^"]*"' | cut -d'"' -f4)
+  # contas que ja existiam aceitam a versao atual dos Termos/Politica (LGPD)
+  api POST /users/me/aceitar-politicas "$tok" "" > /dev/null
+  echo "$tok"
 }
 
 profile() { api PUT /users/me/profile "$1" "$2" > /dev/null; }
@@ -110,7 +114,20 @@ elif [ -n "${CASA:-}" ]; then
   echo "conversa $CONV pronta"
 fi
 
+echo "== Administrador (precisa estar em ADMIN_EMAILS no .env do ambiente) =="
+ADM=$(token admin@teste.com "Admin RachaAi" ADVERTISER 52998224725 VAGA)
+if api GET /admin/denuncias "$ADM" "" | grep -q '"id"'; then
+  echo "ja existem denuncias; nao criei a de exemplo"
+elif [ "$(api GET /admin/resumo "$ADM" "" | grep -c totalUsers)" = "0" ]; then
+  echo "admin@teste.com nao e admin: coloque ADMIN_EMAILS=admin@teste.com no .env e reinicie o backend"
+else
+  DAVI_ID=$(api GET /users/me "$A2" "" | grep -oE '^\{"id":[0-9]+' | grep -oE '[0-9]+')
+  api POST /denuncias "$R1" "{\"denunciadoId\":$DAVI_ID,\"motivo\":\"COMPORTAMENTO_SUSPEITO\",\"descricao\":\"Pediu para pagar o caucao por fora do site antes da visita.\"}" > /dev/null
+  echo "denuncia de exemplo criada (Rita denunciou Davi)"
+fi
+
 echo
 echo "Pronto. Senha de todos os usuarios: $PASS"
 echo "  alugar:   rita.alugar@teste.com | caio.alugar@teste.com | novato.alugar@teste.com"
 echo "  anunciar: bia.vaga@teste.com | davi.vaga@teste.com | marcos.imoveis@teste.com | lucia.limite@teste.com"
+echo "  admin:    admin@teste.com  (area /admin)"

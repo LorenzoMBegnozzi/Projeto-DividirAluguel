@@ -1,6 +1,10 @@
 package com.rachaai.user;
 
-/** Chips de múltipla escolha para a seção "Alergias" do perfil. OUTRO vem acompanhado de um texto livre. */
+/**
+ * Chips de múltipla escolha para a seção "Alergias" do perfil. OUTRO vem acompanhado de um texto livre.
+ * Alergia é dado de saúde (sensível na LGPD): PREFIRO_NAO_INFORMAR sempre existe e, quando escolhido,
+ * substitui qualquer outra resposta.
+ */
 public enum AllergyTag {
     POEIRA,
     PELO_DE_ANIMAL,
@@ -10,5 +14,6 @@ public enum AllergyTag {
     MEDICAMENTOS,
     LATEX,
     NENHUMA,
-    OUTRO
+    OUTRO,
+    PREFIRO_NAO_INFORMAR
 }

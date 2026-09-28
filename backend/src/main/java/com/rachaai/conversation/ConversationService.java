@@ -62,6 +62,7 @@ public class ConversationService {
         if (!renter.isRenter()) {
             throw ApiException.forbidden("Apenas contas de aluguel podem iniciar uma conversa");
         }
+        renter.requireConfirmedEmail("conversar com outras pessoas");
 
         Listing listing = listingRepository.findById(listingId)
                 .orElseThrow(() -> ApiException.notFound("Anúncio não encontrado"));
@@ -70,6 +71,9 @@ public class ConversationService {
         }
         if (listing.getUser().getId().equals(renterId)) {
             throw ApiException.badRequest("Você não pode iniciar uma conversa com o seu próprio anúncio");
+        }
+        if (listing.getUser().isBlocked()) {
+            throw ApiException.notFound("Anúncio não encontrado");
         }
         if (moderationService.isBlockedEitherWay(renterId, listing.getUser().getId())) {
             throw ApiException.forbidden("Não é possível iniciar essa conversa");
@@ -107,6 +111,7 @@ public class ConversationService {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> ApiException.notFound("Usuário não encontrado"));
+        user.requireConfirmedEmail("conversar com outras pessoas");
         User other = userRepository.findById(otherUserId)
                 .orElseThrow(() -> ApiException.notFound("Usuário não encontrado"));
 

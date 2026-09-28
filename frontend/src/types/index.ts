@@ -50,12 +50,14 @@ export type AllergyTag =
   | 'LATEX'
   | 'NENHUMA'
   | 'OUTRO'
+  | 'PREFIRO_NAO_INFORMAR'
 
 export interface UserProfile {
   id: number
   name: string
-  email: string
-  birthDate: string
+  /** Só vem para a própria conta; perfil de outra pessoa vem sem e-mail e sem nascimento (LGPD). */
+  email: string | null
+  birthDate: string | null
   renter: boolean
   advertiser: boolean
   advertiserKind: AdvertiserKind | null
@@ -72,6 +74,11 @@ export interface UserProfile {
   needsCarParking: boolean | null
   needsMotorcycleParking: boolean | null
   safetyTermsAccepted: boolean
+  admin: boolean
+  /** Aceitou a versão atual dos Termos de Uso e da Política de Privacidade. */
+  legalTermsAccepted: boolean
+  /** Confirmou o e-mail pelo link. Sem isso não anuncia, não conversa e não demonstra interesse. */
+  emailConfirmed: boolean
   photoUrl: string | null
 }
 

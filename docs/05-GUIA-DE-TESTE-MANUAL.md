@@ -9,6 +9,15 @@ para percorrer todos os testes.
 > Os comandos de terminal abaixo são para o **Ubuntu do WSL** (onde o Docker roda). Cada
 > comando está em um bloco separado, para copiar e colar.
 
+> **Atenção: agora existem 3 ambientes (dev, homolog, prod).** Este guia foi escrito quando havia um
+> só. Ao seguir, troque:
+> - `cp .env.example .env` por `Copy-Item .env.dev.example .env.dev` (ou `.env.homolog`);
+> - `docker compose <comando>` por `.\scripts\ambiente.ps1 dev <comando>` (ou `homolog`);
+> - `bash scripts/seed-demo.sh` por `.\scripts\ambiente.ps1 dev seed`;
+> - `http://localhost:8081` por **http://localhost:8082** (dev) ou **http://localhost:8092** (homolog).
+>
+> Detalhes em [07-AMBIENTES.md](07-AMBIENTES.md).
+
 ---
 
 ## 1. Antes de começar

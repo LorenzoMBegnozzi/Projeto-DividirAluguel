@@ -24,6 +24,21 @@ export function getUser(id: number) {
   return client.get<UserProfile>(`/users/${id}`).then((res) => res.data)
 }
 
+/** Aceite da versão atual dos Termos de Uso e da Política de Privacidade (LGPD). */
+export function acceptLegalTerms() {
+  return client.post<UserProfile>('/users/me/aceitar-politicas').then((res) => res.data)
+}
+
+/** Exclui a conta e apaga os dados pessoais (LGPD). Pede a senha para confirmar. */
+export function deleteAccount(password: string) {
+  return client.post('/users/me/excluir-conta', { password })
+}
+
+/** "Reenviar e-mail" de confirmação (até 3 por hora). */
+export function resendEmailConfirmation() {
+  return client.post('/users/me/reenviar-confirmacao')
+}
+
 export function acceptSafetyTerms() {
   return client.post<UserProfile>('/users/me/aceitar-termos').then((res) => res.data)
 }

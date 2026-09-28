@@ -1,17 +1,21 @@
 import { useRef, useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Ban, Camera, Car, Lock, LogOut, Motorbike, Trash2 } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import { Ban, Camera, Car, Lock, LogOut, Motorbike, ShieldCheck, Trash2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { removePhoto, updateProfile, uploadPhoto } from '../api/profile'
 import { apiErrorMessage } from '../api/client'
 import { ChipMultiPicker, ChipPicker } from '../components/ChipPicker'
 import BlockedUsersSection from '../components/BlockedUsersSection'
+import DeleteAccountSection from '../components/DeleteAccountSection'
+import LegalLinks from '../components/LegalLinks'
 import ConviviosSection from '../components/ConviviosSection'
 import CapabilitiesSection from '../components/CapabilitiesSection'
 import Avatar from '../components/Avatar'
 import {
   allergyTagOptions,
+  ALLERGY_HINT,
+  normalizeAllergyTags,
   dietOptions,
   genderLabels,
   genderOptions,
@@ -28,6 +32,7 @@ export default function ProfilePage() {
   const { user, refreshUser, logout } = useAuth()
   const navigate = useNavigate()
   const isEstabelecimento = user?.advertiser && user.advertiserKind === 'ESTABELECIMENTO'
+  const isAdmin = !!user?.admin
 
   const [bio, setBio] = useState(user?.bio ?? '')
   const [occupation, setOccupation] = useState(user?.occupation ?? '')
@@ -116,13 +121,28 @@ export default function ProfilePage() {
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
       <h1 className="mb-1 text-[28px] font-extrabold tracking-tight text-ink">
-        {isEstabelecimento ? 'Meus dados' : 'Meu perfil'}
+        {isAdmin ? 'Minha conta' : isEstabelecimento ? 'Meus dados' : 'Meu perfil'}
       </h1>
       <p className="mb-6 text-sm text-ink-3">
-        {isEstabelecimento
+        {isAdmin
+          ? `Conta de administração (${user?.email}). Ela não aparece para os outros usuários.`
+          : isEstabelecimento
           ? 'Essas informações aparecem para quem entrar em contato sobre seus imóveis.'
           : 'Essas informações ajudam a encontrar pessoas com quem você vai combinar bem na convivência.'}
       </p>
+
+      {user?.admin && (
+        <Link
+          to="/admin"
+          className="mb-6 flex items-center gap-3 rounded-lg border border-brand bg-brand-tint p-4 text-brand-strong transition hover:opacity-90"
+        >
+          <ShieldCheck className="h-6 w-6 shrink-0" aria-hidden="true" />
+          <span>
+            <span className="block font-bold">Área de administração</span>
+            <span className="block text-sm">Denúncias, contas e anúncios</span>
+          </span>
+        </Link>
+      )}
 
       <div className="mb-6 flex flex-col items-center gap-4 rounded-lg border border-line bg-surface p-6 text-center sm:flex-row sm:text-left">
         <Avatar photoUrl={photoPreview ?? user?.photoUrl} name={user?.name ?? ''} size={72} />
@@ -161,6 +181,9 @@ export default function ProfilePage() {
         </div>
       </div>
 
+      {/* Conta de admin não usa perfil de convivência, anúncios nem bloqueios: só foto e sair. */}
+      {!isAdmin && (
+      <>
       <form onSubmit={handleSubmit} className="flex flex-col gap-6 rounded-lg border border-line bg-surface p-6">
         <div>
           <label className="mb-1 block text-[13px] font-semibold text-ink">
@@ -290,7 +313,12 @@ export default function ProfilePage() {
 
             <div>
               <p className="mb-2 text-[13px] font-semibold text-ink">Alergias</p>
-              <ChipMultiPicker options={allergyTagOptions} values={allergyTags} onChange={setAllergyTags} />
+              <ChipMultiPicker
+                options={allergyTagOptions}
+                values={allergyTags}
+                onChange={(next) => setAllergyTags((prev) => normalizeAllergyTags(prev, next))}
+              />
+              <p className="mt-1 text-[13px] text-ink-3">{ALLERGY_HINT}</p>
               {allergyTags.includes('OUTRO') && (
                 <input
                   value={allergyOther}
@@ -320,6 +348,9 @@ export default function ProfilePage() {
       <CapabilitiesSection />
       <ConviviosSection />
       <BlockedUsersSection />
+      <DeleteAccountSection />
+      </>
+      )}
 
       <button
         type="button"
@@ -332,6 +363,7 @@ export default function ProfilePage() {
         <LogOut className="h-4 w-4" aria-hidden="true" />
         Sair
       </button>
+      <LegalLinks className="mt-4" />
     </div>
   )
 }

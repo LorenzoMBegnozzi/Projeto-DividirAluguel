@@ -74,7 +74,7 @@ public class DiscoveryService {
                     UserProfile candidateProfile = userProfileRepository.findByUserId(candidateUser.getId()).orElse(null);
                     int score = compatibilityCalculator.calculateRoommate(myProfile, candidateProfile);
                     boolean hasPhoto = userPhotoRepository.existsByUserId(candidateUser.getId());
-                    return new BrowseItemResponse(UserResponse.from(candidateUser, hasPhoto), ListingResponse.from(listing), score);
+                    return new BrowseItemResponse(UserResponse.publicFrom(candidateUser, hasPhoto), ListingResponse.from(listing), score);
                 })
                 .sorted(HIGHLIGHT_FIRST_THEN_COMPATIBILITY)
                 .toList();
@@ -92,7 +92,7 @@ public class DiscoveryService {
                     User ownerUser = listing.getUser();
                     int score = compatibilityCalculator.calculateEstablishment(myProfile, listing);
                     boolean hasPhoto = userPhotoRepository.existsByUserId(ownerUser.getId());
-                    return new BrowseItemResponse(UserResponse.from(ownerUser, hasPhoto), ListingResponse.from(listing), score);
+                    return new BrowseItemResponse(UserResponse.publicFrom(ownerUser, hasPhoto), ListingResponse.from(listing), score);
                 })
                 .sorted(HIGHLIGHT_FIRST_THEN_COMPATIBILITY)
                 .toList();

@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { TOKEN_KEY } from '../api/client'
-import { fetchMe, login as loginRequest, register as registerRequest } from '../api/auth'
+import { fetchMe, login as loginRequest, logout as logoutRequest, register as registerRequest } from '../api/auth'
 import type { AdvertiserKind, Role, UserProfile } from '../types'
 
 interface AuthContextValue {
@@ -16,6 +16,7 @@ interface AuthContextValue {
     cpf: string,
     role: Role,
     advertiserKind: AdvertiserKind | null,
+    acceptTerms: boolean,
   ) => Promise<void>
   logout: () => void
   refreshUser: () => Promise<void>
@@ -60,13 +61,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     cpf: string,
     role: Role,
     advertiserKind: AdvertiserKind | null,
+    acceptTerms: boolean,
   ) {
-    const res = await registerRequest({ name, email, password, birthDate, cpf, role, advertiserKind })
+    const res = await registerRequest({ name, email, password, birthDate, cpf, role, advertiserKind, acceptTerms })
     localStorage.setItem(TOKEN_KEY, res.token)
     setUser(res.user)
   }
 
   function logout() {
+    // Avisa o servidor para o token deixar de valer (em todos os aparelhos). Se falhar (sem
+    // internet, token já vencido), sai do mesmo jeito neste navegador.
+    const token = localStorage.getItem(TOKEN_KEY)
+    if (token) logoutRequest(token).catch(() => {})
     localStorage.removeItem(TOKEN_KEY)
     setUser(null)
   }

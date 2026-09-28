@@ -1,0 +1,16 @@
+# Ajustes só de produção, aplicados por cima do docker-compose.yml:
+#   docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose.prod.yml up -d
+# (o scripts/ambiente.ps1 / ambiente.sh já faz isso quando o ambiente é "prod").
+services:
+  db:
+    # O banco não fica exposto fora do Docker: só o backend (na rede interna) conversa com ele.
+    # Para administrar, use: docker compose ... exec db sqlplus ...
+    ports: !reset []
+
+  backend:
+    # A API só é acessada pelo Nginx do frontend (/api), nunca direto de fora.
+    ports: !reset []
+    restart: always
+
+  frontend:
+    restart: always

@@ -9,12 +9,25 @@ export function register(data: {
   cpf: string
   role: Role
   advertiserKind: AdvertiserKind | null
+  acceptTerms: boolean
 }) {
   return client.post<AuthResponse>('/auth/register', data).then((res) => res.data)
 }
 
 export function login(data: { email: string; password: string }) {
   return client.post<AuthResponse>('/auth/login', data).then((res) => res.data)
+}
+
+/** Invalida todos os logins abertos da conta no servidor (o token atual também deixa de valer). */
+// O token vai explícito: quem chama apaga o token do navegador logo em seguida, antes de o
+// interceptor do axios (assíncrono) ter lido.
+export function logout(token: string) {
+  return client.post('/auth/logout', null, { headers: { Authorization: `Bearer ${token}` } })
+}
+
+/** Link do e-mail de confirmação. */
+export function confirmEmail(token: string) {
+  return client.post('/auth/confirmar-email', { token })
 }
 
 export function fetchMe() {

@@ -84,7 +84,21 @@ export const allergyTagOptions: Option<AllergyTag>[] = [
   { value: 'ALIMENTOS', label: 'Alimentos' },
   { value: 'NENHUMA', label: 'Nenhuma alergia' },
   { value: 'OUTRO', label: 'Outro' },
+  { value: 'PREFIRO_NAO_INFORMAR', label: 'Prefiro não informar' },
 ]
+
+/**
+ * Alergia é dado de saúde (LGPD): "Prefiro não informar" desmarca o resto, e marcar qualquer
+ * outra opção desmarca o "Prefiro não informar".
+ */
+export function normalizeAllergyTags(previous: AllergyTag[], next: AllergyTag[]): AllergyTag[] {
+  const chosePreferNot = next.includes('PREFIRO_NAO_INFORMAR') && !previous.includes('PREFIRO_NAO_INFORMAR')
+  if (chosePreferNot) return ['PREFIRO_NAO_INFORMAR']
+  return next.filter((tag) => tag !== 'PREFIRO_NAO_INFORMAR' || next.length === 1)
+}
+
+export const ALLERGY_HINT =
+  'Dado de saúde e opcional: fica só no seu perfil, não aparece para outras pessoas. Você pode apagar quando quiser.'
 
 function buildLabelMap<T extends string>(options: Option<T>[]): Record<T, string> {
   return Object.fromEntries(options.map((o) => [o.value, o.label])) as Record<T, string>

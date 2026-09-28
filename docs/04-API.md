@@ -29,6 +29,7 @@ Formato único:
 | 403 | sua conta não pode fazer isso (sem a capacidade exigida, vaga restrita a outro sexo...) |
 | 404 | não existe ou não é seu |
 | 409 | conflito (e-mail ou CPF já cadastrado, pagamento já processado, operação simultânea) |
+| 429 | muitas tentativas (login, cadastro, esqueci/redefinir senha); a mensagem diz quanto esperar. Ver [08-SEGURANCA.md](08-SEGURANCA.md) |
 
 ## Autenticação
 
@@ -37,7 +38,24 @@ Formato único:
 | `POST /api/auth/register` | `name`, `email`, `password` (mín. 8), `birthDate` (`AAAA-MM-DD`, 18+), `cpf` (11 dígitos válidos, único), `role` (`RENTER` ou `ADVERTISER`: a capacidade inicial), `advertiserKind` (`VAGA`/`ESTABELECIMENTO`, só para `ADVERTISER`) | `{ token, user }` |
 | `POST /api/auth/login` | `email`, `password` | `{ token, user }` |
 | `POST /api/auth/esqueci-senha` | `{ "email" }` | sempre a mesma mensagem genérica, exista a conta ou não. Se existir, **envia um e-mail** com o link `/redefinir-senha/<token>` (válido por 30 min). O token nunca volta na resposta |
-| `POST /api/auth/redefinir-senha` | `{ "token", "newPassword" }` (mín. 8) | 204. O token é de uso único; reusar dá 400 |
+| `POST /api/auth/redefinir-senha` | `{ "token", "newPassword" }` (mín. 8) | 204. O token é de uso único; reusar dá 400. **Derruba todos os logins abertos** da conta |
+| `POST /api/auth/logout` | (token no cabeçalho) | 204. Invalida todos os tokens da conta, em todos os aparelhos |
+
+Conta bloqueada pela moderação: o login (com a senha certa) responde **403** com o aviso, e
+tokens antigos deixam de valer na hora.
+
+
+**Cadastro:** `POST /api/auth/register` exige `"acceptTerms": true` (aceite dos Termos de Uso e da
+Política de Privacidade); sem ele, **400**.
+
+**Confirmação de e-mail:** o cadastro envia um link `/confirmar-email/<token>` (válido por 24 h).
+Até confirmar (`emailConfirmed: false` em `/users/me`), publicar anúncio, iniciar conversa, enviar
+mensagem e demonstrar interesse respondem **403** com a explicação.
+
+| Rota | Faz |
+|---|---|
+| `POST /api/auth/confirmar-email` | `{ "token" }` (público). 204; link inválido, expirado ou já usado: 400 |
+| `POST /api/users/me/reenviar-confirmacao` | manda um link novo e invalida os anteriores. Até 3 por hora (429) |
 
 ## Usuário e perfil
 
@@ -62,6 +80,14 @@ não enviado vira vazio. As opções de cada lista estão em `frontend/src/const
 
 **Exceção: `gender` fica travado.** Depois de salvo uma vez, não muda mais: enviar outro valor dá
 **400** e enviar vazio mantém o que já estava.
+
+| Rota | Faz |
+|---|---|
+| `POST /api/users/me/aceitar-politicas` | aceita a versão atual dos Termos/Política (quem tem `legalTermsAccepted: false`) |
+| `POST /api/users/me/excluir-conta` | `{ "password" }`. Exclui a conta e anonimiza os dados (204). Senha errada: 403. Admin: 403. Ver [09-LGPD.md](09-LGPD.md) |
+
+Perfil de **outra pessoa** (`GET /api/users/{id}`, busca, conversas, interessados) vem com
+`email` e `birthDate` nulos. Conta excluída: `GET /api/users/{id}` responde 404.
 
 ## Anúncios
 
@@ -174,6 +200,21 @@ Só quem morou junto avalia. Ver o modelo em [03-BANCO-DE-DADOS.md](03-BANCO-DE-
 | `GET /api/bloqueios` | quem eu bloqueei |
 | `DELETE /api/bloqueios/{bloqueadoId}` | desbloqueia |
 | `POST /api/denuncias` | `{ "denunciadoId", "motivo", "descricao", "conversaId" }` |
+
+## Administração (só contas admin; os outros recebem 403)
+
+Quem é admin: `ADMIN_EMAILS` no `.env` do ambiente. Detalhes em [08-SEGURANCA.md](08-SEGURANCA.md).
+
+| Rota | Faz |
+|---|---|
+| `GET /api/admin/resumo` | `{ totalUsers, blockedUsers, activeListings, openReports, paidPayments, pendingPayments }` |
+| `GET /api/admin/denuncias?status=ABERTA` | denúncias (status `ABERTA`, `RESOLVIDA`, `DESCARTADA`; sem status = todas), com e-mail e nº de denúncias de cada lado |
+| `POST /api/admin/denuncias/{id}/fechar` | `{ "status": "RESOLVIDA"\|"DESCARTADA", "note", "blockReported": true }` |
+| `GET /api/admin/usuarios?busca=` | contas por nome/e-mail (até 200) |
+| `POST /api/admin/usuarios/{id}/bloquear` | `{ "reason" }` (obrigatório). Não vale para admins nem para si mesmo |
+| `POST /api/admin/usuarios/{id}/desbloquear` | |
+| `GET /api/admin/anuncios?busca=` | anúncios por título/dono, inclusive os fora do ar |
+| `POST /api/admin/anuncios/{id}/desativar` | tira o anúncio do ar |
 
 ## Cobrança (só quem tem `advertiser`)
 

@@ -10,7 +10,7 @@ public record ConversationResponse(Long id, UserResponse otherUser, ListingRespo
     public static ConversationResponse from(Conversation conversation, Long currentUserId, boolean otherUserHasPhoto) {
         return new ConversationResponse(
                 conversation.getId(),
-                UserResponse.from(conversation.other(currentUserId), otherUserHasPhoto),
+                UserResponse.publicFrom(conversation.other(currentUserId), otherUserHasPhoto),
                 ListingResponse.from(conversation.getListing()),
                 conversation.getCreatedAt()
         );

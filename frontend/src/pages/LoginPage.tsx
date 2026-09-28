@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import LegalLinks from '../components/LegalLinks'
 import type { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
@@ -18,7 +19,8 @@ export default function LoginPage() {
     setLoading(true)
     try {
       await login(email, password)
-      navigate('/browse')
+      // A página inicial manda cada conta para o lugar dela (admin, busca ou anúncios).
+      navigate('/')
     } catch (err) {
       setError(apiErrorMessage(err, 'Não foi possível entrar'))
     } finally {
@@ -70,6 +72,7 @@ export default function LoginPage() {
             Cadastre-se
           </Link>
         </p>
+        <LegalLinks className="mt-6" />
       </div>
     </div>
   )

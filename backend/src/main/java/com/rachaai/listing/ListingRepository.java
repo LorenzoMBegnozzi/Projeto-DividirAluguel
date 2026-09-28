@@ -13,9 +13,20 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
 
     List<Listing> findAllByUserIdAndActiveTrue(Long userId);
 
+    /** Busca da área administrativa: por título ou nome do dono (vazio = todos), ativos primeiro. */
+    @Query("select l from Listing l join l.user u where :term = '' or lower(l.title) like concat('%', :term, '%') "
+            + "or lower(u.name) like concat('%', :term, '%') order by l.active desc, l.createdAt desc")
+    List<Listing> searchForAdmin(String term, org.springframework.data.domain.Limit limit);
+
+    long countByActiveTrue();
+
+    long countByUserIdAndActiveTrue(Long userId);
+
     Optional<Listing> findByIdAndUserId(Long id, Long userId);
 
-    @Query("select l from Listing l where l.active = true and l.available = true and l.type = :type and l.user.id <> :userId")
+    /** Anúncios de contas bloqueadas pela moderação não aparecem na busca. */
+    @Query("select l from Listing l where l.active = true and l.available = true and l.type = :type "
+            + "and l.user.id <> :userId and l.user.blockedAt is null")
     List<Listing> findAllActiveByTypeExceptUser(ListingType type, Long userId);
 
     /** Anuncios gratis em uso: os pagos (extras) tem validade, os gratis nao. */

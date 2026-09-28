@@ -1,0 +1,14 @@
+# Ambiente de desenvolvimento: tudo do application.yml vale como está (Swagger ligado,
+# pagamento simulado, e-mails no Mailpit). Aqui só o que é específico de dev.
+logging:
+  level:
+    com.rachaai: DEBUG
+
+app:
+  # E-mails @teste.com (contas do "seed") nascem confirmados. Em produção não existe.
+  email-confirmation:
+    auto-confirm-domain: teste.com
+  # O "seed" cria ~10 contas e faz vários logins do mesmo IP: afrouxa só o que ele usa.
+  rate-limit:
+    cadastro-por-ip: 50
+    login-por-ip: 100

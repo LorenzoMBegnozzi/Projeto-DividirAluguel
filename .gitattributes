@@ -1,0 +1,2 @@
+# Scripts que rodam dentro de containers Linux precisam de fim de linha LF (CRLF quebra o bash).
+*.sh text eol=lf

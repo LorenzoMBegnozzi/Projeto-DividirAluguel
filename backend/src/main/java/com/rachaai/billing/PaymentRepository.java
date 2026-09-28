@@ -15,5 +15,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     List<Payment> findAllByUserIdAndTypeAndStatusAndListingIdIsNullOrderByPaidAtAsc(
             Long userId, PaymentType type, PaymentStatus status);
 
+    long countByStatus(PaymentStatus status);
+
     long countByUserIdAndTypeAndStatusAndListingIdIsNull(Long userId, PaymentType type, PaymentStatus status);
 }

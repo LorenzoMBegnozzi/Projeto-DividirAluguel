@@ -8,6 +8,8 @@ import { apiErrorMessage } from '../api/client'
 import { ChipMultiPicker, ChipPicker } from '../components/ChipPicker'
 import {
   allergyTagOptions,
+  ALLERGY_HINT,
+  normalizeAllergyTags,
   dietOptions,
   drinkingHabitOptions,
   genderOptions,
@@ -91,11 +93,16 @@ export default function OnboardingPage() {
     },
     {
       title: 'Tem alguma alergia?',
-      subtitle: 'Escolha quantas fizerem sentido, ou "Nenhuma alergia".',
+      subtitle: 'Escolha quantas fizerem sentido, "Nenhuma alergia" ou "Prefiro não informar".',
       isValid: () => allergyTags.length > 0 && (!allergyTags.includes('OUTRO') || allergyOther.trim() !== ''),
       render: () => (
         <>
-          <ChipMultiPicker options={allergyTagOptions} values={allergyTags} onChange={setAllergyTags} />
+          <ChipMultiPicker
+            options={allergyTagOptions}
+            values={allergyTags}
+            onChange={(next) => setAllergyTags((prev) => normalizeAllergyTags(prev, next))}
+          />
+          <p className="mt-2 text-[13px] text-ink-3">{ALLERGY_HINT}</p>
           {allergyTags.includes('OUTRO') && (
             <input
               autoFocus

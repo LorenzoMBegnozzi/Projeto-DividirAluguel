@@ -1,15 +1,23 @@
+# Um só arquivo para os três ambientes (dev, homolog, prod). O que muda de um para o outro vem do
+# arquivo .env.<ambiente>: portas, senhas, perfil do Spring e o nome do projeto do Compose
+# (COMPOSE_PROJECT_NAME), que separa containers, rede e o volume do banco de cada ambiente.
+#
+# Não rode "docker compose up" direto: use scripts/ambiente.ps1 (PowerShell) ou
+# scripts/ambiente.sh (Git Bash). Ver docs/07-AMBIENTES.md.
 services:
   db:
     image: gvenzl/oracle-xe:21-slim-faststart
     restart: unless-stopped
     environment:
-      ORACLE_PASSWORD: ${ORACLE_PASSWORD:?defina ORACLE_PASSWORD no arquivo .env (senha do SYS/SYSTEM)}
+      ORACLE_PASSWORD: ${ORACLE_PASSWORD:?defina ORACLE_PASSWORD no .env do ambiente (senha do SYS/SYSTEM)}
       APP_USER: ${DB_USER:-rachaai}
-      APP_USER_PASSWORD: ${DB_PASSWORD:?defina DB_PASSWORD no arquivo .env}
+      APP_USER_PASSWORD: ${DB_PASSWORD:?defina DB_PASSWORD no .env do ambiente}
     volumes:
       - oracle_data:/opt/oracle/oradata
+      # Scripts que rodam toda vez que o banco sobe (permissão das políticas por linha / RLS).
+      - ./database/startdb:/container-entrypoint-startdb.d:ro
     ports:
-      - "1522:1521"
+      - "${DB_PORT:?defina DB_PORT no .env do ambiente}:1521"
     healthcheck:
       test: ["CMD", "healthcheck.sh"]
       interval: 10s
@@ -24,12 +32,13 @@ services:
       db:
         condition: service_healthy
     environment:
+      SPRING_PROFILES_ACTIVE: ${APP_ENV:?defina APP_ENV (dev, homolog ou prod) no .env do ambiente}
       DB_URL: jdbc:oracle:thin:@db:1521/XEPDB1
       DB_USER: ${DB_USER:-rachaai}
       DB_PASSWORD: ${DB_PASSWORD}
-      JWT_SECRET: ${JWT_SECRET:?defina JWT_SECRET no arquivo .env (uma string em Base64)}
+      JWT_SECRET: ${JWT_SECRET:?defina JWT_SECRET no .env do ambiente (uma string em Base64)}
       JWT_EXPIRATION_MINUTES: ${JWT_EXPIRATION_MINUTES:-1440}
-      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:5173,http://localhost:8081}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:?defina CORS_ALLOWED_ORIGINS no .env do ambiente}
       BILLING_MODE: ${BILLING_MODE:-SIMULADO}
       FREE_LISTINGS: ${FREE_LISTINGS:-3}
       EXTRA_LISTING_PRICE: ${EXTRA_LISTING_PRICE:-19.90}
@@ -37,7 +46,8 @@ services:
       HIGHLIGHT_PRICE: ${HIGHLIGHT_PRICE:-14.90}
       HIGHLIGHT_DAYS: ${HIGHLIGHT_DAYS:-30}
       EXPIRATION_CHECK: ${EXPIRATION_CHECK:-PT10M}
-      APP_BASE_URL: ${APP_BASE_URL:-http://localhost:8081}
+      APP_BASE_URL: ${APP_BASE_URL:?defina APP_BASE_URL no .env do ambiente}
+      ADMIN_EMAILS: ${ADMIN_EMAILS:-}
       MAIL_HOST: ${MAIL_HOST:-mailpit}
       MAIL_PORT: ${MAIL_PORT:-1025}
       MAIL_USER: ${MAIL_USER:-}
@@ -46,15 +56,16 @@ services:
       MAIL_STARTTLS: ${MAIL_STARTTLS:-false}
       MAIL_FROM: ${MAIL_FROM:-RachaAi <nao-responda@rachaai.local>}
     ports:
-      - "8080:8080"
+      - "${API_PORT:?defina API_PORT no .env do ambiente}:8080"
 
-  # Servidor de e-mail de teste: captura os e-mails enviados (caixa de entrada em http://localhost:8025).
-  # Em produção, troque as variáveis MAIL_* por um provedor real e remova este serviço.
+  # Caixa de e-mail de teste: captura os e-mails enviados (dev e homolog). Só sobe quando o .env do
+  # ambiente tem COMPOSE_PROFILES=mail-teste; prod não liga esse perfil e usa um SMTP real.
   mailpit:
     image: axllent/mailpit
     restart: unless-stopped
+    profiles: ["mail-teste"]
     ports:
-      - "8025:8025"
+      - "${MAIL_UI_PORT:-8025}:8025"
 
   frontend:
     build: ./frontend
@@ -62,7 +73,8 @@ services:
     depends_on:
       - backend
     ports:
-      - "8082:80"
+      - "${SITE_PORT:?defina SITE_PORT no .env do ambiente}:80"
 
 volumes:
+  # Cada ambiente tem o seu (o Compose prefixa com COMPOSE_PROJECT_NAME: rachaai-dev_oracle_data...).
   oracle_data:
