@@ -40,7 +40,7 @@ export default function RegisterPage() {
     setLoading(true)
     try {
       await register(name, email, password, birthDate, cpf.replace(/\D/g, ''), role, advertiserKind)
-      navigate('/perfil')
+      navigate(role === 'RENTER' ? '/onboarding' : '/perfil')
     } catch (err) {
       setError(apiErrorMessage(err, 'Não foi possível criar a conta'))
     } finally {

@@ -15,17 +15,11 @@ import {
   dietOptions,
   genderLabels,
   genderOptions,
-  musicGenreOptions,
-  parseMusicTaste,
-  serializeMusicTaste,
   drinkingHabitOptions,
   petPreferenceOptions,
   smokingHabitOptions,
 } from '../constants/profileOptions'
-import type { AllergyTag, Diet, DrinkingHabit, Gender, PetPreference, Routine, SmokingHabit } from '../types'
-
-// Valor interno do chip "Outro" do gosto musical (nunca é salvo).
-const MUSIC_OTHER = '__OUTRO__'
+import type { AllergyTag, Diet, DrinkingHabit, Gender, PetPreference, SmokingHabit } from '../types'
 
 const inputClass =
   'w-full rounded-md border border-line-strong bg-surface px-3 py-2.5 text-ink outline-none placeholder:text-ink-3 hover:border-ink-2 focus:border-ink focus:ring-2 focus:ring-focus focus:ring-offset-1'
@@ -47,11 +41,6 @@ export default function ProfilePage() {
   const [petPreferences, setPetPreferences] = useState<PetPreference[]>(user?.petPreferences ?? [])
   const [allergyTags, setAllergyTags] = useState<AllergyTag[]>(user?.allergyTags ?? [])
   const [allergyOther, setAllergyOther] = useState(user?.allergyOther ?? '')
-  const [initialMusic] = useState(() => parseMusicTaste(user?.musicTaste))
-  const [musicGenres, setMusicGenres] = useState<string[]>(initialMusic.genres)
-  const [musicOther, setMusicOther] = useState(initialMusic.other)
-  const [showMusicOther, setShowMusicOther] = useState(initialMusic.other !== '')
-  const [routine, setRoutine] = useState<Routine | null>(user?.routine ?? null)
   const [needsCarParking, setNeedsCarParking] = useState<boolean | null>(user?.needsCarParking ?? null)
   const [needsMotorcycleParking, setNeedsMotorcycleParking] = useState<boolean | null>(user?.needsMotorcycleParking ?? null)
   const [error, setError] = useState<string | null>(null)
@@ -98,6 +87,7 @@ export default function ProfilePage() {
     e.preventDefault()
     setError(null)
     setSaved(false)
+
     setLoading(true)
     try {
       await updateProfile({
@@ -109,8 +99,6 @@ export default function ProfilePage() {
         petPreferences,
         allergyTags,
         allergyOther,
-        musicTaste: serializeMusicTaste(musicGenres, showMusicOther ? musicOther : ''),
-        routine,
         needsCarParking,
         needsMotorcycleParking,
         bio,
@@ -258,24 +246,6 @@ export default function ProfilePage() {
             </div>
 
             <div>
-              <p className="mb-2 text-[13px] font-semibold text-ink">Rotina</p>
-              <div className="inline-grid min-w-[200px] grid-flow-col auto-cols-fr gap-[3px] rounded-md border border-line-strong bg-surface p-[3px]">
-                {(['DIURNO', 'NOTURNO', 'MISTO'] as Routine[]).map((option) => (
-                  <button
-                    key={option}
-                    type="button"
-                    onClick={() => setRoutine(routine === option ? null : option)}
-                    className={`h-[34px] rounded-[7px] text-sm font-semibold transition ${
-                      routine === option ? 'bg-inverse text-on-inverse' : 'text-ink-2 hover:bg-surface-sunk hover:text-ink'
-                    }`}
-                  >
-                    {option === 'DIURNO' ? 'Diurna' : option === 'NOTURNO' ? 'Noturna' : 'Mista'}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
               <p className="mb-2 text-[13px] font-semibold text-ink">Precisa de vaga de garagem?</p>
               <div className="flex flex-wrap gap-2">
                 {(
@@ -330,47 +300,19 @@ export default function ProfilePage() {
                 />
               )}
             </div>
-
-            <div>
-              <p className="mb-2 text-[13px] font-semibold text-ink">Tipos de música que curte</p>
-              <ChipMultiPicker
-                options={[...musicGenreOptions, { value: MUSIC_OTHER, label: 'Outro' }]}
-                values={showMusicOther ? [...musicGenres, MUSIC_OTHER] : musicGenres}
-                onChange={(values) => {
-                  setShowMusicOther(values.includes(MUSIC_OTHER))
-                  setMusicGenres(values.filter((v) => v !== MUSIC_OTHER))
-                }}
-              />
-              {showMusicOther && (
-                <input
-                  value={musicOther}
-                  onChange={(e) => setMusicOther(e.target.value)}
-                  placeholder="Qual? Ex.: blues, lo-fi"
-                  className={`mt-2 ${inputClass}`}
-                />
-              )}
-              <p className="mt-1 text-[13px] text-ink-3">Escolha quantos quiser. Usamos isso para calcular compatibilidade.</p>
-            </div>
           </>
         )}
 
         {error && <p className="rounded-md bg-danger-tint px-3 py-2 text-sm text-danger">{error}</p>}
         {saved && <p className="rounded-md bg-leaf-tint px-3 py-2 text-sm text-leaf">Perfil salvo!</p>}
 
-        <div className="flex items-center justify-between gap-3">
-          <button
-            type="button"
-            onClick={() => navigate('/anuncio')}
-            className="text-sm font-semibold text-ink-2 hover:text-ink"
-          >
-            Pular por agora
-          </button>
+        <div className="flex items-center justify-end gap-3">
           <button
             type="submit"
             disabled={loading}
             className="h-[42px] rounded-md bg-brand px-6 font-semibold text-on-brand transition hover:bg-brand-strong disabled:opacity-60"
           >
-            {loading ? 'Salvando…' : 'Salvar e continuar'}
+            {loading ? 'Salvando…' : 'Salvar'}
           </button>
         </div>
       </form>

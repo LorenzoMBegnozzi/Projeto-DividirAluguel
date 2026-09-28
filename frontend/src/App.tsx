@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -20,6 +20,8 @@ import ChatPage from './pages/ChatPage'
 import PaymentsPage from './pages/PaymentsPage'
 import UserPublicProfilePage from './pages/UserPublicProfilePage'
 import ListingDetailPage from './pages/ListingDetailPage'
+import HomePage from './pages/HomePage'
+import OnboardingPage from './pages/OnboardingPage'
 
 export default function App() {
   return (
@@ -33,18 +35,22 @@ export default function App() {
 
 function AppContent() {
   const { user } = useAuth()
+  const location = useLocation()
+  const isHome = location.pathname === '/'
+  const isOnboarding = location.pathname === '/onboarding'
 
   return (
     <>
-      <NavBar />
-      {!user && (
+      {!isOnboarding && <NavBar />}
+      {!user && !isHome && (
         <div className="fixed right-4 top-4 z-30">
           <ThemeToggle className="border border-line bg-surface" />
         </div>
       )}
       {user && !user.safetyTermsAccepted && <SafetyTermsModal />}
-      <div className={user ? 'pb-16 lg:pb-0' : ''}>
+      <div className={user && !isOnboarding ? 'pb-16 lg:pb-0' : ''}>
       <Routes>
+        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/registro" element={<RegisterPage />} />
         <Route path="/esqueci-senha" element={<ForgotPasswordPage />} />
@@ -54,6 +60,14 @@ function AppContent() {
           element={
             <ProtectedRoute>
               <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/onboarding"
+          element={
+            <ProtectedRoute>
+              <OnboardingPage />
             </ProtectedRoute>
           }
         />
@@ -123,7 +137,7 @@ function AppContent() {
         <Route path="*" element={<HomeRedirect />} />
       </Routes>
       </div>
-      <BottomNav />
+      {!isOnboarding && <BottomNav />}
     </>
   )
 }

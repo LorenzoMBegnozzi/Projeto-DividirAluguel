@@ -9,7 +9,7 @@ export default function HomeRedirect() {
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />
+    return <Navigate to="/" replace />
   }
 
   return <Navigate to={user.renter ? '/browse' : '/anuncio'} replace />

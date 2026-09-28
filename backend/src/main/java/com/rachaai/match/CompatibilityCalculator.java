@@ -4,13 +4,9 @@ import com.rachaai.listing.Listing;
 import com.rachaai.user.UserProfile;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * Calcula um score de compatibilidade (0-100) entre dois usuários, combinando
- * hábitos de convivência (fumo, bebida, dieta, animais, rotina, música).
+ * hábitos de convivência (fumo, bebida, dieta, animais).
  * Localização e orçamento não entram aqui: são filtros na busca, não pontuação
  * (ver DiscoveryService), pra não misturar "combina com você" com "está perto".
  * Atributos não preenchidos por nenhum dos dois lados simplesmente não entram
@@ -23,7 +19,7 @@ public class CompatibilityCalculator {
         double earned = 0;
         double possible = 0;
 
-        double[] boolWeight = {10, 10, 15}; // smoker, drinksAlcohol, vegetarian
+        double[] boolWeight = {15, 15, 25}; // smoker, drinksAlcohol, vegetarian
         Boolean[][] boolPairs = {
                 {a == null ? null : a.getSmoker(), b == null ? null : b.getSmoker()},
                 {a == null ? null : a.getDrinksAlcohol(), b == null ? null : b.getDrinksAlcohol()},
@@ -40,26 +36,11 @@ public class CompatibilityCalculator {
             }
         }
 
-        double petsWeight = 25;
+        double petsWeight = 45;
         Double petsScore = petsCompatibility(a, b);
         if (petsScore != null) {
             possible += petsWeight;
             earned += petsWeight * petsScore;
-        }
-
-        double routineWeight = 15;
-        if (a != null && b != null && a.getRoutine() != null && b.getRoutine() != null) {
-            possible += routineWeight;
-            if (a.getRoutine() == b.getRoutine()) {
-                earned += routineWeight;
-            }
-        }
-
-        double musicWeight = 25;
-        Double musicScore = textOverlap(a == null ? null : a.getMusicTaste(), b == null ? null : b.getMusicTaste());
-        if (musicScore != null) {
-            possible += musicWeight;
-            earned += musicWeight * musicScore;
         }
 
         if (possible == 0) {
@@ -123,29 +104,5 @@ public class CompatibilityCalculator {
         boolean bothEnjoyAnimals = (aLikesAnimals == null || Boolean.TRUE.equals(aLikesAnimals))
                 && (bLikesAnimals == null || Boolean.TRUE.equals(bLikesAnimals));
         return bothEnjoyAnimals ? 1.0 : 0.6;
-    }
-
-    private Double textOverlap(String a, String b) {
-        Set<String> tokensA = tokenize(a);
-        Set<String> tokensB = tokenize(b);
-        if (tokensA.isEmpty() || tokensB.isEmpty()) {
-            return null;
-        }
-        Set<String> intersection = new HashSet<>(tokensA);
-        intersection.retainAll(tokensB);
-        Set<String> union = new HashSet<>(tokensA);
-        union.addAll(tokensB);
-        return union.isEmpty() ? 0.0 : (double) intersection.size() / union.size();
-    }
-
-    private Set<String> tokenize(String text) {
-        if (text == null || text.isBlank()) {
-            return Set.of();
-        }
-        return new HashSet<>(Arrays.asList(
-                text.toLowerCase()
-                        .replaceAll("[^a-z0-9áàâãéèêíïóôõöúçñ ,]", "")
-                        .split("[,\\s]+")
-        ));
     }
 }

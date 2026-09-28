@@ -14,7 +14,6 @@ import {
   List,
   MapPin,
   MapPinned,
-  Music,
   PawPrint,
   Salad,
   Star,
@@ -345,7 +344,6 @@ export default function BrowsePage() {
                       {item.user.petPreferences.map((p) => petPreferenceLabels[p]).join(', ')}
                     </Fact>
                   )}
-                  {item.user.musicTaste && <Fact icon={Music}>{item.user.musicTaste}</Fact>}
                 </div>
               )}
 

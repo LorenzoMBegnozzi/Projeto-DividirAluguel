@@ -1,5 +1,3 @@
-export type Routine = 'DIURNO' | 'NOTURNO' | 'MISTO'
-
 export type Role = 'RENTER' | 'ADVERTISER'
 
 export type AdvertiserKind = 'VAGA' | 'ESTABELECIMENTO'
@@ -71,8 +69,6 @@ export interface UserProfile {
   petPreferences: PetPreference[]
   allergyTags: AllergyTag[]
   allergyOther: string | null
-  musicTaste: string | null
-  routine: Routine | null
   needsCarParking: boolean | null
   needsMotorcycleParking: boolean | null
   safetyTermsAccepted: boolean

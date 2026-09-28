@@ -5,7 +5,6 @@ import com.rachaai.user.Diet;
 import com.rachaai.user.DrinkingHabit;
 import com.rachaai.user.Gender;
 import com.rachaai.user.PetPreference;
-import com.rachaai.user.Routine;
 import com.rachaai.user.SmokingHabit;
 import jakarta.validation.constraints.Size;
 
@@ -20,8 +19,6 @@ public record ProfileRequest(
         List<PetPreference> petPreferences,
         List<AllergyTag> allergyTags,
         @Size(max = 300) String allergyOther,
-        @Size(max = 500) String musicTaste,
-        Routine routine,
         Boolean needsCarParking,
         Boolean needsMotorcycleParking,
         @Size(max = 1000) String bio,

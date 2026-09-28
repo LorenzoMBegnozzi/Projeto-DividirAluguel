@@ -7,7 +7,6 @@ import com.rachaai.user.Diet;
 import com.rachaai.user.DrinkingHabit;
 import com.rachaai.user.Gender;
 import com.rachaai.user.PetPreference;
-import com.rachaai.user.Routine;
 import com.rachaai.user.SmokingHabit;
 import com.rachaai.user.User;
 
@@ -32,8 +31,6 @@ public record UserResponse(
         List<PetPreference> petPreferences,
         List<AllergyTag> allergyTags,
         String allergyOther,
-        String musicTaste,
-        Routine routine,
         Boolean needsCarParking,
         Boolean needsMotorcycleParking,
         boolean safetyTermsAccepted,
@@ -60,8 +57,6 @@ public record UserResponse(
                 profile != null ? profile.getPetPreferencesList() : List.of(),
                 allergies.tags(),
                 allergies.otherText(),
-                profile != null ? profile.getMusicTaste() : null,
-                profile != null ? profile.getRoutine() : null,
                 profile != null ? profile.getNeedsCarParking() : null,
                 profile != null ? profile.getNeedsMotorcycleParking() : null,
                 user.getSafetyTermsAcceptedAt() != null,

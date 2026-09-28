@@ -50,13 +50,6 @@ public class UserProfile {
     @Column(name = "alergias", length = 500)
     private String allergies;
 
-    @Column(name = "gosto_musical", length = 500)
-    private String musicTaste;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "rotina", length = 20)
-    private Routine routine;
-
     @Convert(converter = SimNaoConverter.class)
     @Column(name = "precisa_vaga_carro", length = 3)
     private Boolean needsCarParking;
@@ -149,21 +142,9 @@ public class UserProfile {
         this.allergies = allergies;
     }
 
-    public String getMusicTaste() {
-        return musicTaste;
-    }
 
-    public void setMusicTaste(String musicTaste) {
-        this.musicTaste = musicTaste;
-    }
 
-    public Routine getRoutine() {
-        return routine;
-    }
 
-    public void setRoutine(Routine routine) {
-        this.routine = routine;
-    }
 
     public Boolean getNeedsCarParking() {
         return needsCarParking;
