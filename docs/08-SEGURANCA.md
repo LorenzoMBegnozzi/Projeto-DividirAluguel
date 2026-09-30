@@ -110,7 +110,7 @@ No dev e no homolog, o `seed` cria `admin@teste.com`.
 
 | Aba | Ações |
 |---|---|
-| Resumo | números do site: usuários, bloqueados, anúncios ativos, denúncias abertas, pagamentos |
+| Resumo | dashboard com período de 7/30/90 dias: cadastros (comparados ao período anterior), usuários ativos, faturamento, vagas fechadas, "Precisa de atenção" (cada item abre a aba certa), cadastros por semana, faturamento por meio de pagamento e bairros com mais anúncios. Só números agregados, sem dado pessoal |
 | Denúncias | filtrar por status; **bloquear a conta e resolver**, **resolver sem bloquear** ou **descartar**, com nota |
 | Usuários | buscar por nome/e-mail; ver denúncias recebidas; **bloquear** (motivo obrigatório) e **desbloquear** |
 | Anúncios | buscar por título/dono; **tirar do ar** |

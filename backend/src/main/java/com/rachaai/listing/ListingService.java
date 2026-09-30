@@ -149,6 +149,7 @@ public class ListingService {
 
         listing.setAvailable(false);
         listing.setDealClosedWith(closedWith);
+        listing.setClosedAt(java.time.Instant.now());
         return ListingResponse.from(listing);
     }
 
@@ -158,6 +159,7 @@ public class ListingService {
                 .orElseThrow(() -> ApiException.notFound("Anúncio não encontrado"));
         listing.setAvailable(true);
         listing.setDealClosedWith(null);
+        listing.setClosedAt(null);
         return ListingResponse.from(listing);
     }
 

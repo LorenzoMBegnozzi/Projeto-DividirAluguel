@@ -207,6 +207,7 @@ Quem é admin: `ADMIN_EMAILS` no `.env` do ambiente. Detalhes em [08-SEGURANCA.m
 
 | Rota | Faz |
 |---|---|
+| `GET /api/admin/dashboard?dias=30` | números do dashboard para os últimos 7, 30 ou 90 dias (outro valor vira 30): `kpis` (cadastros vs. período anterior, usuários ativos, faturamento, vendas, reembolsos, vagas fechadas), `attention` (o que precisa de ação agora), `signupsByWeek`, `revenueByMethod`, `revenueByType`, `topNeighborhoods` (top 5 com preço médio). Só contagens e somas |
 | `GET /api/admin/resumo` | `{ totalUsers, blockedUsers, activeListings, openReports, paidPayments, pendingPayments }` |
 | `GET /api/admin/denuncias?status=ABERTA` | denúncias (status `ABERTA`, `RESOLVIDA`, `DESCARTADA`; sem status = todas), com e-mail e nº de denúncias de cada lado |
 | `POST /api/admin/denuncias/{id}/fechar` | `{ "status": "RESOLVIDA"\|"DESCARTADA", "note", "blockReported": true }` |

@@ -1,6 +1,7 @@
 package com.rachaai.admin;
 
 import com.rachaai.admin.dto.AdminDtos;
+import com.rachaai.admin.dto.DashboardDto;
 import com.rachaai.moderation.ReportStatus;
 import com.rachaai.security.SecurityUser;
 import jakarta.validation.Valid;
@@ -14,10 +15,20 @@ import java.util.List;
 @RequestMapping("/api/admin")
 public class AdminController {
 
-    private final AdminService adminService;
+    /** Períodos que o dashboard aceita, em dias. */
+    private static final java.util.Set<Integer> DASHBOARD_PERIODS = java.util.Set.of(7, 30, 90);
 
-    public AdminController(AdminService adminService) {
+    private final AdminService adminService;
+    private final DashboardService dashboardService;
+
+    public AdminController(AdminService adminService, DashboardService dashboardService) {
         this.adminService = adminService;
+        this.dashboardService = dashboardService;
+    }
+
+    @GetMapping("/dashboard")
+    public DashboardDto dashboard(@RequestParam(name = "dias", defaultValue = "30") int days) {
+        return dashboardService.build(DASHBOARD_PERIODS.contains(days) ? days : 30);
     }
 
     @GetMapping("/resumo")

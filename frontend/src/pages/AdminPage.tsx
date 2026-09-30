@@ -1,7 +1,20 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { FormEvent, ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { Ban, Flag, Home, LayoutDashboard, Receipt, RotateCcw, Search, ShieldCheck, Users } from 'lucide-react'
+import {
+  AlertTriangle,
+  Ban,
+  CheckCircle2,
+  ChevronRight,
+  Flag,
+  Home,
+  LayoutDashboard,
+  Receipt,
+  RotateCcw,
+  Search,
+  ShieldCheck,
+  Users,
+} from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import {
   blockAdminUser,
@@ -10,16 +23,24 @@ import {
   getAdminListings,
   getAdminPayments,
   getAdminReports,
-  getAdminSummary,
+  getAdminDashboard,
   getAdminUsers,
   reportReasonLabels,
   refundAdminPayment,
   reportStatusLabels,
   unblockAdminUser,
 } from '../api/admin'
-import type { AdminListing, AdminPayment, AdminReport, AdminSummary, AdminUser, ReportStatus } from '../api/admin'
+import type {
+  AdminDashboard,
+  AdminListing,
+  AdminPayment,
+  AdminReport,
+  AdminUser,
+  DashboardPeriod,
+  ReportStatus,
+} from '../api/admin'
 import { paymentMethodLabels } from '../api/billing'
-import type { PaymentStatus } from '../types'
+import type { PaymentStatus, PaymentType } from '../types'
 import { apiErrorMessage } from '../api/client'
 import { formatDateTime, formatMoney } from '../utils/format'
 
@@ -49,7 +70,7 @@ export default function AdminPage() {
         <ShieldCheck className="h-7 w-7 text-brand" aria-hidden="true" />
         Administração
       </h1>
-      <p className="mb-6 text-sm text-ink-3">Moderação de denúncias, contas e anúncios. Toda ação fica registrada no log.</p>
+      <p className="mb-6 text-sm text-ink-3">Visão geral, denúncias, contas, anúncios e pagamentos. Toda ação fica registrada no log.</p>
 
       <div role="tablist" className="mb-6 flex gap-1 overflow-x-auto border-b border-line">
         {TABS.map(({ value, label, icon: Icon }) => (
@@ -68,7 +89,7 @@ export default function AdminPage() {
         ))}
       </div>
 
-      {tab === 'RESUMO' && <SummaryTab onOpen={setTab} />}
+      {tab === 'RESUMO' && <DashboardTab onOpen={setTab} />}
       {tab === 'DENUNCIAS' && <ReportsTab />}
       {tab === 'USUARIOS' && <UsersTab />}
       {tab === 'ANUNCIOS' && <ListingsTab />}
@@ -92,56 +113,296 @@ function Badge({ tone, children }: { tone: 'danger' | 'brand' | 'leaf' | 'neutra
   return <span className={`inline-flex h-6 items-center rounded-sm px-2 text-xs font-bold ${tones[tone]}`}>{children}</span>
 }
 
-// ------------------------------------------------------------------ Resumo
+// ------------------------------------------------------------------ Resumo (dashboard)
 
-function SummaryTab({ onOpen }: { onOpen: (tab: Tab) => void }) {
-  const [summary, setSummary] = useState<AdminSummary | null>(null)
+const PERIODS: DashboardPeriod[] = [7, 30, 90]
+
+const paymentTypeLabels: Record<PaymentType, string> = {
+  DESTAQUE: 'Destaque',
+  ANUNCIO_EXTRA: 'Anúncio extra',
+}
+
+function methodLabel(method: string) {
+  if (method === 'simulado') return 'Simulado (teste)'
+  return paymentMethodLabels[method] ?? method
+}
+
+function shortDate(isoDate: string) {
+  const [, month, day] = isoDate.split('-')
+  return `${day}/${month}`
+}
+
+function DashboardTab({ onOpen }: { onOpen: (tab: Tab) => void }) {
+  const [days, setDays] = useState<DashboardPeriod>(30)
+  const [data, setData] = useState<AdminDashboard | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    getAdminSummary()
-      .then(setSummary)
-      .catch((err) => setError(apiErrorMessage(err, 'Não foi possível carregar o resumo')))
-  }, [])
-
-  if (error) return <ErrorBox message={error} />
-  if (!summary) return <p className="text-ink-3">Carregando…</p>
-
-  const tiles: { label: string; value: number; tab?: Tab; highlight?: boolean }[] = [
-    { label: 'Denúncias abertas', value: summary.openReports, tab: 'DENUNCIAS', highlight: summary.openReports > 0 },
-    { label: 'Usuários', value: summary.totalUsers, tab: 'USUARIOS' },
-    { label: 'Contas bloqueadas', value: summary.blockedUsers, tab: 'USUARIOS' },
-    { label: 'Anúncios ativos', value: summary.activeListings, tab: 'ANUNCIOS' },
-    { label: 'Pagamentos pagos', value: summary.paidPayments, tab: 'PAGAMENTOS' },
-    { label: 'Pagamentos pendentes', value: summary.pendingPayments, tab: 'PAGAMENTOS' },
-  ]
+    let current = true
+    getAdminDashboard(days)
+      .then((d) => {
+        if (current) {
+          setData(d)
+          setError(null)
+        }
+      })
+      .catch((err) => current && setError(apiErrorMessage(err, 'Não foi possível carregar o resumo')))
+    return () => {
+      current = false
+    }
+  }, [days])
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-      {tiles.map((tile) => {
-        const content = (
-          <>
-            <p className={`text-[32px] font-extrabold tabular-nums leading-none ${tile.highlight ? 'text-danger' : 'text-ink'}`}>
-              {tile.value}
-            </p>
-            <p className="mt-2 text-[13px] font-semibold text-ink-3">{tile.label}</p>
-          </>
-        )
-        return tile.tab ? (
-          <button
-            key={tile.label}
-            onClick={() => onOpen(tile.tab!)}
-            className="rounded-lg border border-line bg-surface p-4 text-left transition hover:border-ink-2"
-          >
-            {content}
-          </button>
-        ) : (
-          <div key={tile.label} className="rounded-lg border border-line bg-surface p-4">
-            {content}
+    <div className="space-y-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-sm text-ink-3">Números dos últimos {days} dias.</p>
+        <div role="group" aria-label="Período" className="inline-flex rounded-md border border-line-strong p-0.5">
+          {PERIODS.map((p) => (
+            <button
+              key={p}
+              aria-pressed={days === p}
+              onClick={() => setDays(p)}
+              className={`h-[30px] rounded-[5px] px-3 text-[13px] font-semibold transition ${
+                days === p ? 'bg-inverse text-on-inverse' : 'text-ink-2 hover:text-ink'
+              }`}
+            >
+              {p} dias
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <ErrorBox message={error} />
+      {!data && !error && <p className="text-ink-3">Carregando…</p>}
+      {data && (
+        <>
+          <KpiCards data={data} />
+          <AttentionList data={data} onOpen={onOpen} />
+          <div className="grid gap-5 md:grid-cols-2">
+            <SignupsChart weeks={data.signupsByWeek} />
+            <RevenueBreakdown data={data} />
           </div>
-        )
-      })}
+          <NeighborhoodsTable rows={data.topNeighborhoods} />
+        </>
+      )}
     </div>
+  )
+}
+
+function Panel({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section className="rounded-lg border border-line bg-surface p-4">
+      <h2 className="mb-3 text-[15px] font-bold text-ink">{title}</h2>
+      {children}
+    </section>
+  )
+}
+
+function KpiCards({ data }: { data: AdminDashboard }) {
+  const k = data.kpis
+  const change = k.newUsersPrevious > 0 ? Math.round(((k.newUsers - k.newUsersPrevious) / k.newUsersPrevious) * 100) : null
+  const cards: { label: string; value: string; detail: ReactNode }[] = [
+    {
+      label: 'Novos cadastros',
+      value: String(k.newUsers),
+      detail:
+        change !== null ? (
+          <>
+            <span className={`font-bold ${change >= 0 ? 'text-leaf' : 'text-danger'}`}>
+              {change >= 0 ? '▲' : '▼'} {Math.abs(change)}%
+            </span>{' '}
+            vs. {data.days} dias antes
+          </>
+        ) : (
+          `${k.newRenters} procurando · ${k.newAdvertisers} anunciando`
+        ),
+    },
+    {
+      label: 'Usuários ativos',
+      value: k.activeUsers === null ? '—' : String(k.activeUsers),
+      detail: k.activeUsers === null ? 'sem registros de acesso' : `de ${k.totalUsers} contas`,
+    },
+    {
+      label: 'Faturamento',
+      value: formatMoney(k.revenue),
+      detail: `${k.sales} ${k.sales === 1 ? 'venda' : 'vendas'} · ${k.refunds} ${k.refunds === 1 ? 'reembolso' : 'reembolsos'}`,
+    },
+    {
+      label: 'Vagas fechadas',
+      value: String(k.dealsClosed),
+      detail: `${k.activeListings} anúncios no ar`,
+    },
+  ]
+  return (
+    <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      {cards.map((c) => (
+        <div key={c.label} className="rounded-lg border border-line bg-surface p-4">
+          <p className="text-[13px] font-semibold text-ink-3">{c.label}</p>
+          <p className="mt-1 truncate text-[28px] font-extrabold leading-tight text-ink">{c.value}</p>
+          <p className="mt-1 text-xs text-ink-3">{c.detail}</p>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function AttentionList({ data, onOpen }: { data: AdminDashboard; onOpen: (tab: Tab) => void }) {
+  const a = data.attention
+  type Item = { count: number; text: string; tab: Tab; urgent: boolean }
+  const all: Item[] = [
+    { count: a.reportsOpenOver24h, text: 'denúncias abertas há mais de 24h', tab: 'DENUNCIAS', urgent: true },
+    { count: a.usersWithManyOpenReports, text: 'contas com 2+ denúncias abertas (não bloqueadas)', tab: 'DENUNCIAS', urgent: true },
+    { count: a.paymentsWithinWithdrawal, text: 'pagamentos no prazo de arrependimento (7 dias)', tab: 'PAGAMENTOS', urgent: false },
+    { count: a.pendingPaymentsOver1Day, text: 'pagamentos pendentes há mais de 1 dia', tab: 'PAGAMENTOS', urgent: false },
+    { count: a.unconfirmedEmails, text: 'contas sem e-mail confirmado', tab: 'USUARIOS', urgent: false },
+  ]
+  const items = all.filter((i) => i.count > 0)
+
+  return (
+    <Panel title="Precisa de atenção">
+      {items.length === 0 ? (
+        <p className="flex items-center gap-2 text-sm text-leaf">
+          <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
+          Tudo em dia.
+        </p>
+      ) : (
+        <ul className="divide-y divide-line">
+          {items.map((i) => (
+            <li key={i.text}>
+              <button
+                onClick={() => onOpen(i.tab)}
+                className="flex w-full items-center gap-3 py-2 text-left text-sm text-ink-2 transition hover:text-ink"
+              >
+                <AlertTriangle className={`h-4 w-4 shrink-0 ${i.urgent ? 'text-danger' : 'text-mel'}`} aria-hidden="true" />
+                <span className="min-w-[2ch] font-bold tabular-nums text-ink">{i.count}</span>
+                <span className="flex-1">{i.text}</span>
+                <ChevronRight className="h-4 w-4 shrink-0 text-ink-3" aria-hidden="true" />
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </Panel>
+  )
+}
+
+function SignupsChart({ weeks }: { weeks: AdminDashboard['signupsByWeek'] }) {
+  const [hovered, setHovered] = useState<number | null>(null)
+  const totals = weeks.map((w) => w.total)
+  const max = Math.max(1, ...totals)
+  const labelEvery = Math.ceil(weeks.length / 5)
+  const active = hovered !== null ? weeks[hovered] : null
+
+  return (
+    <Panel title="Cadastros por semana">
+      <p className="mb-2 h-4 text-xs text-ink-3" aria-live="polite">
+        {active
+          ? `Semana de ${shortDate(active.weekStart)}: ${active.total} (${active.renters} procurando, ${active.advertisers} anunciando)`
+          : `Máximo: ${max} por semana`}
+      </p>
+      <div className="relative h-[140px] border-b border-line-strong" onMouseLeave={() => setHovered(null)}>
+        <div className="absolute inset-x-0 top-0 border-t border-dashed border-line" aria-hidden="true" />
+        <div className="absolute inset-0 flex items-end gap-[2px]">
+          {weeks.map((w, i) => (
+            <button
+              key={w.weekStart}
+              onMouseEnter={() => setHovered(i)}
+              onFocus={() => setHovered(i)}
+              onBlur={() => setHovered(null)}
+              aria-label={`Semana de ${shortDate(w.weekStart)}: ${totals[i]} cadastros`}
+              className="flex h-full flex-1 items-end outline-none"
+            >
+              <span
+                className={`block w-full rounded-t-[4px] bg-brand transition-opacity ${
+                  hovered === null || hovered === i ? '' : 'opacity-40'
+                }`}
+                style={{ height: totals[i] === 0 ? 0 : `max(${(totals[i] / max) * 100}%, 3px)` }}
+              />
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="mt-1 flex gap-[2px] text-[11px] tabular-nums text-ink-3">
+        {weeks.map((w, i) => (
+          <span key={w.weekStart} className="flex-1 whitespace-nowrap">
+            {i % labelEvery === 0 ? shortDate(w.weekStart) : ''}
+          </span>
+        ))}
+      </div>
+    </Panel>
+  )
+}
+
+function RevenueBreakdown({ data }: { data: AdminDashboard }) {
+  const max = Math.max(0.01, ...data.revenueByMethod.map((m) => m.amount))
+  return (
+    <Panel title="Faturamento por meio de pagamento">
+      {data.revenueByMethod.length === 0 ? (
+        <p className="text-sm text-ink-3">Nenhuma venda no período.</p>
+      ) : (
+        <ul className="space-y-3">
+          {data.revenueByMethod.map((m) => (
+            <li key={m.method}>
+              <div className="mb-1 flex justify-between gap-2 text-sm">
+                <span className="text-ink-2">{methodLabel(m.method)}</span>
+                <span className="text-ink">
+                  {formatMoney(m.amount)} <span className="text-ink-3">({m.count})</span>
+                </span>
+              </div>
+              <div className="h-2 rounded-full bg-surface-sunk">
+                <div className="h-2 rounded-full bg-brand" style={{ width: `${(m.amount / max) * 100}%` }} />
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+      {data.revenueByType.length > 0 && (
+        <div className="mt-4 border-t border-line pt-3">
+          <p className="mb-1 text-xs font-semibold text-ink-3">Por produto</p>
+          <ul className="space-y-1 text-sm">
+            {data.revenueByType.map((t) => (
+              <li key={t.type} className="flex justify-between gap-2">
+                <span className="text-ink-2">{paymentTypeLabels[t.type] ?? t.type}</span>
+                <span className="text-ink">
+                  {formatMoney(t.amount)} <span className="text-ink-3">({t.count})</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </Panel>
+  )
+}
+
+function NeighborhoodsTable({ rows }: { rows: AdminDashboard['topNeighborhoods'] }) {
+  return (
+    <Panel title="Bairros com mais anúncios no ar">
+      {rows.length === 0 ? (
+        <p className="text-sm text-ink-3">Nenhum anúncio com bairro informado.</p>
+      ) : (
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-left text-xs text-ink-3">
+              <th className="pb-2 font-semibold">Bairro</th>
+              <th className="pb-2 text-right font-semibold">Anúncios</th>
+              <th className="pb-2 text-right font-semibold">Preço médio</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-line">
+            {rows.map((r) => (
+              <tr key={r.name}>
+                <td className="py-2 text-ink">{r.name}</td>
+                <td className="py-2 text-right tabular-nums text-ink-2">{r.listings}</td>
+                <td className="py-2 text-right text-ink-2">
+                  {r.averagePrice === null ? '—' : formatMoney(r.averagePrice)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </Panel>
   )
 }
 

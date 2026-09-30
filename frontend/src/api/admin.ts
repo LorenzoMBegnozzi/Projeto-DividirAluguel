@@ -78,6 +78,44 @@ export const reportStatusLabels: Record<ReportStatus, string> = {
   DESCARTADA: 'Descartada',
 }
 
+export type DashboardPeriod = 7 | 30 | 90
+
+export interface AdminDashboard {
+  days: number
+  kpis: {
+    newUsers: number
+    newUsersPrevious: number
+    newRenters: number
+    newAdvertisers: number
+    /** nulo quando os registros de acesso não estão disponíveis */
+    activeUsers: number | null
+    totalUsers: number
+    revenue: number
+    sales: number
+    refunds: number
+    averageTicket: number
+    dealsClosed: number
+    activeListings: number
+  }
+  attention: {
+    reportsOpenOver24h: number
+    paymentsWithinWithdrawal: number
+    pendingPaymentsOver1Day: number
+    unconfirmedEmails: number
+    usersWithManyOpenReports: number
+  }
+  /** weekStart: segunda-feira da semana (AAAA-MM-DD) */
+  /** total conta cada conta uma vez; renters/advertisers podem se sobrepor */
+  signupsByWeek: { weekStart: string; total: number; renters: number; advertisers: number }[]
+  revenueByMethod: { method: string; amount: number; count: number }[]
+  revenueByType: { type: PaymentType; amount: number; count: number }[]
+  topNeighborhoods: { name: string; listings: number; averagePrice: number | null }[]
+}
+
+export function getAdminDashboard(days: DashboardPeriod) {
+  return client.get<AdminDashboard>('/admin/dashboard', { params: { dias: days } }).then((res) => res.data)
+}
+
 export function getAdminSummary() {
   return client.get<AdminSummary>('/admin/resumo').then((res) => res.data)
 }

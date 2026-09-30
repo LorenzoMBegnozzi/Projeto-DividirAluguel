@@ -141,6 +141,42 @@ class AdminModerationTest extends ApiTestSupport {
         assertThat(activeIds).doesNotContain(extraListing).hasSize(3);
     }
 
+    @Test
+    @DisplayName("dashboard: só admin, e os números acompanham cadastros, vendas e vagas fechadas")
+    void dashboardReflectsActivity() throws Exception {
+        Account admin = admin();
+        Account renter = renter("FEMININO");
+        mvc.perform(auth(get("/api/admin/dashboard"), renter)).andExpect(status().isForbidden());
+
+        JsonNode before = body(mvc.perform(auth(get("/api/admin/dashboard?dias=7"), admin)).andExpect(status().isOk()));
+        assertThat(before.get("days").asInt()).isEqualTo(7);
+
+        Account owner = advertiser();
+        Map<String, Object> vaga = listingBody("TEM_VAGA");
+        vaga.put("availableSlots", 1);
+        long listingId = createListing(owner, vaga);
+        long paymentId = body(mvc.perform(jsonPost("/api/billing/payments", owner, Map.of("type", "DESTAQUE", "listingId", listingId)))
+                .andExpect(status().isOk())).get("id").asLong();
+        mvc.perform(auth(post("/api/billing/payments/" + paymentId + "/simulate"), owner)).andExpect(status().isOk());
+        mvc.perform(jsonPost("/api/listings/" + listingId + "/indisponivel", owner, Map.of())).andExpect(status().isOk());
+
+        JsonNode after = body(mvc.perform(auth(get("/api/admin/dashboard?dias=7"), admin)).andExpect(status().isOk()));
+        JsonNode k0 = before.get("kpis"), k1 = after.get("kpis");
+        assertThat(k1.get("newUsers").asLong()).isEqualTo(k0.get("newUsers").asLong() + 1);
+        assertThat(k1.get("newAdvertisers").asLong()).isEqualTo(k0.get("newAdvertisers").asLong() + 1);
+        assertThat(k1.get("sales").asLong()).isEqualTo(k0.get("sales").asLong() + 1);
+        assertThat(k1.get("dealsClosed").asLong()).isEqualTo(k0.get("dealsClosed").asLong() + 1);
+        assertThat(after.get("attention").get("paymentsWithinWithdrawal").asLong())
+                .isEqualTo(before.get("attention").get("paymentsWithinWithdrawal").asLong() + 1);
+        assertThat(after.get("revenueByMethod")).anyMatch(m -> m.get("method").asText().equals("simulado"));
+        long weekTotal = 0;
+        for (JsonNode w : after.get("signupsByWeek")) weekTotal += w.get("advertisers").asLong();
+        assertThat(weekTotal).isEqualTo(k1.get("newAdvertisers").asLong());
+
+        // Período fora da lista cai no padrão de 30 dias.
+        mvc.perform(auth(get("/api/admin/dashboard?dias=5000"), admin)).andExpect(jsonPath("$.days").value(30));
+    }
+
     private java.util.List<Long> searchIds(Account viewer) throws Exception {
         java.util.List<Long> ids = new java.util.ArrayList<>();
         for (JsonNode item : body(mvc.perform(auth(get("/api/browse/roommates"), viewer)).andExpect(status().isOk()))) {

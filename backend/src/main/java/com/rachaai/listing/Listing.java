@@ -120,6 +120,10 @@ public class Listing {
     @JoinColumn(name = "fechado_com_usuario_id")
     private User dealClosedWith;
 
+    /** Quando foi marcado como indisponível (negócio fechado). */
+    @Column(name = "fechado_em")
+    private Instant closedAt;
+
     @Column(name = "expira_em")
     private Instant expiresAt;
 
@@ -368,6 +372,14 @@ public class Listing {
 
     public void setAvailable(boolean available) {
         this.available = available;
+    }
+
+    public Instant getClosedAt() {
+        return closedAt;
+    }
+
+    public void setClosedAt(Instant closedAt) {
+        this.closedAt = closedAt;
     }
 
     public User getDealClosedWith() {
