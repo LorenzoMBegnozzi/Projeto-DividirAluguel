@@ -1,13 +1,13 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
-import { TOKEN_KEY } from '../api/client'
+import { clearToken, getToken, setToken } from '../api/client'
 import { fetchMe, login as loginRequest, logout as logoutRequest, register as registerRequest } from '../api/auth'
 import type { AdvertiserKind, Role, UserProfile } from '../types'
 
 interface AuthContextValue {
   user: UserProfile | null
   loading: boolean
-  login: (email: string, password: string) => Promise<void>
+  login: (email: string, password: string, remember?: boolean) => Promise<void>
   register: (
     name: string,
     email: string,
@@ -29,7 +29,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   const refreshUser = useCallback(async () => {
-    const token = localStorage.getItem(TOKEN_KEY)
+    const token = getToken()
     if (!token) {
       setUser(null)
       return
@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const me = await fetchMe()
       setUser(me)
     } catch {
-      localStorage.removeItem(TOKEN_KEY)
+      clearToken()
       setUser(null)
     }
   }, [])
@@ -47,9 +47,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     refreshUser().finally(() => setLoading(false))
   }, [refreshUser])
 
-  async function login(email: string, password: string) {
+  async function login(email: string, password: string, remember = true) {
     const res = await loginRequest({ email, password })
-    localStorage.setItem(TOKEN_KEY, res.token)
+    setToken(res.token, remember)
     setUser(res.user)
   }
 
@@ -64,16 +64,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     acceptTerms: boolean,
   ) {
     const res = await registerRequest({ name, email, password, birthDate, cpf, role, advertiserKind, acceptTerms })
-    localStorage.setItem(TOKEN_KEY, res.token)
+    setToken(res.token, true)
     setUser(res.user)
   }
 
   function logout() {
     // Avisa o servidor para o token deixar de valer (em todos os aparelhos). Se falhar (sem
     // internet, token já vencido), sai do mesmo jeito neste navegador.
-    const token = localStorage.getItem(TOKEN_KEY)
+    const token = getToken()
     if (token) logoutRequest(token).catch(() => {})
-    localStorage.removeItem(TOKEN_KEY)
+    clearToken()
     setUser(null)
   }
 
