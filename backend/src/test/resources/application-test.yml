@@ -13,11 +13,11 @@ spring:
 # Tudo explícito aqui, para os testes não dependerem do .env da máquina (o application.yml
 # importa o ../.env.<AMBIENTE> quando existe).
 app:
-  # H2 não tem políticas por linha (RLS); o identificador de sessão do Oracle não se aplica.
-  # O RLS é testado no Oracle de verdade em RlsOracleTest (./mvnw test -Poracle).
+  # H2 não tem políticas por linha (RLS). O RLS é testado no Postgres de verdade em
+  # RlsPostgresTest (roda no "./mvnw test" normal, via Testcontainers).
   rls:
     enabled: false
-  # H2 não tem a tabela registros_acesso (vem de migration Oracle).
+  # H2 não tem a tabela registros_acesso (não é gerenciada pelo Hibernate).
   access-log:
     enabled: false
   jwt:

@@ -4,7 +4,7 @@
 services:
   db:
     # O banco não fica exposto fora do Docker: só o backend (na rede interna) conversa com ele.
-    # Para administrar, use: docker compose ... exec db sqlplus ...
+    # Para administrar, use: docker compose ... exec db psql -U rachaai
     ports: !reset []
 
   backend:

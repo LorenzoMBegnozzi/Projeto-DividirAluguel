@@ -1,6 +1,6 @@
 # Ambientes: dev, homolog e prod
 
-O RachaAi tem três ambientes **isolados**. Cada um tem o seu banco Oracle, o seu backend, o seu
+O RachaAi tem três ambientes **isolados**. Cada um tem o seu banco Postgres, o seu backend, o seu
 site, as suas senhas e os seus dados. Mexer em um não afeta os outros.
 
 | Ambiente | Para quê | Onde roda | Dados |
@@ -41,11 +41,11 @@ O nome do ambiente no comando do script continua funcionando e passa por cima da
 |---|---|---|---|
 | Site | http://localhost:8082 | http://localhost:8092 | porta 80 do servidor (`SITE_PORT`) |
 | API + Swagger | http://localhost:8080/swagger-ui.html | http://localhost:8090/swagger-ui.html | **fechada** (só via `/api` do site); Swagger desligado |
-| Banco Oracle | `localhost:1522` / `XEPDB1` | `localhost:1532` / `XEPDB1` | **fechado** (só o backend acessa) |
+| Banco Postgres | `localhost:1522` / banco `rachaai` | `localhost:1532` / banco `rachaai` | **fechado** (só o backend acessa) |
 | E-mails de teste (Mailpit) | http://localhost:8025 | http://localhost:8035 | não existe: usa SMTP real |
 | Pagamento | simulado | simulado | `DESATIVADO` (ver seção 8) |
 | Perfil do Spring | `dev` | `homolog` | `prod` |
-| Projeto do Compose / volume | `rachaai-dev` / `rachaai-dev_oracle_data` | `rachaai-homolog` / `rachaai-homolog_oracle_data` | `rachaai-prod` / `rachaai-prod_oracle_data` |
+| Projeto do Compose / volume | `rachaai-dev` / `rachaai-dev_postgres_data` | `rachaai-homolog` / `rachaai-homolog_postgres_data` | `rachaai-prod` / `rachaai-prod_postgres_data` |
 
 As portas de dev e homolog são diferentes para os dois poderem rodar ao mesmo tempo. O site de
 dev está na **8082** porque a 8081 costuma estar ocupada pelo Eclipse.
@@ -63,7 +63,7 @@ scripts/ambiente.ps1  e  scripts/ambiente.sh   ← atalhos para subir cada ambie
 
 O que separa os ambientes no Docker é o `COMPOSE_PROJECT_NAME` de cada `.env`: o Docker prefixa
 os containers, a rede e o volume do banco com ele (`rachaai-dev-backend-1`,
-`rachaai-homolog_oracle_data`...).
+`rachaai-homolog_postgres_data`...).
 
 Diferenças no backend (perfis do Spring):
 
@@ -82,7 +82,8 @@ Copy-Item .env.homolog.example .env.homolog
 notepad .env.homolog
 ```
 
-- Senhas do Oracle (`ORACLE_PASSWORD`, `DB_PASSWORD`): **só letras e números**, começando por letra.
+- Senhas do Postgres (`POSTGRES_ADMIN_PASSWORD`, `DB_PASSWORD`): use senhas longas e diferentes
+  uma da outra (a primeira é só para bootstrap/administração; ver [08-SEGURANCA.md](08-SEGURANCA.md)).
 - `JWT_SECRET`: gere um diferente para cada ambiente (`openssl rand -base64 48` no Git Bash).
 - Nunca reaproveite as senhas de dev em homolog ou prod.
 - **Confirmação de e-mail:** em dev e homolog, contas `@teste.com` (as do `seed`) já nascem confirmadas (`app.email-confirmation.auto-confirm-domain`). Outros e-mails recebem o link no Mailpit. Em prod, todo mundo confirma.
@@ -109,7 +110,8 @@ PowerShell, na pasta do projeto (com `$env:AMBIENTE` definida, ou passando o nom
 Git Bash: igual, com `bash scripts/ambiente.sh up` etc. Qualquer outro comando do
 `docker compose` também funciona (ex.: `.\scripts\ambiente.ps1 homolog restart backend`).
 
-**Memória:** cada Oracle usa uns 1,5–2 GB de RAM. Deixe ligado só o ambiente que estiver usando
+**Memória:** cada Postgres usa bem pouco (dezenas de MB, contra os ~1,5–2 GB do Oracle antigo).
+Ainda assim, deixe ligado só o ambiente que estiver usando
 (`.\scripts\ambiente.ps1 homolog stop` quando terminar de testar).
 
 **Apagar o banco de um ambiente** (volta vazio na próxima subida): `.\scripts\ambiente.ps1 homolog down -v`.
@@ -170,7 +172,7 @@ irreversíveis: passam por homolog primeiro e só vão para prod depois de um ba
 - [ ] **Pagamento:** prod fica com `BILLING_MODE=DESATIVADO`, que recusa o botão "Simular pagamento".
   Como ainda não há gateway conectado, compras ficam pendentes até integrar o Pix
   ([06-COBRANCA.md](06-COBRANCA.md)).
-- [ ] Backup do banco agendado (ex.: `expdp` do Oracle ou cópia do volume `rachaai-prod_oracle_data`).
+- [ ] Backup do banco agendado (ex.: `pg_dump` do Postgres ou cópia do volume `rachaai-prod_postgres_data`).
 - [ ] Mapas: `MAPTILER_KEY` no `.env.prod` e, no painel do MapTiler, a chave liberada só para o domínio do site (Allowed HTTP origins).
 
 ## 9. Volumes antigos guardados

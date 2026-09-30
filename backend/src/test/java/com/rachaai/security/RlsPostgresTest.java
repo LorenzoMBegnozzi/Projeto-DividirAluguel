@@ -3,20 +3,19 @@ package com.rachaai.security;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.rachaai.support.ApiTestSupport;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.OracleContainer;
+import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,35 +25,31 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Políticas por linha (RLS/VPD) no Oracle de verdade: o H2 dos outros testes não tem esse recurso.
- * Sobe um Oracle descartável (Testcontainers, mesma imagem do docker-compose), aplica TODAS as
+ * Políticas por linha (RLS) no Postgres de verdade: o H2 dos outros testes não tem esse recurso.
+ * Sobe um Postgres descartável (Testcontainers, mesma imagem do docker-compose), aplica todas as
  * migrations com Flyway e confere o filtro no banco e pela API.
  *
- * É lento (~1 min para o Oracle subir) e precisa do Docker, por isso fica fora do "./mvnw test"
- * normal. Para rodar: ./mvnw test -Poracle
+ * Diferente do antigo teste em Oracle (RlsOracleTest), o Postgres sobe rápido (poucos segundos),
+ * então esse teste roda no "./mvnw test" normal — só precisa do Docker disponível.
  */
-@Tag("oracle")
 @Testcontainers
-@DisplayName("RLS no Oracle (políticas por linha)")
-class RlsOracleTest extends ApiTestSupport {
+@DisplayName("RLS no Postgres (políticas por linha)")
+class RlsPostgresTest extends ApiTestSupport {
 
     @Container
-    static final OracleContainer ORACLE = new OracleContainer(
-            DockerImageName.parse("gvenzl/oracle-xe:21-slim-faststart").asCompatibleSubstituteFor("gvenzl/oracle-xe"));
+    static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16-alpine")
+            // O usuário padrão do container é sempre superusuário (o Postgres cria assim), e
+            // superusuário ignora RLS mesmo com FORCE ROW LEVEL SECURITY. Esse script cria um
+            // usuário/banco comuns (rachaai_test) para o app conectar de verdade durante o teste.
+            .withInitScript("db/rls-test-role.sql");
 
     @DynamicPropertySource
-    static void oracleProperties(DynamicPropertyRegistry registry) throws Exception {
-        // Mesma permissão que database/startdb/01-permissoes-rls.sh dá em dev/homolog/prod.
-        var grant = ORACLE.execInContainer("bash", "-c",
-                "printf 'ALTER SESSION SET CONTAINER = XEPDB1;\\nGRANT EXECUTE ON SYS.DBMS_RLS TO " + ORACLE.getUsername()
-                        + ";\\nEXIT\\n' | sqlplus -s / as sysdba");
-        if (grant.getExitCode() != 0 || grant.getStdout().contains("ORA-")) {
-            throw new IllegalStateException("GRANT DBMS_RLS falhou: " + grant.getStdout() + grant.getStderr());
-        }
-        registry.add("spring.datasource.url", ORACLE::getJdbcUrl);
-        registry.add("spring.datasource.username", ORACLE::getUsername);
-        registry.add("spring.datasource.password", ORACLE::getPassword);
-        registry.add("spring.datasource.driver-class-name", () -> "oracle.jdbc.OracleDriver");
+    static void postgresProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url",
+                () -> "jdbc:postgresql://" + POSTGRES.getHost() + ":" + POSTGRES.getMappedPort(5432) + "/rachaai_test");
+        registry.add("spring.datasource.username", () -> "rachaai_test");
+        registry.add("spring.datasource.password", () -> "rachaai_test");
+        registry.add("spring.datasource.driver-class-name", () -> "org.postgresql.Driver");
         registry.add("spring.flyway.enabled", () -> "true");
         registry.add("spring.jpa.hibernate.ddl-auto", () -> "validate");
         registry.add("app.rls.enabled", () -> "true");
@@ -66,16 +61,15 @@ class RlsOracleTest extends ApiTestSupport {
     /** Conta linhas de uma tabela como se fosse a sessão de um usuário (U:<id>), direto no banco. */
     private long countAs(String identifier, String sql) {
         return jdbc.execute((ConnectionCallback<Long>) conn -> {
-            try (var set = conn.prepareCall("{call DBMS_SESSION.SET_IDENTIFIER(?)}")) {
-                set.setString(1, identifier);
-                set.execute();
+            try (Statement set = conn.createStatement()) {
+                set.execute("SET rachaai.identidade = '" + (identifier == null ? "" : identifier) + "'");
             }
             try (PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
                 rs.next();
                 return rs.getLong(1);
             } finally {
-                try (var clear = conn.prepareCall("{call DBMS_SESSION.CLEAR_IDENTIFIER}")) {
-                    clear.execute();
+                try (Statement reset = conn.createStatement()) {
+                    reset.execute("RESET rachaai.identidade");
                 }
             }
         });

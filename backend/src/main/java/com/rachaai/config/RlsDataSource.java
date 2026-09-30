@@ -8,20 +8,23 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
- * Envolve o pool de conexões: toda vez que uma conexão sai do pool, grava nela o "client
- * identifier" da sessão Oracle com quem está logado. É isso que as políticas por linha (RLS/VPD,
- * migration V29) leem para filtrar as tabelas privadas:
+ * Envolve o pool de conexões: toda vez que uma conexão sai do pool, grava nela (numa variável de
+ * sessão do Postgres) quem está logado. É isso que as políticas por linha (RLS, migration V2) leem
+ * para filtrar as tabelas privadas:
  *   U:<id>  usuário comum   A:<id>  administrador   vazio  sem login (tarefas internas, login...)
  *
  * Sempre sobrescreve, inclusive com vazio: a conexão volta para o pool e pode ser reaproveitada
- * por outra pessoa, então nunca pode carregar o identificador de quem usou antes.
+ * por outra pessoa, então nunca pode carregar o identificador de quem usou antes. Usa SET (nível
+ * de sessão), não SET LOCAL (nível de transação): precisa sobreviver além da transação atual, já
+ * que quem garante que não vaza para a próxima pessoa é justamente essa reescrita a cada empréstimo.
  */
 public class RlsDataSource extends DelegatingDataSource {
 
-    /** Propriedade do driver Oracle que define o CLIENT_IDENTIFIER da sessão. */
-    private static final String CLIENT_ID_PROPERTY = "OCSID.CLIENTID";
+    /** Nome da variável de sessão que as políticas RLS leem (rls_usuario_atual(), migration V2). */
+    private static final String SESSION_VARIABLE = "rachaai.identidade";
 
     public RlsDataSource(DataSource target) {
         super(target);
@@ -38,7 +41,11 @@ public class RlsDataSource extends DelegatingDataSource {
     }
 
     private static Connection identify(Connection connection) throws SQLException {
-        connection.setClientInfo(CLIENT_ID_PROPERTY, currentIdentifier());
+        // SET não aceita bind parameter para o valor; currentIdentifier() só produz "", "A:<id>"
+        // ou "U:<id>" com id numérico (vem de SecurityUser/JWT), então não há risco de injeção.
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("SET " + SESSION_VARIABLE + " = '" + currentIdentifier() + "'");
+        }
         return connection;
     }
 

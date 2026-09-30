@@ -181,7 +181,7 @@ public class DashboardService {
                 .toList();
     }
 
-    /** Contas distintas nos registros de acesso do período (a tabela só existe no Oracle). */
+    /** Contas distintas nos registros de acesso do período (a tabela não existe no H2 dos testes). */
     private Long activeUsers(Instant from) {
         try {
             return jdbc.queryForObject(

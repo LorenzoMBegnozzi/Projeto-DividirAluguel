@@ -11,7 +11,9 @@ import java.time.Instant;
 public class Block {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // Sequência, não IDENTITY: ver o mesmo comentário em Notification.java (RLS + RETURNING).
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_bloqueios")
+    @SequenceGenerator(name = "seq_bloqueios", sequenceName = "seq_bloqueios", allocationSize = 1)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -12,7 +12,7 @@ Como o RachaAi protege contas e dados, e como funciona a área administrativa.
 | Link de "esqueci a senha" | guardado só como hash SHA-256, vale 30 min, uso único | `AuthService` |
 | Limite de tentativas | login, cadastro, esqueci/redefinir senha (seção 2) | `security/RateLimiter.java` |
 | Logout de verdade | sair, redefinir a senha ou ser bloqueado derruba os tokens já emitidos (seção 3) | `JwtService`, `JwtAuthenticationFilter` |
-| Políticas por linha (RLS) | o próprio Oracle filtra as tabelas privadas por usuário (seção 4) | `V29__rls_politicas.sql`, `config/RlsDataSource.java` |
+| Políticas por linha (RLS) | o próprio Postgres filtra as tabelas privadas por usuário (seção 4) | `V2__rls.sql`, `config/RlsDataSource.java` |
 | Conta bloqueada | não entra, perde o login na hora, anúncios somem da busca | `AdminService` |
 | Perfil público sem dados privados | perfil de outra pessoa (busca, conversas, interessados, `/usuarios/{id}`) vem **sem e-mail e sem data de nascimento** | `UserResponse.publicFrom` |
 | Confirmação de e-mail | link de 24 h no cadastro; sem confirmar não anuncia, não conversa e não demonstra interesse; reenvio até 3/h e invalida os links antigos | `auth/EmailConfirmationService.java` |
@@ -53,14 +53,14 @@ A versão sobe (e todos os logins abertos caem, em **todos os aparelhos**) quand
 - **redefine a senha** pelo link do e-mail;
 - é **bloqueada** por um admin.
 
-## 4. Políticas por linha (RLS / VPD)
+## 4. Políticas por linha (RLS)
 
-No Oracle, RLS se chama **VPD** (Virtual Private Database). O banco acrescenta sozinho um filtro a
-toda consulta, alteração e exclusão nas tabelas privadas. Mesmo que o código peça "todas as
-notificações" por engano, o banco só devolve as da pessoa logada.
+RLS é um recurso nativo do Postgres. O banco acrescenta sozinho um filtro a toda consulta,
+alteração e exclusão nas tabelas privadas. Mesmo que o código peça "todas as notificações" por
+engano, o banco só devolve as da pessoa logada.
 
-**Como o banco sabe quem é:** a cada conexão tirada do pool, o backend grava na sessão Oracle o
-`CLIENT_IDENTIFIER` (`config/RlsDataSource.java`):
+**Como o banco sabe quem é:** a cada conexão tirada do pool, o backend grava numa variável de
+sessão do Postgres (`rachaai.identidade`, via `SET`, em `config/RlsDataSource.java`):
 
 | Identificador | Quem | Vê |
 |---|---|---|
@@ -68,7 +68,7 @@ notificações" por engano, o banco só devolve as da pessoa logada.
 | `A:<id>` | administrador logado | tudo |
 | vazio | sem login: tarefas agendadas, migrations, login/cadastro | tudo |
 
-**Tabelas e filtros** (função `rls_predicado`):
+**Tabelas e filtros** (função `rls_usuario_atual()`):
 
 | Tabela | A pessoa vê |
 |---|---|
@@ -78,24 +78,32 @@ notificações" por engano, o banco só devolve as da pessoa logada.
 | `denuncias` | só as que ela fez (quem é denunciado nunca vê) |
 | `conversas` | as que ela participa (inquilino, 2º participante ou dono do anúncio) |
 | `mensagens` | as das conversas dela |
+| `registros_acesso` | nenhuma (só tarefas internas e admins) |
 
-`INSERT` fica de fora de propósito: uma pessoa precisa criar linhas para outra (a notificação que
-o dono recebe quando alguém puxa conversa). `SELECT`, `UPDATE` e `DELETE` passam pelo filtro.
+`INSERT` fica de fora de propósito (política sempre permissiva): uma pessoa precisa criar linhas
+para outra (a notificação que o dono recebe quando alguém puxa conversa). `SELECT`, `UPDATE` e
+`DELETE` passam pelo filtro.
 
-**Permissão:** criar políticas exige `EXECUTE` em `DBMS_RLS`, que só o SYS pode dar. O script
-`database/startdb/01-permissoes-rls.sh` faz isso toda vez que o container do banco sobe (pasta
-`/container-entrypoint-startdb.d` da imagem).
+**Requisito importante do Postgres:** `FORCE ROW LEVEL SECURITY` em cada tabela — sem isso, o
+dono da tabela (o próprio usuário da aplicação, que cria as tabelas via Flyway) ficaria isento
+das próprias políticas. E o usuário da aplicação **não pode ser superusuário**: um superusuário
+sempre ignora RLS, com ou sem FORCE. Por isso o banco tem dois usuários (`database/initdb/01-app-role.sh`):
+o superusuário `postgres`, só para bootstrap/administração, e `rachaai` (comum), com quem o
+backend de fato conecta.
 
-**Conferir no banco** (como o usuário da aplicação):
+**Conferir no banco** (como o usuário da aplicação, `rachaai`):
 ```sql
-EXEC DBMS_SESSION.SET_IDENTIFIER('U:1');
+SET rachaai.identidade = 'U:1';
 SELECT COUNT(*) FROM notificacoes;   -- só as do usuário 1
-EXEC DBMS_SESSION.SET_IDENTIFIER('');
+RESET rachaai.identidade;
 SELECT COUNT(*) FROM notificacoes;   -- todas
 ```
 
 **Limites:** `usuarios`, `anuncios`, fotos e avaliações não têm política, porque parte deles é
 pública no site (perfil, anúncios). A proteção desses continua sendo a do backend.
+
+Testado de ponta a ponta (banco real, via Testcontainers) em `RlsPostgresTest`, que roda no
+`./mvnw test` normal (precisa de Docker disponível).
 
 ## 5. Área administrativa (`/admin`)
 
@@ -126,7 +134,5 @@ No dev e no homolog, o `seed` cria `admin@teste.com`.
 ## 6. O que ainda falta
 
 - **Dados pessoais em texto puro** (CPF, nascimento): criptografar o CPF na aplicação e ligar
-  a criptografia de disco/backup no servidor. O Oracle XE 21c tem TDE disponível.
-- **Usuário do banco com permissão mínima** em produção (hoje o backend conecta como dono do schema).
+  a criptografia de disco/backup no servidor (o Postgres não criptografa em repouso sozinho).
 - **Token no `localStorage`:** vulnerável a XSS; o ideal é cookie `HttpOnly`.
-- **Testes automáticos** das regras de acesso (hoje há 1 teste).

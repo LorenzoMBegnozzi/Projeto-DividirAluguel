@@ -10,7 +10,9 @@ import java.time.Instant;
 public class Report {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // Sequência, não IDENTITY: ver o mesmo comentário em Notification.java (RLS + RETURNING).
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_denuncias")
+    @SequenceGenerator(name = "seq_denuncias", sequenceName = "seq_denuncias", allocationSize = 1)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

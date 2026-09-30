@@ -11,7 +11,9 @@ import java.time.Instant;
 public class Payment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // Sequência, não IDENTITY: ver o mesmo comentário em Notification.java (RLS + RETURNING).
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_pagamentos")
+    @SequenceGenerator(name = "seq_pagamentos", sequenceName = "seq_pagamentos", allocationSize = 1)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

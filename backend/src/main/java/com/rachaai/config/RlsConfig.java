@@ -9,7 +9,7 @@ import javax.sql.DataSource;
 
 /**
  * Liga o RlsDataSource (identifica o usuário logado em cada conexão, para as políticas por linha
- * do Oracle). Desligado com app.rls.enabled=false, usado nos testes com H2, que não tem RLS.
+ * do Postgres). Desligado com app.rls.enabled=false, usado nos testes com H2, que não tem RLS.
  */
 @Configuration
 @ConditionalOnProperty(name = "app.rls.enabled", havingValue = "true", matchIfMissing = true)

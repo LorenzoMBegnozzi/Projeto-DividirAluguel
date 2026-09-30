@@ -19,7 +19,8 @@ public class UserPhoto {
     @Column(name = "usuario_id", nullable = false, unique = true)
     private Long userId;
 
-    @Lob
+    // Sem @Lob: no Postgres, @Lob em byte[] mapeia para OID (large object legado); sem a
+    // anotação, o Hibernate usa BYTEA, mais simples e sem precisar de faxina de objeto órfão.
     @Column(name = "conteudo", nullable = false)
     private byte[] content;
 

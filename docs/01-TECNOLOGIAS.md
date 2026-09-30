@@ -13,7 +13,7 @@ conferidas no projeto (arquivos `pom.xml`, `package.json`, `Dockerfile`,
 Navegador ──> Nginx (container "frontend", porta 8081)
                  ├─ serve o site (React compilado)
                  └─ /api/*  ──proxy──>  Backend Spring Boot (container "backend", porta 8080)
-                                              └─ JDBC ──>  Oracle XE (container "db", porta 1522 no seu PC)
+                                              └─ JDBC ──>  PostgreSQL (container "db", porta 1522 no seu PC)
 ```
 
 Três containers Docker, definidos em `docker-compose.yml`.
@@ -22,19 +22,15 @@ Três containers Docker, definidos em `docker-compose.yml`.
 
 | Item | Versão / valor | Onde é definido |
 |---|---|---|
-| Oracle Database Express Edition | **21c (21.3.0.0.0)** | imagem Docker |
-| Imagem Docker do Oracle | `gvenzl/oracle-xe:21-slim-faststart` (~1,2 GB) | `docker-compose.yml` |
-| Conjunto de caracteres | AL32UTF8 (aceita acentos) | padrão da imagem |
-| Nome do serviço | `XEPDB1` (banco plugável) | padrão da imagem |
-| Porta no seu PC | **1522** (dentro do Docker é 1521) | `docker-compose.yml` |
-| Usuário / schema da aplicação | `rachaai` (criado pelo container a partir do `.env`) | `.env` |
-| Migrations | Flyway **10.10.0** (`flyway-core` + `flyway-database-oracle`) | `pom.xml` |
-| Driver JDBC | **ojdbc11 21.6.0.0.1** (fixado de propósito, veja abaixo) | `pom.xml` |
+| PostgreSQL | **16** | imagem Docker |
+| Imagem Docker do Postgres | `postgres:16-alpine` (~80 MB) | `docker-compose.yml` |
+| Conjunto de caracteres | UTF8 (aceita acentos) | padrão da imagem |
+| Porta no seu PC | **1522** (dentro do Docker é 5432) | `docker-compose.yml` |
+| Usuário/banco da aplicação | `rachaai`, sem privilégio de superusuário (criado por `database/initdb/01-app-role.sh`) | `.env` |
+| Políticas por linha (RLS) | nativas do Postgres (não Oracle VPD) — ver [08-SEGURANCA.md](08-SEGURANCA.md) | `V2__rls.sql` |
+| Migrations | Flyway **10.10.0** (`flyway-core` + `flyway-database-postgresql`) | `pom.xml` |
+| Driver JDBC | `org.postgresql:postgresql` | `pom.xml` |
 | Pool de conexões | HikariCP 5.1.0 | vem com o Spring Boot |
-
-**Por que o driver está fixado em 21.6:** a série 23.x do driver tem um bug
-(`ORA-18716`) ao ler e gravar datas Java (`LocalDate`) contra o Oracle 21c. Não suba a
-versão sem testar o cadastro de usuário (que grava a data de nascimento).
 
 ## 3. Backend
 
@@ -106,7 +102,7 @@ Estrutura de pacotes (`backend/src/main/java/com/rachaai`): `auth`, `user`, `lis
 |---|---|---|
 | 8081 | Frontend (Nginx) | http://localhost:8081 |
 | 8080 | Backend / API / Swagger | http://localhost:8080 e `/swagger-ui.html` |
-| 1522 | Oracle XE | `localhost:1522`, serviço `XEPDB1` |
+| 1522 | PostgreSQL | `localhost:1522`, banco `rachaai` |
 | 8025 | Mailpit (caixa de e-mails de teste) | http://localhost:8025 |
 | 5173 | Frontend em modo desenvolvimento (Vite), só se rodar fora do Docker | http://localhost:5173 |
 
@@ -117,9 +113,9 @@ e podem ser trocadas no arquivo `.env` (raiz do projeto).
 
 | Variável | Padrão | Descrição |
 |---|---|---|
-| `DB_URL` | `jdbc:oracle:thin:@localhost:1522/XEPDB1` | conexão com o Oracle (no Docker vira `@db:1521/XEPDB1`) |
-| `DB_USER` / `DB_PASSWORD` | `rachaai` / (do `.env`) | usuário e senha da aplicação no banco |
-| `ORACLE_PASSWORD` | (do `.env`) | senha do SYS/SYSTEM do Oracle (administração) |
+| `DB_URL` | `jdbc:postgresql://localhost:1522/rachaai` | conexão com o Postgres (no Docker vira `@db:5432/rachaai`) |
+| `DB_USER` / `DB_PASSWORD` | `rachaai` / (do `.env`) | usuário (sem privilégio de superusuário) e senha da aplicação no banco |
+| `POSTGRES_ADMIN_PASSWORD` | (do `.env`) | senha do superusuário `postgres` (só bootstrap/administração) |
 | `JWT_SECRET` | valor de desenvolvimento | segredo dos tokens; **troque em produção**; precisa ser Base64 |
 | `JWT_EXPIRATION_MINUTES` | 1440 (24 h) | validade do login |
 | `CORS_ALLOWED_ORIGINS` | `http://localhost:5173` | origens permitidas |

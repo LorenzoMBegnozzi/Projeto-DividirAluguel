@@ -18,11 +18,6 @@
 	<properties>
 		<java.version>21</java.version>
 		<jjwt.version>0.13.0</jjwt.version>
-		<!-- Testes marcados @Tag("oracle") sobem um Oracle de verdade (Testcontainers) e são
-		     lentos: ficam fora do "./mvnw test" normal. Para rodar: ./mvnw test -Poracle -->
-		<surefire.excludedGroups>oracle</surefire.excludedGroups>
-		<surefire.groups></surefire.groups>
-		<testcontainers.ryuk.disabled>false</testcontainers.ryuk.disabled>
 	</properties>
 
 	<dependencies>
@@ -53,14 +48,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.flywaydb</groupId>
-			<artifactId>flyway-database-oracle</artifactId>
+			<artifactId>flyway-database-postgresql</artifactId>
 		</dependency>
-
-		<!-- Fixado em 21.6: a série 23.x tem um bug (ORA-18716) ao ler/gravar LocalDate em Oracle 21c. -->
 		<dependency>
-			<groupId>com.oracle.database.jdbc</groupId>
-			<artifactId>ojdbc11</artifactId>
-			<version>21.6.0.0.1</version>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -109,10 +101,10 @@
 			<artifactId>h2</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- Oracle descartável para o teste das políticas por linha (RLS), que o H2 não tem -->
+		<!-- Postgres descartável para o teste das políticas por linha (RLS), que o H2 não tem -->
 		<dependency>
 			<groupId>org.testcontainers</groupId>
-			<artifactId>oracle-xe</artifactId>
+			<artifactId>postgresql</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -133,11 +125,6 @@
 					     Java 23; isto libera rodar os testes num JDK mais novo (ex.: 25). O sistema em si
 					     roda em Java 21 (Dockerfile). -->
 					<argLine>-Dnet.bytebuddy.experimental=true</argLine>
-					<excludedGroups>${surefire.excludedGroups}</excludedGroups>
-					<groups>${surefire.groups}</groups>
-					<environmentVariables>
-						<TESTCONTAINERS_RYUK_DISABLED>${testcontainers.ryuk.disabled}</TESTCONTAINERS_RYUK_DISABLED>
-					</environmentVariables>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -154,18 +141,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<profiles>
-		<!-- ./mvnw test -Poracle : roda só os testes que precisam do Oracle (RLS). Precisa do Docker. -->
-		<profile>
-			<id>oracle</id>
-			<properties>
-				<surefire.excludedGroups></surefire.excludedGroups>
-				<surefire.groups>oracle</surefire.groups>
-				<!-- Sem o container auxiliar "ryuk": o Oracle do teste é parado ao fim da execução. -->
-				<testcontainers.ryuk.disabled>true</testcontainers.ryuk.disabled>
-			</properties>
-		</profile>
-	</profiles>
 
 </project>

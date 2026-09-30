@@ -1,6 +1,6 @@
 # Banco de dados
 
-Oracle Database 21c Express Edition, schema `RACHAAI`, serviço `XEPDB1`.
+PostgreSQL 16, banco `rachaai`.
 Todas as tabelas e colunas têm nome em português. Os valores "sim/não" são guardados por
 extenso (`SIM`/`NAO`), sem `0`/`1`.
 
@@ -220,44 +220,16 @@ apenas no link do e-mail), `usado` (`SIM`/`NAO`, uso único) e `criado_em`. O to
 
 | Versão | Arquivo | O que faz |
 |---|---|---|
-| V1 | `V1__init.sql` | cria as tabelas (ainda com nomes em inglês) |
-| V2 | `V2__nomes_em_portugues.sql` | renomeia tabelas, colunas, constraints e índices para português |
-| V3 | `V3__valores_por_extenso.sql` | troca `0`/`1` por `NAO`/`SIM` e `RENTER`/`ADVERTISER` por `ALUGAR`/`ANUNCIAR` |
-| V4 | `V4__pagamentos_e_destaques.sql` | cria `pagamentos` e as colunas `expira_em` e `destaque_ate` |
-| V5 | `V5__convivios_e_avaliacoes.sql` | cria `convivios` e `avaliacoes` |
-| V6 | `V6__termo_seguranca.sql` | `termos_seguranca_aceito_em` em `usuarios` |
-| V7 | `V7__notificacoes.sql` | cria `notificacoes` |
-| V8 | `V8__bloqueios_e_denuncias.sql` | cria `bloqueios` e `denuncias` |
-| V9 | `V9__cpf_usuario.sql` | `cpf` (único) em `usuarios` |
-| V10 | `V10__personalizacao_perfil_chips.sql` | perfil por opções: hábito de fumo/bebida, alimentação, pets e alergias em tags (migra os dados antigos de sim/não) |
-| V11 | `V11__interesse_em_estabelecimento.sql` | cria `interesses`; `conversas.usuario2_id` (conversa entre interessados) |
-| V12 | `V12__tipo_anunciante.sql` | `tipo_anunciante` em `usuarios` |
-| V13 | `V13__anuncio_indisponivel.sql` | `disponivel` e `fechado_com_usuario_id` em `anuncios` |
-| V14 | `V14__redefinicao_senha.sql` | cria `redefinicoes_senha` |
-| V15 | `V15__foto_perfil.sql` | cria `fotos_usuario` |
-| V16 | `V16__remove_procurando.sql` | apaga anúncios `PROCURANDO` e remove o tipo (a tela "Minha busca" deixou de existir) |
-| V17 | `V17__papel_duplo.sql` | troca a coluna `papel` por `alugar`/`anunciar`: uma conta pode ter as duas capacidades |
-| V18 | `V18__vagas_disponiveis.sql` | `vagas_disponiveis` em `anuncios` |
-| V19 | `V19__fotos_anuncio.sql` | cria `fotos_anuncio` |
-| V20 | `V20__alimentacao_outro.sql` | `alimentacao_outro` e a opção `OUTRO` em `alimentacao` |
-| V21 | `V21__sexo_e_vaga_por_sexo.sql` | `sexo` em `perfis_usuario` e `sexo_aceito` em `anuncios` |
-| V22 | `V22__detalhes_imovel.sql` | detalhes do imóvel em `anuncios`: dormitórios, banheiros, garagem e comodidades do condomínio |
-| V23 | `V23__suites.sql` | `suites` em `anuncios` |
-| V24 | `V24__garagem_disposicao_coberta.sql` | `garagem_disposicao` e `garagem_coberta` em `anuncios` |
-| V25 | `V25__notificacoes_interesse.sql` | tipos `NOVO_INTERESSE` e `INTERESSE_EM_COMUM` em `notificacoes` |
-| V26 | `V26__perfil_precisa_garagem.sql` | `precisa_vaga_carro` e `precisa_vaga_moto` em `perfis_usuario` |
-| V27 | `V27__remove_musica_rotina.sql` | remove `gosto_musical` e `rotina` de `perfis_usuario` |
-| V28 | `V28__admin_bloqueio_sessao.sql` | `admin`, bloqueio e `versao_token` em `usuarios`; `status`, `resolvida_em`, `resolvida_por_id` e `nota_admin` em `denuncias` |
-| V35 | `V35__anuncio_fechado_em.sql` | `fechado_em` em `anuncios` (quando foi marcado como indisponível; usado no dashboard do admin) |
-| V34 | `V34__reembolso.sql` | status `REEMBOLSADO` e `reembolsado_em`, `reembolsado_por_id`, `motivo_reembolso` em `pagamentos` |
-| V33 | `V33__pagamento_gateway.sql` | `gateway`, `link_pagamento`, `gateway_pagamento_id`, `metodo` e `status_gateway` em `pagamentos` (Mercado Pago) |
-| V32 | `V32__confirmacao_email.sql` | `email_confirmado_em` em `usuarios` (contas antigas ficam confirmadas) e tabela `confirmacoes_email` (links, só o hash) |
-| V31 | `V31__registros_acesso.sql` | tabela `registros_acesso` (Marco Civil: IP, porta, data/hora, evento; 6 meses) com RLS. Ver [09-LGPD.md](09-LGPD.md) |
-| V30 | `V30__lgpd_aceite_e_exclusao.sql` | `termos_aceitos_em`, `versao_termos` e `excluido_em` em `usuarios` |
-| V29 | `V29__rls_politicas.sql` | **políticas por linha (RLS/VPD)** em `notificacoes`, `pagamentos`, `bloqueios`, `denuncias`, `conversas` e `mensagens`. Ver [08-SEGURANCA.md](08-SEGURANCA.md) |
+| V1 | `V1__schema.sql` | cria todas as tabelas, no estado final (ver seção "Tabelas" acima) |
+| V2 | `V2__rls.sql` | **políticas por linha (RLS)** em `notificacoes`, `pagamentos`, `bloqueios`, `denuncias`, `conversas`, `mensagens` e `registros_acesso`. Ver [08-SEGURANCA.md](08-SEGURANCA.md) |
 
-Para ver o que já foi aplicado: `SELECT "version", "description", "success" FROM "flyway_schema_history";`
-(o nome da tabela é minúsculo e precisa de aspas).
+O projeto rodou em Oracle Database até a troca para PostgreSQL (feita antes de ir para
+produção, sem dados reais a preservar): em vez de traduzir o histórico de 35 migrations
+Oracle uma a uma, o estado final foi consolidado direto num baseline novo. O histórico
+antigo (nomes de arquivo, decisões de cada mudança) continua no `git log` de
+`backend/src/main/resources/db/migration/`, se precisar consultar.
+
+Para ver o que já foi aplicado: `SELECT version, description, success FROM flyway_schema_history;`
 
 ## Mapeamento código ↔ banco
 

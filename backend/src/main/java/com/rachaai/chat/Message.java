@@ -11,7 +11,9 @@ import java.time.Instant;
 public class Message {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // Sequência, não IDENTITY: ver o mesmo comentário em Notification.java (RLS + RETURNING).
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_mensagens")
+    @SequenceGenerator(name = "seq_mensagens", sequenceName = "seq_mensagens", allocationSize = 1)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

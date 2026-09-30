@@ -11,7 +11,11 @@ import java.time.Instant;
 public class Notification {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // Sequência, não IDENTITY: Hibernate busca o id de IDENTITY com "INSERT ... RETURNING id",
+    // e no Postgres isso também checa a política de SELECT da linha retornada — quebra sempre
+    // que a notificação é inserida para outra pessoa (o caso normal aqui). Ver migration V1/V2.
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_notificacoes")
+    @SequenceGenerator(name = "seq_notificacoes", sequenceName = "seq_notificacoes", allocationSize = 1)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

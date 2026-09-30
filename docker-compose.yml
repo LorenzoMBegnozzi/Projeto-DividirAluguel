@@ -6,24 +6,29 @@
 # scripts/ambiente.sh (Git Bash). Ver docs/07-AMBIENTES.md.
 services:
   db:
-    image: gvenzl/oracle-xe:21-slim-faststart
+    image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      ORACLE_PASSWORD: ${ORACLE_PASSWORD:?defina ORACLE_PASSWORD no .env do ambiente (senha do SYS/SYSTEM)}
+      # POSTGRES_USER é sempre superusuário (o Postgres cria assim); por isso fica só para
+      # bootstrap/administração. A aplicação conecta com APP_USER, um usuário comum — é o que
+      # faz as políticas por linha (RLS, migration V2) realmente filtrarem: um superusuário
+      # sempre ignora RLS, mesmo com FORCE ROW LEVEL SECURITY. Ver database/initdb/01-app-role.sh.
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_ADMIN_PASSWORD:?defina POSTGRES_ADMIN_PASSWORD no .env do ambiente (senha do superusuário postgres)}
       APP_USER: ${DB_USER:-rachaai}
       APP_USER_PASSWORD: ${DB_PASSWORD:?defina DB_PASSWORD no .env do ambiente}
+      APP_DB: ${DB_USER:-rachaai}
     volumes:
-      - oracle_data:/opt/oracle/oradata
-      # Scripts que rodam toda vez que o banco sobe (permissão das políticas por linha / RLS).
-      - ./database/startdb:/container-entrypoint-startdb.d:ro
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/initdb:/docker-entrypoint-initdb.d:ro
     ports:
-      - "${DB_PORT:?defina DB_PORT no .env do ambiente}:1521"
+      - "${DB_PORT:?defina DB_PORT no .env do ambiente}:5432"
     healthcheck:
-      test: ["CMD", "healthcheck.sh"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 30
-      start_period: 60s
+      start_period: 20s
 
   backend:
     build: ./backend
@@ -33,7 +38,7 @@ services:
         condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: ${APP_ENV:?defina APP_ENV (dev, homolog ou prod) no .env do ambiente}
-      DB_URL: jdbc:oracle:thin:@db:1521/XEPDB1
+      DB_URL: jdbc:postgresql://db:5432/${DB_USER:-rachaai}
       DB_USER: ${DB_USER:-rachaai}
       DB_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET: ${JWT_SECRET:?defina JWT_SECRET no .env do ambiente (uma string em Base64)}
@@ -83,5 +88,5 @@ services:
       - "${SITE_PORT:?defina SITE_PORT no .env do ambiente}:80"
 
 volumes:
-  # Cada ambiente tem o seu (o Compose prefixa com COMPOSE_PROJECT_NAME: rachaai-dev_oracle_data...).
-  oracle_data:
+  # Cada ambiente tem o seu (o Compose prefixa com COMPOSE_PROJECT_NAME: rachaai-dev_postgres_data...).
+  postgres_data:

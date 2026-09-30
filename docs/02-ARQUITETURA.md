@@ -39,7 +39,7 @@ Outras partes do produto:
  Navegador ──8081──>│ frontend (Nginx)                                            │
                     │   ├─ arquivos do React compilado                            │
                     │   └─ /api/*  ── proxy ──> backend (Spring Boot, :8080)      │
-                    │                               ├─ JDBC ─> db (Oracle XE 21c) │
+                    │                               ├─ JDBC ─> db (PostgreSQL 16)│
                     │                               └─ SMTP ─> mailpit (e-mails   │
  Navegador ──8025──>│ mailpit: caixa de e-mails de teste       de teste, :1025)   │
                     └────────────────────────────────────────────────────────────┘
@@ -150,7 +150,7 @@ limitado a Maringá) ou de um clique no mapa. Sem ponto, vale o texto do bairro.
 
 ### Fotos
 
-Foto de perfil e fotos de anúncio (até 6) ficam **no próprio Oracle**, como BLOB, em tabelas
+Foto de perfil e fotos de anúncio (até 6) ficam **no próprio Postgres**, como BYTEA, em tabelas
 separadas (o conteúdo só é lido quando a imagem é pedida). Aceita JPEG, PNG ou WEBP de até
 3 MB (regra única em `common/PhotoValidator`). É simples de subir, mas engorda o banco: se o
 volume crescer, o caminho natural é mover as imagens para um armazenamento de arquivos.
