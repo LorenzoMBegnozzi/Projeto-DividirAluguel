@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import NotificationBell from './NotificationBell'
 import Avatar from './Avatar'
 import ThemeToggle from './ThemeToggle'
+import InstallAppButton from './InstallAppButton'
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   `relative flex h-[60px] items-center gap-1.5 px-3 text-sm font-semibold transition after:absolute after:inset-x-3 after:-bottom-px after:h-[3px] after:rounded-t-[3px] ${
@@ -65,11 +66,13 @@ export default function NavBar() {
             <Avatar photoUrl={user.photoUrl} name={user.name} size={24} />
             Meu perfil
           </NavLink>
-          <ThemeToggle className="ml-1" />
+          <InstallAppButton className="ml-1" />
+          <ThemeToggle />
           {!isAdmin && <NotificationBell />}
         </nav>
 
         <div className="flex items-center gap-1 lg:hidden">
+          <InstallAppButton />
           <ThemeToggle />
           {!isAdmin && <NotificationBell />}
           {hasMobileMenu && (

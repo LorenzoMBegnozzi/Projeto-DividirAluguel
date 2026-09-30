@@ -3,6 +3,7 @@ import { resolve } from 'node:path'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
+import { VitePWA } from 'vite-plugin-pwa'
 
 // Para onde o "npm run dev" manda as chamadas /api: decide a variável AMBIENTE (dev, homolog ou
 // prod), lendo o .env daquele ambiente na raiz do projeto:
@@ -46,7 +47,36 @@ export default defineConfig(({ command }) => {
   if (target) console.log(`\n  AMBIENTE=${process.env.AMBIENTE || 'dev'}  →  /api vai para ${target}\n`)
 
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [
+      react(),
+      tailwindcss(),
+      VitePWA({
+        registerType: 'autoUpdate',
+        includeAssets: ['favicon.svg'],
+        manifest: {
+          id: '/',
+          name: 'RachaAi',
+          short_name: 'RachaAi',
+          description: 'Encontre com quem dividir o aluguel',
+          lang: 'pt-BR',
+          start_url: '/',
+          display: 'standalone',
+          background_color: '#ffffff',
+          theme_color: '#c23f27',
+          icons: [
+            { src: '/pwa-192x192.png', sizes: '192x192', type: 'image/png' },
+            { src: '/pwa-512x512.png', sizes: '512x512', type: 'image/png' },
+            { src: '/pwa-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+          ],
+        },
+        workbox: {
+          // Só o "app shell" (HTML/JS/CSS/ícones) entra em cache; chamadas a /api nunca ficam
+          // em cache, sempre vão para a rede (dados de usuário não podem ficar desatualizados).
+          globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
+          navigateFallbackDenylist: [/^\/api\//],
+        },
+      }),
+    ],
     server: target
       ? {
           proxy: {

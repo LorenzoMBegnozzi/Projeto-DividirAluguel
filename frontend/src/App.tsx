@@ -10,6 +10,7 @@ import BottomNav from './components/BottomNav'
 import SafetyTermsModal from './components/SafetyTermsModal'
 import LegalTermsModal from './components/LegalTermsModal'
 import EmailConfirmationBanner from './components/EmailConfirmationBanner'
+import IosInstallHint from './components/IosInstallHint'
 import ThemeToggle from './components/ThemeToggle'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
@@ -52,6 +53,7 @@ function AppContent() {
     <>
       {!isOnboarding && <NavBar />}
       <EmailConfirmationBanner />
+      {!isOnboarding && <IosInstallHint />}
       {!user && !isHome && (
         <div className="fixed right-4 top-4 z-30">
           <ThemeToggle className="border border-line bg-surface" />
