@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8" />
+<title>Reel 02 · Compatibilidade</title>
+<link rel="stylesheet" href="_base.css" />
+<script src="_kit.js"></script>
+<style>
+  .logo-sm { position: absolute; left: 80px; top: 170px; font-size: 48px; }
+  .block { position: absolute; left: 80px; right: 60px; top: 320px; font-size: 120px; }
+  .card { position: absolute; left: 70px; right: 70px; top: 650px; padding: 44px; }
+  .thumb { position: relative; height: 300px; border-radius: 28px; background: var(--brand-tint); overflow: hidden; }
+  .thumb model-viewer { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .row { margin-top: 34px; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+  .info h2 { font-size: 46px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+  .info .price { margin-top: 10px; font-size: 32px; color: var(--ink-2); font-weight: 600; }
+  .score { text-align: right; flex: none; width: 230px; }
+  .score b { display: block; font-size: 120px; font-weight: 800; letter-spacing: -0.04em; line-height: 0.9; color: var(--leaf); font-variant-numeric: tabular-nums; }
+  .score b small { font-size: 56px; }
+  .bar { margin-top: 18px; height: 14px; border-radius: 7px; background: var(--sunk); overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 92%; border-radius: 7px; background: var(--leaf); transform-origin: left; }
+  .score span { display: block; margin-top: 10px; font-size: 28px; color: var(--ink-3); }
+  .chips { margin-top: 34px; padding-top: 30px; border-top: 2px solid var(--line); display: flex; flex-wrap: wrap; gap: 14px; }
+  .chips .chip { font-size: 30px; }
+  .note { position: absolute; left: 80px; top: 1480px; font-size: 40px; font-weight: 600; color: var(--ink-2); }
+  .end { position: absolute; left: 0; right: 0; top: 330px; display: flex; flex-direction: column; align-items: center; gap: 34px; text-align: center; }
+  .end .logo { font-size: 150px; }
+  .end .foot { font-size: 34px; }
+  .stage { left: 0; right: 0; top: 900px; height: 720px; }
+  .stage > model-viewer { inset: 0; width: 100%; height: 100%; }
+</style>
+<body>
+  <div class="frame">
+    <div class="logo logo-sm" id="logo-sm">Racha<span>Ai</span></div>
+    <div class="block headline" id="q">
+      <div class="line"><span>Quanto vocês</span></div>
+      <div class="line"><span class="hl">combinam?</span></div>
+    </div>
+
+    <div class="card" id="card">
+      <div class="thumb" id="thumb"></div>
+      <div class="row">
+        <div class="info"><h2>Quarto na Zona 7</h2><div class="price">R$ 650/mês · 2 moradores</div></div>
+        <div class="score"><b id="pct">0<small>%</small></b><div class="bar"><i id="bar"></i></div><span>compatível</span></div>
+      </div>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="note" id="note">A conta usa os hábitos de vocês dois.</div>
+
+    <div class="stage" id="stage"></div>
+    <div class="end" id="end">
+      <div class="logo" id="e-logo">Racha<span>Ai</span></div>
+      <div class="badge" id="e-badge">Feito para Maringá</div>
+      <div class="pill" id="e-pill">Crie seu perfil grátis</div>
+      <div class="foot" id="e-foot">link na bio</div>
+    </div>
+  </div>
+<script>
+  const $ = (id) => document.getElementById(id)
+  const CHIPS = ['Não fuma', 'Tem um gato', 'Rotina de dia', 'Silêncio à noite']
+  $('chips').innerHTML = CHIPS.map((c) => `<span class="chip">${icon('check')}${c}</span>`).join('')
+  window.SCENE = {
+    width: 1080, height: 1920, duration: 8.5, cover: 3.9,
+    async setup() {
+      this.thumbApt = await kit.model($('thumb'), '/frontend/public/landing/apartment.glb', { 'animation-name': 'split', 'field-of-view': '26deg', exposure: '1.05' })
+      kit.tint(this.thumbApt, 'accent', '#237fa4')
+      this.endApt = await kit.model($('stage'), '/frontend/public/landing/apartment.glb', { 'animation-name': 'split', 'field-of-view': '30deg', 'shadow-intensity': '1', exposure: '1.05' })
+      kit.tint(this.endApt, 'accent', '#2a8a63')
+      this.q = [...$('q').children]
+      this.chips = [...$('chips').children]
+      await kit.ready()
+    },
+    async render(t) {
+      const { ease, prog } = kit
+      kit.show($('logo-sm'), t, 0.1, 0.6, 5.4, 5.8, 20)
+      kit.lines(this.q, t, 0.3, 0.2, 0.7, 5.3, 5.8)
+
+      // card sobe, nota conta de 0 a 92, barra enche, hábitos em comum aparecem
+      const pc = ease.out3(prog(t, 0.8, 1.5))
+      const outC = ease.inOut3(prog(t, 5.4, 5.9))
+      $('card').style.opacity = pc * (1 - outC)
+      $('card').style.transform = `translateY(${(1 - pc) * 160 - outC * 60}px)`
+      const v = ease.out3(prog(t, 1.6, 3.1))
+      $('pct').innerHTML = `${Math.round(92 * v)}<small>%</small>`
+      $('bar').style.transform = `scaleX(${v})`
+      this.chips.forEach((c, i) => {
+        const p = ease.backOut(prog(t, 2.5 + i * 0.18, 2.95 + i * 0.18))
+        c.style.opacity = Math.min(1, Math.max(0, p))
+        c.style.transform = `scale(${0.6 + 0.4 * p})`
+      })
+      kit.show($('note'), t, 3.5, 4.0, 5.3, 5.7)
+      kit.pose(this.thumbApt, { yaw: 20 + 10 * Math.sin(t * 0.8), pitch: 60, split: 0.15 + 0.3 * ease.backOut(prog(t, 1.2, 2.0)) })
+
+      // cartela final com o apartamento (verde) chegando
+      const pe = ease.out3(prog(t, 5.8, 6.7))
+      $('stage').style.opacity = pe
+      $('stage').style.transform = `translateY(${(1 - pe) * 120}px) scale(${0.9 + 0.1 * pe})`
+      kit.pose(this.endApt, { yaw: -40 + 60 * ease.inOut3(prog(t, 5.8, 8.0)), pitch: 62, split: 0.7 * Math.min(1, ease.backOut(prog(t, 6.4, 7.3), 2)) })
+      kit.show($('e-logo'), t, 6.0, 6.6)
+      kit.show($('e-badge'), t, 6.2, 6.8)
+      kit.show($('e-pill'), t, 6.4, 7.0)
+      kit.show($('e-foot'), t, 6.6, 7.2)
+      await kit.frames(2)
+    },
+  }
+</script>
+</body>
+</html>

@@ -9,6 +9,8 @@ export interface ListingPayload {
   nearCollege: string
   price: number | null
   availableSlots: number | null
+  currentResidentsMale: number | null
+  currentResidentsFemale: number | null
   genderPreference: GenderPreference
   address: string | null
   latitude: number | null

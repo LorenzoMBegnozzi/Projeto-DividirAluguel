@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8" />
+<title>Feed 04 · Anunciante</title>
+<link rel="stylesheet" href="_base.css" />
+<script src="_kit.js"></script>
+<style>
+  .top { position: absolute; left: 80px; right: 80px; top: 72px; display: flex; align-items: center; justify-content: space-between; }
+  h1 { position: absolute; left: 80px; right: 80px; top: 190px; font-size: 104px; }
+  .body { position: absolute; left: 80px; right: 160px; top: 540px; }
+  .stage { left: 60px; right: 60px; top: 690px; height: 500px; }
+  .stage > model-viewer { inset: 0; width: 100%; height: 100%; }
+  .house { position: absolute; width: 110px; height: 110px; }
+  .bottom { position: absolute; left: 80px; right: 80px; bottom: 72px; display: flex; align-items: center; justify-content: space-between; }
+</style>
+<body>
+  <div class="frame theme-leaf">
+    <div class="top">
+      <div class="logo">Racha<span>Ai</span></div>
+      <div class="badge">Para quem anuncia</div>
+    </div>
+    <h1 class="headline">Tem um quarto sobrando? <span class="hl">Anuncie grátis.</span></h1>
+    <p class="body">Os 3 primeiros anúncios são grátis. E você vê a compatibilidade de cada interessado antes de responder.</p>
+    <div class="stage" id="stage"></div>
+    <div class="bottom">
+      <div class="pill">Anunciar minha vaga</div>
+      <div class="foot">link na bio</div>
+    </div>
+  </div>
+<script>
+  const HOUSES = [{ x: 40, y: 700, yaw: 40 }, { x: 910, y: 720, yaw: -30 }, { x: 900, y: 1050, yaw: 70 }]
+  window.SCENE = {
+    width: 1080, height: 1350, duration: 0,
+    async setup() {
+      this.apt = await kit.model(document.getElementById('stage'), '/frontend/public/landing/apartment.glb', { 'animation-name': 'split', 'field-of-view': '30deg', 'shadow-intensity': '1', exposure: '1.05' })
+      kit.tint(this.apt, 'accent', '#2a8a63')
+      this.houses = await Promise.all(HOUSES.map(async (h) => {
+        const box = document.createElement('div')
+        box.className = 'house'
+        Object.assign(box.style, { left: `${h.x}px`, top: `${h.y}px` })
+        document.querySelector('.frame').append(box)
+        const mv = await kit.model(box, '/frontend/public/landing/house.glb')
+        Object.assign(mv.style, { width: '100%', height: '100%' })
+        kit.tint(mv, 'house', '#2a8a63')
+        return { mv, h }
+      }))
+      await kit.ready()
+    },
+    async render() {
+      kit.pose(this.apt, { yaw: 20, pitch: 60, split: 0.7 })
+      this.houses.forEach(({ mv, h }) => kit.pose(mv, { yaw: h.yaw, pitch: 70 }))
+      await kit.frames(4)
+    },
+  }
+</script>
+</body>
+</html>

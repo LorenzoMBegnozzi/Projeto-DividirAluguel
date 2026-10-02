@@ -62,7 +62,7 @@ export default defineConfig(({ command }) => {
           start_url: '/',
           display: 'standalone',
           background_color: '#ffffff',
-          theme_color: '#c23f27',
+          theme_color: '#333a3d',
           icons: [
             { src: '/pwa-192x192.png', sizes: '192x192', type: 'image/png' },
             { src: '/pwa-512x512.png', sizes: '512x512', type: 'image/png' },
@@ -73,6 +73,9 @@ export default defineConfig(({ command }) => {
           // Só o "app shell" (HTML/JS/CSS/ícones) entra em cache; chamadas a /api nunca ficam
           // em cache, sempre vão para a rede (dados de usuário não podem ficar desatualizados).
           globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
+          // O 3D da landing (model-viewer/Three.js, ~1 MB) não entra no app shell: só quem
+          // abre a landing baixa, e quem instala o app não leva esse peso.
+          globIgnores: ['**/model-viewer-*.js', '**/Landing3D-*.{js,css}'],
           navigateFallbackDenylist: [/^\/api\//],
         },
       }),

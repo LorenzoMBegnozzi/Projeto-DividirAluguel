@@ -171,6 +171,7 @@ public abstract class ApiTestSupport {
         return new java.util.HashMap<>(Map.of(
                 "type", type,
                 "title", "Anúncio de teste " + SEQ.incrementAndGet(),
+                "preferredNeighborhood", "Zona 7",
                 "address", "Av. Brasil, 1000 - Centro",
                 "latitude", -23.42,
                 "longitude", -51.93

@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, Banknote, Cigarette, CigaretteOff, GraduationCap, MapPin, PawPrint, Users } from 'lucide-react'
+import { ArrowLeft, Banknote, Cigarette, CigaretteOff, GraduationCap, Home, MapPin, PawPrint, Users } from 'lucide-react'
 import { getListing, getListingPhotos } from '../api/listings'
 import { getUser } from '../api/profile'
 import { startConversation } from '../api/discovery'
 import { apiErrorMessage } from '../api/client'
 import { useAuth } from '../context/AuthContext'
+import { formatResidents } from '../utils/format'
 import { genderPreferenceLabels } from '../constants/profileOptions'
 import PhotoLightbox from '../components/PhotoLightbox'
 import Fact from '../components/Fact'
@@ -124,6 +125,9 @@ export default function ListingDetailPage() {
             <Fact icon={Users}>
               {listing.availableSlots} {listing.availableSlots === 1 ? 'vaga disponível' : 'vagas disponíveis'}
             </Fact>
+          )}
+          {formatResidents(listing.currentResidentsMale, listing.currentResidentsFemale) && (
+            <Fact icon={Home}>{formatResidents(listing.currentResidentsMale, listing.currentResidentsFemale)}</Fact>
           )}
           {listing.type === 'TEM_VAGA' && listing.genderPreference !== 'QUALQUER' && (
             <Fact icon={Users}>{genderPreferenceLabels[listing.genderPreference]}</Fact>

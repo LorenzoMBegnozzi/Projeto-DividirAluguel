@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8" />
+<title>Story 01 · Lançamento</title>
+<link rel="stylesheet" href="_base.css" />
+<script src="_kit.js"></script>
+<style>
+  /* zonas seguras do Stories: ~250px no topo e embaixo ficam sob a interface do app */
+  .top { position: absolute; left: 80px; right: 80px; top: 260px; display: flex; align-items: center; justify-content: space-between; }
+  h1 { position: absolute; left: 80px; right: 80px; top: 400px; font-size: 118px; }
+  .stage { left: 30px; right: 30px; top: 840px; height: 480px; }
+  .stage > model-viewer { inset: 0; width: 100%; height: 100%; }
+  .perks { position: absolute; left: 80px; right: 80px; top: 1350px; display: grid; gap: 16px; }
+  .perks .chip { font-size: 34px; padding: 18px 30px; background: var(--surface); border: 2px solid var(--line); justify-self: start; }
+  .foot { position: absolute; left: 0; right: 0; bottom: 250px; text-align: center; font-size: 32px; }
+</style>
+<body>
+  <div class="frame">
+    <div class="top">
+      <div class="logo">Racha<span>Ai</span></div>
+      <div class="badge">Feito para Maringá</div>
+    </div>
+    <h1 class="headline">Dividir apê <span class="hl">com quem combina</span> com você.</h1>
+    <div class="stage" id="stage"></div>
+    <div class="perks" id="perks"></div>
+    <div class="foot">link na bio</div>
+  </div>
+<script>
+  document.getElementById('perks').innerHTML = ['Compatibilidade por hábitos', 'Perfil verificado por CPF', 'Procurar vaga é grátis']
+    .map((p) => `<span class="chip">${icon('check')}${p}</span>`).join('')
+  window.SCENE = {
+    width: 1080, height: 1920, duration: 0,
+    async setup() {
+      this.apt = await kit.model(document.getElementById('stage'), '/frontend/public/landing/apartment.glb', { 'animation-name': 'split', 'field-of-view': '30deg', 'shadow-intensity': '1', exposure: '1.05' })
+      kit.tint(this.apt, 'accent', '#237fa4')
+      await kit.ready()
+    },
+    async render() {
+      kit.pose(this.apt, { yaw: 20, pitch: 62, split: 0.5 })
+      await kit.frames(4)
+    },
+  }
+</script>
+</body>
+</html>

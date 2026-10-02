@@ -92,6 +92,8 @@ export interface Listing {
   nearCollege: string | null
   price: number | null
   availableSlots: number | null
+  currentResidentsMale: number | null
+  currentResidentsFemale: number | null
   genderPreference: GenderPreference
   address: string | null
   latitude: number | null

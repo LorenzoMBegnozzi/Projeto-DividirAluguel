@@ -1,0 +1,13 @@
+{
+  "name": "rachaai-marketing",
+  "private": true,
+  "type": "module",
+  "description": "Gera as artes do Instagram (imagens e vídeos) a partir de templates HTML",
+  "scripts": {
+    "render": "node render.mjs"
+  },
+  "dependencies": {
+    "mp4-muxer": "^5.2.1",
+    "playwright-core": "^1.48.0"
+  }
+}

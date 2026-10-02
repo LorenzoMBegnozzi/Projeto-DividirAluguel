@@ -1,0 +1,43 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>encoder</title>
+<script type="module">
+  // Codifica os quadros JPEG (servidos pelo render.mjs) em MP4 H.264, no próprio
+  // Chrome, via WebCodecs + mp4-muxer. Sem ffmpeg.
+  import { Muxer, ArrayBufferTarget } from '/marketing/node_modules/mp4-muxer/build/mp4-muxer.mjs'
+
+  window.encode = async ({ dir, count, width, height, fps, bitrate }) => {
+    const muxer = new Muxer({
+      target: new ArrayBufferTarget(),
+      video: { codec: 'avc', width, height, frameRate: fps },
+      fastStart: 'in-memory',
+    })
+    let error = null
+    const encoder = new VideoEncoder({
+      output: (chunk, meta) => muxer.addVideoChunk(chunk, meta),
+      error: (e) => { error = e },
+    })
+    let codec = 'avc1.640028'
+    for (const c of ['avc1.640028', 'avc1.4d0028', 'avc1.42002a']) {
+      if ((await VideoEncoder.isConfigSupported({ codec: c, width, height, bitrate, framerate: fps })).supported) { codec = c; break }
+    }
+    encoder.configure({ codec, width, height, bitrate, framerate: fps, avc: { format: 'avc' } })
+
+    for (let i = 0; i < count; i++) {
+      const res = await fetch(`${dir}/${String(i).padStart(5, '0')}.jpg`)
+      const bmp = await createImageBitmap(await res.blob())
+      const frame = new VideoFrame(bmp, { timestamp: Math.round((i * 1e6) / fps), duration: Math.round(1e6 / fps) })
+      encoder.encode(frame, { keyFrame: i % (fps * 2) === 0 })
+      frame.close(); bmp.close()
+      while (encoder.encodeQueueSize > 8) await new Promise((r) => setTimeout(r, 5))
+      if (error) throw error
+    }
+    await encoder.flush()
+    muxer.finalize()
+    const bytes = new Uint8Array(muxer.target.buffer)
+    let bin = ''
+    for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000))
+    return { codec, base64: btoa(bin) }
+  }
+  window.encoderReady = true
+</script>

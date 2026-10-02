@@ -11,3 +11,16 @@ export function formatDate(iso: string) {
 export function formatDateTime(iso: string) {
   return new Date(iso).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })
 }
+
+/** "2 homens e 1 mulher já moram lá" — null quando os dois campos não foram informados. */
+export function formatResidents(male: number | null, female: number | null): string | null {
+  if (male == null && female == null) return null
+  const m = male ?? 0
+  const f = female ?? 0
+  const total = m + f
+  if (total === 0) return 'Ninguém mora lá ainda'
+  const parts: string[] = []
+  if (m > 0) parts.push(`${m} ${m === 1 ? 'homem' : 'homens'}`)
+  if (f > 0) parts.push(`${f} ${f === 1 ? 'mulher' : 'mulheres'}`)
+  return `${parts.join(' e ')} já ${total === 1 ? 'mora' : 'moram'} lá`
+}

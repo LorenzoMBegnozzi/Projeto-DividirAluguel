@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { ArrowRight } from 'lucide-react'
 import { getConversations } from '../api/discovery'
 import { blockUser } from '../api/moderation'
@@ -12,6 +13,7 @@ export default function ConversationsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [blockedIds, setBlockedIds] = useState<number[]>([])
+  const [listRef] = useAutoAnimate<HTMLDivElement>()
 
   useEffect(() => {
     getConversations()
@@ -49,7 +51,7 @@ export default function ConversationsPage() {
         </p>
       )}
 
-      <div className="flex flex-col gap-2">
+      <div ref={listRef} className="flex flex-col gap-2">
         {conversations.map((conversation) => (
           <div
             key={conversation.id}

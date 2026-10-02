@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { browseEstablishments, browseRoommates, startConversation, startConversationWithInterested } from '../api/discovery'
 import { getInterestStatus, getInterestedPeople, markInterest, unmarkInterest, type InterestStatus } from '../api/interest'
@@ -6,10 +6,13 @@ import { getListingPhotos } from '../api/listings'
 import { apiErrorMessage } from '../api/client'
 import {
   Banknote,
+  ChevronLeft,
+  ChevronRight,
   Cigarette,
   CigaretteOff,
   GraduationCap,
   Heart,
+  Home,
   LayoutGrid,
   List,
   MapPin,
@@ -30,10 +33,14 @@ import PhotoLightbox from '../components/PhotoLightbox'
 import { useAuth } from '../context/AuthContext'
 import { dietLabels, genderLabels, genderPreferenceLabels, petPreferenceLabels, smokingHabitLabels } from '../constants/profileOptions'
 import Avatar from '../components/Avatar'
+import { formatResidents } from '../utils/format'
 import type { BrowseItem, UserProfile } from '../types'
 
 type Tab = 'ROOMMATES' | 'ESTABLISHMENTS'
 type ViewMode = 'list' | 'grid'
+
+/** Quantos anúncios mostrar por página: carregar tudo de uma vez pesa a tela com muitas fotos e mapas. */
+const PAGE_SIZE = 10
 
 export default function BrowsePage() {
   const navigate = useNavigate()
@@ -48,8 +55,10 @@ export default function BrowsePage() {
   const [mapPoint, setMapPoint] = useState<{ lat: number; lng: number } | null>(null)
   const [showMapPicker, setShowMapPicker] = useState(false)
   const [items, setItems] = useState<BrowseItem[]>([])
+  const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const resultsRef = useRef<HTMLDivElement>(null)
   const [startingId, setStartingId] = useState<number | null>(null)
   const [interestStatus, setInterestStatus] = useState<Record<number, InterestStatus>>({})
   const [togglingInterestId, setTogglingInterestId] = useState<number | null>(null)
@@ -76,6 +85,9 @@ export default function BrowsePage() {
     setError(null)
     setExpandedListingId(null)
     setInterestedPeople({})
+    setListingPhotos({})
+    setInterestStatus({})
+    setPage(1)
     const filters = {
       bairro: mapPoint ? undefined : bairro.trim() || undefined,
       lat: mapPoint?.lat,
@@ -84,32 +96,52 @@ export default function BrowsePage() {
     }
     const request = tab === 'ROOMMATES' ? browseRoommates(filters) : browseEstablishments(filters)
     request
-      .then((data) => {
-        setItems(data)
-        setListingPhotos({})
-        Promise.all(
-          data.map((item) =>
-            getListingPhotos(item.listing.id)
-              .then((photos) => [item.listing.id, photos] as const)
-              .catch(() => [item.listing.id, [] as string[]] as const)
-          )
-        ).then((entries) => {
-          setListingPhotos(Object.fromEntries(entries))
-        })
-        if (tab === 'ESTABLISHMENTS') {
-          Promise.all(
-            data.map((item) =>
-              getInterestStatus(item.listing.id)
-                .then((status) => [item.listing.id, status] as const)
-                .catch(() => [item.listing.id, { interested: false, total: 0 }] as const)
-            )
-          ).then((entries) => {
-            setInterestStatus(Object.fromEntries(entries))
-          })
-        }
-      })
+      .then(setItems)
       .catch((err) => setError(apiErrorMessage(err, 'Não foi possível carregar os anúncios')))
       .finally(() => setLoading(false))
+  }
+
+  const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE))
+  const pageItems = useMemo(
+    () => items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    [items, page],
+  )
+
+  // Só busca fotos/interesse de quem está na página atual — não da lista inteira de uma vez.
+  useEffect(() => {
+    const pending = pageItems.filter((item) => !(item.listing.id in listingPhotos))
+    if (pending.length === 0) return
+    Promise.all(
+      pending.map((item) =>
+        getListingPhotos(item.listing.id)
+          .then((photos) => [item.listing.id, photos] as const)
+          .catch(() => [item.listing.id, [] as string[]] as const),
+      ),
+    ).then((entries) => {
+      setListingPhotos((prev) => ({ ...prev, ...Object.fromEntries(entries) }))
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageItems])
+
+  useEffect(() => {
+    if (tab !== 'ESTABLISHMENTS') return
+    const pending = pageItems.filter((item) => !(item.listing.id in interestStatus))
+    if (pending.length === 0) return
+    Promise.all(
+      pending.map((item) =>
+        getInterestStatus(item.listing.id)
+          .then((status) => [item.listing.id, status] as const)
+          .catch(() => [item.listing.id, { interested: false, total: 0 }] as const),
+      ),
+    ).then((entries) => {
+      setInterestStatus((prev) => ({ ...prev, ...Object.fromEntries(entries) }))
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageItems, tab])
+
+  function goToPage(next: number) {
+    setPage(Math.min(Math.max(1, next), totalPages))
+    resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   async function handleToggleInterest(listingId: number) {
@@ -199,7 +231,7 @@ export default function BrowsePage() {
             tab === 'ROOMMATES' ? 'border-inverse bg-inverse text-on-inverse' : 'border-line-strong text-ink-2 hover:border-ink'
           }`}
         >
-          Preciso de uma vaga
+          Busco uma vaga
         </button>
         <button
           onClick={() => setTab('ESTABLISHMENTS')}
@@ -207,7 +239,7 @@ export default function BrowsePage() {
             tab === 'ESTABLISHMENTS' ? 'border-inverse bg-inverse text-on-inverse' : 'border-line-strong text-ink-2 hover:border-ink'
           }`}
         >
-          Estabelecimentos
+          Busco um imóvel
         </button>
         <button
           onClick={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')}
@@ -287,8 +319,9 @@ export default function BrowsePage() {
           Ainda não há anúncios ativos nessa categoria. Volte mais tarde!
         </p>
       ) : (
+        <div ref={resultsRef}>
         <div className={viewMode === 'grid' ? 'grid grid-cols-1 gap-4 md:grid-cols-2' : 'flex flex-col gap-4'}>
-          {items.map((item) => (
+          {pageItems.map((item) => (
             <div key={item.listing.id} className="flex flex-col rounded-lg border border-line bg-surface p-5">
               {(listingPhotos[item.listing.id] ?? []).length > 0 && (
                 <button
@@ -380,6 +413,9 @@ export default function BrowsePage() {
                   <Fact icon={Users}>
                     {item.listing.availableSlots} {item.listing.availableSlots === 1 ? 'vaga disponível' : 'vagas disponíveis'}
                   </Fact>
+                )}
+                {formatResidents(item.listing.currentResidentsMale, item.listing.currentResidentsFemale) && (
+                  <Fact icon={Home}>{formatResidents(item.listing.currentResidentsMale, item.listing.currentResidentsFemale)}</Fact>
                 )}
                 <PropertyFacts listing={item.listing} />
               </div>
@@ -478,6 +514,33 @@ export default function BrowsePage() {
               )}
             </div>
           ))}
+        </div>
+
+        {totalPages > 1 && (
+          <div className="mt-6 flex items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={() => goToPage(page - 1)}
+              disabled={page === 1}
+              aria-label="Página anterior"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-line-strong text-ink-2 transition hover:border-ink hover:text-ink disabled:opacity-40"
+            >
+              <ChevronLeft className="h-[18px] w-[18px]" aria-hidden="true" />
+            </button>
+            <p className="text-sm font-semibold text-ink-2">
+              {page} de {totalPages}
+            </p>
+            <button
+              type="button"
+              onClick={() => goToPage(page + 1)}
+              disabled={page === totalPages}
+              aria-label="Próxima página"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-line-strong text-ink-2 transition hover:border-ink hover:text-ink disabled:opacity-40"
+            >
+              <ChevronRight className="h-[18px] w-[18px]" aria-hidden="true" />
+            </button>
+          </div>
+        )}
         </div>
       )}
     </div>

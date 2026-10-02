@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8" />
+<title>Feed 03 · Como funciona (carrossel)</title>
+<link rel="stylesheet" href="_base.css" />
+<script src="_kit.js"></script>
+<style>
+  .slide { position: absolute; inset: 0; display: none; }
+  .slide.on { display: block; }
+  .top { position: absolute; left: 80px; right: 80px; top: 72px; display: flex; align-items: center; justify-content: space-between; }
+  .dots { position: absolute; left: 0; right: 0; bottom: 64px; display: flex; justify-content: center; gap: 14px; }
+  .dots i { width: 14px; height: 14px; border-radius: 50%; background: var(--line); }
+  .dots i.on { width: 44px; border-radius: 7px; background: var(--brand); }
+
+  /* capa */
+  .cover h1 { position: absolute; left: 80px; right: 80px; top: 200px; font-size: 128px; }
+  .cover .stage { left: 60px; right: 60px; top: 640px; height: 520px; }
+  .cover .stage > model-viewer { inset: 0; width: 100%; height: 100%; }
+  .swipe { position: absolute; right: 80px; bottom: 120px; display: flex; align-items: center; gap: 14px; font-size: 34px; font-weight: 700; color: var(--brand); }
+
+  /* passos */
+  .num { position: absolute; left: 70px; top: 160px; font-size: 300px; font-weight: 900; line-height: 1; letter-spacing: -0.05em; color: transparent; -webkit-text-stroke: 4px var(--brand); opacity: 0.9; }
+  .step h2 { position: absolute; left: 80px; right: 80px; top: 480px; font-size: 96px; }
+  .step .body { position: absolute; left: 80px; right: 110px; top: 620px; }
+  .visual { position: absolute; left: 80px; right: 80px; top: 790px; }
+  .ico { position: absolute; right: 80px; top: 200px; width: 150px; height: 150px; border-radius: 40px; background: var(--brand-tint); color: var(--brand); display: grid; place-items: center; }
+
+  .habits { display: flex; flex-wrap: wrap; gap: 16px; }
+  .habits .chip { font-size: 32px; padding: 18px 28px; background: var(--surface); border: 2px solid var(--line); }
+  .habits .chip.on { background: var(--brand); color: #fff; border-color: var(--brand); }
+  .habits .chip.on svg { color: #fff; }
+
+  .list { display: grid; gap: 16px; }
+  .item { display: flex; align-items: center; justify-content: space-between; padding: 24px 36px; }
+  .item b { font-size: 34px; font-weight: 700; }
+  .item small { display: block; font-size: 26px; color: var(--ink-3); font-weight: 500; margin-top: 4px; }
+  .item .pct { font-size: 56px; font-weight: 800; letter-spacing: -0.03em; }
+
+  .chat { display: grid; gap: 18px; }
+  .bubble { max-width: 74%; padding: 24px 32px; border-radius: 32px; font-size: 32px; line-height: 1.35; }
+  .bubble.them { background: var(--surface); border: 2px solid var(--line); border-bottom-left-radius: 8px; }
+  .bubble.me { justify-self: end; background: var(--brand); color: #fff; border-bottom-right-radius: 8px; }
+  .cta { position: absolute; left: 80px; right: 80px; bottom: 130px; display: flex; align-items: center; justify-content: space-between; }
+</style>
+<body>
+  <div class="frame">
+    <section class="slide cover">
+      <div class="top"><div class="logo">Racha<span>Ai</span></div><div class="badge">Como funciona</div></div>
+      <h1 class="headline">Achar com quem morar em <span class="hl">3 passos.</span></h1>
+      <div class="stage" id="stage"></div>
+      <div class="swipe">arraste <span id="i-arrow"></span></div>
+    </section>
+
+    <section class="slide step">
+      <div class="num">01</div><div class="ico" id="i-user"></div>
+      <h2 class="headline">Monte seu perfil</h2>
+      <p class="body">Fuma? Bebe? Tem pet? Qual a sua rotina? Seus hábitos entram na conta da compatibilidade.</p>
+      <div class="visual habits" id="habits"></div>
+    </section>
+
+    <section class="slide step">
+      <div class="num">02</div><div class="ico" id="i-spark"></div>
+      <h2 class="headline">Veja quem combina</h2>
+      <p class="body">Cada vaga mostra a % de compatibilidade com você. Filtre por bairro, mapa e orçamento.</p>
+      <div class="visual list">
+        <div class="card item"><div><b>Quarto na Zona 7</b><small>R$ 650/mês</small></div><span class="pct" style="color: var(--leaf)">92%</span></div>
+        <div class="card item"><div><b>Apê perto do centro</b><small>R$ 720/mês</small></div><span class="pct" style="color: var(--mel)">71%</span></div>
+        <div class="card item"><div><b>Vaga na Vila Esperança</b><small>R$ 540/mês</small></div><span class="pct" style="color: var(--ink-2)">48%</span></div>
+      </div>
+    </section>
+
+    <section class="slide step">
+      <div class="num">03</div><div class="ico" id="i-chat"></div>
+      <h2 class="headline">Chame direto</h2>
+      <p class="body">Sem curtida, sem espera. Encontrou alguém compatível? É só conversar pelo chat.</p>
+      <div class="visual chat">
+        <div class="bubble them">Oi! Vi que a gente deu 92% 😄 o quarto ainda tá livre?</div>
+        <div class="bubble me">Tá sim! Quer passar aqui no sábado pra conhecer?</div>
+      </div>
+      <div class="cta"><div class="pill">Comece grátis</div><div class="foot">link na bio</div></div>
+    </section>
+
+    <div class="dots" id="dots"><i></i><i></i><i></i><i></i></div>
+  </div>
+<script>
+  for (const [id, name, size] of [['i-arrow', 'arrow', 36], ['i-user', 'user', 72], ['i-spark', 'gauge', 72], ['i-chat', 'chat', 72]]) document.getElementById(id).innerHTML = icon(name, size)
+  const HABITS = [['Não fumo', 1], ['Bebo às vezes', 0], ['Tenho gato', 1], ['Vegetariano', 0], ['Rotina de dia', 1], ['Música baixa', 1], ['Recebo visitas', 0]]
+  document.getElementById('habits').innerHTML = HABITS.map(([h, on]) => `<span class="chip${on ? ' on' : ''}">${on ? icon('check') : ''}${h}</span>`).join('')
+  const slides = [...document.querySelectorAll('.slide')]
+  const dots = [...document.querySelectorAll('.dots i')]
+  window.SCENE = {
+    width: 1080, height: 1350, slides: slides.length,
+    async setup() {
+      this.apt = await kit.model(document.getElementById('stage'), '/frontend/public/landing/apartment.glb', { 'animation-name': 'split', 'field-of-view': '30deg', 'shadow-intensity': '1', exposure: '1.05' })
+      kit.tint(this.apt, 'accent', '#237fa4')
+      await kit.ready()
+    },
+    async render(i) {
+      slides.forEach((s, k) => s.classList.toggle('on', k === i))
+      dots.forEach((d, k) => d.classList.toggle('on', k === i))
+      kit.pose(this.apt, { yaw: 20, pitch: 62, split: 0.55 })
+      await kit.frames(4)
+    },
+  }
+</script>
+</body>
+</html>

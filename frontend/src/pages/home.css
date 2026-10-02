@@ -1,0 +1,52 @@
+/* Estilos da HomePage (landing pública): fundo com crossfade, seletor
+   procurar/anunciar, troca de texto e cards em cascata. Usam as cores do tema. */
+
+/* ---------- fundo do hero: duas camadas, crossfade só de opacidade ---------- */
+.landing-hero { position: relative; isolation: isolate; overflow: hidden; }
+.landing-bg {
+  position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  opacity: 0; transition: opacity 0.9s ease;
+}
+.landing-bg.is-active { opacity: 1; }
+.landing-bg[data-mode='procurar'] {
+  background:
+    radial-gradient(55% 60% at 75% 45%, var(--color-brand-tint) 0%, transparent 70%),
+    radial-gradient(40% 50% at 10% 10%, color-mix(in srgb, var(--color-brand-tint) 60%, transparent) 0%, transparent 70%);
+}
+.landing-bg[data-mode='anunciar'] {
+  background:
+    radial-gradient(55% 60% at 75% 45%, var(--color-leaf-tint) 0%, transparent 70%),
+    radial-gradient(40% 50% at 10% 10%, color-mix(in srgb, var(--color-leaf-tint) 60%, transparent) 0%, transparent 70%);
+}
+
+/* ---------- seletor procurar / anunciar ---------- */
+.mode-switch {
+  position: relative; display: inline-grid; grid-template-columns: 1fr 1fr;
+  padding: 4px; border-radius: 999px; border: 1px solid var(--color-line);
+  background: var(--color-surface);
+}
+.mode-switch-thumb {
+  position: absolute; top: 4px; bottom: 4px; left: 4px; width: calc(50% - 4px); border-radius: 999px;
+  background: var(--color-brand);
+  transition: transform 0.45s cubic-bezier(.2, .8, .2, 1), background-color 0.45s;
+}
+.mode-switch[data-mode='anunciar'] .mode-switch-thumb { transform: translateX(100%); background: var(--color-leaf); }
+.mode-switch button {
+  position: relative; z-index: 1; padding: 8px 18px; border-radius: 999px;
+  font-size: 14px; font-weight: 600; color: var(--color-ink-2); transition: color 0.3s;
+}
+.mode-switch button[aria-pressed='true'] { color: var(--color-on-brand); }
+
+/* texto do hero trocando no pico da coreografia */
+.landing-swap { animation: landing-swap-in 0.5s cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes landing-swap-in { from { opacity: 0; transform: translateY(12px); } }
+
+/* cards de recursos entram em cascata quando aparecem na tela */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s cubic-bezier(.2, .8, .2, 1); transition-delay: calc(var(--i, 0) * 80ms); }
+.reveal.is-visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-bg, .mode-switch-thumb, .reveal { transition: none; }
+  .landing-swap { animation: none; }
+  .reveal { opacity: 1; transform: none; }
+}

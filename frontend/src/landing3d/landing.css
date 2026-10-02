@@ -1,0 +1,22 @@
+/* Estilos do palco 3D da landing. Ficam fora do index.css de propósito: só são
+   baixados junto com o chunk lazy (Landing3D), nunca pelo app logado. */
+
+.l3d-wrap { position: relative; width: 100%; aspect-ratio: 5 / 4; max-height: 520px; }
+.l3d-stage {
+  position: absolute; inset: 6% 4%;
+  opacity: 0; transform: translateY(24px) scale(0.97);
+  transition: opacity 0.8s ease, transform 1s cubic-bezier(.2, .8, .2, 1);
+}
+.l3d-stage.is-ready { opacity: 1; transform: none; }
+.l3d-stage model-viewer { width: 100%; height: 100%; --poster-color: transparent; pointer-events: none; }
+
+.l3d-particles { position: absolute; inset: 0; pointer-events: none; }
+.l3d-particle { position: absolute; will-change: transform; }
+.l3d-particle-inner { width: 100%; height: 100%; }
+.l3d-particle model-viewer { width: 100%; height: 100%; --poster-color: transparent; pointer-events: none; }
+/* barra de carregamento padrão do model-viewer: aparece como um risco em cima de cada modelo */
+.l3d-wrap model-viewer::part(default-progress-bar) { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .l3d-stage { transition: none; }
+}

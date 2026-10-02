@@ -41,6 +41,14 @@ public class Listing {
     @Column(name = "vagas_disponiveis")
     private Integer availableSlots;
 
+    /** Quantos homens e mulheres já moram no lugar (não excludentes), sem contar quem for
+     *  ocupar a vaga anunciada. */
+    @Column(name = "moradores_homens")
+    private Integer currentResidentsMale;
+
+    @Column(name = "moradores_mulheres")
+    private Integer currentResidentsFemale;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "sexo_aceito", nullable = false, length = 20)
     private GenderPreference genderPreference = GenderPreference.QUALQUER;
@@ -212,6 +220,22 @@ public class Listing {
 
     public void setAvailableSlots(Integer availableSlots) {
         this.availableSlots = availableSlots;
+    }
+
+    public Integer getCurrentResidentsMale() {
+        return currentResidentsMale;
+    }
+
+    public void setCurrentResidentsMale(Integer currentResidentsMale) {
+        this.currentResidentsMale = currentResidentsMale;
+    }
+
+    public Integer getCurrentResidentsFemale() {
+        return currentResidentsFemale;
+    }
+
+    public void setCurrentResidentsFemale(Integer currentResidentsFemale) {
+        this.currentResidentsFemale = currentResidentsFemale;
     }
 
     public String getAddress() {

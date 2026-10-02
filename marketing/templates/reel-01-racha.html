@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8" />
+<title>Reel 01 · O racha</title>
+<link rel="stylesheet" href="_base.css" />
+<script src="_kit.js"></script>
+<style>
+  /* zonas seguras do Reels: textos importantes entre ~220px e ~1500px, longe da
+     borda direita (botões curtir/comentar) */
+  .logo-sm { position: absolute; left: 80px; top: 170px; font-size: 48px; }
+  .block { position: absolute; left: 80px; right: 60px; top: 330px; font-size: 112px; }
+  .block .headline { font-size: inherit; }
+  .stage { left: 0; right: 0; top: 860px; height: 760px; transform-origin: 50% 60%; }
+  .stage > model-viewer { inset: 0; width: 100%; height: 100%; }
+  .house { position: absolute; width: 130px; height: 130px; }
+  .compat { position: absolute; left: 80px; top: 760px; display: inline-flex; align-items: center; gap: 18px; padding: 20px 34px; border-radius: 999px; background: var(--surface); border: 2px solid var(--line); box-shadow: var(--shadow); font-size: 40px; font-weight: 700; }
+  .compat b { color: var(--leaf); font-size: 52px; font-weight: 800; font-variant-numeric: tabular-nums; min-width: 2.6ch; }
+  .end { position: absolute; left: 0; right: 0; top: 330px; display: flex; flex-direction: column; align-items: center; gap: 34px; text-align: center; }
+  .end .logo { font-size: 150px; }
+  .end .foot { font-size: 34px; }
+</style>
+<body>
+  <div class="frame">
+    <div class="logo logo-sm" id="logo-sm">Racha<span>Ai</span></div>
+
+    <div class="block headline" id="a">
+      <div class="line"><span>Dividir apê</span></div>
+      <div class="line"><span>não precisa ser</span></div>
+      <div class="line"><span class="hl">uma loteria.</span></div>
+    </div>
+    <div class="block headline" id="b">
+      <div class="line"><span>Veja quanto</span></div>
+      <div class="line"><span>vocês combinam</span></div>
+      <div class="line"><span class="hl">antes de chamar.</span></div>
+    </div>
+    <div class="compat" id="compat"><b id="pct">0%</b> compatível</div>
+
+    <div class="stage" id="stage"></div>
+
+    <div class="end" id="end">
+      <div class="logo" id="e-logo">Racha<span>Ai</span></div>
+      <div class="badge" id="e-badge">Feito para Maringá</div>
+      <div class="pill" id="e-pill">Procurar vaga é grátis</div>
+      <div class="foot" id="e-foot">link na bio</div>
+    </div>
+  </div>
+<script>
+  const $ = (id) => document.getElementById(id)
+  const HOUSES = [{ x: 60, y: 860, yaw: 30 }, { x: 880, y: 900, yaw: -50 }, { x: 900, y: 1420, yaw: 80 }, { x: 70, y: 1460, yaw: -20 }]
+  window.SCENE = {
+    width: 1080, height: 1920, duration: 10, cover: 3.6,
+    async setup() {
+      this.apt = await kit.model($('stage'), '/frontend/public/landing/apartment.glb', { 'animation-name': 'split', 'field-of-view': '30deg', 'shadow-intensity': '1', 'shadow-softness': '0.9', exposure: '1.05' })
+      kit.tint(this.apt, 'accent', '#237fa4')
+      this.houses = await Promise.all(HOUSES.map(async (h) => {
+        const box = document.createElement('div')
+        box.className = 'house'
+        Object.assign(box.style, { left: `${h.x}px`, top: `${h.y}px` })
+        document.querySelector('.frame').append(box)
+        const mv = await kit.model(box, '/frontend/public/landing/house.glb')
+        Object.assign(mv.style, { width: '100%', height: '100%' })
+        kit.tint(mv, 'house', '#237fa4')
+        return { box, mv, h }
+      }))
+      this.linesA = [...$('a').children]
+      this.linesB = [...$('b').children]
+      await kit.ready()
+    },
+    async render(t) {
+      const { ease, prog, lerp } = kit
+
+      // apartamento: chega girando, "racha" em 1.1s, gira 360° na virada para o final
+      const pIn = ease.out3(prog(t, 0, 1.1))
+      $('stage').style.opacity = pIn
+      $('stage').style.transform = `translateY(${(1 - pIn) * 140}px) scale(${0.88 + 0.12 * pIn})`
+      const spin = 360 * ease.inOut3(prog(t, 7.1, 8.6))
+      const yaw = lerp(-80, 20, ease.inOut3(prog(t, 0, 2.4))) + 7 * Math.sin(t * 0.9) - spin
+      let split = 0.85 * Math.min(1, ease.backOut(prog(t, 1.1, 2.1), 2.2))
+      split = lerp(split, 0.4, ease.inOut3(prog(t, 7.3, 8.6)))
+      kit.pose(this.apt, { yaw, pitch: 62 + 3 * Math.sin(t * 0.7), split })
+
+      // casinhas: surgem em cascata, giram e flutuam
+      this.houses.forEach(({ box, mv, h }, i) => {
+        const p = ease.backOut(prog(t, 2.0 + i * 0.15, 2.6 + i * 0.15))
+        const out = ease.inOut3(prog(t, 7.0, 7.5))
+        box.style.opacity = Math.min(1, p) * (1 - out * 0.0)
+        box.style.transform = `translateY(${Math.sin(t * 1.4 + i) * 14}px) scale(${Math.max(0, p)})`
+        kit.pose(mv, { yaw: h.yaw + t * 45 * (i % 2 ? -1 : 1), pitch: 70 })
+      })
+
+      // textos
+      kit.show($('logo-sm'), t, 0.2, 0.8, 7.0, 7.4, 20)
+      kit.lines(this.linesA, t, 0.9, 0.22, 0.7, 4.2, 4.7)
+      kit.lines(this.linesB, t, 4.8, 0.2, 0.7, 6.9, 7.4)
+      kit.show($('compat'), t, 5.5, 6.0, 6.9, 7.3)
+      $('pct').textContent = `${Math.round(92 * ease.out3(prog(t, 5.6, 6.8)))}%`
+
+      // cartela final
+      kit.show($('e-logo'), t, 7.6, 8.2)
+      kit.show($('e-badge'), t, 7.85, 8.4)
+      kit.show($('e-pill'), t, 8.05, 8.6)
+      kit.show($('e-foot'), t, 8.25, 8.8)
+
+      await kit.frames(2)
+    },
+  }
+</script>
+</body>
+</html>

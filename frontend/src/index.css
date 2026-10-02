@@ -5,85 +5,101 @@
 @theme {
   --font-sans: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
 
-  --color-paper: #f6f2ec;
+  /* Paleta "NTI", versão clara: mesma base (quase preto / azul / cinza), mas com tons
+     mais altos de luminosidade pra não pesar a interface. Textos usam cinza-chumbo em vez
+     de quase preto, o azul de ação ficou mais vivo (#237fa4, 4,52:1 com texto branco — ainda
+     dentro do mínimo de 4,5:1) e o fundo/bordas ganharam mais luz. No escuro, os fundos
+     saíram do quase-preto pra um chumbo mais claro, mantendo o azul vivo como cor de ação. */
+  --color-paper: #f7f9fa;
   --color-surface: #ffffff;
-  --color-surface-sunk: #eee8df;
+  --color-surface-sunk: #eaf4f8;
 
-  --color-line: #e3dcd2;
-  --color-line-strong: #8f857a;
+  --color-line: #d8dee1;
+  --color-line-strong: #aab2b8;
 
-  --color-ink: #1d1a17;
-  --color-ink-2: #4f4842;
-  --color-ink-3: #6f665e;
+  --color-ink: #333a3d;
+  --color-ink-2: #5b6468;
+  --color-ink-3: #6b7478;
 
-  --color-brand: #c23f27;
-  --color-brand-strong: #9e3019;
-  --color-brand-tint: #fbe6de;
+  --color-brand: #237fa4;
+  --color-brand-strong: #1c6582;
+  --color-brand-tint: #d9eef5;
   --color-on-brand: #ffffff;
 
-  --color-leaf: #1e6a4d;
-  --color-leaf-tint: #dcefe4;
+  --color-leaf: #2a8a63;
+  --color-leaf-tint: #e3f4ea;
 
-  --color-mel: #8a5300;
-  --color-mel-tint: #fcefd3;
-  --color-star: #b07408;
+  --color-mel: #a3690a;
+  --color-mel-tint: #fdf2dc;
+  --color-star: #c2860f;
 
-  --color-danger: #b3261e;
-  --color-danger-tint: #fdebe8;
+  --color-danger: #c5362d;
+  --color-danger-tint: #fdeeec;
 
-  --color-inverse: #1d1a17;
-  --color-on-inverse: #f6f2ec;
+  --color-inverse: #333a3d;
+  --color-on-inverse: #f7f9fa;
 
-  --color-scrim: rgba(29, 26, 23, 0.55);
-  --color-focus: #1d1a17;
+  --color-scrim: rgba(51, 58, 61, 0.45);
+  --color-focus: #32a9d9;
 
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
 
-  --shadow-pop: 0 18px 40px -16px rgba(29, 26, 23, 0.35), 0 2px 6px rgba(29, 26, 23, 0.08);
+  --shadow-pop: 0 18px 40px -16px rgba(51, 58, 61, 0.22), 0 2px 6px rgba(51, 58, 61, 0.06);
 }
 
 :root[data-theme='dark'] {
-  --color-paper: #17171a;
-  --color-surface: #1f1f23;
-  --color-surface-sunk: #2a2a2f;
+  --color-paper: #2b2e2f;
+  --color-surface: #383c3d;
+  --color-surface-sunk: #454a4b;
 
-  --color-line: #38383e;
-  --color-line-strong: #75757d;
+  --color-line: #565c5d;
+  --color-line-strong: #868d8e;
 
-  --color-ink: #ededf0;
-  --color-ink-2: #c6c6cc;
-  --color-ink-3: #98989f;
+  --color-ink: #f5f6f6;
+  --color-ink-2: #e5e7e7;
+  --color-ink-3: #c7cccd;
 
-  --color-brand: #f07a5e;
-  --color-brand-strong: #f59a83;
-  --color-brand-tint: #3b221b;
-  --color-on-brand: #1d0f0a;
+  --color-brand: #3cb1de;
+  --color-brand-strong: #65c0e4;
+  --color-brand-tint: #1f4453;
+  --color-on-brand: #15181a;
 
-  --color-leaf: #6ccaa1;
-  --color-leaf-tint: #15301f;
+  --color-leaf: #74d1a9;
+  --color-leaf-tint: #1b3a27;
 
-  --color-mel: #f0bd62;
-  --color-mel-tint: #3a2c12;
-  --color-star: #f0bd62;
+  --color-mel: #f2c272;
+  --color-mel-tint: #41310f;
+  --color-star: #f2c272;
 
-  --color-danger: #f28b80;
-  --color-danger-tint: #3d1d1a;
+  --color-danger: #f5988e;
+  --color-danger-tint: #442420;
 
-  --color-inverse: #ededf0;
-  --color-on-inverse: #17171a;
+  --color-inverse: #f5f6f6;
+  --color-on-inverse: #2b2e2f;
 
-  --color-scrim: rgba(0, 0, 0, 0.6);
-  --color-focus: #ededf0;
+  --color-scrim: rgba(0, 0, 0, 0.55);
+  --color-focus: #3cb1de;
 
-  --shadow-pop: 0 18px 40px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(237, 237, 240, 0.06);
+  --shadow-pop: 0 18px 40px -12px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(245, 246, 246, 0.07);
 
   color-scheme: dark;
 }
 
 html {
   overflow-x: hidden;
+}
+
+@keyframes typing-bounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
 }
 
 body {

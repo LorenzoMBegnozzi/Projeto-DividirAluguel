@@ -41,3 +41,11 @@ export function getMessages(conversationId: number) {
 export function sendMessage(conversationId: number, content: string) {
   return client.post<Message>(`/conversations/${conversationId}/messages`, { content }).then((res) => res.data)
 }
+
+export function markTyping(conversationId: number) {
+  return client.post(`/conversations/${conversationId}/digitando`)
+}
+
+export function isOtherTyping(conversationId: number) {
+  return client.get<{ typing: boolean }>(`/conversations/${conversationId}/digitando`).then((res) => res.data.typing)
+}

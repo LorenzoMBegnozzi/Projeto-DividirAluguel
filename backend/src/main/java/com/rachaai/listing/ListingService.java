@@ -74,9 +74,6 @@ public class ListingService {
         user.requireConfirmedEmail("publicar anúncios");
         validateRoleForType(user, request.type());
 
-        if (request.latitude() == null || request.longitude() == null || isBlank(request.address())) {
-            throw ApiException.badRequest("Informe endereço e localização no mapa");
-        }
         if (request.suites() != null && request.bedrooms() != null && request.suites() > request.bedrooms()) {
             throw ApiException.badRequest("O número de suítes não pode ser maior que o de dormitórios");
         }
@@ -109,6 +106,8 @@ public class ListingService {
         listing.setHasConcierge24h(request.hasConcierge24h());
         if (request.type() == ListingType.TEM_VAGA) {
             listing.setAvailableSlots(request.availableSlots());
+            listing.setCurrentResidentsMale(request.currentResidentsMale());
+            listing.setCurrentResidentsFemale(request.currentResidentsFemale());
             if (request.genderPreference() != null) {
                 listing.setGenderPreference(request.genderPreference());
             }
@@ -214,9 +213,5 @@ public class ListingService {
         if (BillingService.ADVERTISER_TYPES.contains(type) && !user.isAdvertiser()) {
             throw ApiException.forbidden("Apenas contas de anúncio podem publicar esse tipo de anúncio");
         }
-    }
-
-    private boolean isBlank(String value) {
-        return value == null || value.isBlank();
     }
 }

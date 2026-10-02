@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { Bell, Heart, HeartHandshake, MessageCircle, ShieldCheck, ShieldX, Star, Users } from 'lucide-react'
 import {
   getNotifications,
@@ -33,6 +34,18 @@ function timeAgo(value: string) {
 export default function NotificationBell() {
   const navigate = useNavigate()
   const containerRef = useRef<HTMLDivElement>(null)
+  const [animateContainerRef] = useAutoAnimate<HTMLDivElement>()
+  const [listRef] = useAutoAnimate<HTMLDivElement>()
+  // animateContainerRef já é estável entre renders (useCallback interno do hook); sem o
+  // useCallback aqui, essa função seria recriada a cada render e o React reinvocaria o ref
+  // (null, depois o node) em todo render — o que reinicia o auto-animate em loop infinito.
+  const setContainerRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      containerRef.current = node
+      animateContainerRef(node)
+    },
+    [animateContainerRef],
+  )
   const [open, setOpen] = useState(false)
   const [unread, setUnread] = useState(0)
   const [notifications, setNotifications] = useState<AppNotification[]>([])
@@ -95,7 +108,7 @@ export default function NotificationBell() {
   }
 
   return (
-    <div className="relative" ref={containerRef}>
+    <div className="relative" ref={setContainerRef}>
       <button
         onClick={toggleOpen}
         className="relative rounded-md p-2 text-ink-2 transition hover:bg-surface-sunk hover:text-ink"
@@ -120,7 +133,7 @@ export default function NotificationBell() {
             )}
           </div>
 
-          <div className="max-h-96 divide-y divide-line overflow-y-auto">
+          <div ref={listRef} className="max-h-96 divide-y divide-line overflow-y-auto">
             {notifications.length === 0 ? (
               <p className="px-2 py-6 text-center text-sm text-ink-3">Sem notificações por aqui.</p>
             ) : (

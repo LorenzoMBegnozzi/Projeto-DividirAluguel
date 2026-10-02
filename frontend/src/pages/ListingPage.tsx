@@ -13,6 +13,7 @@ import {
   Clock,
   Dumbbell,
   GraduationCap,
+  Home,
   MapPin,
   Motorbike,
   PartyPopper,
@@ -33,9 +34,8 @@ import {
 import { createPayment, getPlan, goToCheckout } from '../api/billing'
 import { getInterestStatus } from '../api/interest'
 import { apiErrorMessage } from '../api/client'
-import { formatDate, formatMoney } from '../utils/format'
+import { formatDate, formatMoney, formatResidents } from '../utils/format'
 import { useAuth } from '../context/AuthContext'
-import LocationPicker from '../components/LocationPicker'
 import LocationAutocomplete from '../components/LocationAutocomplete'
 import ListingPhotoManager from '../components/ListingPhotoManager'
 import PhotoPicker from '../components/PhotoPicker'
@@ -71,10 +71,9 @@ export default function ListingPage() {
   const [preferredNeighborhood, setPreferredNeighborhood] = useState('')
   const [price, setPrice] = useState('')
   const [availableSlots, setAvailableSlots] = useState('')
+  const [currentResidentsMale, setCurrentResidentsMale] = useState('')
+  const [currentResidentsFemale, setCurrentResidentsFemale] = useState('')
   const [genderPreference, setGenderPreference] = useState<GenderPreference>('QUALQUER')
-  const [address, setAddress] = useState('')
-  const [latitude, setLatitude] = useState<number | null>(null)
-  const [longitude, setLongitude] = useState<number | null>(null)
   const [acceptsPets, setAcceptsPets] = useState<boolean | null>(null)
   const [acceptsSmoker, setAcceptsSmoker] = useState<boolean | null>(null)
   const [bedrooms, setBedrooms] = useState('')
@@ -124,10 +123,9 @@ export default function ListingPage() {
     setPreferredNeighborhood('')
     setPrice('')
     setAvailableSlots('')
+    setCurrentResidentsMale('')
+    setCurrentResidentsFemale('')
     setGenderPreference('QUALQUER')
-    setAddress('')
-    setLatitude(null)
-    setLongitude(null)
     setAcceptsPets(null)
     setAcceptsSmoker(null)
     setBedrooms('')
@@ -151,8 +149,8 @@ export default function ListingPage() {
     setError(null)
     setSaved(false)
 
-    if (latitude == null || longitude == null || !address.trim()) {
-      setError('Marque o local no mapa e informe o endereço')
+    if (!preferredNeighborhood.trim()) {
+      setError('Informe o bairro do imóvel')
       return
     }
 
@@ -177,10 +175,13 @@ export default function ListingPage() {
         nearCollege: '',
         price: price ? Number(price) : null,
         availableSlots: type === 'TEM_VAGA' && availableSlots ? Number(availableSlots) : null,
+        currentResidentsMale: type === 'TEM_VAGA' && currentResidentsMale ? Number(currentResidentsMale) : null,
+        currentResidentsFemale: type === 'TEM_VAGA' && currentResidentsFemale ? Number(currentResidentsFemale) : null,
         genderPreference: type === 'TEM_VAGA' ? genderPreference : 'QUALQUER',
-        address,
-        latitude,
-        longitude,
+        // Por segurança, não coletamos endereço completo nem ponto no mapa — só o bairro.
+        address: null,
+        latitude: null,
+        longitude: null,
         acceptsPets: type === 'ESTABELECIMENTO' ? acceptsPets : null,
         acceptsSmoker: type === 'ESTABELECIMENTO' ? acceptsSmoker : null,
         bedrooms: bedrooms ? Number(bedrooms) : null,
@@ -315,7 +316,7 @@ export default function ListingPage() {
                         <ChevronDown className="h-4 w-4 shrink-0 text-ink-3" aria-hidden="true" />
                       )}
                     </p>
-                    <p className="text-[13px] text-ink-3">{listing.address}</p>
+                    {listing.preferredNeighborhood && <p className="text-[13px] text-ink-3">{listing.preferredNeighborhood}</p>}
                   </button>
                   <div className="flex shrink-0 flex-col items-end gap-2">
                     <div className="flex items-center gap-2">
@@ -365,6 +366,9 @@ export default function ListingPage() {
                         <Fact icon={Users}>
                           {listing.availableSlots} {listing.availableSlots === 1 ? 'vaga disponível' : 'vagas disponíveis'}
                         </Fact>
+                      )}
+                      {formatResidents(listing.currentResidentsMale, listing.currentResidentsFemale) && (
+                        <Fact icon={Home}>{formatResidents(listing.currentResidentsMale, listing.currentResidentsFemale)}</Fact>
                       )}
                       {listing.type === 'TEM_VAGA' && listing.genderPreference !== 'QUALQUER' && (
                         <Fact icon={Users}>{genderPreferenceLabels[listing.genderPreference]}</Fact>
@@ -461,6 +465,11 @@ export default function ListingPage() {
           </div>
 
           <div>
+            <p className="mb-2 text-[13px] text-ink-3">Anúncios com foto recebem muito mais interesse.</p>
+            <PhotoPicker files={photoFiles} onChange={setPhotoFiles} />
+          </div>
+
+          <div>
             <label className="mb-1 block text-[13px] font-semibold text-ink">Bairro do imóvel</label>
             <LocationAutocomplete
               value={preferredNeighborhood}
@@ -468,6 +477,11 @@ export default function ListingPage() {
               placeholder="Ex.: Zona 7"
               className={inputClass}
             />
+            <p className="mt-1 flex items-start gap-1.5 text-[13px] text-ink-3">
+              <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+              Por segurança, usamos só o bairro no anúncio — o endereço completo não é coletado nem mostrado
+              publicamente.
+            </p>
           </div>
 
           <div className={type === 'TEM_VAGA' ? 'grid grid-cols-1 gap-4 sm:grid-cols-2' : undefined}>
@@ -491,6 +505,16 @@ export default function ListingPage() {
               </div>
             )}
           </div>
+
+          {type === 'TEM_VAGA' && (
+            <div>
+              <p className="mb-2 text-[13px] font-semibold text-ink">Quantas pessoas já moram no lugar</p>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <QuantityPicker label="Homens" value={currentResidentsMale} onChange={setCurrentResidentsMale} max={10} />
+                <QuantityPicker label="Mulheres" value={currentResidentsFemale} onChange={setCurrentResidentsFemale} max={10} />
+              </div>
+            </div>
+          )}
 
           {type === 'TEM_VAGA' && (
             <div>
@@ -589,35 +613,6 @@ export default function ListingPage() {
             <BoolToggle label="Playground e brinquedoteca" icon={Baby} value={hasPlayground} onChange={setHasPlayground} />
             <BoolToggle label="Portaria 24 horas" icon={ShieldCheck} value={hasConcierge24h} onChange={setHasConcierge24h} />
           </fieldset>
-
-          <div className="flex flex-col gap-3 rounded-md border border-line bg-surface-sunk p-4">
-            <div>
-              <label className="mb-1 block text-[13px] font-semibold text-ink">Endereço</label>
-              <LocationAutocomplete
-                value={address}
-                onChange={setAddress}
-                onSelectPlace={(place) => {
-                  setLatitude(place.lat)
-                  setLongitude(place.lon)
-                }}
-                placeholder="Rua, número, bairro"
-                className={inputClass}
-              />
-              <p className="mt-1 text-[13px] text-ink-3">
-                Escolha uma sugestão para marcar o local no mapa automaticamente, ou ajuste clicando no mapa.
-              </p>
-            </div>
-            <LocationPicker
-              latitude={latitude}
-              longitude={longitude}
-              onChange={(lat, lng) => {
-                setLatitude(lat)
-                setLongitude(lng)
-              }}
-            />
-          </div>
-
-          <PhotoPicker files={photoFiles} onChange={setPhotoFiles} />
 
           {error && <p className="rounded-md bg-danger-tint px-3 py-2 text-sm text-danger">{error}</p>}
           {saved && <p className="rounded-md bg-leaf-tint px-3 py-2 text-sm text-leaf">Anúncio publicado!</p>}
