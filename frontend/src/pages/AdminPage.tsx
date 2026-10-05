@@ -43,6 +43,8 @@ import { paymentMethodLabels } from '../api/billing'
 import type { PaymentStatus, PaymentType } from '../types'
 import { apiErrorMessage } from '../api/client'
 import { formatDateTime, formatMoney } from '../utils/format'
+import { Alert, Badge, Button, Card, EmptyState, chipClass, cx, fieldClass, pageTitleClass } from '../components/ui'
+import type { BadgeTone } from '../components/ui'
 
 type Tab = 'RESUMO' | 'DENUNCIAS' | 'USUARIOS' | 'ANUNCIOS' | 'PAGAMENTOS'
 
@@ -54,23 +56,16 @@ const TABS: { value: Tab; label: string; icon: LucideIcon }[] = [
   { value: 'PAGAMENTOS', label: 'Pagamentos', icon: Receipt },
 ]
 
-const inputClass =
-  'w-full rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-3 hover:border-ink-2 focus:border-ink focus:ring-2 focus:ring-focus focus:ring-offset-1'
-const buttonClass =
-  'inline-flex h-[34px] shrink-0 items-center justify-center gap-1.5 rounded-md border px-3 text-[13px] font-semibold transition disabled:opacity-60'
-const neutralButton = `${buttonClass} border-line-strong text-ink-2 hover:border-ink hover:text-ink`
-const dangerButton = `${buttonClass} border-danger bg-danger text-on-inverse hover:opacity-90`
-
 export default function AdminPage() {
   const [tab, setTab] = useState<Tab>('RESUMO')
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
-      <h1 className="mb-1 flex items-center gap-2 text-[28px] font-serif font-medium tracking-tight text-ink">
-        <ShieldCheck className="h-7 w-7 text-brand" aria-hidden="true" />
+      <h1 className={cx(pageTitleClass, 'mb-1 flex items-center gap-2')}>
+        <ShieldCheck className="size-7 text-brand" aria-hidden="true" />
         Administração
       </h1>
-      <p className="mb-6 text-sm text-ink-3">Visão geral, denúncias, contas, anúncios e pagamentos. Toda ação fica registrada no log.</p>
+      <p className="mb-6 text-small text-ink-3">Visão geral, denúncias, contas, anúncios e pagamentos. Toda ação fica registrada no log.</p>
 
       <div role="tablist" className="mb-6 flex gap-1 overflow-x-auto border-b border-line">
         {TABS.map(({ value, label, icon: Icon }) => (
@@ -79,11 +74,12 @@ export default function AdminPage() {
             role="tab"
             aria-selected={tab === value}
             onClick={() => setTab(value)}
-            className={`-mb-px flex h-[42px] shrink-0 items-center gap-1.5 border-b-[3px] px-3 text-sm font-semibold transition ${
-              tab === value ? 'border-brand text-ink' : 'border-transparent text-ink-2 hover:text-ink'
-            }`}
+            className={cx(
+              '-mb-px flex h-11 shrink-0 items-center gap-1.5 border-b-3 px-3 text-small font-semibold transition-colors duration-(--dur-fast)',
+              tab === value ? 'border-brand text-ink' : 'border-transparent text-ink-2 hover:text-ink',
+            )}
           >
-            <Icon className="h-4 w-4" aria-hidden="true" />
+            <Icon className="size-4" aria-hidden="true" />
             {label}
           </button>
         ))}
@@ -100,17 +96,11 @@ export default function AdminPage() {
 
 function ErrorBox({ message }: { message: string | null }) {
   if (!message) return null
-  return <p className="mb-4 rounded-md bg-danger-tint px-3 py-2 text-sm text-danger">{message}</p>
-}
-
-function Badge({ tone, children }: { tone: 'danger' | 'brand' | 'leaf' | 'neutral'; children: ReactNode }) {
-  const tones = {
-    danger: 'bg-danger-tint text-danger',
-    brand: 'bg-brand-tint text-brand-strong',
-    leaf: 'bg-leaf-tint text-leaf',
-    neutral: 'bg-surface-sunk text-ink-2',
-  }
-  return <span className={`inline-flex h-6 items-center rounded-sm px-2 text-xs font-bold ${tones[tone]}`}>{children}</span>
+  return (
+    <Alert tone="danger" className="mb-4">
+      {message}
+    </Alert>
+  )
 }
 
 // ------------------------------------------------------------------ Resumo (dashboard)
@@ -155,16 +145,17 @@ function DashboardTab({ onOpen }: { onOpen: (tab: Tab) => void }) {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-ink-3">Números dos últimos {days} dias.</p>
-        <div role="group" aria-label="Período" className="inline-flex rounded-md border border-line-strong p-0.5">
+        <p className="text-small text-ink-3">Números dos últimos {days} dias.</p>
+        <div role="group" aria-label="Período" className="inline-flex rounded-md border border-field bg-surface p-0.5">
           {PERIODS.map((p) => (
             <button
               key={p}
               aria-pressed={days === p}
               onClick={() => setDays(p)}
-              className={`h-[30px] rounded-[5px] px-3 text-[13px] font-semibold transition ${
-                days === p ? 'bg-inverse text-on-inverse' : 'text-ink-2 hover:text-ink'
-              }`}
+              className={cx(
+                'h-8 rounded-sm px-3 text-caption font-semibold transition-colors duration-(--dur-fast) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus',
+                days === p ? 'bg-inverse text-on-inverse' : 'text-ink-2 hover:text-ink',
+              )}
             >
               {p} dias
             </button>
@@ -191,10 +182,10 @@ function DashboardTab({ onOpen }: { onOpen: (tab: Tab) => void }) {
 
 function Panel({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="rounded-lg border border-line bg-surface p-4">
-      <h2 className="mb-3 text-[15px] font-bold text-ink">{title}</h2>
+    <Card as="section" padding="sm">
+      <h2 className="mb-3 text-h3 text-ink">{title}</h2>
       {children}
-    </section>
+    </Card>
   )
 }
 
@@ -236,11 +227,11 @@ function KpiCards({ data }: { data: AdminDashboard }) {
   return (
     <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
       {cards.map((c) => (
-        <div key={c.label} className="rounded-lg border border-line bg-surface p-4">
-          <p className="text-[13px] font-semibold text-ink-3">{c.label}</p>
-          <p className="mt-1 truncate text-[28px] font-extrabold leading-tight text-ink">{c.value}</p>
-          <p className="mt-1 text-xs text-ink-3">{c.detail}</p>
-        </div>
+        <Card key={c.label} padding="sm">
+          <p className="text-caption font-semibold text-ink-3">{c.label}</p>
+          <p className="mt-1 truncate text-h1 tabular-nums text-ink">{c.value}</p>
+          <p className="mt-1 text-caption text-ink-3">{c.detail}</p>
+        </Card>
       ))}
     </div>
   )
@@ -261,8 +252,8 @@ function AttentionList({ data, onOpen }: { data: AdminDashboard; onOpen: (tab: T
   return (
     <Panel title="Precisa de atenção">
       {items.length === 0 ? (
-        <p className="flex items-center gap-2 text-sm text-leaf">
-          <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
+        <p className="flex items-center gap-2 text-small text-leaf">
+          <CheckCircle2 className="size-4" aria-hidden="true" />
           Tudo em dia.
         </p>
       ) : (
@@ -271,12 +262,12 @@ function AttentionList({ data, onOpen }: { data: AdminDashboard; onOpen: (tab: T
             <li key={i.text}>
               <button
                 onClick={() => onOpen(i.tab)}
-                className="flex w-full items-center gap-3 py-2 text-left text-sm text-ink-2 transition hover:text-ink"
+                className="flex min-h-11 w-full items-center gap-3 py-2 text-left text-small text-ink-2 transition-colors duration-(--dur-fast) hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
               >
-                <AlertTriangle className={`h-4 w-4 shrink-0 ${i.urgent ? 'text-danger' : 'text-mel'}`} aria-hidden="true" />
-                <span className="min-w-[2ch] font-bold tabular-nums text-ink">{i.count}</span>
+                <AlertTriangle className={cx('size-4 shrink-0', i.urgent ? 'text-danger' : 'text-mel')} aria-hidden="true" />
+                <span className="min-w-5 font-bold tabular-nums text-ink">{i.count}</span>
                 <span className="flex-1">{i.text}</span>
-                <ChevronRight className="h-4 w-4 shrink-0 text-ink-3" aria-hidden="true" />
+                <ChevronRight className="size-4 shrink-0 text-ink-3" aria-hidden="true" />
               </button>
             </li>
           ))}
@@ -295,14 +286,14 @@ function SignupsChart({ weeks }: { weeks: AdminDashboard['signupsByWeek'] }) {
 
   return (
     <Panel title="Cadastros por semana">
-      <p className="mb-2 h-4 text-xs text-ink-3" aria-live="polite">
+      <p className="mb-2 h-4.5 text-caption text-ink-3" aria-live="polite">
         {active
           ? `Semana de ${shortDate(active.weekStart)}: ${active.total} (${active.renters} procurando, ${active.advertisers} anunciando)`
           : `Máximo: ${max} por semana`}
       </p>
-      <div className="relative h-[140px] border-b border-line-strong" onMouseLeave={() => setHovered(null)}>
+      <div className="relative h-35 border-b border-line-strong" onMouseLeave={() => setHovered(null)}>
         <div className="absolute inset-x-0 top-0 border-t border-dashed border-line" aria-hidden="true" />
-        <div className="absolute inset-0 flex items-end gap-[2px]">
+        <div className="absolute inset-0 flex items-end gap-0.5">
           {weeks.map((w, i) => (
             <button
               key={w.weekStart}
@@ -313,16 +304,17 @@ function SignupsChart({ weeks }: { weeks: AdminDashboard['signupsByWeek'] }) {
               className="flex h-full flex-1 items-end outline-none"
             >
               <span
-                className={`block w-full rounded-t-[4px] bg-brand transition-opacity ${
-                  hovered === null || hovered === i ? '' : 'opacity-40'
-                }`}
+                className={cx(
+                  'block w-full rounded-t-sm bg-brand transition-opacity duration-(--dur-fast)',
+                  hovered === null || hovered === i ? '' : 'opacity-40',
+                )}
                 style={{ height: totals[i] === 0 ? 0 : `max(${(totals[i] / max) * 100}%, 3px)` }}
               />
             </button>
           ))}
         </div>
       </div>
-      <div className="mt-1 flex gap-[2px] text-[11px] tabular-nums text-ink-3">
+      <div className="mt-1 flex gap-0.5 text-micro tabular-nums text-ink-3">
         {weeks.map((w, i) => (
           <span key={w.weekStart} className="flex-1 whitespace-nowrap">
             {i % labelEvery === 0 ? shortDate(w.weekStart) : ''}
@@ -338,12 +330,12 @@ function RevenueBreakdown({ data }: { data: AdminDashboard }) {
   return (
     <Panel title="Faturamento por meio de pagamento">
       {data.revenueByMethod.length === 0 ? (
-        <p className="text-sm text-ink-3">Nenhuma venda no período.</p>
+        <EmptyState title="Nenhuma venda no período." />
       ) : (
         <ul className="space-y-3">
           {data.revenueByMethod.map((m) => (
             <li key={m.method}>
-              <div className="mb-1 flex justify-between gap-2 text-sm">
+              <div className="mb-1 flex justify-between gap-2 text-small">
                 <span className="text-ink-2">{methodLabel(m.method)}</span>
                 <span className="text-ink">
                   {formatMoney(m.amount)} <span className="text-ink-3">({m.count})</span>
@@ -358,8 +350,8 @@ function RevenueBreakdown({ data }: { data: AdminDashboard }) {
       )}
       {data.revenueByType.length > 0 && (
         <div className="mt-4 border-t border-line pt-3">
-          <p className="mb-1 text-xs font-semibold text-ink-3">Por produto</p>
-          <ul className="space-y-1 text-sm">
+          <p className="mb-1 text-caption font-semibold text-ink-3">Por produto</p>
+          <ul className="space-y-1 text-small">
             {data.revenueByType.map((t) => (
               <li key={t.type} className="flex justify-between gap-2">
                 <span className="text-ink-2">{paymentTypeLabels[t.type] ?? t.type}</span>
@@ -379,11 +371,11 @@ function NeighborhoodsTable({ rows }: { rows: AdminDashboard['topNeighborhoods']
   return (
     <Panel title="Bairros com mais anúncios no ar">
       {rows.length === 0 ? (
-        <p className="text-sm text-ink-3">Nenhum anúncio com bairro informado.</p>
+        <EmptyState title="Nenhum anúncio com bairro informado." />
       ) : (
-        <table className="w-full text-sm">
+        <table className="w-full text-small">
           <thead>
-            <tr className="text-left text-xs text-ink-3">
+            <tr className="text-left text-caption text-ink-3">
               <th className="pb-2 font-semibold">Bairro</th>
               <th className="pb-2 text-right font-semibold">Anúncios</th>
               <th className="pb-2 text-right font-semibold">Preço médio</th>
@@ -436,9 +428,7 @@ function ReportsTab() {
           <button
             key={f.label}
             onClick={() => setStatus(f.value)}
-            className={`h-[34px] rounded-sm border px-3 text-[13px] font-semibold transition ${
-              status === f.value ? 'border-inverse bg-inverse text-on-inverse' : 'border-line-strong bg-surface text-ink-2 hover:border-ink'
-            }`}
+            className={chipClass({ pressed: status === f.value })}
           >
             {f.label}
           </button>
@@ -449,7 +439,7 @@ function ReportsTab() {
       {!reports ? (
         <p className="text-ink-3">Carregando…</p>
       ) : reports.length === 0 ? (
-        <p className="rounded-lg border border-line bg-surface p-6 text-center text-ink-3">Nenhuma denúncia aqui.</p>
+        <EmptyState title="Nenhuma denúncia aqui." />
       ) : (
         <div className="flex flex-col gap-3">
           {reports.map((report) => (
@@ -488,16 +478,16 @@ function ReportCard({ report, onChange }: { report: AdminReport; onChange: (r: A
   const open = report.status === 'ABERTA'
 
   return (
-    <div className="rounded-lg border border-line bg-surface p-4">
+    <Card padding="sm">
       <div className="mb-2 flex flex-wrap items-center gap-1.5">
-        <Badge tone={open ? 'danger' : report.status === 'RESOLVIDA' ? 'leaf' : 'neutral'}>{reportStatusLabels[report.status]}</Badge>
+        <Badge tone={open ? 'danger' : report.status === 'RESOLVIDA' ? 'success' : 'neutral'}>{reportStatusLabels[report.status]}</Badge>
         <Badge tone="brand">{reportReasonLabels[report.reason]}</Badge>
-        <span className="text-xs text-ink-3">
+        <span className="text-caption text-ink-3">
           #{report.id} · {formatDateTime(report.createdAt)}
         </span>
       </div>
 
-      <p className="mb-2 text-sm text-ink-2">
+      <p className="mb-2 text-small text-ink-2">
         <Link to={`/usuarios/${report.reporter.id}`} className="font-semibold text-ink hover:text-brand">
           {report.reporter.name}
         </Link>{' '}
@@ -512,37 +502,40 @@ function ReportCard({ report, onChange }: { report: AdminReport; onChange: (r: A
           </span>
         )}
       </p>
-      <p className="mb-2 text-[13px] text-ink-3">
+      <p className="mb-2 text-caption text-ink-3">
         {report.reported.reportsReceived} denúncia(s) contra essa conta no total
         {report.conversationId && ` · feita a partir da conversa #${report.conversationId}`}
       </p>
-      {report.description && <p className="mb-3 rounded-md bg-surface-sunk px-3 py-2 text-sm text-ink-2">“{report.description}”</p>}
+      {report.description && (
+        <Card as="p" tone="sunk" padding="sm" className="mb-3 text-small text-ink-2">
+          “{report.description}”
+        </Card>
+      )}
 
       {open ? (
         <div className="flex flex-col gap-2 border-t border-line pt-3">
-          <input value={note} onChange={(e) => setNote(e.target.value)} maxLength={1000} placeholder="Nota da moderação (opcional)" className={inputClass} />
+          <input value={note} onChange={(e) => setNote(e.target.value)} maxLength={1000} placeholder="Nota da moderação (opcional)" className={fieldClass()} />
           <div className="flex flex-wrap gap-2">
-            <button onClick={() => close('RESOLVIDA', true)} disabled={busy || report.reported.blocked} className={dangerButton}>
-              <Ban className="h-3.5 w-3.5" aria-hidden="true" />
+            <Button size="sm" variant="danger" icon={Ban} onClick={() => close('RESOLVIDA', true)} disabled={busy || report.reported.blocked}>
               Bloquear conta e resolver
-            </button>
-            <button onClick={() => close('RESOLVIDA', false)} disabled={busy} className={neutralButton}>
+            </Button>
+            <Button size="sm" variant="secondary" onClick={() => close('RESOLVIDA', false)} disabled={busy}>
               Resolver sem bloquear
-            </button>
-            <button onClick={() => close('DESCARTADA', false)} disabled={busy} className={neutralButton}>
+            </Button>
+            <Button size="sm" variant="secondary" onClick={() => close('DESCARTADA', false)} disabled={busy}>
               Descartar
-            </button>
+            </Button>
           </div>
           <ErrorBox message={error} />
         </div>
       ) : (
-        <p className="border-t border-line pt-3 text-[13px] text-ink-3">
+        <p className="border-t border-line pt-3 text-caption text-ink-3">
           {reportStatusLabels[report.status]} por {report.resolvedByName ?? '—'}
           {report.resolvedAt && ` em ${formatDateTime(report.resolvedAt)}`}
           {report.adminNote && ` · “${report.adminNote}”`}
         </p>
       )}
-    </div>
+    </Card>
   )
 }
 
@@ -556,11 +549,10 @@ function SearchBar({ placeholder, onSearch }: { placeholder: string; onSearch: (
   }
   return (
     <form onSubmit={submit} className="mb-4 flex gap-2">
-      <input value={term} onChange={(e) => setTerm(e.target.value)} placeholder={placeholder} className={inputClass} />
-      <button type="submit" className={neutralButton}>
-        <Search className="h-3.5 w-3.5" aria-hidden="true" />
+      <input value={term} onChange={(e) => setTerm(e.target.value)} placeholder={placeholder} className={fieldClass()} />
+      <Button type="submit" variant="secondary" icon={Search} className="shrink-0">
         Buscar
-      </button>
+      </Button>
     </form>
   )
 }
@@ -584,7 +576,7 @@ function UsersTab() {
       {!users ? (
         <p className="text-ink-3">Carregando…</p>
       ) : users.length === 0 ? (
-        <p className="rounded-lg border border-line bg-surface p-6 text-center text-ink-3">Ninguém encontrado.</p>
+        <EmptyState title="Ninguém encontrado." />
       ) : (
         <div className="flex flex-col gap-2">
           {users.map((user) => (
@@ -617,7 +609,7 @@ function UserRow({ user, onChange }: { user: AdminUser; onChange: (u: AdminUser)
   }
 
   return (
-    <div className="rounded-lg border border-line bg-surface p-3">
+    <Card padding="sm">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="flex flex-wrap items-center gap-1.5 font-semibold text-ink">
@@ -628,23 +620,22 @@ function UserRow({ user, onChange }: { user: AdminUser; onChange: (u: AdminUser)
             {user.blocked && <Badge tone="danger">bloqueada</Badge>}
             {user.reportsReceived > 0 && <Badge tone="danger">{user.reportsReceived} denúncia(s)</Badge>}
           </p>
-          <p className="truncate text-[13px] text-ink-3">
+          <p className="truncate text-caption text-ink-3">
             {user.email} · desde {formatDateTime(user.createdAt)} · {[user.renter && 'procura', user.advertiser && 'anuncia'].filter(Boolean).join(' e ')} ·{' '}
             {user.activeListings} anúncio(s) ativo(s)
           </p>
-          {user.blocked && user.blockReason && <p className="mt-1 text-[13px] text-danger">Motivo: {user.blockReason}</p>}
+          {user.blocked && user.blockReason && <p className="mt-1 text-caption text-danger">Motivo: {user.blockReason}</p>}
         </div>
         {!user.admin &&
           (user.blocked ? (
-            <button onClick={() => run(() => unblockAdminUser(user.id))} disabled={busy} className={neutralButton}>
+            <Button size="sm" variant="secondary" className="shrink-0" onClick={() => run(() => unblockAdminUser(user.id))} disabled={busy}>
               Desbloquear
-            </button>
+            </Button>
           ) : (
             !blocking && (
-              <button onClick={() => setBlocking(true)} className={neutralButton}>
-                <Ban className="h-3.5 w-3.5" aria-hidden="true" />
+              <Button size="sm" variant="secondary" icon={Ban} className="shrink-0" onClick={() => setBlocking(true)}>
                 Bloquear
-              </button>
+              </Button>
             )
           ))}
       </div>
@@ -664,20 +655,20 @@ function UserRow({ user, onChange }: { user: AdminUser; onChange: (u: AdminUser)
             onChange={(e) => setReason(e.target.value)}
             maxLength={500}
             placeholder="Motivo do bloqueio (obrigatório)"
-            className={inputClass}
+            className={fieldClass()}
           />
           <div className="flex gap-2">
-            <button type="submit" disabled={busy || !reason.trim()} className={dangerButton}>
+            <Button type="submit" variant="danger" disabled={busy || !reason.trim()}>
               Confirmar bloqueio
-            </button>
-            <button type="button" onClick={() => setBlocking(false)} className={neutralButton}>
+            </Button>
+            <Button type="button" variant="secondary" onClick={() => setBlocking(false)}>
               Cancelar
-            </button>
+            </Button>
           </div>
         </form>
       )}
       <ErrorBox message={error} />
-    </div>
+    </Card>
   )
 }
 
@@ -717,11 +708,11 @@ function ListingsTab() {
       {!listings ? (
         <p className="text-ink-3">Carregando…</p>
       ) : listings.length === 0 ? (
-        <p className="rounded-lg border border-line bg-surface p-6 text-center text-ink-3">Nenhum anúncio encontrado.</p>
+        <EmptyState title="Nenhum anúncio encontrado." />
       ) : (
         <div className="flex flex-col gap-2">
           {listings.map((listing) => (
-            <div key={listing.id} className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-line bg-surface p-3">
+            <Card key={listing.id} padding="sm" className="flex flex-wrap items-center justify-between gap-2">
               <div className="min-w-0">
                 <p className="flex flex-wrap items-center gap-1.5 font-semibold text-ink">
                   {listing.active ? (
@@ -736,7 +727,7 @@ function ListingsTab() {
                   {listing.active && !listing.available && <Badge tone="neutral">indisponível</Badge>}
                   {listing.highlighted && <Badge tone="brand">destaque</Badge>}
                 </p>
-                <p className="text-[13px] text-ink-3">
+                <p className="text-caption text-ink-3">
                   de{' '}
                   <Link to={`/usuarios/${listing.ownerId}`} className="hover:text-brand">
                     {listing.ownerName}
@@ -745,11 +736,11 @@ function ListingsTab() {
                 </p>
               </div>
               {listing.active && (
-                <button onClick={() => deactivate(listing)} disabled={busyId === listing.id} className={neutralButton}>
+                <Button size="sm" variant="secondary" className="shrink-0" onClick={() => deactivate(listing)} disabled={busyId === listing.id}>
                   Tirar do ar
-                </button>
+                </Button>
               )}
-            </div>
+            </Card>
           ))}
         </div>
       )}
@@ -792,9 +783,7 @@ function PaymentsTab() {
           <button
             key={f.label}
             onClick={() => setStatus(f.value)}
-            className={`h-[34px] rounded-sm border px-3 text-[13px] font-semibold transition ${
-              status === f.value ? 'border-inverse bg-inverse text-on-inverse' : 'border-line-strong bg-surface text-ink-2 hover:border-ink'
-            }`}
+            className={chipClass({ pressed: status === f.value })}
           >
             {f.label}
           </button>
@@ -804,7 +793,7 @@ function PaymentsTab() {
       {!payments ? (
         <p className="text-ink-3">Carregando…</p>
       ) : payments.length === 0 ? (
-        <p className="rounded-lg border border-line bg-surface p-6 text-center text-ink-3">Nenhum pagamento aqui.</p>
+        <EmptyState title="Nenhum pagamento aqui." />
       ) : (
         <div className="flex flex-col gap-2">
           {payments.map((payment) => (
@@ -841,10 +830,10 @@ function PaymentRow({ payment, onChange }: { payment: AdminPayment; onChange: (p
     }
   }
 
-  const tone = payment.status === 'PAGO' ? 'leaf' : payment.status === 'PENDENTE' ? 'brand' : 'neutral'
+  const tone: BadgeTone = payment.status === 'PAGO' ? 'success' : payment.status === 'PENDENTE' ? 'brand' : 'neutral'
 
   return (
-    <div className="rounded-lg border border-line bg-surface p-3">
+    <Card padding="sm">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="flex flex-wrap items-center gap-1.5 font-semibold text-ink">
@@ -853,7 +842,7 @@ function PaymentRow({ payment, onChange }: { payment: AdminPayment; onChange: (p
             {payment.status === 'PAGO' && payment.withinWithdrawalPeriod && <Badge tone="brand">no prazo de 7 dias</Badge>}
             {!payment.gateway && <Badge tone="neutral">simulado</Badge>}
           </p>
-          <p className="truncate text-[13px] text-ink-3">
+          <p className="truncate text-caption text-ink-3">
             #{payment.id} ·{' '}
             <Link to={`/usuarios/${payment.userId}`} className="hover:text-brand">
               {payment.userName}
@@ -863,17 +852,16 @@ function PaymentRow({ payment, onChange }: { payment: AdminPayment; onChange: (p
             {payment.paidAt && ` · pago em ${formatDateTime(payment.paidAt)}`}
           </p>
           {payment.status === 'REEMBOLSADO' && (
-            <p className="mt-1 text-[13px] text-ink-2">
+            <p className="mt-1 text-caption text-ink-2">
               Reembolsado{payment.refundedAt && ` em ${formatDateTime(payment.refundedAt)}`}
               {payment.refundReason && ` · “${payment.refundReason}”`}
             </p>
           )}
         </div>
         {payment.status === 'PAGO' && !refunding && (
-          <button onClick={() => setRefunding(true)} className={neutralButton}>
-            <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
+          <Button size="sm" variant="secondary" icon={RotateCcw} className="shrink-0" onClick={() => setRefunding(true)}>
             Reembolsar
-          </button>
+          </Button>
         )}
       </div>
 
@@ -885,7 +873,7 @@ function PaymentRow({ payment, onChange }: { payment: AdminPayment; onChange: (p
           }}
           className="mt-3 flex flex-col gap-2 border-t border-line pt-3"
         >
-          <p className="text-[13px] text-ink-3">
+          <p className="text-caption text-ink-3">
             {payment.type === 'DESTAQUE'
               ? 'O anúncio perde os dias de destaque deste pagamento.'
               : payment.listingId
@@ -900,20 +888,20 @@ function PaymentRow({ payment, onChange }: { payment: AdminPayment; onChange: (p
               onChange={(e) => setReason(e.target.value)}
               maxLength={500}
               placeholder="Motivo do reembolso (obrigatório)"
-              className={inputClass}
+              className={fieldClass()}
             />
             <div className="flex gap-2">
-              <button type="submit" disabled={busy || !reason.trim()} className={dangerButton}>
+              <Button type="submit" variant="danger" disabled={busy || !reason.trim()}>
                 {busy ? 'Reembolsando…' : 'Confirmar reembolso'}
-              </button>
-              <button type="button" onClick={() => setRefunding(false)} className={neutralButton}>
+              </Button>
+              <Button type="button" variant="secondary" onClick={() => setRefunding(false)}>
                 Cancelar
-              </button>
+              </Button>
             </div>
           </div>
         </form>
       )}
       <ErrorBox message={error} />
-    </div>
+    </Card>
   )
 }
