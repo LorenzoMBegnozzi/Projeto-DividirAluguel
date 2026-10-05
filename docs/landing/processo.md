@@ -450,3 +450,62 @@ O botão "−" fica desabilitado em 1 e o "+" em 10.
 
 - **Recursos:** `capturas/bp-recursos-{1440, 1440-escuro, 768, 390}.png`.
 - **Preços:** `capturas/bp-precos-{1440, 1440-escuro, 768, 390}.png` e `bp-precos-1440-simulador.png`.
+
+---
+
+# Design system (Etapas 1–3)
+
+Guia em vigor: [10-DESIGN-SYSTEM.md](../10-DESIGN-SYSTEM.md), Parte A. Antes e depois de 18 telas (390/1440, claro/escuro) em `capturas/design-system/{antes,depois,comparativos}/`.
+
+## O que mudou
+
+- **Etapa 1 (auditoria):** 24 variações de botão, 7 `inputClass`, 17 cartões, modal copiado 6 vezes, 106 `text-[13px]`, serifa em 15 arquivos, 5 cores reprovadas no AA. Tudo registrado na Parte B do guia.
+- **Etapa 2 (base):**
+  - Escalas no `@theme`: tipografia nomeada, raio, sombra, curvas; camadas e durações em `:root`.
+  - Cores corrigidas para o AA, `--color-field` para borda de campo.
+  - 12 primitivos em `components/ui`, galeria `/dev/ui` (só em dev).
+  - `scripts/check-design.mjs` ligado ao `npm run lint`.
+- **Etapa 2b (tipografia):**
+  - Uma família só (Schibsted 400–800, sem Fraunces e sem o 900).
+  - Fallback com métricas ajustadas para não pular o layout.
+  - `--font-mono`.
+- **Etapa 2c (marca):**
+  - `Logo` com tamanho/variante/tom fixos e `LogoLink` para a home certa, no topo de todas as telas de autenticação e de fluxo isolado.
+  - Favicon, PWA e apple-touch-icon regenerados da geometria da `LogoMark` (`scripts/gen-icons.mjs`); o favicon tem versão escura.
+  - `theme-color` por tema (metas com `media` + `ThemeContext`); `public/icons.svg`, sobra do Vite, removido.
+- **Etapa 3 (migração), na ordem pedida, um commit por grupo:** componentes compartilhados → autenticação/onboarding (+ marca) → busca/anúncios → conversas → perfil/pagamentos → admin → landing e páginas legais.
+  - As telas foram migradas em paralelo por agentes, cada um com arquivos exclusivos e o mesmo guia "de → para" ([design-system-migracao.md](../design-system-migracao.md)); a revisão e os commits foram feitos aqui.
+  - **Landing:** `home.css` e `phone.css` consomem só tokens.
+    - Texto de interface → escala nomeada (ganhou `text-lead` e `text-price`).
+    - Arte decorativa → tokens de ilustração `--art-*`/`--device-*`, para não deformar desenhos feitos em 10,5/11,5/12,5 px. O tema escuro do aparelho virou variável (sumiram 6 regras `:root[data-theme='dark'] .p3-*`).
+- **Resultado:** checagem de 236 violações → 0. Bundle total (JS+CSS gzip) +0,6%; CSS sozinho +9,5% (2,1 kB) — detalhe no guia, A5.
+
+## O que foi pulado (mudaria comportamento)
+
+- **`aria-pressed` não foi acrescentado** onde não existia (filtros do admin, "Busco vaga/imóvel", "Tenho interesse", ChipPicker do onboarding/perfil). Por isso esses usam `chipClass()`/`Button` e não `<Chip>`. Fica como melhoria de acessibilidade separada.
+- **`aria-label` que faltava não foi criado:** setas de voltar/abrir conversa, campo de mensagem do chat, campos do login/cadastro só com placeholder, Denunciar/Bloquear só com `title`.
+- **Altura do chat (`h-[calc(100vh-124px)]`)** ficou; trocar por `dvh` muda layout.
+- **"voltar" do detalhe de anúncio** continua indo para `/conversas` (parece errado, mas é rota).
+- **Lixeira das fotos** continua aparecendo só no hover (agora também no foco de teclado); em toque segue pequena.
+- **`PaymentReturnPage`** e Confirmar e-mail logado não ganharam logo grande: a NavBar já está lá.
+- **Manifest do PWA** continua com `theme_color` claro: o formato não aceita cor por tema.
+
+## Mudanças visuais que valem conferir
+
+- Seleção de chip/quantidade/garagem: de escuro (`inverse`) para azul-claro da marca (`brand-tint`), em todo o app.
+- Carro/Moto no anúncio viraram pílulas com ícone ao lado (antes, blocos 64×88).
+- Status "Cancelado" em pagamentos agora é vermelho (era cinza).
+- Bolha do próprio usuário no chat: de escuro para `brand`, igual à arte da landing.
+- No Login, Cadastro e Onboarding o logo saiu de dentro do cartão e foi para cima dele, como link (o nome acessível do h1 do login passou a ser "RachaAi, página inicial").
+- Campos de texto de avaliação seguem a altura mínima do sistema (96 px), um pouco mais altos.
+
+## O que deu errado
+
+1. **A própria checagem tinha um bug:** `font-size:\s*(?!var\()` deixava o `\s*` casar com zero espaços, e aí `font-size: var(--x)` era apontado. Toda regra de CSS dava falso positivo depois da troca por tokens. O espaço passou para dentro do lookahead (`font-size:(?!\s*var\()`).
+2. **O oxlint não roda no Node do host (20.11) e não roda no Docker com o `node_modules` montado** (binário nativo do Windows). Os agentes e a bateria final usaram `npm ci` dentro de um `node:22-alpine` numa cópia do projeto.
+3. **O heredoc do bash quebrou** com aspas simples dentro de seletores (`[data-theme='dark']`) em scripts Python longos. Os scripts de troca foram gravados como arquivo e executados.
+4. **O primeiro script do `home.css` parou no meio** (`KeyError: '999'`): o mapa de raios não tinha a pílula de 999 px. Parou antes de gravar, então nada ficou pela metade.
+5. **`--radius-xs` não existia de verdade:** a bolha do TypingIndicator usava o padrão do Tailwind (2 px), que só é emitido se usado. Foi declarado no `@theme` (4 px, o valor que a arte já usava).
+6. **Comparação de bundle justa:** a medida "antes" da auditoria era de outra ferramenta. O "antes" foi refeito buildando o commit `84f5b97` no mesmo contêiner, com o mesmo `gzip`, e os números ficaram ~0,4% acima dos da auditoria.
+7. **O ambiente em :8082 servia o build antigo.** Foi preciso reconstruir o contêiner do frontend antes das capturas "depois".
+8. **O ImageMagick do alpine não tinha fonte**, então as montagens antes/depois falharam no rótulo. Resolvido com `font-dejavu` + `fontconfig`.

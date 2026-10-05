@@ -1,6 +1,167 @@
 # 10 — Design system
 
-> **Etapa 1: auditoria** (estado de 05/10/2026, antes de qualquer mudança). O guia final, com tokens e primitivos, fica na segunda parte deste documento, quando a migração terminar.
+Este documento tem duas partes. A **Parte A** é o guia em vigor: tokens, primitivos, marca e o que é proibido. A **Parte B** é a auditoria de 05/10/2026, feita antes da migração e mantida como histórico.
+
+- **Galeria viva:** `/dev/ui` (só com `npm run dev`; a rota não entra no build). Mostra os primitivos e a marca nos dois temas, lado a lado.
+- **Checagem:** `npm run lint` roda o oxlint e `scripts/check-design.mjs`, e falha se voltar estilo solto. `npm run lint:design -- --report` mostra só a contagem.
+- **Migração tela a tela:** a tabela "de → para" usada na Etapa 3 está em [design-system-migracao.md](design-system-migracao.md).
+- **Capturas:** antes e depois de 18 telas em 390/1440, claro/escuro, em [capturas/design-system/](capturas/design-system/). As montagens lado a lado ficam em `comparativos/` e são geradas por `montar-comparativos.sh`.
+
+---
+
+# Parte A — Guia
+
+## A1. Tokens (`frontend/src/index.css`)
+
+Tudo que tem namespace no Tailwind 4 fica no `@theme` e vira utilitário (`text-h2`, `bg-brand`, `rounded-xl`, `shadow-md`). O que não tem namespace fica em `:root`, como variável, e é usado com a sintaxe de propriedade: `z-(--z-modal)`, `duration-(--dur-base)`.
+
+### Cor
+
+Cada papel tem a sua versão para os temas claro e escuro, ambas conferidas no AA: texto com pelo menos 4,5:1, borda de campo e foco com pelo menos 3:1.
+
+| Papel | Token | Uso |
+|---|---|---|
+| Fundos | `paper` · `surface` · `surface-sunk` | página · cartão · painel interno, trilho e campo desabilitado |
+| Linhas | `line` · `line-strong` · `field` | divisória e borda de cartão · hover e destaque · **borda de campo e controle** (3:1) |
+| Texto | `ink` · `ink-2` · `ink-3` | título · corpo · apoio e metadado (todos AA no `paper` e no `surface`) |
+| Marca | `brand` · `brand-strong` · `brand-tint` · `on-brand` | ação principal · texto sobre o tint · seleção e info · texto sobre `brand` |
+| Segundo tom | `coral` · `coral-strong` · `coral-tint` | lado "anunciar" e chamadas de destaque |
+| Só marca | `coral-bright` | metade coral do logo e ilustração. **Nunca em texto** (não passa no AA) |
+| Estados | `leaf` / `mel` / `danger` (+ `-tint`) · `star` | sucesso / aviso / erro · estrelas da avaliação |
+| Outros | `inverse` · `on-inverse` · `scrim` · `focus` | botão e selo escuros · véu do modal · anel de foco |
+
+### Tipografia
+
+A família é uma só, Schibsted Grotesk (pesos 400 a 800, `display=swap`), com uma fonte de fallback de métricas ajustadas para o texto não pular quando a fonte carrega. Para CPF e código, `font-mono`.
+
+| Token | Tamanho / altura de linha | Uso |
+|---|---|---|
+| `text-display` | 42–76 px fluido, 800 | título do topo da landing |
+| `text-landing-h2` | 32–48 px fluido, 800 | título de seção da landing |
+| `text-price` | 52 px, 800 | preço grande da seção Preços |
+| `text-h1` | 28→32 px, 800 | título de tela (`pageTitleClass`) |
+| `text-h2` | 24/30, 800 | título de seção, de modal e de cartão de autenticação |
+| `text-h3` | 18/24, 700 | título de cartão |
+| `text-lead` | 18/28 | parágrafo de abertura (landing) |
+| `text-body` | 16/24 | texto corrido, campo, mensagem de chat |
+| `text-small` | 14/20 | texto de apoio, botão, item de lista |
+| `text-caption` | 13/18 | legenda, metadado, ajuda e erro de campo |
+| `text-label` | 12/16, 800, 0,12em | kicker em caixa alta (`kickerClass`) |
+| `text-micro` | 11/14 | só selo e contador; nunca texto corrido |
+| `text-logo-sm/md/lg` | 16 / 20 / 28 | nome no `Logo`; não use fora dele |
+
+O peso e o espaçamento vêm do token. Só acrescente `font-*` quando o desenho pedir de fato, por exemplo `font-semibold` num rótulo.
+
+### Raio, sombra, camada e movimento
+
+- **Raio:**
+  - `rounded-xs` (4): o "rabinho" da bolha;
+  - `-sm` (8): selo e tag;
+  - `-md` (12): botão, campo e item;
+  - `-lg` (16): painel interno e popover;
+  - `-xl` (22): cartão e modal;
+  - `rounded-full`: pílula e avatar.
+- **Sombra:** `shadow-sm` para o cartão em repouso, `shadow-md` para o hover e `shadow-lg` para popover, menu e modal. O tema escuro troca os valores sozinho.
+- **Camada:**
+  - `--z-raised` 10;
+  - `--z-sticky` 20 (NavBar e BottomNav);
+  - `--z-dropdown` 30 (notificações e autocomplete);
+  - `--z-overlay` 40 (palco 3D da landing);
+  - `--z-modal` 50 (modal e cabeçalho fixo da landing);
+  - `--z-toast` 60.
+- **Movimento:** `--dur-fast` 150 ms, `--dur-base` 250 ms e `--dur-slow` 400 ms. As curvas são `ease-standard`, `ease-out` e `ease-spring`. Toda animação tem `motion-reduce:` ou fica dentro de `@media (prefers-reduced-motion)`.
+
+### Ilustração (`--art-*`, `--device-*`, `--radius-device*`)
+
+São tokens só para arte decorativa com `aria-hidden`: a tela e o corpo do celular 3D e as mini-ilustrações do mosaico e da demonstração da landing. Eles não viram utilitário e **não podem ser usados em interface**.
+
+- **Tamanhos de letra fracionados:** `--art-text-2xs` a `-xl`. A arte foi desenhada nesses tamanhos, e arredondar deformaria os desenhos.
+- **"Fotos" de anúncio desenhadas:** `--art-photo-a…d`.
+- **Sombras duras de objeto flutuando:** `--art-shadow-*` e `--art-drop-*`.
+- **Cores do aparelho em grafite:** `--device-*`. O tema escuro clareia o corpo para ele não sumir no fundo.
+
+## A2. Primitivos (`frontend/src/components/ui/`)
+
+Importe de `components/ui`. Quando o elemento não pode virar o componente (um `<a href>` externo, um `<button>` que já tem outro papel), use a função de classe equivalente, como `buttonClass()`, `fieldClass()`, `cardClass()` ou `chipClass()`.
+
+| Primitivo | Quando usar | Notas |
+|---|---|---|
+| `Button` / `ButtonLink` | Toda ação. Variantes: `primary` (uma por tela), `secondary` (contorno), `ghost` (ação de linha ou ícone), `danger`, `accent` (anunciar), `inverse` | Tamanhos `sm` 36 px (vira 44 em tela de toque), `md` 44 px e `lg` 52 px. Só ícone: `icon` + `aria-label`. Use `loading` só se o texto não muda |
+| `Input` / `Textarea` / `Select` / `Checkbox` | Campo **com rótulo visível** | Ligam o label, a dica e o erro com `aria-describedby`. Sem rótulo, use `fieldClass()` no elemento |
+| `Toggle` | Liga/desliga com efeito imediato | `role="switch"` |
+| `Card` | Cartão de conteúdo. `tone`: `surface`, `sunk` (painel interno), `danger` ou `brand`. `padding`: `sm`, `md` ou `lg`. `as` muda a tag | Para cartão clicável, use `interactive` |
+| `Modal` | Diálogo | Foca o painel e devolve o foco ao fechar. Esc só fecha se você passar `onEscape` |
+| `Chip` | Escolha com estado (`aria-pressed`) | Se o botão original não tinha `aria-pressed`, use `chipClass()` |
+| `Badge` | Rótulo de status ou tipo, não clicável | `tone`: neutral, brand, success, warning, danger, accent, inverse |
+| `Alert` | Aviso dentro da página: info, success, warning, danger | Não acrescenta `role`. Ponha `role="alert"` só onde o anúncio é desejado |
+| `EmptyState` | Lista ou área vazia | O título é a frase de vazio; a explicação vai em children |
+| `Skeleton` | Espaço reservado durante o carregamento | Tem `aria-hidden` |
+
+Atalhos de classe:
+- `pageTitleClass` (h1 de tela);
+- `kickerClass`;
+- `labelClass`, `hintClass`, `errorClass`;
+- `focusRing` (para `<button>` e `<a>` que não são primitivos);
+- `cx` (junta classes **sem** merge: para vencer a classe da variante, use o modificador `!`).
+
+## A3. Marca
+
+- **Componentes (`components/Logo.tsx`):**
+  - `Logo size="sm|md|lg" variant="full|mark" tone="auto|inverse"`;
+  - `LogoMark`, que é só a casa;
+  - `LogoLink`, que leva para a landing quem está deslogado e para a home do app quem está logado, e tem `aria-label`.
+- **Tamanhos:**
+  - `sm` (ícone 20 / texto 16): cabeçalho compacto;
+  - `md` (28/20): NavBar e cabeçalho/rodapé da landing;
+  - `lg` (36/28): topo das telas de autenticação e de fluxo isolado (Login, Cadastro, Esqueci/Redefinir senha, Confirmar e-mail deslogado, Onboarding).
+- **Respiro mínimo:** metade da altura do ícone em volta, sem texto nem borda nesse espaço.
+- **Tamanho mínimo:** ícone de 20 px na tela e 16 px no favicon.
+- **Cores:** o "Ai" usa `brand` e as metades da casa usam `brand` e `coral-bright`. No tema escuro o componente troca sozinho; sobre fundo escuro fixo, use `tone="inverse"`.
+- **Ícones:**
+  - `public/favicon.svg` é a mesma geometria da `LogoMark` (viewBox 26) e tem versão escura por `prefers-color-scheme` dentro do SVG.
+  - Os PNG do PWA e o `apple-touch-icon` saem de `public/pwa-icon.svg` com `node scripts/gen-icons.mjs`.
+  - Nos ícones "maskable" a casa ocupa 50% do lado, dentro da zona segura; no apple-touch-icon, 60%.
+- **Cor da barra do navegador:**
+  - `index.html` tem duas metas `theme-color` com `media` (claro `#faf7f2`, escuro `#1a2228`).
+  - O `ThemeContext` reescreve as duas com o `--color-paper` do tema escolhido à mão.
+  - O manifest não aceita cor por tema, então fica a clara, igual ao splash.
+
+## A4. Proibido (a checagem falha)
+
+| Regra | O que pega | Em vez disso |
+|---|---|---|
+| `cor` | hex, `rgb()` ou `hsl()` fora de `src/index.css` | token `--color-*` (ou `--art-*`/`--device-*` em ilustração) |
+| `style` | `style={{}}` com cor, espaço, tipografia, borda, sombra ou camada | classe com token. Largura e altura dinâmicas, `transform`, `opacity`, `animationDelay` e variáveis `--x` continuam permitidos |
+| `paleta-crua` | `bg-gray-*`, `text-white`, `border-blue-500`… | token de cor |
+| `arbitrario` | `text-[…]`, `leading-[…]`, `tracking-[…]`, `rounded-[…]`, `shadow-[…]`, `z-[…]`, `font-[…]`, `bg-[#…]` | nível da escala |
+| `serif` | `font-serif` | nada: tudo é sans |
+| `css-*` | no CSS fora do `index.css`: `font-size`, `font-family`, `z-index` (além de -1/0/1/auto) e `border-radius` em px sem `var()` | `var(--text-*)`, `var(--font-*)`, `var(--z-*)`, `var(--radius-*)` |
+
+Além da checagem, por convenção:
+- **Escala de texto:** use a escala nomeada e não a do Tailwind (`text-sm`, `text-lg`…). Hoje o código não tem nenhuma.
+- **Medidas fora da escala:** `h-[NNpx]` e semelhantes só quando não houver valor na escala.
+
+**Exceção pontual:** comentário `design-ok: motivo` na mesma linha, registrado aqui. Hoje não há nenhuma.
+
+## A5. Números da migração
+
+- **Checagem:** 236 violações → **0**.
+- **oxlint:** os mesmos 16 avisos antigos, nenhum novo.
+- **Bundle (gzip, mesmo build e mesmo `gzip` nas duas pontas):**
+
+| | antes (`84f5b97`) | depois | variação |
+|---|---|---|---|
+| JS principal | 218.615 | 219.684 | +0,5% |
+| CSS | 22.222 | 24.333 | +9,5% |
+| **Total JS + CSS** | 560.514 | 563.693 | **+0,6%** (limite: 5%) |
+
+O CSS cresceu 2,1 kB. Os motivos são os tokens do tema escuro, o par de `@font-face` de fallback (que evita o pulo de layout), os tokens de ilustração e as classes dos primitivos. O JS quase não mudou: os primitivos substituíram classes repetidas tela a tela.
+
+---
+
+# Parte B — Auditoria (Etapa 1, antes da migração)
+
+> **Etapa 1: auditoria** (estado de 05/10/2026, antes de qualquer mudança). O guia em vigor é a Parte A, acima.
 >
 > - Números gerados por `frontend/scripts/audit-design.py`; a saída bruta, com arquivo:linha de cada achado, está em [design-audit-raw.txt](design-audit-raw.txt).
 > - Capturas "antes" de 18 telas em 390/1440, claro/escuro: [capturas/design-system/antes/](capturas/design-system/antes/).
