@@ -6,3 +6,4 @@
 # capturas de tela do design system: ficam só na máquina (geradas por frontend/scripts/capture-screens.mjs)
 docs/capturas/design-system/**/*.png
 docs/capturas/design-system/**/*.jpg
+docs/landing/capturas/
