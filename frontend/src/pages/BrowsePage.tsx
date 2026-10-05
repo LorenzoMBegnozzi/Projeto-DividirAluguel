@@ -35,6 +35,7 @@ import { dietLabels, genderLabels, genderPreferenceLabels, petPreferenceLabels, 
 import Avatar from '../components/Avatar'
 import { formatResidents } from '../utils/format'
 import type { BrowseItem, UserProfile } from '../types'
+import { Alert, Badge, Button, Card, EmptyState, cx, fieldClass, focusRing, pageTitleClass } from '../components/ui'
 
 type Tab = 'ROOMMATES' | 'ESTABLISHMENTS'
 type ViewMode = 'list' | 'grid'
@@ -216,39 +217,37 @@ export default function BrowsePage() {
 
   return (
     <div className={`mx-auto px-4 py-8 transition-[max-width] ${viewMode === 'grid' ? 'max-w-5xl' : 'max-w-2xl'}`}>
-      <h1 className="mb-1 text-[28px] font-serif font-medium tracking-tight text-ink">Buscar</h1>
-      <p className="mb-4 text-sm text-ink-3">Ordenado pela sua compatibilidade.</p>
+      <h1 className={cx('mb-1', pageTitleClass)}>Buscar</h1>
+      <p className="mb-4 text-small text-ink-3">Ordenado pela sua compatibilidade.</p>
       {tab === 'ROOMMATES' && !user?.gender && (
-        <p className="mb-4 rounded-md bg-brand-tint px-3 py-2 text-[13px] text-brand-strong">
+        <Alert tone="info" className="mb-4">
           Informe seu sexo no perfil para ver também as vagas exclusivas para homens ou mulheres.
-        </p>
+        </Alert>
       )}
 
       <div className="mb-6 flex gap-2">
-        <button
+        <Button
           onClick={() => setTab('ROOMMATES')}
-          className={`h-[42px] flex-1 rounded-md border text-sm font-semibold transition ${
-            tab === 'ROOMMATES' ? 'border-inverse bg-inverse text-on-inverse' : 'border-line-strong text-ink-2 hover:border-ink'
-          }`}
+          variant={tab === 'ROOMMATES' ? 'inverse' : 'secondary'}
+          className="flex-1"
         >
           Busco uma vaga
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => setTab('ESTABLISHMENTS')}
-          className={`h-[42px] flex-1 rounded-md border text-sm font-semibold transition ${
-            tab === 'ESTABLISHMENTS' ? 'border-inverse bg-inverse text-on-inverse' : 'border-line-strong text-ink-2 hover:border-ink'
-          }`}
+          variant={tab === 'ESTABLISHMENTS' ? 'inverse' : 'secondary'}
+          className="flex-1"
         >
           Busco um imóvel
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')}
           title={viewMode === 'list' ? 'Ver em grade' : 'Ver em lista'}
           aria-label={viewMode === 'list' ? 'Ver em grade' : 'Ver em lista'}
-          className="inline-flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-md border border-line-strong text-ink-2 transition hover:border-ink hover:text-ink"
-        >
-          {viewMode === 'list' ? <LayoutGrid className="h-[18px] w-[18px]" aria-hidden="true" /> : <List className="h-[18px] w-[18px]" aria-hidden="true" />}
-        </button>
+          variant="secondary"
+          icon={viewMode === 'list' ? LayoutGrid : List}
+          className="shrink-0"
+        />
       </div>
 
       <div className={`flex flex-col gap-3 sm:flex-row ${mapPoint ? 'mb-2' : 'mb-6'}`}>
@@ -259,18 +258,17 @@ export default function BrowsePage() {
               onChange={handleBairroChange}
               onSelectPlace={(place) => setMapPoint({ lat: place.lat, lng: place.lon })}
               placeholder="Bairro ou faculdade"
-              className="h-11 w-full rounded-md border border-line-strong bg-surface px-3 text-ink outline-none placeholder:text-ink-3 hover:border-ink-2 focus:border-ink focus:ring-2 focus:ring-focus focus:ring-offset-1"
+              className={fieldClass()}
             />
           </div>
-          <button
-            type="button"
+          <Button
             onClick={() => setShowMapPicker(true)}
             title="Marcar local no mapa"
             aria-label="Marcar local no mapa"
-            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-line-strong text-ink-2 transition hover:border-ink hover:text-ink"
-          >
-            <MapPinned className="h-[18px] w-[18px]" aria-hidden="true" />
-          </button>
+            variant="secondary"
+            icon={MapPinned}
+            className="shrink-0"
+          />
         </div>
         <input
           value={precoMax}
@@ -278,20 +276,20 @@ export default function BrowsePage() {
           type="number"
           min="0"
           placeholder="Orçamento máximo (R$)"
-          className="h-11 flex-1 rounded-md border border-line-strong bg-surface px-3 text-ink outline-none placeholder:text-ink-3 hover:border-ink-2 focus:border-ink focus:ring-2 focus:ring-focus focus:ring-offset-1"
+          className={cx(fieldClass(), 'flex-1')}
         />
       </div>
 
       {mapPoint && (
-        <div className="mb-6 flex items-center gap-1.5 text-[13px] text-ink-3">
-          <MapPinned className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+        <div className="mb-6 flex items-center gap-1.5 text-caption text-ink-3">
+          <MapPinned className="size-3.5 shrink-0" aria-hidden="true" />
           Mostrando lugares perto do ponto marcado no mapa
           <button
             type="button"
             onClick={() => setMapPoint(null)}
-            className="ml-1 inline-flex items-center gap-1 font-semibold text-ink-2 hover:text-danger"
+            className={cx('ml-1 inline-flex items-center gap-1 rounded-sm font-semibold text-ink-2 hover:text-danger', focusRing)}
           >
-            <X className="h-3.5 w-3.5" aria-hidden="true" />
+            <X className="size-3.5" aria-hidden="true" />
             limpar
           </button>
         </div>
@@ -310,29 +308,27 @@ export default function BrowsePage() {
         />
       )}
 
-      {error && <div className="mb-4 rounded-md bg-danger-tint px-4 py-3 text-sm text-danger">{error}</div>}
+      {error && <Alert tone="danger" className="mb-4">{error}</Alert>}
 
       {loading ? (
         <div className="p-8 text-center text-ink-3">Carregando…</div>
       ) : items.length === 0 ? (
-        <p className="rounded-lg border border-line bg-surface p-8 text-center text-sm text-ink-3">
-          Ainda não há anúncios ativos nessa categoria. Volte mais tarde!
-        </p>
+        <EmptyState title="Ainda não há anúncios ativos nessa categoria. Volte mais tarde!" />
       ) : (
         <div ref={resultsRef}>
         <div className={viewMode === 'grid' ? 'grid grid-cols-1 gap-4 md:grid-cols-2' : 'flex flex-col gap-4'}>
           {pageItems.map((item) => (
-            <div key={item.listing.id} className="flex flex-col rounded-lg border border-line bg-surface p-5">
+            <Card key={item.listing.id} padding="sm" className="flex flex-col sm:p-5">
               {(listingPhotos[item.listing.id] ?? []).length > 0 && (
                 <button
                   type="button"
                   onClick={() => setLightbox(listingPhotos[item.listing.id])}
                   aria-label="Ver fotos do anúncio"
-                  className="relative mb-3 block h-40 w-full overflow-hidden rounded-md"
+                  className={cx('relative mb-3 block h-40 w-full overflow-hidden rounded-lg', focusRing)}
                 >
                   <img src={listingPhotos[item.listing.id][0]} alt="" className="h-full w-full object-cover" />
                   {listingPhotos[item.listing.id].length > 1 && (
-                    <span className="absolute bottom-2 right-2 rounded-sm bg-scrim px-2 py-0.5 text-xs font-bold text-on-inverse">
+                    <span className="absolute bottom-2 right-2 rounded-sm bg-scrim px-2 py-0.5 text-caption font-bold text-on-inverse">
                       {listingPhotos[item.listing.id].length} fotos
                     </span>
                   )}
@@ -342,10 +338,10 @@ export default function BrowsePage() {
                 <div className="flex min-w-0 items-center gap-3">
                   <Avatar photoUrl={item.user.photoUrl} name={item.user.name} size={44} />
                   <div className="min-w-0">
-                    <h2 className="truncate text-xl font-bold tracking-tight text-ink">
+                    <h2 className="truncate text-h3 text-ink">
                       {tab === 'ROOMMATES' ? item.user.name : item.listing.title}
                     </h2>
-                    <p className="truncate text-[13px] text-ink-3">
+                    <p className="truncate text-caption text-ink-3">
                       {tab === 'ROOMMATES' ? item.user.occupation : item.user.name}
                     </p>
                   </div>
@@ -353,18 +349,17 @@ export default function BrowsePage() {
                 <div className="flex shrink-0 flex-col items-end gap-1.5">
                   <CompatScore score={item.compatibilityScore} />
                   {item.listing.highlighted && (
-                    <span className="inline-flex h-6 items-center gap-1 rounded-sm bg-mel-tint px-2 text-xs font-bold text-mel">
-                      <Star className="h-3.5 w-3.5" aria-hidden="true" />
+                    <Badge tone="warning" icon={Star}>
                       Destaque
-                    </span>
+                    </Badge>
                   )}
                 </div>
               </div>
 
-              {tab === 'ROOMMATES' && item.user.bio && <p className="mb-3 text-ink-2">{item.user.bio}</p>}
+              {tab === 'ROOMMATES' && item.user.bio && <p className="mb-3 text-body text-ink-2">{item.user.bio}</p>}
 
               {tab === 'ROOMMATES' && (
-                <div className="mb-3 flex flex-wrap gap-x-3 gap-y-1 text-[13px] text-ink-3">
+                <div className="mb-3 flex flex-wrap gap-x-3 gap-y-1 text-caption text-ink-3">
                   {item.user.gender && <Fact icon={Users}>{genderLabels[item.user.gender]}</Fact>}
                   {item.user.smokingHabit && <Fact icon={Cigarette}>{smokingHabitLabels[item.user.smokingHabit]}</Fact>}
                   {item.user.diet && (
@@ -381,7 +376,7 @@ export default function BrowsePage() {
               )}
 
               {tab === 'ESTABLISHMENTS' && (
-                <div className="mb-3 flex flex-wrap gap-x-3 gap-y-1 text-[13px] text-ink-3">
+                <div className="mb-3 flex flex-wrap gap-x-3 gap-y-1 text-caption text-ink-3">
                   {item.listing.acceptsPets != null && (
                     <Fact icon={PawPrint}>{item.listing.acceptsPets ? 'Aceita animais' : 'Não aceita animais'}</Fact>
                   )}
@@ -393,12 +388,12 @@ export default function BrowsePage() {
                 </div>
               )}
 
-              <p className="mb-3 text-ink-2">
+              <p className="mb-3 text-body text-ink-2">
                 <strong className="text-ink">{item.listing.title}</strong>
                 {item.listing.description && <span className="block">{item.listing.description}</span>}
               </p>
 
-              <div className="mb-3 flex flex-wrap gap-x-3 gap-y-1 text-[13px] text-ink-3">
+              <div className="mb-3 flex flex-wrap gap-x-3 gap-y-1 text-caption text-ink-3">
                 {item.listing.preferredNeighborhood && <Fact icon={MapPin}>{item.listing.preferredNeighborhood}</Fact>}
                 {item.listing.nearCollege && <Fact icon={GraduationCap}>Perto de {item.listing.nearCollege}</Fact>}
                 {item.listing.price != null && (
@@ -423,41 +418,41 @@ export default function BrowsePage() {
               {item.listing.latitude != null && item.listing.longitude != null && (
                 <div className="mb-3">
                   <ListingMapPreview latitude={item.listing.latitude} longitude={item.listing.longitude} />
-                  {item.listing.address && <p className="mt-1 text-[13px] text-ink-3">{item.listing.address}</p>}
+                  {item.listing.address && <p className="mt-1 text-caption text-ink-3">{item.listing.address}</p>}
                 </div>
               )}
 
               {tab === 'ESTABLISHMENTS' ? (
                 <>
                   <div className="mb-2 flex gap-2">
-                    <button
+                    <Button
                       onClick={() => handleConversar(item.listing.id)}
                       disabled={startingId === item.listing.id}
-                      className="h-[42px] flex-1 rounded-md bg-brand text-sm font-semibold text-on-brand transition hover:bg-brand-strong disabled:opacity-60"
+                      className="flex-1"
                     >
                       {startingId === item.listing.id ? 'Abrindo…' : 'Conversar com o dono'}
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       onClick={() => handleToggleInterest(item.listing.id)}
                       disabled={togglingInterestId === item.listing.id}
-                      className={`flex h-[42px] shrink-0 items-center gap-1.5 rounded-md border px-3 text-sm font-semibold transition disabled:opacity-60 ${
-                        interestStatus[item.listing.id]?.interested
-                          ? 'border-brand bg-brand-tint text-brand-strong'
-                          : 'border-line-strong text-ink-2 hover:border-ink'
-                      }`}
+                      variant="secondary"
+                      className={cx(
+                        'shrink-0 gap-1.5 px-3',
+                        interestStatus[item.listing.id]?.interested && 'border-brand bg-brand-tint text-brand-strong hover:border-brand',
+                      )}
                     >
                       <Heart
-                        className="h-4 w-4"
+                        className="size-4"
                         aria-hidden="true"
                         fill={interestStatus[item.listing.id]?.interested ? 'currentColor' : 'none'}
                       />
                       {interestStatus[item.listing.id]?.interested ? 'Interessado' : 'Tenho interesse'}
-                    </button>
+                    </Button>
                   </div>
 
                   {interestStatus[item.listing.id]?.interested && interestStatus[item.listing.id]?.total === 1 && (
-                    <p className="mt-1 flex items-center gap-1 text-[13px] font-semibold text-ink-3">
-                      <Users className="h-3.5 w-3.5" aria-hidden="true" />
+                    <p className="mt-1 flex items-center gap-1 text-caption font-semibold text-ink-3">
+                      <Users className="size-3.5" aria-hidden="true" />
                       Você é o único interessado até o momento
                     </p>
                   )}
@@ -466,79 +461,76 @@ export default function BrowsePage() {
                     <div className="mt-1">
                       <button
                         onClick={() => handleToggleExpanded(item.listing.id)}
-                        className="flex items-center gap-1 text-[13px] font-semibold text-ink-3 hover:text-brand"
+                        className={cx('flex items-center gap-1 rounded-sm text-caption font-semibold text-ink-3 hover:text-brand', focusRing)}
                       >
-                        <Users className="h-3.5 w-3.5" aria-hidden="true" />
+                        <Users className="size-3.5" aria-hidden="true" />
                         {(interestStatus[item.listing.id]?.total ?? 0) - (interestStatus[item.listing.id]?.interested ? 1 : 0)} pessoa(s){' '}
                         {interestStatus[item.listing.id]?.interested ? 'também se interessaram' : 'se interessaram'}
                       </button>
 
                       {expandedListingId === item.listing.id && (
-                        <div className="mt-2 flex flex-col gap-2 rounded-md bg-surface-sunk p-3">
+                        <Card tone="sunk" padding="sm" className="mt-2 flex flex-col gap-2">
                           {loadingPeopleId === item.listing.id ? (
-                            <p className="text-[13px] text-ink-3">Carregando…</p>
+                            <p className="text-caption text-ink-3">Carregando…</p>
                           ) : (interestedPeople[item.listing.id] ?? []).length === 0 ? (
-                            <p className="text-[13px] text-ink-3">Ninguém mais se interessou ainda.</p>
+                            <p className="text-caption text-ink-3">Ninguém mais se interessou ainda.</p>
                           ) : (
                             interestedPeople[item.listing.id]?.map((person) => (
                               <div key={person.id} className="flex items-center justify-between gap-2">
                                 <button
                                   onClick={() => navigate(`/usuarios/${person.id}`)}
-                                  className="text-sm font-semibold text-ink hover:text-brand hover:underline"
+                                  className={cx('rounded-sm text-small font-semibold text-ink hover:text-brand hover:underline', focusRing)}
                                 >
                                   {person.name}
                                 </button>
-                                <button
+                                <Button
                                   onClick={() => handleConversarComInteressado(item.listing.id, person.id)}
                                   disabled={startingPeerId === person.id}
-                                  className="h-[32px] rounded-md border border-line-strong px-2.5 text-xs font-semibold text-ink-2 transition hover:border-ink hover:text-ink disabled:opacity-60"
+                                  variant="secondary"
+                                  size="sm"
                                 >
                                   {startingPeerId === person.id ? 'Abrindo…' : 'Conversar'}
-                                </button>
+                                </Button>
                               </div>
                             ))
                           )}
-                        </div>
+                        </Card>
                       )}
                     </div>
                   )}
                 </>
               ) : (
-                <button
+                <Button
                   onClick={() => handleConversar(item.listing.id)}
                   disabled={startingId === item.listing.id}
-                  className="h-[42px] w-full rounded-md bg-brand text-sm font-semibold text-on-brand transition hover:bg-brand-strong disabled:opacity-60"
+                  full
                 >
                   {startingId === item.listing.id ? 'Abrindo…' : 'Conversar'}
-                </button>
+                </Button>
               )}
-            </div>
+            </Card>
           ))}
         </div>
 
         {totalPages > 1 && (
           <div className="mt-6 flex items-center justify-center gap-3">
-            <button
-              type="button"
+            <Button
               onClick={() => goToPage(page - 1)}
               disabled={page === 1}
               aria-label="Página anterior"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-line-strong text-ink-2 transition hover:border-ink hover:text-ink disabled:opacity-40"
-            >
-              <ChevronLeft className="h-[18px] w-[18px]" aria-hidden="true" />
-            </button>
-            <p className="text-sm font-semibold text-ink-2">
+              variant="secondary"
+              icon={ChevronLeft}
+            />
+            <p className="text-small font-semibold text-ink-2">
               {page} de {totalPages}
             </p>
-            <button
-              type="button"
+            <Button
               onClick={() => goToPage(page + 1)}
               disabled={page === totalPages}
               aria-label="Próxima página"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-line-strong text-ink-2 transition hover:border-ink hover:text-ink disabled:opacity-40"
-            >
-              <ChevronRight className="h-[18px] w-[18px]" aria-hidden="true" />
-            </button>
+              variant="secondary"
+              icon={ChevronRight}
+            />
           </div>
         )}
         </div>
