@@ -102,7 +102,10 @@
 }
 
 html {
+  /* clip (e não só hidden): corta a rolagem lateral sem virar contêiner de rolagem,
+     senão position: sticky para de funcionar. hidden fica de reserva p/ navegador antigo. */
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
 @keyframes typing-bounce {
@@ -122,4 +125,5 @@ body {
   font-family: var(--font-sans);
   transition: background-color 0.15s, color 0.15s;
   overflow-x: hidden;
+  overflow-x: clip;
 }

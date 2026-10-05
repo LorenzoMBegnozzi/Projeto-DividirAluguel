@@ -1,5 +1,9 @@
 import client from './client'
-import type { Payment, PaymentType, Plan } from '../types'
+import type { Payment, PaymentType, Plan, PublicPrices } from '../types'
+
+export function getPublicPrices() {
+  return client.get<PublicPrices>('/billing/precos').then((res) => res.data)
+}
 
 export function getPlan() {
   return client.get<Plan>('/billing/plan').then((res) => res.data)

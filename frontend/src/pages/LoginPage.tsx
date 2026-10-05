@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Logo from '../components/Logo'
 import LegalLinks from '../components/LegalLinks'
 import type { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -32,8 +33,8 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-paper px-4">
       <div className="w-full max-w-sm rounded-lg border border-line bg-surface p-8">
-        <h1 className="mb-1 text-center text-2xl font-serif font-medium tracking-tight text-ink">
-          Racha<span className="text-brand">Ai</span>
+        <h1 className="mb-2 flex justify-center">
+          <Logo className="text-2xl" />
         </h1>
         <p className="mb-6 text-center text-sm text-ink-3">Encontre com quem dividir o aluguel</p>
 

@@ -79,6 +79,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         // Aviso do Mercado Pago: quem chama é o gateway, não um usuário logado.
                         .requestMatchers(HttpMethod.POST, "/api/billing/webhook/**").permitAll()
+                        // Tabela de preços da landing (só valores de configuração, nada da conta).
+                        .requestMatchers(HttpMethod.GET, "/api/billing/precos").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/users/*/foto").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/listings/*/fotos/*").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()

@@ -259,4 +259,16 @@ class MercadoPagoBillingTest extends ApiTestSupport {
         mvc.perform(auth(post("/api/billing/payments/" + id + "/simulate"), a)).andExpect(status().isForbidden());
         mvc.perform(auth(get("/api/billing/plan"), a)).andExpect(jsonPath("$.paymentMode").value("MERCADOPAGO"));
     }
+
+    @Test
+    @DisplayName("a tabela de preços da landing é pública e usa os mesmos valores da cobrança")
+    void publicPrices() throws Exception {
+        mvc.perform(get("/api/billing/precos"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.freeListings").value(3))
+                .andExpect(jsonPath("$.extraListingPrice").value(1.00))
+                .andExpect(jsonPath("$.highlightPrice").value(1.00))
+                .andExpect(jsonPath("$.highlightDays").value(30))
+                .andExpect(jsonPath("$.paymentMode").doesNotExist());
+    }
 }

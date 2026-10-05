@@ -1,7 +1,8 @@
 import { useState } from 'react'
+import Logo from '../components/Logo'
 import LegalLinks from '../components/LegalLinks'
 import type { FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { apiErrorMessage } from '../api/client'
@@ -18,13 +19,17 @@ function formatCpf(value: string) {
 const inputClass =
   'h-11 rounded-md border border-line-strong bg-surface px-3 text-ink outline-none placeholder:text-ink-3 hover:border-ink-2 focus:border-ink focus:ring-2 focus:ring-focus focus:ring-offset-1'
 
+// /registro?perfil=procurar|anunciar (botões da landing) já abre no perfil escolhido
+const PERFIL_ROLE: Record<string, Role> = { procurar: 'RENTER', anunciar: 'ADVERTISER' }
+
 const optionCardClass =
   'rounded-md border border-line-strong p-4 text-left transition hover:border-ink'
 
 export default function RegisterPage() {
   const { register } = useAuth()
   const navigate = useNavigate()
-  const [role, setRole] = useState<Role | null>(null)
+  const [searchParams] = useSearchParams()
+  const [role, setRole] = useState<Role | null>(() => PERFIL_ROLE[searchParams.get('perfil') ?? ''] ?? null)
   const [advertiserKind, setAdvertiserKind] = useState<AdvertiserKind | null>(null)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -54,8 +59,8 @@ export default function RegisterPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-paper px-4">
         <div className="w-full max-w-sm rounded-lg border border-line bg-surface p-8">
-          <h1 className="mb-1 text-center text-2xl font-serif font-medium tracking-tight text-ink">
-            Racha<span className="text-brand">Ai</span>
+          <h1 className="mb-2 flex justify-center">
+            <Logo className="text-2xl" />
           </h1>
           <p className="mb-6 text-center text-sm text-ink-3">O que você quer fazer?</p>
 
@@ -92,8 +97,8 @@ export default function RegisterPage() {
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             voltar
           </button>
-          <h1 className="mb-1 text-center text-2xl font-serif font-medium tracking-tight text-ink">
-            Racha<span className="text-brand">Ai</span>
+          <h1 className="mb-2 flex justify-center">
+            <Logo className="text-2xl" />
           </h1>
           <p className="mb-6 text-center text-sm text-ink-3">O que você quer anunciar?</p>
 

@@ -96,10 +96,11 @@ export default function Landing3D({ mode, onPeak, onReady }: Props) {
     // pausa o loop com o palco fora da tela ou a aba escondida
     let visible = true
     const sync = () => setRunning(visible && !document.hidden)
-    const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; sync() })
-    io.observe(stage)
+    // sem IntersectionObserver (navegador muito antigo): roda sempre que a aba estiver ativa
+    const io = 'IntersectionObserver' in window ? new IntersectionObserver(([e]) => { visible = e.isIntersecting; sync() }) : null
+    io?.observe(stage)
     document.addEventListener('visibilitychange', sync)
-    cleanups.push(() => { io.disconnect(); document.removeEventListener('visibilitychange', sync) })
+    cleanups.push(() => { io?.disconnect(); document.removeEventListener('visibilitychange', sync) })
 
     // tema claro/escuro trocado com a página aberta: recolore na hora
     const themeObserver = new MutationObserver(applyColors)

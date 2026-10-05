@@ -3,6 +3,7 @@ package com.rachaai.billing;
 import com.rachaai.billing.dto.PaymentRequest;
 import com.rachaai.billing.dto.PaymentResponse;
 import com.rachaai.billing.dto.PlanResponse;
+import com.rachaai.billing.dto.PricesResponse;
 import com.rachaai.security.SecurityUser;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,9 +16,17 @@ import java.util.List;
 public class BillingController {
 
     private final BillingService billingService;
+    private final BillingProperties props;
 
-    public BillingController(BillingService billingService) {
+    public BillingController(BillingService billingService, BillingProperties props) {
         this.billingService = billingService;
+        this.props = props;
+    }
+
+    /** Público: a landing mostra os preços sem login, sempre iguais aos que a cobrança usa. */
+    @GetMapping("/precos")
+    public PricesResponse prices() {
+        return PricesResponse.from(props);
     }
 
     @GetMapping("/plan")

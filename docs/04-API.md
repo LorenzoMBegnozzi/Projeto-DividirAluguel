@@ -225,6 +225,7 @@ Detalhes das regras em [06-COBRANCA.md](06-COBRANCA.md).
 
 | Método e rota | Descrição |
 |---|---|
+| `GET /api/billing/precos` | **público (sem login)**: os preços da landing (`freeListings`, `extraListingPrice`, `extraListingDays`, `highlightPrice`, `highlightDays`), os mesmos que a cobrança usa |
 | `GET /api/billing/plan` | regras e preços, quantos grátis estão em uso, créditos disponíveis e se está em modo simulado |
 | `GET /api/billing/payments` | meu histórico de compras |
 | `POST /api/billing/payments` | cria uma compra `PENDENTE`. Corpo `{ "type": "ANUNCIO_EXTRA" }` ou `{ "type": "DESTAQUE", "listingId": 12 }` |

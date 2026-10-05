@@ -15,13 +15,15 @@ import org.springframework.web.util.HtmlUtils;
  */
 public final class EmailTemplate {
 
-    private static final String BRAND = "#c23f27";
-    private static final String BRAND_TINT = "#fbe6de";
-    private static final String PAPER = "#f6f2ec";
-    private static final String LINE = "#e3dcd2";
-    private static final String INK = "#1d1a17";
-    private static final String INK_2 = "#4f4842";
-    private static final String INK_3 = "#6f665e";
+    // Mesmas cores do site (frontend/src/index.css): azul petróleo, coral e tinta azul-acinzentada.
+    private static final String BRAND = "#1e5f7a";
+    private static final String BRAND_TINT = "#dcebf1";
+    private static final String CORAL = "#e8704a";
+    private static final String PAPER = "#faf7f2";
+    private static final String LINE = "#e3dccf";
+    private static final String INK = "#1b2b33";
+    private static final String INK_2 = "#46565e";
+    private static final String INK_3 = "#62727a";
     private static final String FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
     private EmailTemplate() {
@@ -60,7 +62,10 @@ public final class EmailTemplate {
                   <tr><td align="center" style="padding:32px 16px;">
                     <table role="presentation" width="100%%" cellpadding="0" cellspacing="0" border="0" style="max-width:520px;font-family:%4$s;">
                       <tr><td align="center" style="padding:0 0 20px;">
-                        <span style="font-size:28px;font-weight:900;letter-spacing:-0.5px;color:%5$s;">Racha<span style="color:%6$s;">Ai</span></span>
+                        <!-- logo igual ao do site: as duas metades da casa (azul e coral) + "RachaAi" com o "Ai" em azul.
+                             Blocos com cantos arredondados no lugar do SVG, que o Gmail não mostra. -->
+                        <span style="display:inline-block;vertical-align:middle;width:11px;height:20px;background-color:%6$s;border-radius:7px 0 0 2px;"></span><span style="display:inline-block;vertical-align:middle;width:11px;height:20px;margin-left:2px;background-color:%16$s;border-radius:0 7px 2px 0;"></span>
+                        <span style="vertical-align:middle;margin-left:8px;font-size:28px;font-weight:800;letter-spacing:-0.5px;color:%5$s;">Racha<span style="color:%6$s;">Ai</span></span>
                       </td></tr>
                       <tr><td bgcolor="#ffffff" style="background-color:#ffffff;border:1px solid %7$s;border-radius:12px;padding:32px 28px;">
                         <h1 style="margin:0 0 16px;font-size:22px;line-height:28px;font-weight:800;color:%5$s;">%1$s</h1>
@@ -84,7 +89,7 @@ public final class EmailTemplate {
                 </html>
                 """.formatted(
                 escape(title), PAPER, escape(preheader), FONT, INK, BRAND, LINE,
-                body, url, escape(buttonText), BRAND_TINT, INK, note, INK_3, footer);
+                body, url, escape(buttonText), BRAND_TINT, INK, note, INK_3, footer, CORAL);
     }
 
     /** Escapa texto para ir dentro do HTML (nomes, títulos). */

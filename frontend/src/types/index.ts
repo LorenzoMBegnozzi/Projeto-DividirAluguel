@@ -182,6 +182,15 @@ export interface Plan {
   paymentMode: PaymentMode
 }
 
+/** Preços públicos (landing): GET /billing/precos, sem login. */
+export interface PublicPrices {
+  freeListings: number
+  extraListingPrice: number
+  extraListingDays: number
+  highlightPrice: number
+  highlightDays: number
+}
+
 export type ConvivioStatus = 'PENDENTE' | 'CONFIRMADO' | 'RECUSADO'
 
 export interface Convivio {
