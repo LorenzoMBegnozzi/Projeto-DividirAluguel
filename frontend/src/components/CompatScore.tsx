@@ -45,12 +45,12 @@ export default function CompatScore({ score }: { score: number }) {
   const pct = Math.min(100, Math.max(0, score))
   const { ref, value } = useCountUp(pct)
   return (
-    <div ref={ref} className="inline-grid min-w-[84px] gap-1.5 text-right">
-      <span className={`font-extrabold leading-[28px] tracking-[-0.03em] tabular-nums ${num}`} style={{ fontSize: 28 }}>
+    <div ref={ref} className="inline-grid min-w-21 gap-1.5 text-right">
+      <span className={`text-h1 tabular-nums ${num}`}>
         {/* leitores de tela recebem o valor final, não a contagem */}
         <span aria-hidden="true">{value}</span>
         <span className="sr-only">{pct}</span>
-        <small className="text-base font-bold">%</small>
+        <small className="text-body font-bold">%</small>
       </span>
       <span className="h-1.5 overflow-hidden rounded-sm bg-surface-sunk">
         {/* a barra cresce via transform (compositor), não via width */}
@@ -59,7 +59,7 @@ export default function CompatScore({ score }: { score: number }) {
           style={{ width: `${pct}%`, transform: `scaleX(${pct ? value / pct : 0})` }}
         />
       </span>
-      <span className="text-xs text-ink-3">compatível</span>
+      <span className="text-caption text-ink-3">compatível</span>
     </div>
   )
 }

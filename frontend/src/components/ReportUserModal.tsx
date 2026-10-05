@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { apiErrorMessage } from '../api/client'
 import type { ReportReason } from '../types'
+import { Alert, Button, Modal, Select, Textarea } from './ui'
 
 const REASONS: { value: ReportReason; label: string }[] = [
   { value: 'COMPORTAMENTO_SUSPEITO', label: 'Comportamento suspeito' },
@@ -39,70 +40,46 @@ export default function ReportUserModal({ userName, onClose, onSubmit }: Props) 
   }
 
   return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-scrim px-4">
-      <div className="w-full max-w-sm rounded-lg bg-surface p-6 shadow-pop">
-        {done ? (
-          <>
-            <h2 className="mb-2 text-xl font-bold tracking-tight text-ink">Denúncia enviada</h2>
-            <p className="mb-4 text-ink-2">
-              Obrigado por avisar. Vamos analisar o que você relatou sobre {userName}.
-            </p>
-            <button
-              onClick={onClose}
-              className="h-[42px] w-full rounded-md bg-brand text-sm font-semibold text-on-brand hover:bg-brand-strong"
-            >
-              Fechar
-            </button>
-          </>
-        ) : (
-          <form onSubmit={handleSubmit}>
-            <h2 className="mb-1 text-xl font-bold tracking-tight text-ink">Denunciar {userName}</h2>
-            <p className="mb-4 text-[13px] text-ink-3">
-              A pessoa denunciada não é avisada. Use isso para nos ajudar a manter a comunidade segura.
-            </p>
+    <Modal labelledBy="report-title">
+      {done ? (
+        <>
+          <h2 id="report-title" className="mb-2 text-h2 text-ink">Denúncia enviada</h2>
+          <p className="mb-4 text-body text-ink-2">
+            Obrigado por avisar. Vamos analisar o que você relatou sobre {userName}.
+          </p>
+          <Button full onClick={onClose}>
+            Fechar
+          </Button>
+        </>
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <h2 id="report-title" className="mb-1 text-h2 text-ink">Denunciar {userName}</h2>
+          <p className="mb-4 text-caption text-ink-3">
+            A pessoa denunciada não é avisada. Use isso para nos ajudar a manter a comunidade segura.
+          </p>
 
-            <label className="mb-1 block text-[13px] font-semibold text-ink">Motivo</label>
-            <select
-              value={motivo}
-              onChange={(e) => setMotivo(e.target.value as ReportReason)}
-              className="mb-3 h-11 w-full rounded-md border border-line-strong bg-surface px-3 text-sm text-ink outline-none focus:border-ink focus:ring-2 focus:ring-focus focus:ring-offset-1"
-            >
-              {REASONS.map((r) => (
-                <option key={r.value} value={r.value}>
-                  {r.label}
-                </option>
-              ))}
-            </select>
+          <Select label="Motivo" wrapperClassName="mb-3" value={motivo} onChange={(e) => setMotivo(e.target.value as ReportReason)}>
+            {REASONS.map((r) => (
+              <option key={r.value} value={r.value}>
+                {r.label}
+              </option>
+            ))}
+          </Select>
 
-            <label className="mb-1 block text-[13px] font-semibold text-ink">Conte o que aconteceu (opcional)</label>
-            <textarea
-              value={descricao}
-              onChange={(e) => setDescricao(e.target.value)}
-              rows={3}
-              className="mb-3 w-full rounded-md border border-line-strong bg-surface px-3 py-2.5 text-sm text-ink outline-none focus:border-ink focus:ring-2 focus:ring-focus focus:ring-offset-1"
-            />
+          <Textarea label="Conte o que aconteceu (opcional)" wrapperClassName="mb-3" value={descricao} onChange={(e) => setDescricao(e.target.value)} rows={3} />
 
-            {error && <p className="mb-3 rounded-md bg-danger-tint px-3 py-2 text-sm text-danger">{error}</p>}
+          {error && <Alert tone="danger" className="mb-3">{error}</Alert>}
 
-            <div className="flex gap-2">
-              <button
-                type="submit"
-                disabled={loading}
-                className="h-[42px] flex-1 rounded-md border border-danger bg-surface text-sm font-semibold text-danger transition hover:bg-danger-tint disabled:opacity-60"
-              >
-                {loading ? 'Enviando…' : 'Enviar denúncia'}
-              </button>
-              <button
-                type="button"
-                onClick={onClose}
-                className="h-[42px] rounded-md px-4 text-sm font-semibold text-ink-2 transition hover:bg-surface-sunk hover:text-ink"
-              >
-                Cancelar
-              </button>
-            </div>
-          </form>
-        )}
-      </div>
-    </div>
+          <div className="flex gap-2">
+            <Button type="submit" variant="secondary" disabled={loading} className="flex-1 border-danger text-danger hover:border-danger hover:bg-danger-tint">
+              {loading ? 'Enviando…' : 'Enviar denúncia'}
+            </Button>
+            <Button variant="ghost" onClick={onClose}>
+              Cancelar
+            </Button>
+          </div>
+        </form>
+      )}
+    </Modal>
   )
 }

@@ -64,13 +64,13 @@ export default function LocationAutocomplete({ value, onChange, onSelectPlace, p
         className={className}
       />
       {open && (
-        <ul className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md border border-line-strong bg-surface shadow-pop">
+        <ul className="absolute z-(--z-dropdown) mt-1 max-h-60 w-full overflow-auto rounded-lg border border-line bg-surface py-1 shadow-lg">
           {suggestions.map((s) => (
             <li key={s.label}>
               <button
                 type="button"
                 onClick={() => handleSelect(s)}
-                className="block w-full truncate px-3 py-2 text-left text-sm text-ink hover:bg-surface-sunk"
+                className="block min-h-11 w-full truncate px-3 py-3 text-left text-small text-ink hover:bg-surface-sunk focus-visible:bg-surface-sunk focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus"
               >
                 {s.label}
               </button>

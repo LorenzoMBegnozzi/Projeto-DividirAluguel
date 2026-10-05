@@ -7,6 +7,15 @@ interface Props {
   className?: string
 }
 
+/** tamanho do texto das iniciais (≈ 40% do avatar) na escala de tipografia */
+function initialsText(size: number) {
+  if (size <= 30) return 'text-micro'
+  if (size <= 38) return 'text-small'
+  if (size <= 46) return 'text-body'
+  if (size <= 60) return 'text-h2'
+  return 'text-h1'
+}
+
 function initials(name: string) {
   const parts = name.trim().split(/\s+/)
   const first = parts[0]?.[0] ?? ''
@@ -20,8 +29,8 @@ export default function Avatar({ photoUrl, name, size = 40, className = '' }: Pr
   if (!photoUrl || failed) {
     return (
       <div
-        style={{ width: size, height: size, fontSize: size * 0.4 }}
-        className={`flex shrink-0 items-center justify-center rounded-full bg-brand-tint font-bold tracking-tight text-brand-strong ${className}`}
+        style={{ width: size, height: size }}
+        className={`flex shrink-0 items-center justify-center rounded-full bg-brand-tint font-bold tracking-tight text-brand-strong ${initialsText(size)} ${className}`}
       >
         {initials(name) || '?'}
       </div>

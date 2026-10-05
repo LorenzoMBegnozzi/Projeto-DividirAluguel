@@ -6,6 +6,7 @@ import { startConversationWithInterested } from '../api/discovery'
 import { apiErrorMessage } from '../api/client'
 import Avatar from './Avatar'
 import type { UserProfile } from '../types'
+import { Alert, Card, buttonClass, cx, focusRing } from './ui'
 
 interface Props {
   listingId: number
@@ -72,19 +73,20 @@ export default function InterestSection({ listingId, isOwner }: Props) {
         <button
           onClick={handleToggle}
           disabled={toggling}
-          className={`flex h-[42px] items-center justify-center gap-1.5 rounded-md border px-3 text-sm font-semibold transition disabled:opacity-60 ${
-            status.interested ? 'border-brand bg-brand-tint text-brand-strong' : 'border-line-strong text-ink-2 hover:border-ink'
-          }`}
+          className={cx(
+            buttonClass({ variant: 'secondary' }),
+            status.interested ? 'border-brand! bg-brand-tint! text-brand-strong!' : 'text-ink-2! hover:text-ink!',
+          )}
         >
-          <Heart className="h-4 w-4" aria-hidden="true" fill={status.interested ? 'currentColor' : 'none'} />
+          <Heart className="size-4" aria-hidden="true" fill={status.interested ? 'currentColor' : 'none'} />
           {status.interested ? 'Interessado' : 'Tenho interesse'}
         </button>
       )}
 
       {canSeePeople && (
-        <div className="rounded-md bg-surface-sunk p-3">
-          <p className="mb-2 flex items-center gap-1 text-[13px] font-semibold text-ink-2">
-            <Users className="h-3.5 w-3.5" aria-hidden="true" />
+        <Card tone="sunk" padding="sm">
+          <p className="mb-2 flex items-center gap-1 text-caption font-semibold text-ink-2">
+            <Users className="size-3.5" aria-hidden="true" />
             {isOwner
               ? status.total === 0
                 ? 'Ninguém demonstrou interesse ainda'
@@ -99,7 +101,7 @@ export default function InterestSection({ listingId, isOwner }: Props) {
                 <li key={person.id} className="flex items-center justify-between gap-2">
                   <button
                     onClick={() => navigate(`/usuarios/${person.id}`)}
-                    className="flex min-w-0 items-center gap-2 text-left text-sm font-semibold text-ink hover:text-brand"
+                    className={cx('flex min-h-11 min-w-0 items-center gap-2 rounded-md text-left text-small font-semibold text-ink hover:text-brand', focusRing)}
                   >
                     <Avatar photoUrl={person.photoUrl} name={person.name} size={28} />
                     <span className="truncate">{person.name}</span>
@@ -108,7 +110,7 @@ export default function InterestSection({ listingId, isOwner }: Props) {
                     <button
                       onClick={() => handleConversar(person.id)}
                       disabled={startingPeerId === person.id}
-                      className="h-[32px] shrink-0 rounded-md border border-line-strong px-2.5 text-xs font-semibold text-ink-2 transition hover:border-ink hover:text-ink disabled:opacity-60"
+                      className={cx(buttonClass({ variant: 'secondary', size: 'sm' }), 'shrink-0')}
                     >
                       {startingPeerId === person.id ? 'Abrindo…' : 'Conversar'}
                     </button>
@@ -117,10 +119,10 @@ export default function InterestSection({ listingId, isOwner }: Props) {
               ))}
             </ul>
           )}
-        </div>
+        </Card>
       )}
 
-      {error && <p className="rounded-md bg-danger-tint px-3 py-2 text-sm text-danger">{error}</p>}
+      {error && <Alert tone="danger">{error}</Alert>}
     </div>
   )
 }

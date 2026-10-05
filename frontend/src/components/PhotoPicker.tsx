@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { ChangeEvent } from 'react'
 import { Camera, Trash2 } from 'lucide-react'
+import { cx, focusRing } from './ui'
 
 const MAX_PHOTOS = 6
 
@@ -32,18 +33,18 @@ export default function PhotoPicker({ files, onChange }: Props) {
 
   return (
     <div>
-      <p className="mb-2 text-[13px] font-semibold text-ink">Fotos ({files.length}/{MAX_PHOTOS})</p>
+      <p className="mb-2 text-small font-semibold text-ink">Fotos ({files.length}/{MAX_PHOTOS})</p>
       <div className="flex flex-wrap gap-2">
         {files.map((file, index) => (
-          <div key={`${file.name}-${index}`} className="group relative h-20 w-20 overflow-hidden rounded-md border border-line">
-            {previews[index] && <img src={previews[index]} alt="" className="h-full w-full object-cover" />}
+          <div key={`${file.name}-${index}`} className="group relative size-20 overflow-hidden rounded-md border border-line">
+            {previews[index] && <img src={previews[index]} alt="" className="size-full object-cover" />}
             <button
               type="button"
               onClick={() => handleRemove(index)}
               aria-label="Remover foto"
-              className="absolute right-1 top-1 rounded-full bg-scrim p-1 text-on-inverse opacity-0 transition group-hover:opacity-100"
+              className={cx('absolute right-1 top-1 rounded-full bg-scrim p-1 text-on-inverse opacity-0 transition-opacity duration-(--dur-fast) group-hover:opacity-100 focus-visible:opacity-100 motion-reduce:transition-none', focusRing)}
             >
-              <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+              <Trash2 className="size-3.5" aria-hidden="true" />
             </button>
           </div>
         ))}
@@ -52,10 +53,10 @@ export default function PhotoPicker({ files, onChange }: Props) {
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="flex h-20 w-20 flex-col items-center justify-center gap-1 rounded-md border border-dashed border-line-strong text-ink-3 transition hover:border-ink hover:text-ink"
+            className={cx('flex size-20 flex-col items-center justify-center gap-1 rounded-md border border-dashed border-field text-ink-3 transition-colors duration-(--dur-fast) hover:border-ink hover:text-ink motion-reduce:transition-none', focusRing)}
           >
-            <Camera className="h-5 w-5" aria-hidden="true" />
-            <span className="text-[11px] font-semibold">Adicionar</span>
+            <Camera className="size-5" aria-hidden="true" />
+            <span className="text-caption font-semibold">Adicionar</span>
           </button>
         )}
       </div>

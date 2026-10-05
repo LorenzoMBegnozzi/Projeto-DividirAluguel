@@ -9,6 +9,7 @@ import {
   markNotificationRead,
 } from '../api/notifications'
 import type { AppNotification, NotificationType } from '../types'
+import { Button, EmptyState } from './ui'
 
 const notificationStyle: Record<NotificationType, { icon: typeof Bell; iconClass: string }> = {
   NOVA_MENSAGEM: { icon: MessageCircle, iconClass: 'bg-brand-tint text-brand-strong' },
@@ -109,25 +110,20 @@ export default function NotificationBell() {
 
   return (
     <div className="relative" ref={setContainerRef}>
-      <button
-        onClick={toggleOpen}
-        className="relative rounded-md p-2 text-ink-2 transition hover:bg-surface-sunk hover:text-ink"
-        aria-label="Notificações"
-      >
-        <Bell className="h-5 w-5" aria-hidden="true" />
+      <Button variant="ghost" size="sm" square icon={Bell} onClick={toggleOpen} aria-label="Notificações">
         {unread > 0 && (
-          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-brand px-1 text-[10px] font-bold text-on-brand ring-2 ring-surface">
+          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand px-1 text-micro font-bold text-on-brand ring-2 ring-surface">
             {unread > 9 ? '9+' : unread}
           </span>
         )}
-      </button>
+      </Button>
 
       {open && (
-        <div className="absolute right-0 z-30 mt-2 w-80 rounded-lg border border-line bg-surface p-2 shadow-pop">
-          <div className="flex items-center justify-between px-2 py-1.5">
-            <p className="text-sm font-bold text-ink">Notificações</p>
+        <div className="absolute right-0 z-(--z-dropdown) mt-2 w-80 max-w-[calc(100vw-2rem)] rounded-lg border border-line bg-surface p-2 shadow-lg">
+          <div className="flex items-center justify-between px-2 py-1">
+            <p className="text-small font-bold text-ink">Notificações</p>
             {notifications.some((n) => !n.read) && (
-              <button onClick={handleMarkAllRead} className="text-xs font-semibold text-brand hover:underline">
+              <button onClick={handleMarkAllRead} className="inline-flex min-h-9 items-center rounded-sm px-1 text-caption font-bold text-brand hover:underline focus-visible:outline-2 focus-visible:outline-focus">
                 Marcar todas como lidas
               </button>
             )}
@@ -135,7 +131,7 @@ export default function NotificationBell() {
 
           <div ref={listRef} className="max-h-96 divide-y divide-line overflow-y-auto">
             {notifications.length === 0 ? (
-              <p className="px-2 py-6 text-center text-sm text-ink-3">Sem notificações por aqui.</p>
+              <EmptyState icon={Bell} title="Sem notificações por aqui." className="border-0 py-6" />
             ) : (
               notifications.map((notification) => {
                 const style = notificationStyle[notification.type]
@@ -144,7 +140,7 @@ export default function NotificationBell() {
                   <button
                     key={notification.id}
                     onClick={() => handleClickNotification(notification)}
-                    className={`relative flex w-full items-start gap-2.5 px-3 py-3 text-left transition hover:bg-surface-sunk ${
+                    className={`relative flex w-full items-start gap-2.5 rounded-md px-3 py-3 text-left transition-colors hover:bg-surface-sunk focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus ${
                       notification.read ? '' : 'bg-brand-tint'
                     }`}
                   >
@@ -157,16 +153,16 @@ export default function NotificationBell() {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-2">
                         <p
-                          className={`truncate text-sm ${
+                          className={`truncate text-small ${
                             notification.read ? 'font-medium text-ink-2' : 'font-semibold text-ink'
                           }`}
                         >
                           {notification.title}
                         </p>
-                        <span className="shrink-0 text-[11px] text-ink-3">{timeAgo(notification.createdAt)}</span>
+                        <span className="shrink-0 text-micro text-ink-3">{timeAgo(notification.createdAt)}</span>
                       </div>
                       {notification.message && (
-                        <p className="mt-0.5 line-clamp-2 text-xs text-ink-3">{notification.message}</p>
+                        <p className="mt-0.5 line-clamp-2 text-caption text-ink-3">{notification.message}</p>
                       )}
                     </div>
                   </button>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { Button } from './ui'
 
 interface Props {
   photos: string[]
@@ -31,41 +32,20 @@ export default function PhotoLightbox({ photos, startIndex = 0, onClose }: Props
 
   return (
     <div
-      className="fixed inset-0 z-[1000] flex flex-col items-center justify-center gap-4 bg-scrim p-4"
+      className="fixed inset-0 z-(--z-modal) flex flex-col items-center justify-center gap-4 bg-scrim p-4"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-label="Fotos do anúncio"
     >
-      <button
-        type="button"
-        onClick={onClose}
-        aria-label="Fechar"
-        className="absolute right-4 top-4 rounded-full bg-surface p-2 text-ink shadow-pop transition hover:bg-surface-sunk"
-      >
-        <X className="h-5 w-5" aria-hidden="true" />
-      </button>
+      <Button variant="secondary" icon={X} onClick={onClose} aria-label="Fechar" className="absolute right-4 top-4 rounded-full border-transparent shadow-lg" />
 
       <div className="relative flex max-h-[70vh] w-full max-w-4xl items-center justify-center" onClick={(e) => e.stopPropagation()}>
         <img src={photos[index]} alt="" className="max-h-[70vh] max-w-full rounded-lg object-contain" />
         {hasMany && (
           <>
-            <button
-              type="button"
-              onClick={prev}
-              aria-label="Foto anterior"
-              className="absolute left-2 rounded-full bg-surface p-2 text-ink shadow-pop transition hover:bg-surface-sunk"
-            >
-              <ChevronLeft className="h-5 w-5" aria-hidden="true" />
-            </button>
-            <button
-              type="button"
-              onClick={next}
-              aria-label="Próxima foto"
-              className="absolute right-2 rounded-full bg-surface p-2 text-ink shadow-pop transition hover:bg-surface-sunk"
-            >
-              <ChevronRight className="h-5 w-5" aria-hidden="true" />
-            </button>
+            <Button variant="secondary" icon={ChevronLeft} onClick={prev} aria-label="Foto anterior" className="absolute left-2 rounded-full border-transparent shadow-lg" />
+            <Button variant="secondary" icon={ChevronRight} onClick={next} aria-label="Próxima foto" className="absolute right-2 rounded-full border-transparent shadow-lg" />
           </>
         )}
       </div>
@@ -78,7 +58,7 @@ export default function PhotoLightbox({ photos, startIndex = 0, onClose }: Props
               type="button"
               onClick={() => setIndex(i)}
               aria-label={`Ver foto ${i + 1}`}
-              className={`h-16 w-20 shrink-0 overflow-hidden rounded-md border-2 transition ${
+              className={`h-16 w-20 shrink-0 overflow-hidden rounded-md border-2 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${
                 i === index ? 'border-brand' : 'border-transparent opacity-70 hover:opacity-100'
               }`}
             >

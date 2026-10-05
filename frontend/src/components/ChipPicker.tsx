@@ -1,14 +1,9 @@
+import { chipClass } from './ui'
+
 interface Option<T extends string> {
   value: T
   label: string
 }
-
-const chipClass = (selected: boolean) =>
-  `inline-flex h-[34px] items-center gap-1.5 rounded-sm border px-3 text-[13px] font-semibold transition ${
-    selected
-      ? 'border-inverse bg-inverse text-on-inverse'
-      : 'border-line-strong bg-surface text-ink-2 hover:border-ink hover:text-ink'
-  }`
 
 /** Seleção única: clicar de novo no chip selecionado limpa a escolha. */
 export function ChipPicker<T extends string>({
@@ -27,7 +22,7 @@ export function ChipPicker<T extends string>({
           key={option.value}
           type="button"
           onClick={() => onChange(value === option.value ? null : option.value)}
-          className={chipClass(value === option.value)}
+          className={chipClass({ pressed: value === option.value })}
         >
           {option.label}
         </button>
@@ -57,7 +52,7 @@ export function ChipMultiPicker<T extends string>({
           key={option.value}
           type="button"
           onClick={() => toggle(option.value)}
-          className={chipClass(values.includes(option.value))}
+          className={chipClass({ pressed: values.includes(option.value) })}
         >
           {option.label}
         </button>

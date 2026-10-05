@@ -28,7 +28,7 @@ export default function EmailConfirmationBanner() {
   }
 
   return (
-    <div className="border-b border-mel/30 bg-mel-tint px-4 py-2.5 text-sm text-ink">
+    <div className="border-b border-mel/30 bg-mel-tint px-4 py-2 text-small text-ink">
       <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-x-4 gap-y-1.5">
         <p className="flex items-center gap-2">
           <MailWarning className="h-4 w-4 shrink-0 text-mel" aria-hidden="true" />
@@ -40,7 +40,7 @@ export default function EmailConfirmationBanner() {
         {state === 'sent' ? (
           <span className="font-semibold text-leaf">Enviado! Confira também o spam.</span>
         ) : (
-          <button onClick={handleResend} disabled={state === 'sending'} className="font-semibold text-brand hover:text-brand-strong disabled:opacity-60">
+          <button onClick={handleResend} disabled={state === 'sending'} className="inline-flex min-h-11 items-center rounded-sm font-bold text-brand hover:text-brand-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:opacity-60">
             {state === 'sending' ? 'Enviando…' : 'Reenviar e-mail'}
           </button>
         )}

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { getBlockedUsers, unblockUser } from '../api/moderation'
 import { apiErrorMessage } from '../api/client'
 import type { BlockedUser } from '../types'
+import { Alert, Button, Card } from './ui'
 
 export default function BlockedUsersSection() {
   const [blocked, setBlocked] = useState<BlockedUser[]>([])
@@ -33,22 +34,22 @@ export default function BlockedUsersSection() {
   }
 
   return (
-    <div className="mx-auto mt-6 max-w-2xl rounded-lg border border-line bg-surface p-6">
-      <h2 className="mb-1 text-[16px] font-bold text-ink">Usuários bloqueados</h2>
-      <p className="mb-4 text-[13px] text-ink-3">Vocês não aparecem um para o outro enquanto o bloqueio existir.</p>
+    <Card className="mx-auto mt-6 max-w-2xl">
+      <h2 className="mb-1 text-h3 text-ink">Usuários bloqueados</h2>
+      <p className="mb-4 text-caption text-ink-3">Vocês não aparecem um para o outro enquanto o bloqueio existir.</p>
 
-      {error && <p className="mb-3 rounded-md bg-danger-tint px-3 py-2 text-sm text-danger">{error}</p>}
+      {error && <Alert tone="danger" className="mb-3">{error}</Alert>}
 
       <div className="flex flex-col gap-2">
         {blocked.map((user) => (
-          <div key={user.id} className="flex items-center justify-between rounded-md border border-line px-3 py-2">
-            <span className="text-sm text-ink">{user.name}</span>
-            <button onClick={() => handleUnblock(user.id)} className="text-xs font-semibold text-brand hover:underline">
+          <div key={user.id} className="flex items-center justify-between gap-3 rounded-md border border-line py-1 pl-3 pr-1">
+            <span className="min-w-0 truncate text-small text-ink">{user.name}</span>
+            <Button variant="ghost" size="sm" onClick={() => handleUnblock(user.id)} className="text-brand hover:text-brand-strong">
               Desbloquear
-            </button>
+            </Button>
           </div>
         ))}
       </div>
-    </div>
+    </Card>
   )
 }

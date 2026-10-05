@@ -5,8 +5,12 @@ import { useAuth } from '../context/AuthContext'
 import { enableAdvertiser, enableRenter } from '../api/profile'
 import { apiErrorMessage } from '../api/client'
 import type { AdvertiserKind } from '../types'
+import { Alert, Button, Card, cx, focusRing } from './ui'
 
-const optionCardClass = 'rounded-md border border-line-strong p-3 text-left transition hover:border-ink'
+const optionCardClass = cx(
+  'rounded-md border border-field bg-surface p-3 text-left transition-colors duration-(--dur-fast) hover:border-ink disabled:opacity-55 motion-reduce:transition-none',
+  focusRing,
+)
 
 export default function CapabilitiesSection() {
   const { user, refreshUser } = useAuth()
@@ -45,11 +49,11 @@ export default function CapabilitiesSection() {
   }
 
   return (
-    <div className="mx-auto mt-6 max-w-2xl rounded-lg border border-line bg-surface p-6">
-      <h2 className="mb-1 text-lg font-bold text-ink">Quero também...</h2>
-      <p className="mb-4 text-sm text-ink-3">Você pode ativar as duas coisas na mesma conta, sem precisar cadastrar de novo.</p>
+    <Card className="mx-auto mt-6 max-w-2xl">
+      <h2 className="mb-1 text-h3 text-ink">Quero também...</h2>
+      <p className="mb-4 text-small text-ink-3">Você pode ativar as duas coisas na mesma conta, sem precisar cadastrar de novo.</p>
 
-      {error && <p className="mb-3 rounded-md bg-danger-tint px-3 py-2 text-sm text-danger">{error}</p>}
+      {error && <Alert tone="danger" className="mb-3">{error}</Alert>}
 
       <div className="flex flex-col gap-3">
         {!user.renter && (
@@ -57,12 +61,12 @@ export default function CapabilitiesSection() {
             type="button"
             onClick={handleEnableRenter}
             disabled={loading}
-            className="flex items-center gap-3 rounded-md border border-line-strong p-3 text-left transition hover:border-ink disabled:opacity-60"
+            className={cx(optionCardClass, 'flex items-center gap-3')}
           >
-            <Home className="h-5 w-5 shrink-0 text-ink-3" aria-hidden="true" />
+            <Home className="size-5 shrink-0 text-ink-3" aria-hidden="true" />
             <span>
               <span className="block font-semibold text-ink">Procurar uma vaga</span>
-              <span className="block text-sm text-ink-3">Passa a poder buscar e conversar com anunciantes</span>
+              <span className="block text-small text-ink-3">Passa a poder buscar e conversar com anunciantes</span>
             </span>
           </button>
         )}
@@ -72,48 +76,49 @@ export default function CapabilitiesSection() {
             type="button"
             onClick={() => setChoosingKind(true)}
             disabled={loading}
-            className="flex items-center gap-3 rounded-md border border-line-strong p-3 text-left transition hover:border-ink disabled:opacity-60"
+            className={cx(optionCardClass, 'flex items-center gap-3')}
           >
-            <Megaphone className="h-5 w-5 shrink-0 text-ink-3" aria-hidden="true" />
+            <Megaphone className="size-5 shrink-0 text-ink-3" aria-hidden="true" />
             <span>
               <span className="block font-semibold text-ink">Anunciar uma vaga ou imóvel</span>
-              <span className="block text-sm text-ink-3">Passa a poder publicar anúncios</span>
+              <span className="block text-small text-ink-3">Passa a poder publicar anúncios</span>
             </span>
           </button>
         )}
 
         {!user.advertiser && choosingKind && (
-          <div className="flex flex-col gap-2 rounded-md bg-surface-sunk p-3">
-            <p className="mb-1 text-[13px] font-semibold text-ink">O que você quer anunciar?</p>
+          <Card tone="sunk" padding="sm" className="flex flex-col gap-2">
+            <p className="mb-1 text-small font-semibold text-ink">O que você quer anunciar?</p>
             <button
               type="button"
               onClick={() => handleEnableAdvertiser('VAGA')}
               disabled={loading}
-              className={`${optionCardClass} bg-surface disabled:opacity-60`}
+              className={optionCardClass}
             >
               <p className="font-semibold text-ink">Tenho vaga pra dividir</p>
-              <p className="text-sm text-ink-3">Você mora no lugar e busca alguém compatível pra dividir</p>
+              <p className="text-small text-ink-3">Você mora no lugar e busca alguém compatível pra dividir</p>
             </button>
             <button
               type="button"
               onClick={() => handleEnableAdvertiser('ESTABELECIMENTO')}
               disabled={loading}
-              className={`${optionCardClass} bg-surface disabled:opacity-60`}
+              className={optionCardClass}
             >
               <p className="font-semibold text-ink">Tenho um imóvel pra alugar</p>
-              <p className="text-sm text-ink-3">Você anuncia o imóvel inteiro, como imobiliária ou proprietário</p>
+              <p className="text-small text-ink-3">Você anuncia o imóvel inteiro, como imobiliária ou proprietário</p>
             </button>
-            <button
-              type="button"
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => setChoosingKind(false)}
               disabled={loading}
-              className="mt-1 self-start text-sm font-semibold text-ink-2 hover:text-ink"
+              className="mt-1 self-start"
             >
               Cancelar
-            </button>
-          </div>
+            </Button>
+          </Card>
         )}
       </div>
-    </div>
+    </Card>
   )
 }

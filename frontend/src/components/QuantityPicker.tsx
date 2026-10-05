@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
+import { cx, focusRing, labelClass } from './ui'
 
 interface Props {
   label: string
@@ -20,14 +21,17 @@ export default function QuantityPicker({ label, value, onChange, max = 20 }: Pro
   const [typing, setTyping] = useState(value !== '' && !isQuick)
   const showInput = typing || (value !== '' && !isQuick)
 
-  const box =
-    'inline-flex h-[40px] min-w-[40px] items-center justify-center rounded-md border text-sm font-semibold tabular-nums transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus'
-  const idle = 'border-line-strong bg-surface text-ink-2 hover:border-ink hover:text-ink'
-  const selected = 'border-inverse bg-inverse text-on-inverse'
+  const box = cx(
+    'inline-flex h-11 min-w-11 items-center justify-center rounded-md border text-small font-semibold tabular-nums',
+    'transition-[background-color,border-color,color] duration-(--dur-fast) motion-reduce:transition-none',
+    focusRing,
+  )
+  const idle = 'border-field bg-surface text-ink-2 hover:border-ink hover:text-ink'
+  const selected = 'border-brand bg-brand-tint text-brand-strong'
 
   return (
     <div>
-      <p className="mb-2 text-[13px] font-semibold text-ink">{label}</p>
+      <p className={labelClass}>{label}</p>
       <div role="group" aria-label={label} className="flex flex-wrap gap-2">
         {QUICK_OPTIONS.filter((n) => n <= max).map((n) => {
           const active = !showInput && Number(value) === n && value !== ''
@@ -40,7 +44,7 @@ export default function QuantityPicker({ label, value, onChange, max = 20 }: Pro
                 setTyping(false)
                 onChange(active ? '' : String(n))
               }}
-              className={`${box} ${active ? selected : idle}`}
+              className={cx(box, active ? selected : idle)}
             >
               {n}
             </button>
@@ -59,7 +63,7 @@ export default function QuantityPicker({ label, value, onChange, max = 20 }: Pro
               if (value === '') setTyping(false)
             }}
             placeholder="Nº"
-            className={`${box} w-[72px] border-inverse bg-surface px-2 text-center text-ink outline-none`}
+            className={cx(box, 'w-18 border-brand bg-surface px-2 text-center text-ink outline-none')}
           />
         ) : (
           <button
@@ -70,9 +74,9 @@ export default function QuantityPicker({ label, value, onChange, max = 20 }: Pro
               setTyping(true)
               onChange('')
             }}
-            className={`${box} ${idle}`}
+            className={cx(box, idle)}
           >
-            <Plus className="h-4 w-4" aria-hidden="true" />
+            <Plus className="size-4" aria-hidden="true" />
           </button>
         )}
       </div>

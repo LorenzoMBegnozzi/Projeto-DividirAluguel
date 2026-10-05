@@ -3,7 +3,7 @@ import { Search, ClipboardList, MessageCircle, ShieldCheck, User } from 'lucide-
 import { useAuth } from '../context/AuthContext'
 
 const itemClass = ({ isActive }: { isActive: boolean }) =>
-  `flex flex-1 flex-col items-center justify-center gap-0.5 py-1.5 text-[11px] font-semibold transition ${
+  `flex min-h-14 flex-1 flex-col items-center justify-center gap-0.5 py-1.5 text-micro font-semibold transition-colors ${
     isActive ? 'text-brand' : 'text-ink-3 hover:text-ink-2'
   }`
 
@@ -17,8 +17,7 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-20 flex border-t border-line bg-surface lg:hidden"
-      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+      className="fixed inset-x-0 bottom-0 z-(--z-sticky) flex border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden"
     >
       {user.renter && !isAdmin && (
         <NavLink to="/browse" className={itemClass} end>

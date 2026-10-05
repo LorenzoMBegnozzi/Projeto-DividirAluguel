@@ -3,6 +3,7 @@ import type { ChangeEvent } from 'react'
 import { Camera, Trash2 } from 'lucide-react'
 import { deleteListingPhoto, getListingPhotos, uploadListingPhoto } from '../api/listings'
 import { apiErrorMessage } from '../api/client'
+import { Alert, cx, focusRing } from './ui'
 
 const MAX_PHOTOS = 6
 
@@ -54,22 +55,22 @@ export default function ListingPhotoManager({ listingId }: { listingId: number }
 
   return (
     <div className="mt-3 border-t border-line pt-3">
-      <p className="mb-2 text-[13px] font-semibold text-ink">Fotos ({photos.length}/{MAX_PHOTOS})</p>
+      <p className="mb-2 text-small font-semibold text-ink">Fotos ({photos.length}/{MAX_PHOTOS})</p>
 
-      {error && <p className="mb-2 rounded-md bg-danger-tint px-3 py-2 text-sm text-danger">{error}</p>}
+      {error && <Alert tone="danger" className="mb-2">{error}</Alert>}
 
       {!loading && (
         <div className="flex flex-wrap gap-2">
           {photos.map((photoUrl) => (
-            <div key={photoUrl} className="group relative h-20 w-20 overflow-hidden rounded-md border border-line">
-              <img src={photoUrl} alt="" className="h-full w-full object-cover" />
+            <div key={photoUrl} className="group relative size-20 overflow-hidden rounded-md border border-line">
+              <img src={photoUrl} alt="" className="size-full object-cover" />
               <button
                 type="button"
                 onClick={() => handleDelete(photoUrl)}
                 aria-label="Remover foto"
-                className="absolute right-1 top-1 rounded-full bg-scrim p-1 text-on-inverse opacity-0 transition group-hover:opacity-100"
+                className={cx('absolute right-1 top-1 rounded-full bg-scrim p-1 text-on-inverse opacity-0 transition-opacity duration-(--dur-fast) group-hover:opacity-100 focus-visible:opacity-100 motion-reduce:transition-none', focusRing)}
               >
-                <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+                <Trash2 className="size-3.5" aria-hidden="true" />
               </button>
             </div>
           ))}
@@ -79,10 +80,10 @@ export default function ListingPhotoManager({ listingId }: { listingId: number }
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
-              className="flex h-20 w-20 flex-col items-center justify-center gap-1 rounded-md border border-dashed border-line-strong text-ink-3 transition hover:border-ink hover:text-ink disabled:opacity-60"
+              className={cx('flex size-20 flex-col items-center justify-center gap-1 rounded-md border border-dashed border-field text-ink-3 transition-colors duration-(--dur-fast) hover:border-ink hover:text-ink disabled:opacity-55 motion-reduce:transition-none', focusRing)}
             >
-              <Camera className="h-5 w-5" aria-hidden="true" />
-              <span className="text-[11px] font-semibold">{uploading ? 'Enviando…' : 'Adicionar'}</span>
+              <Camera className="size-5" aria-hidden="true" />
+              <span className="text-caption font-semibold">{uploading ? 'Enviando…' : 'Adicionar'}</span>
             </button>
           )}
         </div>

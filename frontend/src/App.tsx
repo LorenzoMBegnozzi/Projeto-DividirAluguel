@@ -59,8 +59,8 @@ function AppContent() {
       <EmailConfirmationBanner />
       {!isOnboarding && <IosInstallHint />}
       {!user && !isHome && (
-        <div className="fixed right-4 top-4 z-30">
-          <ThemeToggle className="border border-line bg-surface" />
+        <div className="fixed right-4 top-4 z-(--z-dropdown)">
+          <ThemeToggle className="border border-line bg-surface shadow-sm" />
         </div>
       )}
       {/* Primeiro o aceite dos Termos/Política (LGPD); nas próprias páginas jurídicas não bloqueia a leitura. */}

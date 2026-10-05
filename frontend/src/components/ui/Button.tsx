@@ -13,6 +13,8 @@ interface Common {
   full?: boolean
   icon?: LucideIcon
   iconRight?: LucideIcon
+  /** quadrado do tamanho do botão mesmo com children (ex.: ícone + selo de contagem) */
+  square?: boolean
   children?: ReactNode
 }
 
@@ -41,10 +43,10 @@ export interface ButtonProps extends Common, Omit<ButtonHTMLAttributes<HTMLButto
  * Tamanhos sm 36 px (44 px de toque), md 44 px, lg 52 px. Só ícone: passe `aria-label`.
  */
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { variant, size, full, icon, iconRight, loading = false, disabled, className, children, type = 'button', ...rest },
+  { variant, size, full, icon, iconRight, square, loading = false, disabled, className, children, type = 'button', ...rest },
   ref,
 ) {
-  const iconOnly = !children && !!icon
+  const iconOnly = square || (!children && !!icon)
   return (
     <button
       ref={ref}
@@ -61,8 +63,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
 export default Button
 
 /** Link do roteador com cara de botão (mesmas variantes e tamanhos). */
-export function ButtonLink({ variant, size, full, icon, iconRight, className, children, ...rest }: Common & LinkProps) {
-  const iconOnly = !children && !!icon
+export function ButtonLink({ variant, size, full, icon, iconRight, square, className, children, ...rest }: Common & LinkProps) {
+  const iconOnly = square || (!children && !!icon)
   return (
     <Link className={cx(buttonClass({ variant, size, full, iconOnly }), className)} {...rest}>
       <Content icon={icon} iconRight={iconRight}>{children}</Content>
