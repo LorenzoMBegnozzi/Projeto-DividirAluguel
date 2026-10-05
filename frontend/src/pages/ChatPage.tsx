@@ -8,6 +8,7 @@ import { apiErrorMessage } from '../api/client'
 import { useAuth } from '../context/AuthContext'
 import Avatar from '../components/Avatar'
 import TypingIndicator from '../components/TypingIndicator'
+import { Alert, Badge, Button, ButtonLink, Card, Skeleton, cardClass, cx, fieldClass } from '../components/ui'
 import type { ConversationSummary, Message } from '../types'
 
 /** Não manda "estou digitando" a cada tecla: no máximo uma vez a cada 2s. */
@@ -89,10 +90,8 @@ export default function ChatPage() {
 
   return (
     <div className="mx-auto flex h-[calc(100vh-124px)] max-w-2xl flex-col px-4 py-4 lg:h-[calc(100vh-60px)]">
-      <div className="mb-3 flex items-center gap-3 rounded-lg border border-line bg-surface p-3">
-        <Link to="/conversas" className="shrink-0 rounded-md p-1.5 text-ink-3 hover:bg-surface-sunk hover:text-ink">
-          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-        </Link>
+      <Card padding="sm" className="mb-3 flex items-center gap-3">
+        <ButtonLink to="/conversas" variant="ghost" icon={ArrowLeft} className="shrink-0" />
         {conversation ? (
           <div className="flex min-w-0 items-center gap-2.5">
             <Avatar photoUrl={conversation.otherUser.photoUrl} name={conversation.otherUser.name} size={36} />
@@ -103,32 +102,31 @@ export default function ChatPage() {
               >
                 {conversation.otherUser.name}
               </Link>
-              <Link to={`/anuncios/${conversation.listing.id}`} className="block truncate text-xs text-ink-3 hover:text-brand">
-                <span className="mr-1.5 inline-block rounded-sm bg-surface-sunk px-2 py-0.5 font-semibold text-ink-2">
-                  {listingTypeLabel[conversation.listing.type]}
-                </span>
+              <Link to={`/anuncios/${conversation.listing.id}`} className="block truncate text-caption text-ink-3 hover:text-brand">
+                <Badge className="mr-1.5">{listingTypeLabel[conversation.listing.type]}</Badge>
                 {conversation.listing.title}
               </Link>
             </div>
           </div>
         ) : (
-          <div className="h-9 w-40 animate-pulse rounded-md bg-surface-sunk" />
+          <Skeleton className="h-9 w-40 rounded-md" />
         )}
-      </div>
+      </Card>
 
-      {error && <div className="mb-2 rounded-md bg-danger-tint px-4 py-2 text-sm text-danger">{error}</div>}
+      {error && <Alert tone="danger" className="mb-2">{error}</Alert>}
 
-      <div ref={messageListRef} className="flex-1 space-y-1.5 overflow-y-auto rounded-lg border border-line bg-surface p-4">
+      <div ref={messageListRef} className={cx(cardClass({ padding: 'sm' }), 'flex-1 space-y-1.5 overflow-y-auto')}>
         {messages.map((message) => {
           const mine = message.senderId === user?.id
           return (
             <div key={message.id} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
               <div
-                className={`max-w-[75%] px-3 py-2.5 text-[15px] leading-[21px] ${
+                className={cx(
+                  'max-w-[75%] px-3.5 py-2.5 text-body',
                   mine
-                    ? 'rounded-lg rounded-br-[4px] bg-inverse text-on-inverse'
-                    : 'rounded-lg rounded-bl-[4px] bg-surface-sunk text-ink'
-                }`}
+                    ? 'rounded-lg rounded-br-xs bg-brand text-on-brand'
+                    : 'rounded-lg rounded-bl-xs bg-surface-sunk text-ink',
+                )}
               >
                 {message.content}
               </div>
@@ -144,11 +142,9 @@ export default function ChatPage() {
           value={content}
           onChange={(e) => handleContentChange(e.target.value)}
           placeholder="Escreva uma mensagem..."
-          className="h-11 flex-1 rounded-md border border-line-strong bg-surface px-3 text-ink outline-none placeholder:text-ink-3 hover:border-ink-2 focus:border-ink focus:ring-2 focus:ring-focus focus:ring-offset-1"
+          className={cx(fieldClass(), 'flex-1')}
         />
-        <button type="submit" className="h-11 rounded-md bg-brand px-5 font-semibold text-on-brand transition hover:bg-brand-strong">
-          Enviar
-        </button>
+        <Button type="submit">Enviar</Button>
       </form>
     </div>
   )
