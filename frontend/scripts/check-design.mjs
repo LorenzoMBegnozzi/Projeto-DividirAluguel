@@ -26,10 +26,10 @@ const rules = [
   { id: 'paleta-crua', tsx: true, test: (l) => new RegExp(`(?<![\\w-])(?:bg|text|border|ring|from|to|via|fill|stroke|outline|divide|accent|decoration)-(?:(?:${PALETTE})-\\d{2,3}|black|white)(?![\\w-])`).test(l) },
   { id: 'arbitrario', tsx: true, test: (l) => /(?<![\w-])(?:text|leading|tracking|rounded(?:-[trbl]{1,2})?|shadow|z|font)-\[[^\]]+\]|bg-\[#/.test(l) },
   { id: 'serif', tsx: true, test: (l) => /(?<![\w-])font-serif(?![\w-])/.test(l) },
-  { id: 'css-font-size', css: true, test: (l) => /font-size:\s*(?!var\()/.test(l) },
-  { id: 'css-font-family', css: true, test: (l) => /font-family:\s*(?!var\(|inherit)/.test(l) },
-  { id: 'css-z-index', css: true, test: (l) => /z-index:\s*(?!var\(|auto|inherit|0\b|-1\b|1\b)/.test(l) },
-  { id: 'css-radius', css: true, test: (l) => /border-radius:\s*(?![^;]*(?:var\(|inherit|50%|999px|0;|0 ))[^;]*\d+px/.test(l) },
+  { id: 'css-font-size', css: true, test: (l) => /font-size:(?!\s*var\()/.test(l) },
+  { id: 'css-font-family', css: true, test: (l) => /font-family:(?!\s*(?:var\(|inherit))/.test(l) },
+  { id: 'css-z-index', css: true, test: (l) => /z-index:(?!\s*(?:var\(|calc\(var\(|auto|inherit|0\b|-1\b|1\b))/.test(l) },
+  { id: 'css-radius', css: true, test: (l) => /border-radius:(?![^;]*(?:var\(|inherit|50%|999px|0;|0 ))[^;]*\d+px/.test(l) },
 ]
 
 const hits = []

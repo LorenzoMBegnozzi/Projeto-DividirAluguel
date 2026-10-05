@@ -17,9 +17,9 @@ export default function LandingFooter() {
       <div className="grid gap-10 border-t border-line pt-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
         <div>
           <Logo size="md" />
-          <p className="mt-3 max-w-xs text-sm text-ink-3">Para achar com quem dividir o aluguel em Maringá, sem grupo de WhatsApp.</p>
+          <p className="mt-3 max-w-xs text-small text-ink-3">Para achar com quem dividir o aluguel em Maringá, sem grupo de WhatsApp.</p>
           {contactEmail && (
-            <a href={`mailto:${contactEmail}`} className="mt-3 inline-block text-sm font-semibold text-brand hover:underline">{contactEmail}</a>
+            <a href={`mailto:${contactEmail}`} className="mt-3 inline-block text-small font-semibold text-brand hover:underline">{contactEmail}</a>
           )}
         </div>
         {sections.map((s) => (
@@ -29,15 +29,15 @@ export default function LandingFooter() {
               {s.links.map(([label, to]) => (
                 <li key={to}>
                   {to.startsWith('#')
-                    ? <a href={to} className="text-sm text-ink-2 transition hover:text-ink">{label}</a>
-                    : <Link to={to} className="text-sm text-ink-2 transition hover:text-ink">{label}</Link>}
+                    ? <a href={to} className="text-small text-ink-2 transition hover:text-ink">{label}</a>
+                    : <Link to={to} className="text-small text-ink-2 transition hover:text-ink">{label}</Link>}
                 </li>
               ))}
             </ul>
           </nav>
         ))}
       </div>
-      <p className="mt-12 text-xs text-ink-3">© {new Date().getFullYear()} RachaAi · feito em Maringá</p>
+      <p className="mt-12 text-caption text-ink-3">© {new Date().getFullYear()} RachaAi · feito em Maringá</p>
     </footer>
   )
 }

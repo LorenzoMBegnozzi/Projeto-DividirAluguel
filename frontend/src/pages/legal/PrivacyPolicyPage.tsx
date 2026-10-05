@@ -195,7 +195,7 @@ export default function PrivacyPolicyPage() {
         </p>
       </Section>
 
-      <p className="mt-4 text-sm text-ink-3">
+      <p className="mt-4 text-small text-ink-3">
         Veja também os <Link to="/termos">Termos de Uso</Link>.
       </p>
     </LegalLayout>

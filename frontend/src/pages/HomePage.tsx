@@ -15,6 +15,7 @@ import PricingSection from './landing/PricingSection'
 import FaqSection from './landing/FaqSection'
 import CtaSplit from './landing/CtaSplit'
 import LandingFooter from './landing/LandingFooter'
+import { Alert } from '../components/ui'
 import './home.css'
 
 // O palco 3D (Three.js + GSAP) é um chunk separado: só quem abre a landing baixa.
@@ -56,9 +57,9 @@ export default function HomePage() {
 
       <main ref={mainRef} id="topo">
         {accountDeleted && (
-          <p className="mx-auto mt-20 max-w-6xl rounded-lg bg-leaf-tint px-4 py-3 text-center text-sm font-semibold text-leaf">
+          <Alert tone="success" className="mx-auto mt-20 max-w-6xl text-center font-semibold">
             Sua conta foi excluída e seus dados pessoais foram apagados.
-          </p>
+          </Alert>
         )}
 
         {/* TOPO */}
@@ -83,7 +84,7 @@ export default function HomePage() {
                   <span className="hero-lead">{copy.lead}</span>{' '}
                   <RotatingWords words={copy.words} className={shown === 'procurar' ? 'text-brand' : 'text-coral'} />
                 </h1>
-                <p className="hero-text max-w-lg text-lg leading-relaxed text-ink-2">{copy.text}</p>
+                <p className="hero-text max-w-lg text-lead text-ink-2">{copy.text}</p>
               </div>
 
               <div className="hero-actions flex flex-wrap items-center justify-center gap-3 lg:justify-start">
@@ -97,8 +98,8 @@ export default function HomePage() {
 
               <ul className="hero-promises flex flex-wrap justify-center gap-x-5 gap-y-2 lg:justify-start">
                 {promises.map((p) => (
-                  <li key={p} className="flex items-center gap-1.5 text-[13px] font-semibold text-ink-3">
-                    <Check className="h-3.5 w-3.5 text-leaf" aria-hidden="true" />{p}
+                  <li key={p} className="flex items-center gap-1.5 text-caption font-semibold text-ink-3">
+                    <Check className="size-3.5 text-leaf" aria-hidden="true" />{p}
                   </li>
                 ))}
               </ul>

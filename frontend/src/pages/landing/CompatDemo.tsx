@@ -181,7 +181,7 @@ export default function CompatDemo() {
           )}
         </div>
 
-        <p className="mt-6 text-xs text-ink-3">Anúncios fictícios, só para mostrar a ideia. No app a conta usa mais hábitos.</p>
+        <p className="mt-6 text-caption text-ink-3">Anúncios fictícios, só para mostrar a ideia. No app a conta usa mais hábitos.</p>
       </div>
 
       {/* durante a demo automática a lista não é anunciada (aria-live off); só mudanças da pessoa */}
@@ -197,7 +197,7 @@ export default function CompatDemo() {
             <span className="demo-thumb" aria-hidden="true" data-variant={l.id} />
             <span className="min-w-0 flex-1">
               <span className="block font-bold leading-snug text-ink">{l.title}</span>
-              <span className="mt-0.5 flex items-center gap-1 text-[13px] text-ink-3">
+              <span className="mt-0.5 flex items-center gap-1 text-caption text-ink-3">
                 <MapPin className="h-3.5 w-3.5" aria-hidden="true" /> Maringá · {l.price}/mês
               </span>
               <span className="mt-2 flex flex-wrap gap-1.5">

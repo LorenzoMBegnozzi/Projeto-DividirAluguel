@@ -14,8 +14,8 @@ function Card({ className = '', title, text, children, i }: { className?: string
     <div className={`bento-card lp-card reveal ${className}`} style={d(i)} data-loop>
       <div className="bento-art" aria-hidden="true">{children}</div>
       <div className="bento-copy">
-        <h3 className="mb-1.5 text-lg font-extrabold tracking-tight text-ink">{title}</h3>
-        <p className="text-sm leading-relaxed text-ink-2">{text}</p>
+        <h3 className="mb-1.5 text-h3 font-extrabold text-ink">{title}</h3>
+        <p className="text-small text-ink-2">{text}</p>
       </div>
     </div>
   )

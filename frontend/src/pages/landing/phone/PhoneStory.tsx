@@ -49,8 +49,8 @@ function Caption({ i, title, step, mode }: { i: number; title: string; step: Ste
       )}
       <div className="story-text">
         <span className="story-num">{i + 1}</span>
-        <h3 className="mb-2 text-2xl font-extrabold tracking-tight text-ink sm:text-3xl">{step.title}</h3>
-        <p className="max-w-md text-lg leading-relaxed text-ink-2">{step.text}</p>
+        <h3 className="mb-2 text-h2 text-ink sm:text-h1">{step.title}</h3>
+        <p className="max-w-md text-lead text-ink-2">{step.text}</p>
         <ul className="story-details">
           {step.details.map((d) => (
             <li key={d}><Check className="h-4 w-4 flex-none" aria-hidden="true" />{d}</li>

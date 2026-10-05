@@ -29,11 +29,11 @@ function Line({ label, note, value, failed, loading }: { label: string; note: st
     <li className="receipt-line">
       <span>
         <span className="block font-bold text-ink">{label}</span>
-        <span className="block text-[13px] text-ink-3">{note}</span>
+        <span className="block text-caption text-ink-3">{note}</span>
       </span>
       <span className="receipt-dots" aria-hidden="true" />
       <span className={`text-right font-extrabold text-ink${loading ? ' is-loading' : ''}`}>
-        {failed ? <span className="text-[13px] font-semibold text-ink-3">ao publicar</span> : formatMoney(value)}
+        {failed ? <span className="text-caption font-semibold text-ink-3">ao publicar</span> : formatMoney(value)}
       </span>
     </li>
   )
@@ -48,7 +48,7 @@ function Simulator({ p, loading, failed }: { p: PublicPrices; loading: boolean; 
     <div className="sim" role="group" aria-labelledby={`${id}-t`}>
       <p id={`${id}-t`} className="sim-title">Simule</p>
       <div className="sim-row">
-        <span className="text-[14px] font-semibold text-ink-2" id={`${id}-n`}>Anúncios ativos</span>
+        <span className="text-small font-semibold text-ink-2" id={`${id}-n`}>Anúncios ativos</span>
         <div className="stepper" role="group" aria-labelledby={`${id}-n`}>
           <button type="button" aria-label="Menos um anúncio" disabled={n <= 1} onClick={() => setN((v) => Math.max(1, v - 1))}><Minus className="h-4 w-4" aria-hidden="true" /></button>
           <output aria-live="polite">{n}</output>
@@ -64,7 +64,7 @@ function Simulator({ p, loading, failed }: { p: PublicPrices; loading: boolean; 
       ) : (
         <p className={`sim-total${loading ? ' is-loading' : ''}`} aria-live="polite" aria-busy={loading}>
           <span className="block font-bold text-ink">{r.line}</span>
-          <span className="block text-[13px] text-ink-3">{r.period}</span>
+          <span className="block text-caption text-ink-3">{r.period}</span>
         </p>
       )}
     </div>
@@ -98,7 +98,7 @@ export default function PricingSection() {
           <p className="price-explain">para sempre, sem cartão</p>
           <ul className="price-items space-y-3">
             {['Ver todos os anúncios com a % de compatibilidade', 'Filtros por bairro, mapa e orçamento', 'Conversar com quem anuncia, sem limite', 'Avaliar quem já morou com você'].map((t) => (
-              <li key={t} className="flex gap-3 text-[15px] text-ink-2"><Check className="mt-0.5 h-4 w-4 flex-none text-brand" aria-hidden="true" />{t}</li>
+              <li key={t} className="flex gap-3 text-body text-ink-2"><Check className="mt-0.5 h-4 w-4 flex-none text-brand" aria-hidden="true" />{t}</li>
             ))}
           </ul>
           </div>
@@ -116,7 +116,7 @@ export default function PricingSection() {
             </p>
           </div>
           <div className="price-items">
-            <p className="mb-2 text-xs font-bold uppercase tracking-wider text-ink-3">se quiser mais</p>
+            <p className="mb-2 text-label uppercase text-ink-3">se quiser mais</p>
             <ul>
               <Line label="Anúncio extra" note={`a partir do ${free + 1}º · vale ${p.extraListingDays} dias`} value={p.extraListingPrice} failed={failed} loading={loading} />
               <Line label="Destaque no topo" note={`aparece antes dos outros · ${p.highlightDays} dias`} value={p.highlightPrice} failed={failed} loading={loading} />

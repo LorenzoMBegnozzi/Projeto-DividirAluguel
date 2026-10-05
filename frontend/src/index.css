@@ -34,8 +34,6 @@
   /* ---------- tipografia: uma família (Schibsted Grotesk) + mono ---------- */
   --font-sans: "Schibsted Grotesk", "Schibsted Fallback", "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  /* TEMPORÁRIO: some quando a migração terminar (títulos passam a ser sans 800) */
-  --font-serif: var(--font-sans);
 
   /* escala nomeada: cada classe text-<nome> já traz altura de linha, peso e tracking */
   --text-display: clamp(2.625rem, 6.4vw, 4.75rem);   /* 42–76 px: topo da landing */
@@ -54,6 +52,8 @@
   --text-h3--line-height: 1.5rem;
   --text-h3--font-weight: 700;
   --text-h3--letter-spacing: -0.015em;
+  --text-lead: 1.125rem;          /* 18 px: parágrafo de abertura (landing) */
+  --text-lead--line-height: 1.75rem;
   --text-body: 1rem;              /* 16 px: texto corrido */
   --text-body--line-height: 1.5rem;
   --text-small: 0.875rem;         /* 14 px: texto de apoio, botões, campos */
@@ -73,6 +73,10 @@
   --text-landing-h2--line-height: 1.05;
   --text-landing-h2--font-weight: 800;
   --text-landing-h2--letter-spacing: -0.035em;
+  --text-price: 3.25rem;                             /* 52 px: preço grande da seção Preços */
+  --text-price--line-height: 1;
+  --text-price--font-weight: 800;
+  --text-price--letter-spacing: -0.045em;
 
   /* ---------- cores (tema claro; o escuro sobrescreve em :root[data-theme='dark']) ---------- */
   /* Identidade "azul petróleo e coral": fundo creme quente, azul petróleo como cor de ação
@@ -117,6 +121,7 @@
   --color-focus: #3898be;
 
   /* ---------- raios ---------- */
+  --radius-xs: 4px;    /* canto "rabinho" de bolha de conversa, detalhe de ilustração */
   --radius-sm: 8px;    /* selo, tag, chip interno */
   --radius-md: 12px;   /* botão, campo, item de lista */
   --radius-lg: 16px;   /* painel interno, popover */
@@ -126,7 +131,6 @@
   --shadow-sm: 0 1px 2px rgba(27, 43, 51, 0.05), 0 10px 26px -20px rgba(27, 43, 51, 0.32);
   --shadow-md: 0 1px 2px rgba(27, 43, 51, 0.06), 0 24px 46px -26px rgba(27, 43, 51, 0.45);
   --shadow-lg: 0 18px 40px -16px rgba(27, 43, 51, 0.28), 0 2px 6px rgba(27, 43, 51, 0.06);
-  --shadow-pop: var(--shadow-lg);  /* TEMPORÁRIO: nome antigo, some ao fim da migração */
 
   /* ---------- movimento ---------- */
   --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -145,8 +149,62 @@
   --z-sticky: 20;     /* NavBar, BottomNav */
   --z-dropdown: 30;   /* notificações, autocomplete, botão de tema flutuante */
   --z-overlay: 40;    /* palco 3D da landing */
-  --z-modal: 50;
+  --z-modal: 50;      /* modais e cabeçalho fixo da landing */
   --z-toast: 60;
+
+  /* ---------- ilustração ----------
+     Só para arte decorativa (aria-hidden): a tela do celular 3D, o próprio aparelho e as
+     mini-ilustrações do mosaico da landing. Nunca use em texto ou componente de interface:
+     lá vale a escala --text-* e as cores --color-*. Ver docs/10-DESIGN-SYSTEM.md, "Ilustração". */
+  --art-text-2xs: 9.5px;
+  --art-text-xs: 10.5px;
+  --art-text-sm: 11.5px;
+  --art-text-md: 12.5px;
+  --art-text-lg: 21px;
+  --art-text-xl: 28px;
+  --art-text-numeral: clamp(150px, 15vw, 240px);   /* número gigante vazado atrás de cada passo */
+
+  --radius-device: 44px;          /* canto do aparelho (270 × 540) */
+  --radius-device-screen: 35px;   /* canto do vidro (aparelho − moldura de 9 px) */
+
+  /* "fotos" de anúncio desenhadas (miniaturas da demonstração e da tela do celular) */
+  --art-photo-a: linear-gradient(135deg, #8fc1d4, #1e5f7a);
+  --art-photo-b: linear-gradient(135deg, #f3b49c, #c9522d);
+  --art-photo-c: linear-gradient(135deg, #b7dcc6, #2a8a63);
+  --art-photo-d: linear-gradient(135deg, #f2d48f, #a3690a);
+  --art-photo-roof: rgba(255, 255, 255, 0.55);
+
+  /* sombras de objetos flutuando na arte (mais duras que as de cartão) */
+  --art-shadow-thin: 0 1px 2px rgba(27, 43, 51, 0.05);
+  --art-shadow-knob: 0 2px 6px rgba(27, 43, 51, 0.14);
+  --art-shadow-float: 0 10px 24px -10px rgba(14, 22, 28, 0.45);
+  --art-shadow-lift: 0 18px 36px -16px rgba(14, 22, 28, 0.5);
+  --art-shadow-rail: 0 10px 24px -18px rgba(27, 43, 51, 0.5);
+  --art-shadow-open: 0 12px 30px -24px rgba(27, 43, 51, 0.4);
+  --art-shadow-pin: 0 6px 14px -6px rgba(14, 22, 28, 0.6);
+  --art-drop-pin: drop-shadow(0 3px 3px rgba(14, 22, 28, 0.25));
+  --art-drop-cursor: drop-shadow(0 2px 3px rgba(14, 22, 28, 0.3));
+
+  /* o aparelho (grafite; no tema escuro fica mais claro para não sumir no fundo) */
+  --device-floor: radial-gradient(closest-side, rgba(14, 22, 28, 0.55), rgba(14, 22, 28, 0.22) 50%, transparent);
+  --device-slice: #222d35;
+  --device-slice-mid: #56656f;
+  --device-side: linear-gradient(90deg, #1d272e, #6a7a84 50%, #1d272e);
+  --device-side-right: linear-gradient(90deg, #26323a, #9aabb5 50%, #26323a);
+  --device-side-top: linear-gradient(#26323a, #8494a0 50%, #26323a);
+  --device-side-bottom: linear-gradient(#1a2329, #4c5a64 50%, #1a2329);
+  --device-button: #3b4a54;
+  --device-button-light: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  --device-back: linear-gradient(145deg, #34424b, #1a2329 60%, #26313a);
+  --device-back-edge: inset 0 0 0 1.5px rgba(255, 255, 255, 0.08);
+  --device-camera: radial-gradient(circle at 40% 35%, #4b5a64, #0a0f12 60%);
+  --device-camera-ring: 0 0 0 4px #2a363e;
+  --device-front: #0f161b;
+  --device-front-edge: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  --device-rim: linear-gradient(140deg, rgba(255, 255, 255, 0.6), transparent 28%, transparent 72%, rgba(255, 255, 255, 0.3));
+  --device-island: #070b0e;
+  --device-glare: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.32) 45%, rgba(255, 255, 255, 0.08) 60%, transparent);
+  --device-on-color: #ffffff;     /* ícone branco sobre verde/coral dentro da tela */
 }
 
 /* também vale para um trecho da página com data-theme="dark" (usado na galeria /dev/ui) */
@@ -192,6 +250,18 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 28px -20px rgba(0, 0, 0, 0.7);
   --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.35), 0 26px 48px -24px rgba(0, 0, 0, 0.8);
   --shadow-lg: 0 18px 40px -12px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(244, 239, 232, 0.07);
+
+  --device-floor: radial-gradient(closest-side, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.35) 50%, transparent);
+  --device-slice: #46545e;
+  --device-slice-mid: #8494a0;
+  --device-side: linear-gradient(90deg, #3a4852, #a9b8c2 50%, #3a4852);
+  --device-side-right: var(--device-side);
+  --device-side-top: var(--device-side);
+  --device-side-bottom: var(--device-side);
+  --device-back: linear-gradient(145deg, #5a6a75, #2f3b44 60%, #3c4953);
+  --device-front: #2b3740;
+  --device-front-edge: inset 0 0 0 1px rgba(255, 255, 255, 0.22), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --device-rim: linear-gradient(140deg, rgba(255, 255, 255, 0.85), transparent 30%, transparent 70%, rgba(255, 255, 255, 0.45));
 
   color-scheme: dark;
 }
