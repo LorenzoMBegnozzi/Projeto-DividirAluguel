@@ -2,3 +2,7 @@
 # arquivos de segredo de cada ambiente (os modelos .example vão para o git)
 .env.*
 !.env.*.example
+
+# capturas de tela do design system: ficam só na máquina (geradas por frontend/scripts/capture-screens.mjs)
+docs/capturas/design-system/**/*.png
+docs/capturas/design-system/**/*.jpg
