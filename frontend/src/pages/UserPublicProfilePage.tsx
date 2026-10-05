@@ -18,14 +18,12 @@ import { useAuth } from '../context/AuthContext'
 import StarRating from '../components/StarRating'
 import ReportUserModal from '../components/ReportUserModal'
 import Avatar from '../components/Avatar'
+import { Alert, Button, Card, EmptyState, Input, fieldClass, labelClass } from '../components/ui'
 import type { Avaliacao, AvaliacaoResumo, Convivio, ReportReason, UserProfile } from '../types'
 
 function formatDate(value: string) {
   return new Date(value).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
 }
-
-const inputClass =
-  'w-full rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-3 hover:border-ink-2 focus:border-ink focus:ring-2 focus:ring-focus focus:ring-offset-1'
 
 export default function UserPublicProfilePage() {
   const { userId } = useParams()
@@ -157,7 +155,7 @@ export default function UserPublicProfilePage() {
   if (error || !user) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-8">
-        <p className="rounded-md bg-danger-tint px-4 py-3 text-sm text-danger">{error ?? 'Usuário não encontrado'}</p>
+        <Alert tone="danger">{error ?? 'Usuário não encontrado'}</Alert>
       </div>
     )
   }
@@ -166,39 +164,41 @@ export default function UserPublicProfilePage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
-      <div className="rounded-lg border border-line bg-surface p-6">
+      <Card>
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
             <Avatar photoUrl={user.photoUrl} name={user.name} size={56} />
             <div>
-              <h1 className="text-2xl font-serif font-medium tracking-tight text-ink">{user.name}</h1>
-              {user.occupation && <p className="text-[13px] text-ink-3">{user.occupation}</p>}
+              <h1 className="text-h2 text-ink">{user.name}</h1>
+              {user.occupation && <p className="text-caption text-ink-3">{user.occupation}</p>}
             </div>
           </div>
           {!isSelf && (
             <div className="flex shrink-0 gap-1">
-              <button
+              <Button
+                variant="ghost"
+                size="sm"
+                icon={Flag}
                 onClick={() => setShowReport(true)}
                 title="Denunciar"
-                className="rounded-md p-2 text-ink-3 transition hover:bg-danger-tint hover:text-danger"
-              >
-                <Flag className="h-4 w-4" aria-hidden="true" />
-              </button>
-              <button
+                className="text-ink-3! hover:bg-danger-tint! hover:text-danger!"
+              />
+              <Button
+                variant="ghost"
+                size="sm"
+                icon={ShieldOff}
                 onClick={handleBlock}
                 disabled={blocked}
                 title={blocked ? 'Bloqueado' : 'Bloquear'}
-                className="rounded-md p-2 text-ink-3 transition hover:bg-danger-tint hover:text-danger disabled:opacity-40"
-              >
-                <ShieldOff className="h-4 w-4" aria-hidden="true" />
-              </button>
+                className="text-ink-3! hover:bg-danger-tint! hover:text-danger!"
+              />
             </div>
           )}
         </div>
-        {user.bio && <p className="mt-3 text-ink-2">{user.bio}</p>}
-        {blocked && <p className="mt-3 text-[13px] text-leaf">Você bloqueou {user.name}.</p>}
-        {blockError && <p className="mt-3 text-[13px] text-danger">{blockError}</p>}
-      </div>
+        {user.bio && <p className="mt-3 text-body text-ink-2">{user.bio}</p>}
+        {blocked && <p className="mt-3 text-caption text-leaf">Você bloqueou {user.name}.</p>}
+        {blockError && <p className="mt-3 text-caption text-danger">{blockError}</p>}
+      </Card>
 
       {showReport && (
         <ReportUserModal
@@ -211,47 +211,37 @@ export default function UserPublicProfilePage() {
       )}
 
       {!isSelf && (
-        <div className="mt-6 rounded-lg border border-line bg-surface p-6">
-          <h2 className="mb-3 text-[16px] font-bold text-ink">Convívio</h2>
+        <Card as="section" className="mt-6">
+          <h2 className="mb-3 text-h3 text-ink">Convívio</h2>
 
           {!convivio && (
             <form onSubmit={handlePropose} className="flex flex-col gap-3">
-              <p className="text-sm text-ink-3">
+              <p className="text-small text-ink-3">
                 Vocês já dividiram moradia? Registre o período para poder avaliar {user.name} depois.
               </p>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <div>
-                  <label className="mb-1 block text-xs font-semibold text-ink">Início do período</label>
-                  <input
-                    type="date"
-                    value={periodoInicio}
-                    onChange={(e) => setPeriodoInicio(e.target.value)}
-                    className={inputClass}
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-xs font-semibold text-ink">Fim do período (opcional)</label>
-                  <input
-                    type="date"
-                    value={periodoFim}
-                    onChange={(e) => setPeriodoFim(e.target.value)}
-                    className={inputClass}
-                  />
-                </div>
+                <Input
+                  label="Início do período"
+                  type="date"
+                  value={periodoInicio}
+                  onChange={(e) => setPeriodoInicio(e.target.value)}
+                />
+                <Input
+                  label="Fim do período (opcional)"
+                  type="date"
+                  value={periodoFim}
+                  onChange={(e) => setPeriodoFim(e.target.value)}
+                />
               </div>
-              {convivioError && <p className="rounded-md bg-danger-tint px-3 py-2 text-sm text-danger">{convivioError}</p>}
-              <button
-                type="submit"
-                disabled={proposing}
-                className="h-[34px] self-start rounded-md bg-brand px-4 text-sm font-semibold text-on-brand transition hover:bg-brand-strong disabled:opacity-60"
-              >
+              {convivioError && <Alert tone="danger">{convivioError}</Alert>}
+              <Button type="submit" size="sm" disabled={proposing} className="self-start">
                 {proposing ? 'Enviando…' : 'Registrar convívio'}
-              </button>
+              </Button>
             </form>
           )}
 
           {convivio?.status === 'PENDENTE' && convivio.propostoPorMim && (
-            <p className="text-sm text-ink-3">
+            <p className="text-small text-ink-3">
               Você propôs um convívio a partir de {formatDate(convivio.periodoInicio)}. Aguardando {user.name}{' '}
               confirmar.
             </p>
@@ -259,98 +249,87 @@ export default function UserPublicProfilePage() {
 
           {convivio?.status === 'PENDENTE' && !convivio.propostoPorMim && (
             <div>
-              <p className="mb-3 text-sm text-ink-3">
+              <p className="mb-3 text-small text-ink-3">
                 {user.name} registrou que vocês moraram juntos de {formatDate(convivio.periodoInicio)}
                 {convivio.periodoFim ? ` até ${formatDate(convivio.periodoFim)}` : ' até hoje'}. Confirma?
               </p>
               {convivioError && (
-                <p className="mb-2 rounded-md bg-danger-tint px-3 py-2 text-sm text-danger">{convivioError}</p>
+                <Alert tone="danger" className="mb-2">{convivioError}</Alert>
               )}
               <div className="flex gap-2">
-                <button
-                  onClick={handleConfirm}
-                  className="h-[34px] rounded-md bg-brand px-4 text-sm font-semibold text-on-brand hover:bg-brand-strong"
-                >
+                <Button size="sm" onClick={handleConfirm}>
                   Confirmar
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
                   onClick={handleDecline}
-                  className="h-[34px] rounded-md border border-line-strong px-4 text-sm font-semibold text-ink-2 hover:border-danger hover:text-danger"
+                  className="hover:border-danger! hover:text-danger!"
                 >
                   Recusar
-                </button>
+                </Button>
               </div>
             </div>
           )}
 
-          {convivio?.status === 'RECUSADO' && <p className="text-sm text-ink-3">Convívio recusado.</p>}
+          {convivio?.status === 'RECUSADO' && <p className="text-small text-ink-3">Convívio recusado.</p>}
 
           {convivio?.status === 'CONFIRMADO' && !convivio.avaliadoPorMim && !rating && (
-            <button
-              onClick={() => setRating(true)}
-              className="h-[34px] rounded-md bg-brand px-4 text-sm font-semibold text-on-brand hover:bg-brand-strong"
-            >
+            <Button size="sm" onClick={() => setRating(true)}>
               Avaliar {user.name}
-            </button>
+            </Button>
           )}
 
           {convivio?.status === 'CONFIRMADO' && convivio.avaliadoPorMim && (
-            <p className="text-sm text-leaf">Você já avaliou esse convívio.</p>
+            <p className="text-small text-leaf">Você já avaliou esse convívio.</p>
           )}
 
           {rating && convivio && (
             <form onSubmit={handleRate} className="mt-3 flex flex-col gap-3 border-t border-line pt-4">
               <div>
-                <p className="mb-1 text-[13px] font-semibold text-ink">Pagamentos em dia</p>
+                <p className={labelClass}>Pagamentos em dia</p>
                 <StarRating value={notaPontualidade} onChange={setNotaPontualidade} />
               </div>
               <div>
-                <p className="mb-1 text-[13px] font-semibold text-ink">Qualidade do convívio</p>
+                <p className={labelClass}>Qualidade do convívio</p>
                 <StarRating value={notaConvivencia} onChange={setNotaConvivencia} />
               </div>
-              <textarea value={comentario} onChange={(e) => setComentario(e.target.value)} rows={2} placeholder="Comentário (opcional)" className={inputClass} />
-              {convivioError && <p className="rounded-md bg-danger-tint px-3 py-2 text-sm text-danger">{convivioError}</p>}
+              <textarea value={comentario} onChange={(e) => setComentario(e.target.value)} rows={2} placeholder="Comentário (opcional)" className={fieldClass({ multiline: true })} />
+              {convivioError && <Alert tone="danger">{convivioError}</Alert>}
               <div className="flex gap-2">
-                <button
-                  type="submit"
-                  className="h-[34px] rounded-md bg-brand px-4 text-sm font-semibold text-on-brand hover:bg-brand-strong"
-                >
+                <Button type="submit" size="sm">
                   Enviar avaliação
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setRating(false)}
-                  className="h-[34px] rounded-md px-4 text-sm font-semibold text-ink-2 hover:bg-surface-sunk hover:text-ink"
-                >
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => setRating(false)}>
                   Cancelar
-                </button>
+                </Button>
               </div>
             </form>
           )}
-        </div>
+        </Card>
       )}
 
-      <div className="mt-6 rounded-lg border border-line bg-surface p-6">
-        <h2 className="mb-3 text-[16px] font-bold text-ink">Avaliações de quem já morou junto</h2>
+      <Card as="section" className="mt-6">
+        <h2 className="mb-3 text-h3 text-ink">Avaliações de quem já morou junto</h2>
         {!resumo || resumo.total === 0 ? (
-          <p className="text-sm text-ink-3">Ainda sem avaliações.</p>
+          <EmptyState title="Ainda sem avaliações." />
         ) : (
           <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:gap-8">
             <div>
-              <p className="text-xs text-ink-3">Pagamentos em dia</p>
+              <p className="text-caption text-ink-3">Pagamentos em dia</p>
               <div className="flex items-center gap-2">
                 <StarRating value={resumo.mediaPontualidade} />
-                <span className="text-sm tabular-nums text-ink-2">{resumo.mediaPontualidade.toFixed(1)}</span>
+                <span className="text-small tabular-nums text-ink-2">{resumo.mediaPontualidade.toFixed(1)}</span>
               </div>
             </div>
             <div>
-              <p className="text-xs text-ink-3">Qualidade do convívio</p>
+              <p className="text-caption text-ink-3">Qualidade do convívio</p>
               <div className="flex items-center gap-2">
                 <StarRating value={resumo.mediaConvivencia} />
-                <span className="text-sm tabular-nums text-ink-2">{resumo.mediaConvivencia.toFixed(1)}</span>
+                <span className="text-small tabular-nums text-ink-2">{resumo.mediaConvivencia.toFixed(1)}</span>
               </div>
             </div>
-            <p className="text-xs text-ink-3 sm:self-end">
+            <p className="text-caption text-ink-3 sm:self-end">
               {resumo.total} avaliaç{resumo.total === 1 ? 'ão' : 'ões'}
             </p>
           </div>
@@ -360,27 +339,27 @@ export default function UserPublicProfilePage() {
           {avaliacoes.map((avaliacao) => (
             <div key={avaliacao.id} className="rounded-md border border-line p-3">
               <div className="flex items-center justify-between">
-                <p className="text-sm font-semibold text-ink">{avaliacao.avaliadorNome}</p>
-                <p className="text-xs text-ink-3">
+                <p className="text-small font-semibold text-ink">{avaliacao.avaliadorNome}</p>
+                <p className="text-caption text-ink-3">
                   {formatDate(avaliacao.periodoInicio)}
                   {avaliacao.periodoFim ? ` até ${formatDate(avaliacao.periodoFim)}` : ' até hoje'}
                 </p>
               </div>
               <div className="mt-1 flex gap-4">
                 <div className="flex items-center gap-1">
-                  <span className="text-xs text-ink-3">Pontualidade</span>
+                  <span className="text-caption text-ink-3">Pontualidade</span>
                   <StarRating value={avaliacao.notaPontualidade} size={14} />
                 </div>
                 <div className="flex items-center gap-1">
-                  <span className="text-xs text-ink-3">Convívio</span>
+                  <span className="text-caption text-ink-3">Convívio</span>
                   <StarRating value={avaliacao.notaConvivencia} size={14} />
                 </div>
               </div>
-              {avaliacao.comentario && <p className="mt-2 text-sm text-ink-2">{avaliacao.comentario}</p>}
+              {avaliacao.comentario && <p className="mt-2 text-small text-ink-2">{avaliacao.comentario}</p>}
             </div>
           ))}
         </div>
-      </div>
+      </Card>
     </div>
   )
 }

@@ -12,6 +12,7 @@ import LegalLinks from '../components/LegalLinks'
 import ConviviosSection from '../components/ConviviosSection'
 import CapabilitiesSection from '../components/CapabilitiesSection'
 import Avatar from '../components/Avatar'
+import { Alert, Button, Card, Input, Textarea, cardClass, cx, fieldClass, hintClass, labelClass, pageTitleClass } from '../components/ui'
 import {
   allergyTagOptions,
   ALLERGY_HINT,
@@ -24,9 +25,6 @@ import {
   smokingHabitOptions,
 } from '../constants/profileOptions'
 import type { AllergyTag, Diet, DrinkingHabit, Gender, PetPreference, SmokingHabit } from '../types'
-
-const inputClass =
-  'w-full rounded-md border border-line-strong bg-surface px-3 py-2.5 text-ink outline-none placeholder:text-ink-3 hover:border-ink-2 focus:border-ink focus:ring-2 focus:ring-focus focus:ring-offset-1'
 
 export default function ProfilePage() {
   const { user, refreshUser, logout } = useAuth()
@@ -120,10 +118,10 @@ export default function ProfilePage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
-      <h1 className="mb-1 text-[28px] font-serif font-medium tracking-tight text-ink">
+      <h1 className={cx(pageTitleClass, 'mb-1')}>
         {isAdmin ? 'Minha conta' : isEstabelecimento ? 'Meus dados' : 'Meu perfil'}
       </h1>
-      <p className="mb-6 text-sm text-ink-3">
+      <p className="mb-6 text-small text-ink-3">
         {isAdmin
           ? `Conta de administração (${user?.email}). Ela não aparece para os outros usuários.`
           : isEstabelecimento
@@ -134,39 +132,43 @@ export default function ProfilePage() {
       {user?.admin && (
         <Link
           to="/admin"
-          className="mb-6 flex items-center gap-3 rounded-lg border border-brand bg-brand-tint p-4 text-brand-strong transition hover:opacity-90"
+          className={cx(
+            cardClass({ tone: 'brand', padding: 'sm' }),
+            'mb-6 flex items-center gap-3 text-brand-strong transition-opacity duration-(--dur-fast) hover:opacity-90',
+          )}
         >
-          <ShieldCheck className="h-6 w-6 shrink-0" aria-hidden="true" />
+          <ShieldCheck className="size-6 shrink-0" aria-hidden="true" />
           <span>
             <span className="block font-bold">Área de administração</span>
-            <span className="block text-sm">Denúncias, contas e anúncios</span>
+            <span className="block text-small">Denúncias, contas e anúncios</span>
           </span>
         </Link>
       )}
 
-      <div className="mb-6 flex flex-col items-center gap-4 rounded-lg border border-line bg-surface p-6 text-center sm:flex-row sm:text-left">
+      <Card className="mb-6 flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
         <Avatar photoUrl={photoPreview ?? user?.photoUrl} name={user?.name ?? ''} size={72} />
         <div>
           <div className="flex flex-wrap justify-center gap-2 sm:justify-start">
-            <button
-              type="button"
+            <Button
+              variant="secondary"
+              size="sm"
+              icon={Camera}
               onClick={() => fileInputRef.current?.click()}
               disabled={photoLoading}
-              className="inline-flex h-[34px] items-center gap-1.5 whitespace-nowrap rounded-md border border-line-strong px-3 text-sm font-semibold text-ink-2 transition hover:border-ink hover:text-ink disabled:opacity-60"
             >
-              <Camera className="h-4 w-4" aria-hidden="true" />
               {photoLoading ? 'Enviando…' : 'Trocar foto'}
-            </button>
+            </Button>
             {(photoPreview ?? user?.photoUrl) && (
-              <button
-                type="button"
+              <Button
+                variant="secondary"
+                size="sm"
+                icon={Trash2}
                 onClick={handleRemovePhoto}
                 disabled={photoLoading}
-                className="inline-flex h-[34px] items-center gap-1.5 whitespace-nowrap rounded-md border border-line-strong px-3 text-sm font-semibold text-ink-2 transition hover:border-danger hover:text-danger disabled:opacity-60"
+                className="hover:border-danger! hover:text-danger!"
               >
-                <Trash2 className="h-4 w-4" aria-hidden="true" />
                 Remover
-              </button>
+              </Button>
             )}
           </div>
           <input
@@ -176,62 +178,52 @@ export default function ProfilePage() {
             onChange={handlePhotoChange}
             className="hidden"
           />
-          <p className="mt-1 text-[13px] text-ink-3">JPEG, PNG ou WEBP, até 3 MB.</p>
-          {photoError && <p className="mt-1 text-[13px] text-danger">{photoError}</p>}
+          <p className="mt-1 text-caption text-ink-3">JPEG, PNG ou WEBP, até 3 MB.</p>
+          {photoError && <p className="mt-1 text-caption text-danger">{photoError}</p>}
         </div>
-      </div>
+      </Card>
 
       {/* Conta de admin não usa perfil de convivência, anúncios nem bloqueios: só foto e sair. */}
       {!isAdmin && (
       <>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6 rounded-lg border border-line bg-surface p-6">
-        <div>
-          <label className="mb-1 block text-[13px] font-semibold text-ink">
-            {isEstabelecimento ? 'Empresa / imobiliária' : 'Curso / faculdade'}
-          </label>
-          <input
-            value={occupation}
-            onChange={(e) => setOccupation(e.target.value)}
-            placeholder={isEstabelecimento ? 'Ex.: Imobiliária Maringá' : 'Ex.: Engenharia Civil - UEM'}
-            className={inputClass}
-          />
-        </div>
+      <Card as="form" onSubmit={handleSubmit} className="flex flex-col gap-6">
+        <Input
+          label={isEstabelecimento ? 'Empresa / imobiliária' : 'Curso / faculdade'}
+          value={occupation}
+          onChange={(e) => setOccupation(e.target.value)}
+          placeholder={isEstabelecimento ? 'Ex.: Imobiliária Maringá' : 'Ex.: Engenharia Civil - UEM'}
+        />
 
-        <div>
-          <label className="mb-1 block text-[13px] font-semibold text-ink">
-            {isEstabelecimento ? 'Sobre' : 'Sobre mim'}
-          </label>
-          <textarea
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            rows={4}
-            placeholder={
-              isEstabelecimento
-                ? 'Conte um pouco sobre você ou sua imobiliária...'
-                : 'Conte um pouco sobre você, sua rotina, o que procura em quem vai dividir moradia...'
-            }
-            className={inputClass}
-          />
-        </div>
+        <Textarea
+          label={isEstabelecimento ? 'Sobre' : 'Sobre mim'}
+          value={bio}
+          onChange={(e) => setBio(e.target.value)}
+          rows={4}
+          placeholder={
+            isEstabelecimento
+              ? 'Conte um pouco sobre você ou sua imobiliária...'
+              : 'Conte um pouco sobre você, sua rotina, o que procura em quem vai dividir moradia...'
+          }
+        />
 
         {!isEstabelecimento && (
           <>
             <div>
-              <p className="mb-2 text-[13px] font-semibold text-ink">Sexo</p>
+              <p className={labelClass}>Sexo</p>
               {savedGender ? (
                 <>
-                  <span className="inline-flex h-[34px] items-center gap-1.5 rounded-sm border border-line-strong bg-surface-sunk px-3 text-[13px] font-semibold text-ink-2">
-                    <Lock className="h-3.5 w-3.5" aria-hidden="true" />
+                  <span className="inline-flex h-9 items-center gap-1.5 rounded-sm border border-line-strong bg-surface-sunk px-3 text-caption font-semibold text-ink-2">
+                    <Lock className="size-3.5" aria-hidden="true" />
                     {genderLabels[savedGender]}
                   </span>
-                  <p className="mt-1 text-[13px] text-ink-3">
+                  <p className={hintClass}>
                     Usado para mostrar vagas feitas para o seu sexo. Depois de salvo, não pode ser alterado.
                   </p>
                 </>
               ) : (
                 <>
                   <ChipPicker options={genderOptions} value={gender} onChange={setGender} />
-                  <p className="mt-1 text-[13px] text-ink-3">
+                  <p className={hintClass}>
                     Usado para mostrar vagas feitas para o seu sexo. <strong className="text-ink-2">Atenção:</strong> depois de
                     salvo, não dá para trocar.
                   </p>
@@ -240,17 +232,17 @@ export default function ProfilePage() {
             </div>
 
             <div>
-              <p className="mb-2 text-[13px] font-semibold text-ink">Você fuma?</p>
+              <p className={labelClass}>Você fuma?</p>
               <ChipPicker options={smokingHabitOptions} value={smokingHabit} onChange={setSmokingHabit} />
             </div>
 
             <div>
-              <p className="mb-2 text-[13px] font-semibold text-ink">Bebida</p>
+              <p className={labelClass}>Bebida</p>
               <ChipPicker options={drinkingHabitOptions} value={drinkingHabit} onChange={setDrinkingHabit} />
             </div>
 
             <div>
-              <p className="mb-2 text-[13px] font-semibold text-ink">Alimentação</p>
+              <p className={labelClass}>Alimentação</p>
               <ChipPicker options={dietOptions} value={diet} onChange={setDiet} />
               {diet === 'OUTRO' && (
                 <input
@@ -258,18 +250,18 @@ export default function ProfilePage() {
                   onChange={(e) => setDietOther(e.target.value)}
                   maxLength={160}
                   placeholder="Qual?"
-                  className={`mt-2 ${inputClass}`}
+                  className={cx(fieldClass(), 'mt-2')}
                 />
               )}
             </div>
 
             <div>
-              <p className="mb-2 text-[13px] font-semibold text-ink">Pets</p>
+              <p className={labelClass}>Pets</p>
               <ChipMultiPicker options={petPreferenceOptions} values={petPreferences} onChange={setPetPreferences} />
             </div>
 
             <div>
-              <p className="mb-2 text-[13px] font-semibold text-ink">Precisa de vaga de garagem?</p>
+              <p className={labelClass}>Precisa de vaga de garagem?</p>
               <div className="flex flex-wrap gap-2">
                 {(
                   [
@@ -299,51 +291,49 @@ export default function ProfilePage() {
                       setNeedsCarParking(car || moto ? car : null)
                       setNeedsMotorcycleParking(car || moto ? moto : null)
                     }}
-                    className={`inline-flex h-[64px] w-[96px] flex-col items-center justify-center gap-1 rounded-md border text-xs font-semibold transition ${
-                      active ? 'border-inverse bg-inverse text-on-inverse' : 'border-line-strong bg-surface text-ink-2 hover:border-ink'
-                    }`}
+                    className={cx(
+                      'inline-flex h-16 w-24 flex-col items-center justify-center gap-1 rounded-md border text-caption font-semibold transition-colors duration-(--dur-fast)',
+                      'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus',
+                      active ? 'border-inverse bg-inverse text-on-inverse' : 'border-field bg-surface text-ink-2 hover:border-ink',
+                    )}
                   >
-                    <Icon className="h-6 w-6" aria-hidden="true" />
+                    <Icon className="size-6" aria-hidden="true" />
                     {label}
                   </button>
                 ))}
               </div>
-              <p className="mt-1 text-[13px] text-ink-3">Dá para marcar carro e moto juntos.</p>
+              <p className={hintClass}>Dá para marcar carro e moto juntos.</p>
             </div>
 
             <div>
-              <p className="mb-2 text-[13px] font-semibold text-ink">Alergias</p>
+              <p className={labelClass}>Alergias</p>
               <ChipMultiPicker
                 options={allergyTagOptions}
                 values={allergyTags}
                 onChange={(next) => setAllergyTags((prev) => normalizeAllergyTags(prev, next))}
               />
-              <p className="mt-1 text-[13px] text-ink-3">{ALLERGY_HINT}</p>
+              <p className={hintClass}>{ALLERGY_HINT}</p>
               {allergyTags.includes('OUTRO') && (
                 <input
                   value={allergyOther}
                   onChange={(e) => setAllergyOther(e.target.value)}
                   placeholder="Qual?"
-                  className={`mt-2 ${inputClass}`}
+                  className={cx(fieldClass(), 'mt-2')}
                 />
               )}
             </div>
           </>
         )}
 
-        {error && <p className="rounded-md bg-danger-tint px-3 py-2 text-sm text-danger">{error}</p>}
-        {saved && <p className="rounded-md bg-leaf-tint px-3 py-2 text-sm text-leaf">Perfil salvo!</p>}
+        {error && <Alert tone="danger">{error}</Alert>}
+        {saved && <Alert tone="success">Perfil salvo!</Alert>}
 
         <div className="flex items-center justify-end gap-3">
-          <button
-            type="submit"
-            disabled={loading}
-            className="h-[42px] rounded-md bg-brand px-6 font-semibold text-on-brand transition hover:bg-brand-strong disabled:opacity-60"
-          >
+          <Button type="submit" disabled={loading}>
             {loading ? 'Salvando…' : 'Salvar'}
-          </button>
+          </Button>
         </div>
-      </form>
+      </Card>
 
       <CapabilitiesSection />
       <ConviviosSection />
@@ -352,17 +342,17 @@ export default function ProfilePage() {
       </>
       )}
 
-      <button
-        type="button"
+      <Button
+        variant="ghost"
+        icon={LogOut}
         onClick={() => {
           logout()
           navigate('/login')
         }}
-        className="mx-auto mt-6 flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold text-ink-2 transition hover:bg-danger-tint hover:text-danger"
+        className="mx-auto mt-6 flex! hover:bg-danger-tint! hover:text-danger!"
       >
-        <LogOut className="h-4 w-4" aria-hidden="true" />
         Sair
-      </button>
+      </Button>
       <LegalLinks className="mt-4" />
     </div>
   )

@@ -5,12 +5,14 @@ import { cancelPayment, getPayments, getPlan, paymentMethodLabels, simulatePayme
 import { apiErrorMessage } from '../api/client'
 import { formatDateTime, formatMoney } from '../utils/format'
 import type { Listing, Payment, PaymentStatus, Plan } from '../types'
+import { Alert, Badge, Button, Card, EmptyState, buttonClass, cx, kickerClass, pageTitleClass } from '../components/ui'
+import type { BadgeTone } from '../components/ui'
 
-const statusStyle: Record<PaymentStatus, string> = {
-  PENDENTE: 'bg-mel-tint text-mel',
-  PAGO: 'bg-leaf-tint text-leaf',
-  CANCELADO: 'bg-surface-sunk text-ink-2',
-  REEMBOLSADO: 'bg-surface-sunk text-ink-2',
+const statusTone: Record<PaymentStatus, BadgeTone> = {
+  PENDENTE: 'warning',
+  PAGO: 'success',
+  CANCELADO: 'danger',
+  REEMBOLSADO: 'neutral',
 }
 
 const statusLabel: Record<PaymentStatus, string> = {
@@ -20,7 +22,6 @@ const statusLabel: Record<PaymentStatus, string> = {
   REEMBOLSADO: 'Reembolsado',
 }
 
-const buttonBase = 'h-[42px] flex-1 rounded-md text-sm font-semibold transition disabled:opacity-60'
 
 export default function PaymentsPage() {
   const [payments, setPayments] = useState<Payment[]>([])
@@ -80,21 +81,18 @@ export default function PaymentsPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
-      <h1 className="mb-1 text-[28px] font-serif font-medium tracking-tight text-ink">Pagamentos</h1>
-      <p className="mb-6 text-sm text-ink-3">Anúncios extras e destaques que você comprou.</p>
+      <h1 className={cx(pageTitleClass, 'mb-1')}>Pagamentos</h1>
+      <p className="mb-6 text-small text-ink-3">Anúncios extras e destaques que você comprou.</p>
 
       {plan?.paymentMode === 'SIMULADO' && (
-        <div className="mb-4 flex items-start gap-2 rounded-md bg-mel-tint px-4 py-3 text-sm text-mel">
-          <FlaskConical className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-          <span>
-            Ambiente de teste: os pagamentos são simulados. Use o botão "Simular pagamento" para confirmar — nenhuma
-            cobrança real é feita.
-          </span>
-        </div>
+        <Alert tone="warning" icon={FlaskConical} className="mb-4">
+          Ambiente de teste: os pagamentos são simulados. Use o botão "Simular pagamento" para confirmar — nenhuma
+          cobrança real é feita.
+        </Alert>
       )}
       {plan?.paymentMode === 'MERCADOPAGO' && (
-        <div className="mb-4 flex items-start gap-2 rounded-md bg-surface-sunk px-4 py-3 text-sm text-ink-2">
-          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-leaf" aria-hidden="true" />
+        <div className="mb-4 flex items-start gap-2.5 rounded-md bg-surface-sunk px-3.5 py-2.5 text-small text-ink-2">
+          <ShieldCheck className="mt-0.5 size-4 shrink-0 text-leaf" aria-hidden="true" />
           <span>
             Pagamento seguro pelo <strong className="text-ink">Mercado Pago</strong>: Pix, cartão de crédito ou débito. Os
             dados do cartão ficam só com o Mercado Pago.
@@ -102,84 +100,82 @@ export default function PaymentsPage() {
         </div>
       )}
 
-      {error && <div className="mb-4 rounded-md bg-danger-tint px-4 py-3 text-sm text-danger">{error}</div>}
+      {error && <Alert tone="danger" className="mb-4">{error}</Alert>}
 
       {plan && (
         <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <div className="rounded-lg border border-line bg-surface p-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-ink-3">Anúncios grátis</p>
-            <p className="text-lg font-bold text-ink">
+          <Card padding="sm">
+            <p className={kickerClass}>Anúncios grátis</p>
+            <p className="text-h3 tabular-nums text-ink">
               {plan.freeListingsUsed} de {plan.freeListings} em uso
             </p>
-          </div>
-          <div className="rounded-lg border border-line bg-surface p-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-ink-3">Créditos de anúncio extra</p>
-            <p className="text-lg font-bold text-ink">{plan.extraCredits} disponível(is)</p>
-          </div>
+          </Card>
+          <Card padding="sm">
+            <p className={kickerClass}>Créditos de anúncio extra</p>
+            <p className="text-h3 tabular-nums text-ink">{plan.extraCredits} disponível(is)</p>
+          </Card>
         </div>
       )}
 
       {payments.length === 0 ? (
-        <p className="rounded-lg border border-line bg-surface p-8 text-center text-sm text-ink-3">
-          Você ainda não fez nenhuma compra. Em "Meus anúncios" dá para comprar um anúncio extra ou destacar um anúncio.
-        </p>
+        <EmptyState title="Você ainda não fez nenhuma compra.">
+          Em "Meus anúncios" dá para comprar um anúncio extra ou destacar um anúncio.
+        </EmptyState>
       ) : (
         <div className="flex flex-col gap-3">
           {payments.map((payment) => (
-            <div key={payment.id} className="rounded-lg border border-line bg-surface p-4">
+            <Card key={payment.id} padding="sm">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="font-semibold text-ink">{describe(payment)}</p>
-                  <p className="text-[13px] text-ink-3">
+                  <p className="text-body font-semibold text-ink">{describe(payment)}</p>
+                  <p className="text-caption text-ink-3">
                     <span className="tabular-nums">{formatMoney(payment.amount)}</span> · criado em{' '}
                     {formatDateTime(payment.createdAt)}
                     {payment.paidAt && ` · pago em ${formatDateTime(payment.paidAt)}`}
                     {payment.status === 'PAGO' && payment.method && ` · ${paymentMethodLabels[payment.method] ?? payment.method}`}
                   </p>
                   {payment.status === 'PENDENTE' && payment.gatewayStatus === 'rejected' && (
-                    <p className="mt-1 text-[13px] text-danger">A última tentativa foi recusada. Tente de novo ou use outro meio.</p>
+                    <p className="mt-1 text-caption text-danger">A última tentativa foi recusada. Tente de novo ou use outro meio.</p>
                   )}
                   {payment.status === 'PENDENTE' &&
                     (payment.gatewayStatus === 'pending' || payment.gatewayStatus === 'in_process') && (
-                      <p className="mt-1 text-[13px] text-mel">Aguardando a confirmação do Mercado Pago.</p>
+                      <p className="mt-1 text-caption text-mel">Aguardando a confirmação do Mercado Pago.</p>
                     )}
                 </div>
-                <span className={`shrink-0 rounded-sm px-2 py-1 text-xs font-bold ${statusStyle[payment.status]}`}>
+                <Badge tone={statusTone[payment.status]} className="shrink-0">
                   {statusLabel[payment.status]}
-                </span>
+                </Badge>
               </div>
 
               {payment.status === 'PENDENTE' && (
                 <div className="mt-3 flex gap-2">
                   {payment.checkoutUrl ? (
-                    <a
-                      href={payment.checkoutUrl}
-                      className={`${buttonBase} inline-flex items-center justify-center gap-2 bg-brand text-on-brand hover:bg-brand-strong`}
-                    >
-                      <CreditCard className="h-4 w-4" aria-hidden="true" />
+                    <a href={payment.checkoutUrl} className={cx(buttonClass(), 'flex-1')}>
+                      <CreditCard className="size-4 shrink-0" aria-hidden="true" />
                       Pagar agora
                     </a>
                   ) : (
                     plan?.simulatedMode && (
-                      <button
+                      <Button
                         onClick={() => run(payment.id, () => simulatePayment(payment.id), 'Não foi possível confirmar o pagamento')}
                         disabled={busyId === payment.id}
-                        className={`${buttonBase} bg-brand text-on-brand hover:bg-brand-strong`}
+                        className="flex-1"
                       >
                         {busyId === payment.id ? 'Confirmando…' : 'Simular pagamento'}
-                      </button>
+                      </Button>
                     )
                   )}
-                  <button
+                  <Button
+                    variant="secondary"
                     onClick={() => run(payment.id, () => cancelPayment(payment.id), 'Não foi possível cancelar')}
                     disabled={busyId === payment.id}
-                    className={`${buttonBase} max-w-[130px] border border-line-strong text-ink-2 hover:border-ink hover:text-ink`}
+                    className="max-w-32.5 flex-1"
                   >
                     Cancelar
-                  </button>
+                  </Button>
                 </div>
               )}
-            </div>
+            </Card>
           ))}
         </div>
       )}
