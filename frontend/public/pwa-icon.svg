@@ -1,7 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- mesma geometria da LogoMark (components/Logo.tsx, viewBox 26). O desenho ocupa 50% do lado,
+       dentro da zona segura de ícone "maskable" (círculo de 80%). -->
   <rect width="512" height="512" fill="#faf7f2"/>
-  <g transform="translate(64 64) scale(6)">
-    <path fill="#1e5f7a" d="M29.6 12.2 9 29.5V52h20.6z"/>
-    <path fill="#e8704a" d="M34.4 12.2 55 29.5V52H34.4z"/>
+  <g transform="translate(89.6 89.6) scale(12.8)">
+    <path fill="#1e5f7a" d="M12.2 3 3 10.4V23h9.2z"/>
+    <path fill="#e8704a" d="M13.8 3 23 10.4V23h-9.2z"/>
   </g>
 </svg>

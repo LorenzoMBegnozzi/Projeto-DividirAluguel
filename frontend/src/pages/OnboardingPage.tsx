@@ -6,6 +6,8 @@ import { useAuth } from '../context/AuthContext'
 import { updateProfile } from '../api/profile'
 import { apiErrorMessage } from '../api/client'
 import { ChipMultiPicker, ChipPicker } from '../components/ChipPicker'
+import { LogoLink } from '../components/Logo'
+import { Alert, Button, Card, Chip, fieldClass } from '../components/ui'
 import {
   allergyTagOptions,
   ALLERGY_HINT,
@@ -17,9 +19,6 @@ import {
   smokingHabitOptions,
 } from '../constants/profileOptions'
 import type { AllergyTag, Diet, DrinkingHabit, Gender, PetPreference, SmokingHabit } from '../types'
-
-const inputClass =
-  'h-11 rounded-md border border-line-strong bg-surface px-3 text-ink outline-none placeholder:text-ink-3 hover:border-ink-2 focus:border-ink focus:ring-2 focus:ring-focus focus:ring-offset-1'
 
 interface Step {
   title: string
@@ -79,7 +78,7 @@ export default function OnboardingPage() {
               onChange={(e) => setDietOther(e.target.value)}
               maxLength={160}
               placeholder="Qual?"
-              className={`mt-3 ${inputClass}`}
+              className={`mt-3 ${fieldClass()}`}
             />
           )}
         </>
@@ -102,14 +101,14 @@ export default function OnboardingPage() {
             values={allergyTags}
             onChange={(next) => setAllergyTags((prev) => normalizeAllergyTags(prev, next))}
           />
-          <p className="mt-2 text-[13px] text-ink-3">{ALLERGY_HINT}</p>
+          <p className="mt-2 text-caption text-ink-3">{ALLERGY_HINT}</p>
           {allergyTags.includes('OUTRO') && (
             <input
               autoFocus
               value={allergyOther}
               onChange={(e) => setAllergyOther(e.target.value)}
               placeholder="Qual?"
-              className={`mt-3 ${inputClass}`}
+              className={`mt-3 ${fieldClass()}`}
             />
           )}
         </>
@@ -133,10 +132,9 @@ export default function OnboardingPage() {
         return (
           <div className="flex flex-wrap gap-2">
             {options.map(({ key, label, icon: Icon, active }) => (
-              <button
+              <Chip
                 key={key}
-                type="button"
-                aria-pressed={active}
+                pressed={active}
                 onClick={() => {
                   if (key === 'none') {
                     setNeedsCarParking(active ? null : false)
@@ -148,13 +146,11 @@ export default function OnboardingPage() {
                   setNeedsCarParking(car || moto ? car : null)
                   setNeedsMotorcycleParking(car || moto ? moto : null)
                 }}
-                className={`inline-flex h-[64px] w-[96px] flex-col items-center justify-center gap-1 rounded-md border text-xs font-semibold transition ${
-                  active ? 'border-inverse bg-inverse text-on-inverse' : 'border-line-strong bg-surface text-ink-2 hover:border-ink'
-                }`}
+                className="h-16! w-24 flex-col justify-center gap-1! rounded-md! px-0! text-caption!"
               >
-                <Icon className="h-6 w-6" aria-hidden="true" />
+                <Icon className="size-6" aria-hidden="true" />
                 {label}
-              </button>
+              </Chip>
             ))}
           </div>
         )
@@ -200,20 +196,16 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-paper px-4 py-8">
-      <div className="w-full max-w-md rounded-lg border border-line bg-surface p-8">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-paper px-4 py-8">
+      <LogoLink size="lg" className="mb-6" />
+      <Card padding="lg" className="w-full max-w-md">
         {step > 0 && (
-          <button
-            type="button"
-            onClick={() => setStep((s) => s - 1)}
-            className="mb-3 inline-flex items-center gap-1 text-sm text-ink-3 hover:text-ink"
-          >
-            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          <Button variant="ghost" size="sm" icon={ArrowLeft} onClick={() => setStep((s) => s - 1)} className="-ml-3 mb-3">
             voltar
-          </button>
+          </Button>
         )}
 
-        <p className="mb-1 text-[13px] font-semibold text-brand">
+        <p className="mb-1 text-caption font-semibold text-brand">
           Passo {step + 1} de {steps.length}
         </p>
         <div className="mb-6 h-1.5 w-full overflow-hidden rounded-full bg-surface-sunk">
@@ -223,23 +215,18 @@ export default function OnboardingPage() {
           />
         </div>
 
-        <h1 className="mb-1 text-2xl font-serif font-medium tracking-tight text-ink">{current.title}</h1>
-        {current.subtitle && <p className="mb-6 text-sm text-ink-3">{current.subtitle}</p>}
+        <h1 className="mb-1 text-h2 text-ink">{current.title}</h1>
+        {current.subtitle && <p className="mb-6 text-small text-ink-3">{current.subtitle}</p>}
         {!current.subtitle && <div className="mb-6" />}
 
         <div className="mb-6">{current.render()}</div>
 
-        {error && <p className="mb-4 rounded-md bg-danger-tint px-3 py-2 text-sm text-danger">{error}</p>}
+        {error && <Alert tone="danger" className="mb-4">{error}</Alert>}
 
-        <button
-          type="button"
-          onClick={handleContinue}
-          disabled={!current.isValid() || loading}
-          className="h-[46px] w-full rounded-md bg-brand font-semibold text-on-brand transition hover:bg-brand-strong disabled:opacity-40"
-        >
+        <Button size="lg" full onClick={handleContinue} disabled={!current.isValid() || loading}>
           {loading ? 'Salvando…' : isLastStep ? 'Concluir' : 'Continuar'}
-        </button>
-      </div>
+        </Button>
+      </Card>
     </div>
   )
 }

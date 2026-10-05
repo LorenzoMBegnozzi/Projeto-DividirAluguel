@@ -22,8 +22,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>(getInitialTheme)
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
+    const root = document.documentElement
+    root.setAttribute('data-theme', theme)
     localStorage.setItem(STORAGE_KEY, theme)
+    // a barra do navegador acompanha o fundo do tema escolhido (as duas metas com media do index.html)
+    const paper = getComputedStyle(root).getPropertyValue('--color-paper').trim()
+    if (paper) document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.setAttribute('content', paper))
   }, [theme])
 
   function toggleTheme() {

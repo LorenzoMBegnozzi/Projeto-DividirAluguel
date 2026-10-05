@@ -62,6 +62,8 @@ export default defineConfig(({ command }) => {
           start_url: '/',
           display: 'standalone',
           background_color: '#faf7f2',
+          // o manifest não aceita cor por tema: fica a clara (igual ao splash); no navegador
+          // as metas theme-color do index.html seguem o tema
           theme_color: '#faf7f2',
           icons: [
             { src: '/pwa-192x192.png', sizes: '192x192', type: 'image/png' },

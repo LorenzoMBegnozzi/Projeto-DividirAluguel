@@ -1,5 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#faf7f2"/>
-  <path fill="#1e5f7a" d="M29.6 12.2 9 29.5V52h20.6z"/>
-  <path fill="#e8704a" d="M34.4 12.2 55 29.5V52H34.4z"/>
+  <!-- mesma geometria da LogoMark (components/Logo.tsx, viewBox 26), escalada 2.4x e centrada -->
+  <style>
+    .bg { fill: #faf7f2 } .a { fill: #1e5f7a } .b { fill: #e8704a }
+    @media (prefers-color-scheme: dark) { .bg { fill: #1a2228 } .a { fill: #5fb3d1 } .b { fill: #f08c6a } }
+  </style>
+  <rect class="bg" width="64" height="64" rx="14"/>
+  <g transform="translate(0.8 0.8) scale(2.4)">
+    <path class="a" d="M12.2 3 3 10.4V23h9.2z"/>
+    <path class="b" d="M13.8 3 23 10.4V23h-9.2z"/>
+  </g>
 </svg>

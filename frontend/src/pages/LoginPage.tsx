@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import Logo from '../components/Logo'
+import { LogoLink } from '../components/Logo'
 import LegalLinks from '../components/LegalLinks'
 import type { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { apiErrorMessage } from '../api/client'
+import { Alert, Button, Card, Checkbox, fieldClass } from '../components/ui'
 
 export default function LoginPage() {
   const { login } = useAuth()
@@ -31,12 +32,12 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-paper px-4">
-      <div className="w-full max-w-sm rounded-lg border border-line bg-surface p-8">
-        <h1 className="mb-2 flex justify-center">
-          <Logo size="lg" />
-        </h1>
-        <p className="mb-6 text-center text-sm text-ink-3">Encontre com quem dividir o aluguel</p>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-paper px-4 py-8">
+      <h1 className="mb-6 flex justify-center">
+        <LogoLink size="lg" />
+      </h1>
+      <Card padding="lg" className="w-full max-w-sm">
+        <p className="mb-6 text-center text-small text-ink-3">Encontre com quem dividir o aluguel</p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <input
@@ -45,7 +46,7 @@ export default function LoginPage() {
             placeholder="E-mail"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="h-11 rounded-md border border-line-strong bg-surface px-3 text-ink outline-none placeholder:text-ink-3 hover:border-ink-2 focus:border-ink focus:ring-2 focus:ring-focus focus:ring-offset-1"
+            className={fieldClass()}
           />
           <input
             type="password"
@@ -53,40 +54,36 @@ export default function LoginPage() {
             placeholder="Senha"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="h-11 rounded-md border border-line-strong bg-surface px-3 text-ink outline-none placeholder:text-ink-3 hover:border-ink-2 focus:border-ink focus:ring-2 focus:ring-focus focus:ring-offset-1"
+            className={fieldClass()}
           />
-          <div className="-mt-1 flex items-center justify-between">
-            <label className="flex cursor-pointer items-center gap-2 text-xs text-ink-3">
-              <input
-                type="checkbox"
-                checked={remember}
-                onChange={(e) => setRemember(e.target.checked)}
-                className="h-4 w-4 accent-brand"
-              />
-              Manter conectado
-            </label>
-            <Link to="/esqueci-senha" className="text-xs font-semibold text-brand hover:text-brand-strong">
+          <div className="-mt-1 flex items-center justify-between gap-3">
+            <Checkbox
+              label="Manter conectado"
+              checked={remember}
+              onChange={(e) => setRemember(e.target.checked)}
+              className="text-caption! text-ink-3!"
+            />
+            <Link
+              to="/esqueci-senha"
+              className="inline-flex min-h-11 items-center text-caption font-semibold text-brand hover:text-brand-strong"
+            >
               Esqueci minha senha
             </Link>
           </div>
-          {error && <p className="rounded-md bg-danger-tint px-3 py-2 text-sm text-danger">{error}</p>}
-          <button
-            type="submit"
-            disabled={loading}
-            className="mt-2 h-[42px] rounded-md bg-brand font-semibold text-on-brand transition hover:bg-brand-strong disabled:opacity-60"
-          >
+          {error && <Alert tone="danger">{error}</Alert>}
+          <Button type="submit" full disabled={loading} className="mt-2">
             {loading ? 'Entrando…' : 'Entrar'}
-          </button>
+          </Button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-ink-3">
+        <p className="mt-6 text-center text-small text-ink-3">
           Ainda não tem conta?{' '}
           <Link to="/registro" className="font-semibold text-brand hover:text-brand-strong">
             Cadastre-se
           </Link>
         </p>
         <LegalLinks className="mt-6" />
-      </div>
+      </Card>
     </div>
   )
 }

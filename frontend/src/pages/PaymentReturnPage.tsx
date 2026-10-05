@@ -5,6 +5,7 @@ import { paymentMethodLabels, syncPayment } from '../api/billing'
 import { apiErrorMessage } from '../api/client'
 import { formatMoney } from '../utils/format'
 import type { Payment } from '../types'
+import { Card, buttonClass, cx } from '../components/ui'
 
 /**
  * Para onde o Mercado Pago manda a pessoa depois de pagar (ou desistir):
@@ -13,6 +14,8 @@ import type { Payment } from '../types'
  * Os parâmetros do Mercado Pago na URL (status=approved...) são IGNORADOS: qualquer um pode digitá-los.
  * A página pergunta ao backend, que pergunta ao Mercado Pago. Pix pode levar alguns segundos, então
  * enquanto estiver pendente a página confere de novo a cada 5 s (por até 2 minutos).
+ *
+ * Rota protegida: a NavBar (App.tsx) já mostra a marca no topo, então aqui não vai LogoLink.
  */
 export default function PaymentReturnPage() {
   const [params] = useSearchParams()
@@ -58,61 +61,64 @@ export default function PaymentReturnPage() {
 
   return (
     <div className="flex min-h-[70vh] items-center justify-center px-4">
-      <div className="w-full max-w-sm rounded-lg border border-line bg-surface p-8 text-center">
+      <Card padding="lg" className="w-full max-w-sm text-center">
         {error ? (
           <>
-            <XCircle className="mx-auto mb-3 h-10 w-10 text-danger" aria-hidden="true" />
-            <h1 className="mb-2 text-xl font-serif font-medium text-ink">Não deu para conferir</h1>
-            <p className="mb-6 text-sm text-ink-2">{error}</p>
+            <XCircle className="mx-auto mb-3 size-10 text-danger" aria-hidden="true" />
+            <h1 className="mb-2 text-h2 text-ink">Não deu para conferir</h1>
+            <p className="mb-6 text-small text-ink-2">{error}</p>
           </>
         ) : !payment ? (
-          <p className="text-ink-3">Conferindo o pagamento com o Mercado Pago…</p>
+          <p className="text-body text-ink-3">Conferindo o pagamento com o Mercado Pago…</p>
         ) : payment.status === 'PAGO' ? (
           <>
-            <CheckCircle2 className="mx-auto mb-3 h-10 w-10 text-leaf" aria-hidden="true" />
-            <h1 className="mb-2 text-xl font-serif font-medium text-ink">Pagamento aprovado!</h1>
-            <p className="mb-1 text-sm text-ink-2">{what}</p>
-            <p className="mb-6 text-[13px] text-ink-3">
+            <CheckCircle2 className="mx-auto mb-3 size-10 text-leaf" aria-hidden="true" />
+            <h1 className="mb-2 text-h2 text-ink">Pagamento aprovado!</h1>
+            <p className="mb-1 text-small text-ink-2">{what}</p>
+            <p className="mb-6 text-caption text-ink-3">
               {formatMoney(payment.amount)}
               {payment.method && ` · ${paymentMethodLabels[payment.method] ?? payment.method}`}
             </p>
           </>
         ) : rejected ? (
           <>
-            <XCircle className="mx-auto mb-3 h-10 w-10 text-danger" aria-hidden="true" />
-            <h1 className="mb-2 text-xl font-serif font-medium text-ink">Pagamento recusado</h1>
-            <p className="mb-6 text-sm text-ink-2">Nada foi cobrado. Tente de novo com outro cartão ou use o Pix.</p>
+            <XCircle className="mx-auto mb-3 size-10 text-danger" aria-hidden="true" />
+            <h1 className="mb-2 text-h2 text-ink">Pagamento recusado</h1>
+            <p className="mb-6 text-small text-ink-2">Nada foi cobrado. Tente de novo com outro cartão ou use o Pix.</p>
             {payment.checkoutUrl && (
-              <a href={payment.checkoutUrl} className="mb-3 inline-flex h-[42px] items-center rounded-md bg-brand px-6 text-sm font-semibold text-on-brand hover:bg-brand-strong">
+              <a href={payment.checkoutUrl} className={cx(buttonClass(), 'mb-3')}>
                 Tentar de novo
               </a>
             )}
           </>
         ) : payment.status === 'CANCELADO' ? (
           <>
-            <XCircle className="mx-auto mb-3 h-10 w-10 text-ink-3" aria-hidden="true" />
-            <h1 className="mb-6 text-xl font-serif font-medium text-ink">Compra cancelada</h1>
+            <XCircle className="mx-auto mb-3 size-10 text-ink-3" aria-hidden="true" />
+            <h1 className="mb-6 text-h2 text-ink">Compra cancelada</h1>
           </>
         ) : (
           <>
-            <Clock className="mx-auto mb-3 h-10 w-10 text-mel" aria-hidden="true" />
-            <h1 className="mb-2 text-xl font-serif font-medium text-ink">Aguardando o pagamento</h1>
-            <p className="mb-6 text-sm text-ink-2">
+            <Clock className="mx-auto mb-3 size-10 text-mel" aria-hidden="true" />
+            <h1 className="mb-2 text-h2 text-ink">Aguardando o pagamento</h1>
+            <p className="mb-6 text-small text-ink-2">
               {giveUp
                 ? 'Ainda não recebemos a confirmação. Se você já pagou, ela aparece em Pagamentos em alguns minutos.'
                 : 'Se você pagou com Pix, a confirmação leva alguns segundos. Esta página se atualiza sozinha.'}
             </p>
           </>
         )}
-        <div className="flex flex-col gap-2">
-          <Link to="/anuncio" className="text-sm font-semibold text-brand hover:text-brand-strong">
+        <div className="flex flex-col items-center">
+          <Link
+            to="/anuncio"
+            className="inline-flex min-h-11 items-center text-small font-semibold text-brand hover:text-brand-strong"
+          >
             Ir para Meus anúncios
           </Link>
-          <Link to="/pagamentos" className="text-sm font-semibold text-ink-3 hover:text-ink">
+          <Link to="/pagamentos" className="inline-flex min-h-11 items-center text-small font-semibold text-ink-3 hover:text-ink">
             Ver pagamentos
           </Link>
         </div>
-      </div>
+      </Card>
     </div>
   )
 }

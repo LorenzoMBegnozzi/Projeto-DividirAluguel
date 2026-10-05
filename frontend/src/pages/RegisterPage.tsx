@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import Logo from '../components/Logo'
+import { LogoLink } from '../components/Logo'
 import LegalLinks from '../components/LegalLinks'
 import type { FormEvent } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
@@ -7,6 +7,7 @@ import { ArrowLeft } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { apiErrorMessage } from '../api/client'
 import type { AdvertiserKind, Role } from '../types'
+import { Alert, Button, Card, Checkbox, Input, cx, fieldClass, focusRing } from '../components/ui'
 
 function formatCpf(value: string) {
   const digits = value.replace(/\D/g, '').slice(0, 11)
@@ -16,14 +17,16 @@ function formatCpf(value: string) {
     .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
 }
 
-const inputClass =
-  'h-11 rounded-md border border-line-strong bg-surface px-3 text-ink outline-none placeholder:text-ink-3 hover:border-ink-2 focus:border-ink focus:ring-2 focus:ring-focus focus:ring-offset-1'
-
 // /registro?perfil=procurar|anunciar (botões da landing) já abre no perfil escolhido
 const PERFIL_ROLE: Record<string, Role> = { procurar: 'RENTER', anunciar: 'ADVERTISER' }
 
-const optionCardClass =
-  'rounded-md border border-line-strong p-4 text-left transition hover:border-ink'
+// opção grande (painel interno clicável) das duas primeiras etapas
+const optionCardClass = cx(
+  'rounded-lg border border-field bg-surface p-4 text-left transition-colors duration-(--dur-fast) hover:border-ink',
+  focusRing,
+)
+
+const pageClass = 'flex min-h-screen flex-col items-center justify-center bg-paper px-4 py-8'
 
 export default function RegisterPage() {
   const { register } = useAuth()
@@ -57,78 +60,77 @@ export default function RegisterPage() {
 
   if (!role) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-paper px-4">
-        <div className="w-full max-w-sm rounded-lg border border-line bg-surface p-8">
-          <h1 className="mb-2 flex justify-center">
-            <Logo size="lg" />
-          </h1>
-          <p className="mb-6 text-center text-sm text-ink-3">O que você quer fazer?</p>
+      <div className={pageClass}>
+        <h1 className="mb-6 flex justify-center">
+          <LogoLink size="lg" />
+        </h1>
+        <Card padding="lg" className="w-full max-w-sm">
+          <p className="mb-6 text-center text-small text-ink-3">O que você quer fazer?</p>
 
           <div className="flex flex-col gap-3">
             <button onClick={() => setRole('RENTER')} className={optionCardClass}>
-              <p className="font-semibold text-ink">Quero alugar</p>
-              <p className="text-sm text-ink-3">Preciso de uma vaga ou alguém pra dividir aluguel</p>
+              <p className="text-body font-semibold text-ink">Quero alugar</p>
+              <p className="text-small text-ink-3">Preciso de uma vaga ou alguém pra dividir aluguel</p>
             </button>
             <button onClick={() => setRole('ADVERTISER')} className={optionCardClass}>
-              <p className="font-semibold text-ink">Quero anunciar</p>
-              <p className="text-sm text-ink-3">Tenho uma vaga sobrando ou um imóvel para alugar</p>
+              <p className="text-body font-semibold text-ink">Quero anunciar</p>
+              <p className="text-small text-ink-3">Tenho uma vaga sobrando ou um imóvel para alugar</p>
             </button>
           </div>
 
-          <p className="mt-6 text-center text-sm text-ink-3">
+          <p className="mt-6 text-center text-small text-ink-3">
             Já tem conta?{' '}
             <Link to="/login" className="font-semibold text-brand hover:text-brand-strong">
               Entrar
             </Link>
           </p>
-        </div>
+        </Card>
       </div>
     )
   }
 
   if (role === 'ADVERTISER' && !advertiserKind) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-paper px-4">
-        <div className="w-full max-w-sm rounded-lg border border-line bg-surface p-8">
-          <button
-            onClick={() => setRole(null)}
-            className="mb-3 inline-flex items-center gap-1 text-sm text-ink-3 hover:text-ink"
-          >
-            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+      <div className={pageClass}>
+        <h1 className="mb-6 flex justify-center">
+          <LogoLink size="lg" />
+        </h1>
+        <Card padding="lg" className="w-full max-w-sm">
+          <Button variant="ghost" size="sm" icon={ArrowLeft} onClick={() => setRole(null)} className="-ml-3 mb-3">
             voltar
-          </button>
-          <h1 className="mb-2 flex justify-center">
-            <Logo size="lg" />
-          </h1>
-          <p className="mb-6 text-center text-sm text-ink-3">O que você quer anunciar?</p>
+          </Button>
+          <p className="mb-6 text-center text-small text-ink-3">O que você quer anunciar?</p>
 
           <div className="flex flex-col gap-3">
             <button onClick={() => setAdvertiserKind('VAGA')} className={optionCardClass}>
-              <p className="font-semibold text-ink">Tenho vaga pra dividir</p>
-              <p className="text-sm text-ink-3">Você mora no lugar e busca alguém compatível pra dividir</p>
+              <p className="text-body font-semibold text-ink">Tenho vaga pra dividir</p>
+              <p className="text-small text-ink-3">Você mora no lugar e busca alguém compatível pra dividir</p>
             </button>
             <button onClick={() => setAdvertiserKind('ESTABELECIMENTO')} className={optionCardClass}>
-              <p className="font-semibold text-ink">Tenho um imóvel pra alugar</p>
-              <p className="text-sm text-ink-3">Você anuncia o imóvel inteiro, como imobiliária ou proprietário</p>
+              <p className="text-body font-semibold text-ink">Tenho um imóvel pra alugar</p>
+              <p className="text-small text-ink-3">Você anuncia o imóvel inteiro, como imobiliária ou proprietário</p>
             </button>
           </div>
-        </div>
+        </Card>
       </div>
     )
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-paper px-4">
-      <div className="w-full max-w-sm rounded-lg border border-line bg-surface p-8">
-        <button
+    <div className={pageClass}>
+      <LogoLink size="lg" className="mb-6" />
+      <Card padding="lg" className="w-full max-w-sm">
+        <Button
+          variant="ghost"
+          size="sm"
+          icon={ArrowLeft}
           onClick={() => (role === 'ADVERTISER' ? setAdvertiserKind(null) : setRole(null))}
-          className="mb-3 inline-flex items-center gap-1 text-sm text-ink-3 hover:text-ink"
+          className="-ml-3 mb-3"
         >
-          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
           voltar
-        </button>
-        <h1 className="mb-1 text-center text-2xl font-serif font-medium tracking-tight text-ink">Criar conta</h1>
-        <p className="mb-6 text-center text-sm text-ink-3">
+        </Button>
+        <h1 className="mb-1 text-center text-h2 text-ink">Criar conta</h1>
+        <p className="mb-6 text-center text-small text-ink-3">
           {role === 'RENTER' ? 'Conta para quem quer alugar' : 'Conta para quem quer anunciar'}
         </p>
 
@@ -138,7 +140,7 @@ export default function RegisterPage() {
             placeholder="Nome completo"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className={inputClass}
+            className={fieldClass()}
           />
           <input
             type="email"
@@ -146,7 +148,7 @@ export default function RegisterPage() {
             placeholder="E-mail"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className={inputClass}
+            className={fieldClass()}
           />
           <input
             type="password"
@@ -155,59 +157,51 @@ export default function RegisterPage() {
             placeholder="Senha (mínimo 8 caracteres)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className={inputClass}
+            className={fieldClass()}
           />
-          <label className="text-[13px] font-semibold text-ink">Data de nascimento</label>
-          <input
+          <Input
+            label="Data de nascimento"
             type="date"
             required
             value={birthDate}
             onChange={(e) => setBirthDate(e.target.value)}
-            className={`-mt-2 ${inputClass}`}
           />
-          <label className="text-[13px] font-semibold text-ink">CPF</label>
-          <input
+          <Input
+            label="CPF"
             required
             inputMode="numeric"
             placeholder="000.000.000-00"
             value={cpf}
             onChange={(e) => setCpf(formatCpf(e.target.value))}
-            className={`-mt-2 ${inputClass}`}
           />
-          <p className="-mt-2 text-[13px] text-ink-3">
+          <p className="-mt-1.5 text-caption text-ink-3">
             Usamos para evitar contas duplicadas ou falsas. Não aparece para outros usuários.
           </p>
-          <label className="flex cursor-pointer items-start gap-2 text-sm text-ink-2">
-            <input
-              type="checkbox"
-              required
-              checked={acceptTerms}
-              onChange={(e) => setAcceptTerms(e.target.checked)}
-              className="mt-0.5 h-[18px] w-[18px] shrink-0 accent-brand"
-            />
-            <span>
-              Li e aceito os{' '}
-              <a href="/termos" target="_blank" rel="noreferrer" className="font-semibold text-brand hover:text-brand-strong">
-                Termos de Uso
-              </a>{' '}
-              e a{' '}
-              <a href="/privacidade" target="_blank" rel="noreferrer" className="font-semibold text-brand hover:text-brand-strong">
-                Política de Privacidade
-              </a>
-              . Se eu informar alergias (dado de saúde, opcional), autorizo que fiquem guardadas no meu perfil.
-            </span>
-          </label>
-          {error && <p className="rounded-md bg-danger-tint px-3 py-2 text-sm text-danger">{error}</p>}
-          <button
-            type="submit"
-            disabled={loading || !acceptTerms}
-            className="mt-2 h-[42px] rounded-md bg-brand font-semibold text-on-brand transition hover:bg-brand-strong disabled:opacity-60"
-          >
+          <Checkbox
+            required
+            checked={acceptTerms}
+            onChange={(e) => setAcceptTerms(e.target.checked)}
+            label={
+              <>
+                Li e aceito os{' '}
+                <a href="/termos" target="_blank" rel="noreferrer" className="font-semibold text-brand hover:text-brand-strong">
+                  Termos de Uso
+                </a>{' '}
+                e a{' '}
+                <a href="/privacidade" target="_blank" rel="noreferrer" className="font-semibold text-brand hover:text-brand-strong">
+                  Política de Privacidade
+                </a>
+                . Se eu informar alergias (dado de saúde, opcional), autorizo que fiquem guardadas no meu perfil.
+              </>
+            }
+          />
+          {error && <Alert tone="danger">{error}</Alert>}
+          <Button type="submit" full disabled={loading || !acceptTerms} className="mt-2">
             {loading ? 'Criando…' : 'Criar conta'}
-          </button>
+          </Button>
         </form>
         <LegalLinks className="mt-6" />
-      </div>
+      </Card>
     </div>
   )
 }
