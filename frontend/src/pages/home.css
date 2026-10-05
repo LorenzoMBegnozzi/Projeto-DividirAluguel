@@ -15,8 +15,8 @@
 }
 .landing-bg[data-mode='anunciar'] {
   background:
-    radial-gradient(55% 60% at 75% 45%, var(--color-leaf-tint) 0%, transparent 70%),
-    radial-gradient(40% 50% at 10% 10%, color-mix(in srgb, var(--color-leaf-tint) 60%, transparent) 0%, transparent 70%);
+    radial-gradient(55% 60% at 75% 45%, var(--color-coral-tint) 0%, transparent 70%),
+    radial-gradient(40% 50% at 10% 10%, color-mix(in srgb, var(--color-coral-tint) 60%, transparent) 0%, transparent 70%);
 }
 
 /* ---------- seletor procurar / anunciar ---------- */
@@ -30,7 +30,7 @@
   background: var(--color-brand);
   transition: transform 0.45s cubic-bezier(.2, .8, .2, 1), background-color 0.45s;
 }
-.mode-switch[data-mode='anunciar'] .mode-switch-thumb { transform: translateX(100%); background: var(--color-leaf); }
+.mode-switch[data-mode='anunciar'] .mode-switch-thumb { transform: translateX(100%); background: var(--color-coral); }
 .mode-switch button {
   position: relative; z-index: 1; padding: 8px 18px; border-radius: 999px;
   font-size: 14px; font-weight: 600; color: var(--color-ink-2); transition: color 0.3s;

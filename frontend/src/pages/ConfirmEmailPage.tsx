@@ -37,7 +37,7 @@ export default function ConfirmEmailPage() {
         {status === 'ok' && (
           <>
             <CheckCircle2 className="mx-auto mb-3 h-10 w-10 text-leaf" aria-hidden="true" />
-            <h1 className="mb-2 text-xl font-bold text-ink">E-mail confirmado!</h1>
+            <h1 className="mb-2 text-xl font-serif font-medium text-ink">E-mail confirmado!</h1>
             <p className="mb-6 text-sm text-ink-2">Agora você pode anunciar e conversar com outras pessoas.</p>
             <Link
               to={user ? '/' : '/login'}
@@ -51,7 +51,7 @@ export default function ConfirmEmailPage() {
         {status === 'error' && (
           <>
             <XCircle className="mx-auto mb-3 h-10 w-10 text-danger" aria-hidden="true" />
-            <h1 className="mb-2 text-xl font-bold text-ink">Não deu certo</h1>
+            <h1 className="mb-2 text-xl font-serif font-medium text-ink">Não deu certo</h1>
             <p className="mb-6 text-sm text-ink-2">{error}</p>
             <Link to={user ? '/' : '/login'} className="text-sm font-semibold text-brand hover:text-brand-strong">
               {user ? 'Voltar ao site' : 'Entrar na conta'}

@@ -2,6 +2,7 @@ import { lazy, Suspense, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import LegalLinks from '../components/LegalLinks'
+import Logo from '../components/Logo'
 import { homePath } from '../utils/profile'
 import { Home, MapPinned, MessageCircle, ShieldCheck, Sparkles, Users } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
@@ -38,8 +39,8 @@ const features = [
 
 const heroCopy: Record<LandingMode, { title: string; highlight: string; text: string; cta: string }> = {
   procurar: {
-    title: 'Ache com quem dividir o aluguel, ',
-    highlight: 'sem grupo de WhatsApp',
+    title: 'Divida o aluguel. ',
+    highlight: 'Não a dor de cabeça.',
     text: 'O RachaAi combina seu perfil com o de outras pessoas e imóveis por compatibilidade, para você encontrar moradia com quem realmente combina com a sua rotina.',
     cta: 'Criar conta grátis',
   },
@@ -94,9 +95,7 @@ export default function HomePage() {
         ))}
 
         <header className="mx-auto flex max-w-5xl items-center justify-between px-4 py-6">
-          <span className="text-xl font-black tracking-tight text-ink">
-            Racha<span className="text-brand">Ai</span>
-          </span>
+          <Logo className="text-xl" />
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <Link
@@ -125,9 +124,9 @@ export default function HomePage() {
             </div>
 
             <div key={shown} className="landing-swap flex flex-col items-center gap-6 lg:items-start" aria-live="polite">
-              <h1 className="max-w-2xl text-4xl font-extrabold leading-tight tracking-tight text-ink sm:text-5xl">
+              <h1 className="max-w-2xl font-serif text-4xl font-medium leading-[1.12] tracking-tight text-ink sm:text-5xl">
                 {copy.title}
-                <span className={shown === 'procurar' ? 'text-brand' : 'text-leaf'}>{copy.highlight}</span>
+                <em className={`italic ${shown === 'procurar' ? 'text-brand' : 'text-coral'}`}>{copy.highlight}</em>
               </h1>
               <p className="max-w-xl text-lg text-ink-2">{copy.text}</p>
             </div>
@@ -136,7 +135,7 @@ export default function HomePage() {
               <Link
                 to="/registro"
                 className={`h-[46px] rounded-md px-8 text-center text-sm font-semibold leading-[46px] text-on-brand transition ${
-                  shown === 'procurar' ? 'bg-brand hover:bg-brand-strong' : 'bg-leaf hover:brightness-110'
+                  shown === 'procurar' ? 'bg-brand hover:bg-brand-strong' : 'bg-coral hover:bg-coral-strong'
                 }`}
               >
                 {copy.cta}
@@ -175,7 +174,9 @@ export default function HomePage() {
       <section className="border-t border-line bg-surface">
         <div className="mx-auto flex max-w-5xl flex-col items-center gap-4 px-4 py-14 text-center">
           <Users className="h-8 w-8 text-brand" aria-hidden="true" />
-          <h2 className="text-2xl font-extrabold tracking-tight text-ink">Procurando vaga ou anunciando um imóvel?</h2>
+          <h2 className="font-serif text-3xl font-medium tracking-tight text-ink">
+            Procurando vaga ou <em className="italic text-coral">anunciando um imóvel?</em>
+          </h2>
           <p className="max-w-lg text-ink-2">
             Cadastre-se de um jeito e ative o outro quando quiser, direto no seu perfil.
           </p>

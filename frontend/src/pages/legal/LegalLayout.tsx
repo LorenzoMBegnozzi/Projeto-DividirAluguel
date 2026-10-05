@@ -11,7 +11,7 @@ export default function LegalLayout({ title, children }: { title: string; childr
         <ArrowLeft className="h-4 w-4" aria-hidden="true" />
         Voltar
       </Link>
-      <h1 className="mb-1 text-[32px] font-extrabold tracking-tight text-ink">{title}</h1>
+      <h1 className="mb-1 text-[32px] font-serif font-medium tracking-tight text-ink">{title}</h1>
       <p className="mb-8 text-sm text-ink-3">Versão de {LEGAL_VERSION_LABEL}</p>
       <article className="legal-text flex flex-col gap-4 text-[15px] leading-relaxed text-ink-2 [&_h2]:mt-6 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-ink [&_h3]:mt-2 [&_h3]:font-bold [&_h3]:text-ink [&_li]:mb-1 [&_ol]:list-decimal [&_ol]:pl-6 [&_strong]:text-ink [&_ul]:list-disc [&_ul]:pl-6 [&_a]:font-semibold [&_a]:text-brand">
         {children}

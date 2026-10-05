@@ -62,7 +62,7 @@ export default function PaymentReturnPage() {
         {error ? (
           <>
             <XCircle className="mx-auto mb-3 h-10 w-10 text-danger" aria-hidden="true" />
-            <h1 className="mb-2 text-xl font-bold text-ink">Não deu para conferir</h1>
+            <h1 className="mb-2 text-xl font-serif font-medium text-ink">Não deu para conferir</h1>
             <p className="mb-6 text-sm text-ink-2">{error}</p>
           </>
         ) : !payment ? (
@@ -70,7 +70,7 @@ export default function PaymentReturnPage() {
         ) : payment.status === 'PAGO' ? (
           <>
             <CheckCircle2 className="mx-auto mb-3 h-10 w-10 text-leaf" aria-hidden="true" />
-            <h1 className="mb-2 text-xl font-bold text-ink">Pagamento aprovado!</h1>
+            <h1 className="mb-2 text-xl font-serif font-medium text-ink">Pagamento aprovado!</h1>
             <p className="mb-1 text-sm text-ink-2">{what}</p>
             <p className="mb-6 text-[13px] text-ink-3">
               {formatMoney(payment.amount)}
@@ -80,7 +80,7 @@ export default function PaymentReturnPage() {
         ) : rejected ? (
           <>
             <XCircle className="mx-auto mb-3 h-10 w-10 text-danger" aria-hidden="true" />
-            <h1 className="mb-2 text-xl font-bold text-ink">Pagamento recusado</h1>
+            <h1 className="mb-2 text-xl font-serif font-medium text-ink">Pagamento recusado</h1>
             <p className="mb-6 text-sm text-ink-2">Nada foi cobrado. Tente de novo com outro cartão ou use o Pix.</p>
             {payment.checkoutUrl && (
               <a href={payment.checkoutUrl} className="mb-3 inline-flex h-[42px] items-center rounded-md bg-brand px-6 text-sm font-semibold text-on-brand hover:bg-brand-strong">
@@ -91,12 +91,12 @@ export default function PaymentReturnPage() {
         ) : payment.status === 'CANCELADO' ? (
           <>
             <XCircle className="mx-auto mb-3 h-10 w-10 text-ink-3" aria-hidden="true" />
-            <h1 className="mb-6 text-xl font-bold text-ink">Compra cancelada</h1>
+            <h1 className="mb-6 text-xl font-serif font-medium text-ink">Compra cancelada</h1>
           </>
         ) : (
           <>
             <Clock className="mx-auto mb-3 h-10 w-10 text-mel" aria-hidden="true" />
-            <h1 className="mb-2 text-xl font-bold text-ink">Aguardando o pagamento</h1>
+            <h1 className="mb-2 text-xl font-serif font-medium text-ink">Aguardando o pagamento</h1>
             <p className="mb-6 text-sm text-ink-2">
               {giveUp
                 ? 'Ainda não recebemos a confirmação. Se você já pagou, ela aparece em Pagamentos em alguns minutos.'

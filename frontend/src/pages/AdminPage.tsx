@@ -66,7 +66,7 @@ export default function AdminPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
-      <h1 className="mb-1 flex items-center gap-2 text-[28px] font-extrabold tracking-tight text-ink">
+      <h1 className="mb-1 flex items-center gap-2 text-[28px] font-serif font-medium tracking-tight text-ink">
         <ShieldCheck className="h-7 w-7 text-brand" aria-hidden="true" />
         Administração
       </h1>

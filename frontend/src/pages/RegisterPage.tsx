@@ -54,7 +54,7 @@ export default function RegisterPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-paper px-4">
         <div className="w-full max-w-sm rounded-lg border border-line bg-surface p-8">
-          <h1 className="mb-1 text-center text-2xl font-black tracking-tight text-ink">
+          <h1 className="mb-1 text-center text-2xl font-serif font-medium tracking-tight text-ink">
             Racha<span className="text-brand">Ai</span>
           </h1>
           <p className="mb-6 text-center text-sm text-ink-3">O que você quer fazer?</p>
@@ -92,7 +92,7 @@ export default function RegisterPage() {
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             voltar
           </button>
-          <h1 className="mb-1 text-center text-2xl font-black tracking-tight text-ink">
+          <h1 className="mb-1 text-center text-2xl font-serif font-medium tracking-tight text-ink">
             Racha<span className="text-brand">Ai</span>
           </h1>
           <p className="mb-6 text-center text-sm text-ink-3">O que você quer anunciar?</p>
@@ -122,7 +122,7 @@ export default function RegisterPage() {
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />
           voltar
         </button>
-        <h1 className="mb-1 text-center text-2xl font-extrabold tracking-tight text-ink">Criar conta</h1>
+        <h1 className="mb-1 text-center text-2xl font-serif font-medium tracking-tight text-ink">Criar conta</h1>
         <p className="mb-6 text-center text-sm text-ink-3">
           {role === 'RENTER' ? 'Conta para quem quer alugar' : 'Conta para quem quer anunciar'}
         </p>

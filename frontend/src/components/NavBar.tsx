@@ -4,6 +4,7 @@ import { Menu, ShieldCheck, X } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import NotificationBell from './NotificationBell'
 import Avatar from './Avatar'
+import Logo from './Logo'
 import ThemeToggle from './ThemeToggle'
 import InstallAppButton from './InstallAppButton'
 
@@ -31,8 +32,8 @@ export default function NavBar() {
   return (
     <header className="sticky top-0 z-20 border-b border-line bg-surface">
       <div className="mx-auto flex h-[60px] max-w-4xl items-center justify-between px-4">
-        <Link to="/" aria-label="RachaAi - página inicial" className="text-xl font-black tracking-tight text-ink">
-          Racha<span className="text-brand">Ai</span>
+        <Link to="/" aria-label="RachaAi - página inicial">
+          <Logo />
         </Link>
 
         <nav className="hidden items-center gap-0.5 lg:flex">

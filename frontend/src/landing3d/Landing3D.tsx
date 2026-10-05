@@ -22,7 +22,7 @@ interface Props {
 
 // cor de cada modo vem do tema (claro/escuro), não fica fixa no código
 const cssColor = (name: string) => getComputedStyle(document.documentElement).getPropertyValue(name).trim()
-const colorFor = (mode: LandingMode) => cssColor(mode === 'procurar' ? '--color-brand' : '--color-leaf')
+const colorFor = (mode: LandingMode) => cssColor(mode === 'procurar' ? '--color-brand' : '--color-coral-bright')
 
 export default function Landing3D({ mode, onPeak, onReady }: Props) {
   const stageRef = useRef<HTMLDivElement>(null)

@@ -79,7 +79,7 @@ export default function ListingDetailPage() {
       <div className="rounded-lg border border-line bg-surface p-6">
         <div className="mb-3 flex items-start justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-ink">{listing.title}</h1>
+            <h1 className="text-2xl font-serif font-medium tracking-tight text-ink">{listing.title}</h1>
             {!listing.available && <p className="mt-1 text-[13px] font-semibold text-danger">Não disponível mais</p>}
           </div>
         </div>

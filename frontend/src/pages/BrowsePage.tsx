@@ -216,7 +216,7 @@ export default function BrowsePage() {
 
   return (
     <div className={`mx-auto px-4 py-8 transition-[max-width] ${viewMode === 'grid' ? 'max-w-5xl' : 'max-w-2xl'}`}>
-      <h1 className="mb-1 text-[28px] font-extrabold tracking-tight text-ink">Buscar</h1>
+      <h1 className="mb-1 text-[28px] font-serif font-medium tracking-tight text-ink">Buscar</h1>
       <p className="mb-4 text-sm text-ink-3">Ordenado pela sua compatibilidade.</p>
       {tab === 'ROOMMATES' && !user?.gender && (
         <p className="mb-4 rounded-md bg-brand-tint px-3 py-2 text-[13px] text-brand-strong">

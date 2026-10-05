@@ -40,7 +40,7 @@ export default function ConversationsPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
-      <h1 className="mb-1 text-[28px] font-extrabold tracking-tight text-ink">Conversas</h1>
+      <h1 className="mb-1 text-[28px] font-serif font-medium tracking-tight text-ink">Conversas</h1>
       <p className="mb-6 text-sm text-ink-3">Suas conversas sobre anúncios.</p>
 
       {error && <div className="mb-4 rounded-md bg-danger-tint px-4 py-3 text-sm text-danger">{error}</div>}

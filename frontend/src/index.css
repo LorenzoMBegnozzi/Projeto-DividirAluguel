@@ -1,30 +1,39 @@
-@import url('https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800;900&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&display=swap');
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
 
 @theme {
   --font-sans: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Fraunces", Georgia, "Times New Roman", serif;
 
   /* Paleta "NTI", versão clara: mesma base (quase preto / azul / cinza), mas com tons
      mais altos de luminosidade pra não pesar a interface. Textos usam cinza-chumbo em vez
      de quase preto, o azul de ação ficou mais vivo (#237fa4, 4,52:1 com texto branco — ainda
      dentro do mínimo de 4,5:1) e o fundo/bordas ganharam mais luz. No escuro, os fundos
      saíram do quase-preto pra um chumbo mais claro, mantendo o azul vivo como cor de ação. */
-  --color-paper: #f7f9fa;
+  /* Identidade "azul petróleo e coral": fundo creme quente, azul petróleo como cor de ação
+     (#1e5f7a, ~7:1 com texto branco) e coral como o segundo tom da marca (lado "anunciar").
+     Textos em tinta azul-acinzentada em vez de cinza neutro. */
+  --color-paper: #faf7f2;
   --color-surface: #ffffff;
-  --color-surface-sunk: #eaf4f8;
+  --color-surface-sunk: #f1ece3;
 
-  --color-line: #d8dee1;
-  --color-line-strong: #aab2b8;
+  --color-line: #e3dccf;
+  --color-line-strong: #b9af9f;
 
-  --color-ink: #333a3d;
-  --color-ink-2: #5b6468;
-  --color-ink-3: #6b7478;
+  --color-ink: #1b2b33;
+  --color-ink-2: #46565e;
+  --color-ink-3: #62727a;
 
-  --color-brand: #237fa4;
-  --color-brand-strong: #1c6582;
-  --color-brand-tint: #d9eef5;
+  --color-brand: #1e5f7a;
+  --color-brand-strong: #174c62;
+  --color-brand-tint: #dcebf1;
   --color-on-brand: #ffffff;
+
+  --color-coral: #c9522d;
+  --color-coral-strong: #ae4421;
+  --color-coral-bright: #e8704a;
+  --color-coral-tint: #fbe3d9;
 
   --color-leaf: #2a8a63;
   --color-leaf-tint: #e3f4ea;
@@ -36,35 +45,40 @@
   --color-danger: #c5362d;
   --color-danger-tint: #fdeeec;
 
-  --color-inverse: #333a3d;
-  --color-on-inverse: #f7f9fa;
+  --color-inverse: #1b2b33;
+  --color-on-inverse: #faf7f2;
 
-  --color-scrim: rgba(51, 58, 61, 0.45);
-  --color-focus: #32a9d9;
+  --color-scrim: rgba(27, 43, 51, 0.45);
+  --color-focus: #3a9cc2;
 
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
 
-  --shadow-pop: 0 18px 40px -16px rgba(51, 58, 61, 0.22), 0 2px 6px rgba(51, 58, 61, 0.06);
+  --shadow-pop: 0 18px 40px -16px rgba(27, 43, 51, 0.22), 0 2px 6px rgba(27, 43, 51, 0.06);
 }
 
 :root[data-theme='dark'] {
-  --color-paper: #2b2e2f;
-  --color-surface: #383c3d;
-  --color-surface-sunk: #454a4b;
+  --color-paper: #1a2228;
+  --color-surface: #243038;
+  --color-surface-sunk: #2d3a43;
 
-  --color-line: #565c5d;
-  --color-line-strong: #868d8e;
+  --color-line: #3a4953;
+  --color-line-strong: #5e7079;
 
-  --color-ink: #f5f6f6;
-  --color-ink-2: #e5e7e7;
-  --color-ink-3: #c7cccd;
+  --color-ink: #f4efe8;
+  --color-ink-2: #ddd7cd;
+  --color-ink-3: #bdb8ae;
 
-  --color-brand: #3cb1de;
-  --color-brand-strong: #65c0e4;
-  --color-brand-tint: #1f4453;
-  --color-on-brand: #15181a;
+  --color-brand: #5fb3d1;
+  --color-brand-strong: #86c6de;
+  --color-brand-tint: #1e3f4d;
+  --color-on-brand: #0f1a20;
+
+  --color-coral: #f08c6a;
+  --color-coral-strong: #f4a58a;
+  --color-coral-bright: #f08c6a;
+  --color-coral-tint: #4a2a1f;
 
   --color-leaf: #74d1a9;
   --color-leaf-tint: #1b3a27;
@@ -76,13 +90,13 @@
   --color-danger: #f5988e;
   --color-danger-tint: #442420;
 
-  --color-inverse: #f5f6f6;
-  --color-on-inverse: #2b2e2f;
+  --color-inverse: #f4efe8;
+  --color-on-inverse: #1a2228;
 
   --color-scrim: rgba(0, 0, 0, 0.55);
-  --color-focus: #3cb1de;
+  --color-focus: #5fb3d1;
 
-  --shadow-pop: 0 18px 40px -12px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(245, 246, 246, 0.07);
+  --shadow-pop: 0 18px 40px -12px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(244, 239, 232, 0.07);
 
   color-scheme: dark;
 }

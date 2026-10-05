@@ -223,7 +223,7 @@ export default function OnboardingPage() {
           />
         </div>
 
-        <h1 className="mb-1 text-2xl font-extrabold tracking-tight text-ink">{current.title}</h1>
+        <h1 className="mb-1 text-2xl font-serif font-medium tracking-tight text-ink">{current.title}</h1>
         {current.subtitle && <p className="mb-6 text-sm text-ink-3">{current.subtitle}</p>}
         {!current.subtitle && <div className="mb-6" />}
 

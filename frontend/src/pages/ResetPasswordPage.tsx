@@ -38,7 +38,7 @@ export default function ResetPasswordPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-paper px-4">
       <div className="w-full max-w-sm rounded-lg border border-line bg-surface p-8">
-        <h1 className="mb-1 text-center text-2xl font-extrabold tracking-tight text-ink">Nova senha</h1>
+        <h1 className="mb-1 text-center text-2xl font-serif font-medium tracking-tight text-ink">Nova senha</h1>
 
         {done ? (
           <>

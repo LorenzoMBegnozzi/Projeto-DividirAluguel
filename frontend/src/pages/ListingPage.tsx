@@ -263,7 +263,7 @@ export default function ListingPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
-      <h1 className="mb-1 text-[28px] font-extrabold tracking-tight text-ink">Meus anúncios</h1>
+      <h1 className="mb-1 text-[28px] font-serif font-medium tracking-tight text-ink">Meus anúncios</h1>
       <p className="mb-6 text-sm text-ink-3">
         {plan
           ? `${plan.freeListingsUsed} de ${plan.freeListings} anúncios grátis em uso. A partir do ${plan.freeListings + 1}º, cada anúncio extra custa ${formatMoney(plan.extraListingPrice)} por ${plan.extraListingDays} dias.`

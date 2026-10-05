@@ -171,7 +171,7 @@ export default function UserPublicProfilePage() {
           <div className="flex items-center gap-3">
             <Avatar photoUrl={user.photoUrl} name={user.name} size={56} />
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-ink">{user.name}</h1>
+              <h1 className="text-2xl font-serif font-medium tracking-tight text-ink">{user.name}</h1>
               {user.occupation && <p className="text-[13px] text-ink-3">{user.occupation}</p>}
             </div>
           </div>

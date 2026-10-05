@@ -120,7 +120,7 @@ export default function ProfilePage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
-      <h1 className="mb-1 text-[28px] font-extrabold tracking-tight text-ink">
+      <h1 className="mb-1 text-[28px] font-serif font-medium tracking-tight text-ink">
         {isAdmin ? 'Minha conta' : isEstabelecimento ? 'Meus dados' : 'Meu perfil'}
       </h1>
       <p className="mb-6 text-sm text-ink-3">
