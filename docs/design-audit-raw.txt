@@ -1,0 +1,502 @@
+
+====================================================================================================
+1. TOKENS DO @theme (index.css) E USO
+====================================================================================================
+  --font-sans              "Schibsted Grotesk", "Helvetica Ne   dark=—                          usos=3
+  --font-serif             "Fraunces", Georgia, "Times New Ro   dark=—                          usos=21
+  --color-paper            #faf7f2                              dark=#1a2228                    usos=21
+  --color-surface          #ffffff                              dark=#243038                    usos=108
+  --color-surface-sunk     #f1ece3                              dark=#2d3a43                    usos=60
+  --color-line             #e3dccf                              dark=#3a4953                    usos=92
+  --color-line-strong      #b9af9f                              dark=#5e7079                    usos=73
+  --color-ink              #1b2b33                              dark=#f4efe8                    usos=264
+  --color-ink-2            #46565e                              dark=#ddd7cd                    usos=131
+  --color-ink-3            #62727a                              dark=#bdb8ae                    usos=208
+  --color-brand            #1e5f7a                              dark=#5fb3d1                    usos=99
+  --color-brand-strong     #174c62                              dark=#86c6de                    usos=59
+  --color-brand-tint       #dcebf1                              dark=#1e3f4d                    usos=21
+  --color-on-brand         #ffffff                              dark=#0f1a20                    usos=36
+  --color-coral            #c9522d                              dark=#f08c6a                    usos=8
+  --color-coral-strong     #ae4421                              dark=#f4a58a                    usos=1
+  --color-coral-bright     #e8704a                              dark=#f08c6a                    usos=2
+  --color-coral-tint       #fbe3d9                              dark=#4a2a1f                    usos=3
+  --color-leaf             #2a8a63                              dark=#74d1a9                    usos=35
+  --color-leaf-tint        #e3f4ea                              dark=#1b3a27                    usos=9
+  --color-mel              #a3690a                              dark=#f2c272                    usos=18
+  --color-mel-tint         #fdf2dc                              dark=#41310f                    usos=9
+  --color-star             #c2860f                              dark=#f2c272                    usos=5
+  --color-danger           #c5362d                              dark=#f5988e                    usos=66
+  --color-danger-tint      #fdeeec                              dark=#442420                    usos=38
+  --color-inverse          #1b2b33                              dark=#f4efe8                    usos=34
+  --color-on-inverse       #faf7f2                              dark=#1a2228                    usos=26
+  --color-scrim            rgba(27, 43, 51, 0.45)               dark=rgba(0, 0, 0, 0.55)        usos=9
+  --color-focus            #3a9cc2                              dark=#5fb3d1                    usos=22
+  --radius-sm              6px                                  dark=—                          usos=16
+  --radius-md              10px                                 dark=—                          usos=159
+  --radius-lg              14px                                 dark=—                          usos=55
+  --shadow-pop             0 18px 40px -16px rgba(27, 43, 51,   dark=0 18px 40px -12px rgba(0   usos=13
+
+  Valores duplicados no @theme: {'#faf7f2': ['color-paper', 'color-on-inverse'], '#ffffff': ['color-surface', 'color-on-brand'], '#1b2b33': ['color-ink', 'color-inverse']}
+  Tokens sem par no tema escuro: []
+
+====================================================================================================
+2. VALORES SOLTOS
+====================================================================================================
+
+2.1 Cores hex fora do index.css: 50
+      40  pages/landing/phone/phone.css
+      10  pages/home.css
+
+2.2 rgb()/rgba() fora do index.css: 33
+      18  pages/landing/phone/phone.css
+      15  pages/home.css
+
+2.3 style={...} em .tsx: 12 ocorrências em 7 arquivos
+    components/Avatar.tsx:23  style={{ width: size, height: size, fontSize: size * 0.4 }}
+    components/Avatar.tsx:35  style={{ width: size, height: size }}
+    components/BottomNav.tsx:21  style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+    components/CompatScore.tsx:49  style={{ fontSize: 28 }}
+    components/ListingMapPreview.tsx:22  style={{ height: 160, width: '100%' }}
+    components/LocationPicker.tsx:38  style={{ height: 280, width: '100%' }}
+    pages/landing/phone/Phone3D.tsx:95  style={{ top: 96 }}
+    pages/landing/phone/Phone3D.tsx:95  style={{ top: 150, height: 44 }}
+    pages/landing/phone/Phone3D.tsx:96  style={{ top: 130, height: 70 }}
+    pages/landing/Bento.tsx:14  style={d(i)}
+    pages/landing/Bento.tsx:41  style={d(i)}
+    pages/landing/Bento.tsx:80  style={d(i)}
+
+2.4 Valores arbitrários do Tailwind (classe-[valor]) em .tsx: 249
+     106  text-[13px]
+      31  h-[42px]
+      19  h-[34px]
+      10  h-[18px]
+      10  w-[18px]
+       7  text-[16px]
+       7  text-[28px]
+       6  z-[1000]
+       5  text-[11px]
+       4  text-[15px]
+       3  h-[32px]
+       3  h-[64px]
+       2  h-[60px]
+       2  max-h-[70vh]
+       2  gap-[2px]
+       2  w-[96px]
+       1  w-[38px]
+       1  rounded-[7px]
+       1  gap-[3px]
+       1  p-[3px]
+       1  min-w-[84px]
+       1  leading-[28px]
+       1  tracking-[-0.03em]
+       1  h-[38px]
+       1  h-[3px]
+       1  min-w-[16px]
+       1  text-[10px]
+       1  h-[40px]
+       1  min-w-[40px]
+       1  w-[72px]
+       1  h-[30px]
+       1  rounded-[5px]
+       1  min-w-[2ch]
+       1  h-[140px]
+       1  w-[42px]
+       1  h-[calc(100vh-124px)]
+       1  h-[calc(100vh-60px)]
+       1  max-w-[75%]
+       1  leading-[21px]
+       1  max-h-[520px]
+       1  w-[88px]
+       1  h-[46px]
+       1  min-h-[70vh]
+       1  max-w-[130px]
+       1  text-[14px]
+
+  por arquivo:
+      30  pages/BrowsePage.tsx
+      27  pages/AdminPage.tsx
+      24  pages/ListingPage.tsx
+      23  pages/ProfilePage.tsx
+      13  pages/UserPublicProfilePage.tsx
+      12  components/ConviviosSection.tsx
+       7  components/DeleteAccountSection.tsx
+       7  components/ReportUserModal.tsx
+       6  components/BoolToggle.tsx
+       6  pages/PaymentsPage.tsx
+       6  pages/RegisterPage.tsx
+       5  components/MarkUnavailableModal.tsx
+       5  components/SafetyTermsModal.tsx
+       5  pages/ChatPage.tsx
+       5  pages/ListingDetailPage.tsx
+       5  pages/OnboardingPage.tsx
+       5  pages/landing/PricingSection.tsx  (landing)
+       4  components/LegalTermsModal.tsx
+       4  components/PickLocationModal.tsx
+       4  components/QuantityPicker.tsx
+       4  components/ThemeToggle.tsx
+       3  components/CompatScore.tsx
+       3  components/InterestSection.tsx
+       3  components/NavBar.tsx
+       3  components/NotificationBell.tsx
+       3  components/PhotoLightbox.tsx
+       3  pages/PaymentReturnPage.tsx
+       2  components/BlockedUsersSection.tsx
+       2  components/ChipPicker.tsx
+       2  components/ListingPhotoManager.tsx
+       2  components/PhotoPicker.tsx
+       2  pages/ConversationsPage.tsx
+       2  pages/ForgotPasswordPage.tsx
+       2  pages/HomePage.tsx  (landing)
+       2  pages/ResetPasswordPage.tsx
+       2  pages/legal/LegalLayout.tsx
+       1  components/BottomNav.tsx
+       1  components/CapabilitiesSection.tsx
+       1  components/LocationPicker.tsx
+       1  pages/ConfirmEmailPage.tsx
+       1  pages/LoginPage.tsx
+       1  pages/landing/CompatDemo.tsx  (landing)
+
+2.5 Classes de paleta crua do Tailwind (bg-gray-*, text-white…): 0
+
+2.6 font-size em CSS: 53 (Counter({'pages/home.css': 38, 'pages/landing/phone/phone.css': 15}))
+    valores: [('11px', 9), ('14px', 8), ('12px', 6), ('12.5px', 4), ('15px', 3), ('13px', 3), ('10.5px', 3), ('17px', 2), ('11.5px', 2), ('16px', 2), ('clamp(32px, 4.2vw, 48px)', 1), ('clamp(42px, 6.4vw, 76px)', 1), ('24px', 1), ('28px', 1), ('21px', 1), ('9.5px', 1), ('52px', 1), ('18px', 1), ('clamp(150px, 15vw, 240px)', 1), ('30px', 1), ('22px', 1)]
+
+2.7 border-radius em CSS: 67; valores: [('999px', 18), ('50%', 13), ('16px', 6), ('14px', 4), ('12px', 4), ('6px', 3), ('44px', 3), ('var(--card-radius)', 2), ('inherit', 2), ('9px', 2), ('2px', 1), ('11px', 1), ('18px', 1), ('3px 3px 0 0', 1), ('21px', 1), ('4px', 1), ('13px', 1), ('10px', 1), ('3px', 1), ('35px', 1)]
+
+2.8 box-shadow em CSS: 22 declarações diferentes: 21
+
+2.9 Durações (duration-N e Nms/Ns): 118; valores distintos: 40
+     [('300ms', 14), ('250ms', 9), ('4s', 9), ('0.9s', 8), ('200ms', 6), ('5s', 5), ('0.8s', 4), ('150ms', 4), ('1.9s', 4), ('0s', 4), ('0.55s', 3), ('1s', 3), ('0.12s', 3), ('0.2s', 3), ('0.25s', 3), ('4.8s', 3), ('0.15s', 2), ('0.00s', 2), ('0.6s', 2), ('0.7s', 2), ('0.45s', 2), ('180ms', 2), ('4.5s', 2), ('1.6s', 2), ('0.001ms', 2), ('1.2s', 1), ('0.60s', 1), ('0.22s', 1), ('0.32s', 1), ('0.42s', 1)]
+
+2.10 z-index: 24; valores: [('z-[1000]', 6), ('z-30', 3), ('z-20', 2), ('z-index: -1', 2), ('z-index: 1', 2), ('z-index: 3', 2), ('z-10', 1), ('z-index: 50', 1), ('z-index: -2', 1), ('z-index: 30', 1), ('z-index: 4', 1), ('z-index: 5', 1), ('z-index: 31', 1)]
+    App.tsx:58  z-30
+    components/BottomNav.tsx:20  z-20
+    components/IosInstallHint.tsx:45  z-30
+    components/LegalTermsModal.tsx:35  z-[1000]
+    components/LocationAutocomplete.tsx:67  z-10
+    components/MarkUnavailableModal.tsx:40  z-[1000]
+    components/NavBar.tsx:33  z-20
+    components/NotificationBell.tsx:126  z-30
+    components/PhotoLightbox.tsx:34  z-[1000]
+    components/PickLocationModal.tsx:14  z-[1000]
+    components/ReportUserModal.tsx:42  z-[1000]
+    components/SafetyTermsModal.tsx:27  z-[1000]
+    pages/home.css:12  z-index: 50
+    pages/home.css:40  z-index: -2
+    pages/home.css:46  z-index: -1
+    pages/home.css:84  z-index: 1
+    pages/home.css:166  z-index: 3
+    pages/home.css:326  z-index: 1
+    pages/landing/phone/phone.css:7  z-index: 30
+    pages/landing/phone/phone.css:56  z-index: 4
+    pages/landing/phone/phone.css:58  z-index: 5
+    pages/landing/phone/phone.css:97  z-index: 3
+    pages/landing/phone/phone.css:113  z-index: 31
+    pages/landing/phone/phone.css:130  z-index: -1
+
+2.11 Raios no TSX: 252
+     [('rounded-md', 159), ('rounded-lg', 55), ('rounded-sm', 16), ('rounded-full', 15), ('rounded-bl-[4px]', 2), ('rounded-[7px]', 1), ('rounded-t-[3px]', 1), ('rounded-[5px]', 1), ('rounded-t-[4px]', 1), ('rounded-br-[4px]', 1)]
+
+2.12 Sombras no TSX: 13 [('shadow-pop', 11), ('shadow-intensity', 1), ('shadow-softness', 1)]
+
+2.13 Tamanhos de fonte no TSX: 398
+     [('text-sm', 184), ('text-[13px]', 106), ('text-xs', 45), ('text-xl', 16), ('text-2xl', 10), ('text-lg', 9), ('text-[16px]', 7), ('text-[28px]', 7), ('text-[11px]', 5), ('text-[15px]', 4), ('text-base', 1), ('text-[10px]', 1), ('text-[14px]', 1), ('text-3xl', 1), ('text-[32px]', 1)]
+
+====================================================================================================
+3. VARIAÇÕES DE COMPONENTES (por assinatura de classe)
+====================================================================================================
+
+3.1 <button>: 40 ocorrências, 22 variações
+   [  4] bg-brand font-semibold h-[34px] px-4 rounded-md text-on-brand text-sm
+         components/ConviviosSection.tsx:167, pages/UserPublicProfilePage.tsx:243, pages/UserPublicProfilePage.tsx:270, pages/UserPublicProfilePage.tsx:314
+   [  4] bg-brand font-semibold h-[42px] rounded-md text-on-brand
+         pages/ForgotPasswordPage.tsx:47, pages/LoginPage.tsx:73, pages/RegisterPage.tsx:201, pages/ResetPasswordPage.tsx:76
+   [  3] font-semibold h-[42px] px-4 rounded-md text-ink-2 text-sm
+         components/MarkUnavailableModal.tsx:81, components/PickLocationModal.tsx:37, components/ReportUserModal.tsx:95
+   [  3] bg-surface rounded-full shadow-pop text-ink
+         components/PhotoLightbox.tsx:40, components/PhotoLightbox.tsx:53, components/PhotoLightbox.tsx:61
+   [  3] (sem classes de aparência)
+         pages/AdminPage.tsx:560, pages/AdminPage.tsx:670, pages/AdminPage.tsx:906
+   [  2] h-9 rounded-md text-ink-2
+         components/InstallAppButton.tsx:11, components/ThemeToggle.tsx:9
+   [  2] rounded-md text-ink-3
+         components/IosInstallHint.tsx:50, pages/UserPublicProfilePage.tsx:187
+   [  2] bg-brand font-semibold h-[42px] rounded-md text-on-brand w-full
+         components/LegalTermsModal.tsx:70, pages/ListingPage.tsx:410
+   [  2] bg-brand font-semibold h-[42px] px-4 rounded-md text-on-brand text-sm
+         components/MarkUnavailableModal.tsx:73, components/SafetyTermsModal.tsx:71
+   [  2] bg-brand font-semibold h-[42px] rounded-md text-on-brand text-sm w-full
+         components/ReportUserModal.tsx:50, pages/ListingDetailPage.tsx:162
+   [  2] bg-brand font-semibold h-[42px] px-6 rounded-md text-on-brand
+         pages/ListingPage.tsx:620, pages/ProfilePage.tsx:338
+   [  1] border border-line-strong rounded-md
+         components/CapabilitiesSection.tsx:56
+   [  1] bg-danger font-semibold h-[42px] px-5 rounded-md text-on-inverse text-sm
+         components/DeleteAccountSection.tsx:101
+   [  1] font-semibold text-brand
+         components/EmailConfirmationBanner.tsx:43
+   [  1] bg-brand-tint border font-semibold h-[42px] px-3 rounded-md text-brand-strong' text-ink-2 text-sm
+         components/InterestSection.tsx:72
+   [  1] rounded-md text-ink-2
+         components/NotificationBell.tsx:112
+   [  1] font-semibold text-brand text-xs
+         components/NotificationBell.tsx:130
+   [  1] bg-surface border border-danger font-semibold h-[42px] rounded-md text-danger text-sm
+         components/ReportUserModal.tsx:88
+   [  1] bg-brand font-semibold h-11 px-5 rounded-md text-on-brand
+         pages/ChatPage.tsx:149
+   [  1] bg-brand font-semibold h-[46px] rounded-md text-on-brand w-full
+         pages/OnboardingPage.tsx:234
+   [  1] border border-line-strong font-semibold h-[34px] px-3 rounded-md text-ink-2 text-sm
+         pages/ProfilePage.tsx:161
+   [  1] border border-line-strong font-semibold h-[34px] px-4 rounded-md text-ink-2 text-sm
+         pages/UserPublicProfilePage.tsx:276
+
+3.2 <Link> com cara de botão: 2 ocorrências, 2 variações
+   [  1] bg-brand font-semibold h-[42px] px-6 rounded-md text-on-brand text-sm
+         pages/ConfirmEmailPage.tsx:42
+   [  1] bg-brand-tint border border-brand rounded-lg text-brand-strong
+         pages/ProfilePage.tsx:135
+
+3.3 <input>/<textarea>/<select>: 3 ocorrências, 1 variações
+   [  3] (sem classes de aparência)
+         components/ListingPhotoManager.tsx:91, components/PhotoPicker.tsx:63, pages/ProfilePage.tsx:172
+   classe compartilhada: components/CapabilitiesSection.tsx: optionCardClass
+   classe compartilhada: components/DeleteAccountSection.tsx: inputClass
+   classe compartilhada: pages/AdminPage.tsx: inputClass
+   classe compartilhada: pages/AdminPage.tsx: buttonClass
+   classe compartilhada: pages/ListingPage.tsx: inputClass
+   classe compartilhada: pages/OnboardingPage.tsx: inputClass
+   classe compartilhada: pages/ProfilePage.tsx: inputClass
+   classe compartilhada: pages/RegisterPage.tsx: inputClass
+   classe compartilhada: pages/RegisterPage.tsx: optionCardClass
+   classe compartilhada: pages/UserPublicProfilePage.tsx: inputClass
+
+3.4 Cartões (bg-surface + border + rounded): 66 ocorrências, 17 variações
+   [ 15] bg-surface border border-line p-6 rounded-lg
+         components/BlockedUsersSection.tsx:36, components/CapabilitiesSection.tsx:48, components/ConviviosSection.tsx:82, pages/AdminPage.tsx:452, pages/AdminPage.tsx:587, pages/AdminPage.tsx:720 …
+   [ 12] bg-surface border border-line p-8 rounded-lg
+         pages/BrowsePage.tsx:318, pages/ConfirmEmailPage.tsx:34, pages/ConversationsPage.tsx:49, pages/ForgotPasswordPage.tsx:30, pages/LoginPage.tsx:35, pages/OnboardingPage.tsx:204 …
+   [  9] bg-surface border border-line-strong px-3 rounded-md
+         components/ReportUserModal.tsx:68, pages/BrowsePage.tsx:262, pages/BrowsePage.tsx:281, pages/ChatPage.tsx:147, pages/ForgotPasswordPage.tsx:44, pages/LoginPage.tsx:48 …
+   [  9] bg-surface border border-line p-4 rounded-lg
+         pages/AdminPage.tsx:194, pages/AdminPage.tsx:239, pages/AdminPage.tsx:491, pages/ChatPage.tsx:121, pages/ConversationsPage.tsx:58, pages/ListingPage.tsx:280 …
+   [  4] bg-surface-sunk border border-line p-4 rounded-md
+         components/ConviviosSection.tsx:94, pages/ListingPage.tsx:542, pages/ListingPage.tsx:548, pages/ListingPage.tsx:608
+   [  4] bg-surface border border-line p-3 rounded-lg
+         pages/AdminPage.tsx:620, pages/AdminPage.tsx:724, pages/AdminPage.tsx:847, pages/ChatPage.tsx:92
+   [  3] bg-inverse bg-surface border rounded-md
+         pages/ListingPage.tsx:569, pages/OnboardingPage.tsx:151, pages/ProfilePage.tsx:302
+   [  1] bg-surface border border-line-strong p-[3px] rounded-md
+         components/BoolToggle.tsx:22
+   [  1] bg-surface border border-line-strong px-3 py-2 rounded-md
+         components/ConviviosSection.tsx:163
+   [  1] bg-surface border border-danger/40 p-6 rounded-lg
+         components/DeleteAccountSection.tsx:41
+   [  1] bg-surface border border-line px-4 py-3 rounded-lg shadow-pop
+         components/IosInstallHint.tsx:45
+   [  1] bg-surface border border-line-strong rounded-md shadow-pop
+         components/LocationAutocomplete.tsx:67
+   [  1] bg-surface border border-line p-2 rounded-lg shadow-pop
+         components/NotificationBell.tsx:126
+   [  1] bg-surface border border-line-strong px-3 py-2.5 rounded-md
+         components/ReportUserModal.tsx:82
+   [  1] bg-surface border border-danger rounded-md
+         components/ReportUserModal.tsx:91
+   [  1] bg-surface border border-line p-5 rounded-lg
+         pages/BrowsePage.tsx:325
+   [  1] bg-inverse bg-surface border px-3 py-2.5 rounded-md
+         pages/ListingPage.tsx:590
+
+3.5 Modais (fixed inset-0): 6
+    components/LegalTermsModal.tsx:35  <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-scrim px-4">
+    components/MarkUnavailableModal.tsx:40  <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-scrim px-4">
+    components/PhotoLightbox.tsx:34  className="fixed inset-0 z-[1000] flex flex-col items-center justify-center gap-4 bg-scrim p-4"
+    components/PickLocationModal.tsx:14  <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-scrim px-4">
+    components/ReportUserModal.tsx:42  <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-scrim px-4">
+    components/SafetyTermsModal.tsx:27  <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-scrim px-4">
+
+3.6 Chips/badges (rounded-full + px + texto pequeno): 0
+
+3.7 Avisos/banners (fundo -tint + padding): 43
+    components/BlockedUsersSection.tsx:40  bg-danger-tint px-
+    components/CapabilitiesSection.tsx:52  bg-danger-tint px-
+    components/ConviviosSection.tsx:89  bg-danger-tint px-
+    components/ConviviosSection.tsx:165  bg-danger-tint px-
+    components/DeleteAccountSection.tsx:59  bg-danger-tint p-
+    components/DeleteAccountSection.tsx:98  bg-danger-tint px-
+    components/EmailConfirmationBanner.tsx:31  bg-mel-tint px-
+    components/InterestSection.tsx:123  bg-danger-tint px-
+    components/LegalTermsModal.tsx:68  bg-danger-tint px-
+    components/ListingPhotoManager.tsx:59  bg-danger-tint px-
+    components/MarkUnavailableModal.tsx:70  bg-danger-tint px-
+    components/ReportUserModal.tsx:85  bg-danger-tint px-
+    components/SafetyTermsModal.tsx:67  bg-danger-tint px-
+    pages/AdminPage.tsx:103  bg-danger-tint px-
+    pages/BrowsePage.tsx:222  bg-brand-tint px-
+    pages/BrowsePage.tsx:313  bg-danger-tint px-
+    pages/BrowsePage.tsx:356  bg-mel-tint px-
+    pages/ChatPage.tsx:119  bg-danger-tint px-
+    pages/ConversationsPage.tsx:46  bg-danger-tint px-
+    pages/ForgotPasswordPage.tsx:46  bg-danger-tint px-
+    pages/HomePage.tsx:59  bg-leaf-tint px-
+    pages/ListingDetailPage.tsx:67  bg-danger-tint px-
+    pages/ListingDetailPage.tsx:153  bg-danger-tint px-
+    pages/ListingPage.tsx:273  bg-danger-tint px-
+    pages/ListingPage.tsx:293  bg-brand-tint px-
+    pages/ListingPage.tsx:299  bg-brand-tint px-
+    pages/ListingPage.tsx:305  bg-mel-tint px-
+    pages/ListingPage.tsx:423  bg-brand-tint px-
+    pages/ListingPage.tsx:617  bg-danger-tint px-
+    pages/ListingPage.tsx:618  bg-leaf-tint px-
+    pages/LoginPage.tsx:72  bg-danger-tint px-
+    pages/OnboardingPage.tsx:232  bg-danger-tint px-
+    pages/PaymentsPage.tsx:87  bg-mel-tint px-
+    pages/PaymentsPage.tsx:105  bg-danger-tint px-
+    pages/ProfilePage.tsx:137  bg-brand-tint p-
+    pages/ProfilePage.tsx:334  bg-danger-tint px-
+    pages/ProfilePage.tsx:335  bg-leaf-tint px-
+    pages/RegisterPage.tsx:200  bg-danger-tint px-
+    pages/ResetPasswordPage.tsx:75  bg-danger-tint px-
+    pages/UserPublicProfilePage.tsx:160  bg-danger-tint px-
+    pages/UserPublicProfilePage.tsx:242  bg-danger-tint px-
+    pages/UserPublicProfilePage.tsx:267  bg-danger-tint px-
+    pages/UserPublicProfilePage.tsx:312  bg-danger-tint px-
+
+3.8 Toggles/checkbox/aria-pressed: 15
+    components/BoolToggle.tsx:26  aria-pressed={value === true}
+    components/BoolToggle.tsx:36  aria-pressed={value === false}
+    components/LegalTermsModal.tsx:60  type="checkbox"
+    components/QuantityPicker.tsx:38  aria-pressed={active}
+    components/SafetyTermsModal.tsx:58  type="checkbox"
+    pages/AdminPage.tsx:163  aria-pressed={days === p}
+    pages/HomePage.tsx:75  <button key={m.id} type="button" aria-pressed={mode === m.id} onClick={() => choose(m.id)}>
+    pages/ListingPage.tsx:567  aria-pressed={value}
+    pages/ListingPage.tsx:588  aria-pressed={parkingLayout === option.value}
+    pages/LoginPage.tsx:61  type="checkbox"
+    pages/OnboardingPage.tsx:139  aria-pressed={active}
+    pages/ProfilePage.tsx:289  aria-pressed={active}
+    pages/RegisterPage.tsx:182  type="checkbox"
+    pages/landing/CompatDemo.tsx:161  aria-pressed={me[h.id]}
+    pages/landing/PricingSection.tsx:59  <input type="checkbox" checked={hl} onChange={(e) => setHl(e.target.checked)} />
+
+3.9 Estados vazios (texto "Nenhum…/ainda não…"): 16
+    components/ConviviosSection.tsx:95  Nenhum convívio registrado ainda.
+    components/EmailConfirmationBanner.tsx:8  * Aviso no topo para quem ainda não confirmou o e-mail. Até confirmar, anunciar, conversar e
+    components/LegalTermsModal.tsx:10  * Aparece para quem ainda não aceitou a versão atual dos Termos de Uso e da Política de
+    components/MarkUnavailableModal.tsx:50  <p className="mb-4 text-sm text-ink-3">Você ainda não conversou com ninguém sobre esse anúncio pelo 
+    components/NotificationBell.tsx:138  <p className="px-2 py-6 text-center text-sm text-ink-3">Sem notificações por aqui.</p>
+    pages/AdminPage.tsx:341  <p className="text-sm text-ink-3">Nenhuma venda no período.</p>
+    pages/AdminPage.tsx:382  <p className="text-sm text-ink-3">Nenhum anúncio com bairro informado.</p>
+    pages/AdminPage.tsx:452  <p className="rounded-lg border border-line bg-surface p-6 text-center text-ink-3">Nenhuma denúncia 
+    pages/AdminPage.tsx:720  <p className="rounded-lg border border-line bg-surface p-6 text-center text-ink-3">Nenhum anúncio en
+    pages/AdminPage.tsx:807  <p className="rounded-lg border border-line bg-surface p-6 text-center text-ink-3">Nenhum pagamento 
+    pages/AdminPage.tsx:893  : 'O crédito de anúncio extra ainda não usado é retirado.'}
+    pages/ConversationsPage.tsx:50  Nenhuma conversa ainda.
+    pages/OnboardingPage.tsx:96  subtitle: 'Escolha quantas fizerem sentido, "Nenhuma alergia" ou "Prefiro não informar".',
+    pages/PaymentsPage.tsx:124  Você ainda não fez nenhuma compra. Em "Meus anúncios" dá para comprar um anúncio extra ou destacar u
+    pages/legal/PrivacyPolicyPage.tsx:160  Nenhum sistema é 100% seguro. Se acontecer um incidente que possa trazer risco a você, avisaremos vo
+    pages/legal/TermsPage.tsx:80  Quem vai morar com você é alguém que você ainda não conhece. Converse bastante antes de fechar qualq
+
+3.10 Carregando (texto/spinner/pulse): 18
+      5  pages/AdminPage.tsx
+      2  pages/BrowsePage.tsx
+      1  components/ConviviosSection.tsx
+      1  components/HomeRedirect.tsx
+      1  components/MarkUnavailableModal.tsx
+      1  components/ProtectedRoute.tsx
+      1  pages/ChatPage.tsx
+      1  pages/ConversationsPage.tsx
+      1  pages/HomePage.tsx
+      1  pages/ListingDetailPage.tsx
+      1  pages/ListingPage.tsx
+      1  pages/PaymentsPage.tsx
+      1  pages/UserPublicProfilePage.tsx
+
+====================================================================================================
+4. TIPOGRAFIA: FONTE E TAMANHO DE CADA TÍTULO, POR TELA
+====================================================================================================
+  components/BlockedUsersSection.tsx          :37   h2  sans             text-[16px]            font-bold
+  components/CapabilitiesSection.tsx          :49   h2  sans             text-lg                font-bold
+  components/ConviviosSection.tsx             :83   h2  sans             text-[16px]            font-bold
+  components/DeleteAccountSection.tsx         :42   h2  sans             text-[16px]            font-bold
+  components/LegalTermsModal.tsx              :37   h2  sans             text-xl                font-bold
+  components/MarkUnavailableModal.tsx         :42   h2  sans             text-xl                font-bold
+  components/PickLocationModal.tsx            :16   h2  sans             text-xl                font-bold
+  components/ReportUserModal.tsx              :46   h2  sans             text-xl                font-bold
+  components/ReportUserModal.tsx              :59   h2  sans             text-xl                font-bold
+  components/SafetyTermsModal.tsx             :29   h2  sans             text-xl                font-bold
+  pages/AdminPage.tsx                         :69   h1  serif(Fraunces)  text-[28px]            font-medium
+  pages/AdminPage.tsx                         :195  h2  sans             text-[15px]            font-bold
+  pages/BrowsePage.tsx                        :219  h1  serif(Fraunces)  text-[28px]            font-medium
+  pages/BrowsePage.tsx                        :345  h2  sans             text-xl                font-bold
+  pages/ConfirmEmailPage.tsx                  :40   h1  serif(Fraunces)  text-xl                font-medium
+  pages/ConfirmEmailPage.tsx                  :54   h1  serif(Fraunces)  text-xl                font-medium
+  pages/ConversationsPage.tsx                 :43   h1  serif(Fraunces)  text-[28px]            font-medium
+  pages/ForgotPasswordPage.tsx                :31   h1  serif(Fraunces)  text-2xl               font-medium
+  pages/HomePage.tsx                          :82   h1  sans             (css)                  —
+  pages/ListingDetailPage.tsx                 :82   h1  serif(Fraunces)  text-2xl               font-medium
+  pages/ListingPage.tsx                       :266  h1  serif(Fraunces)  text-[28px]            font-medium
+  pages/ListingPage.tsx                       :405  h2  sans             text-[16px]            font-bold
+  pages/ListingPage.tsx                       :420  h2  sans             text-[16px]            font-bold
+  pages/LoginPage.tsx                         :36   h1  sans             —                      —
+  pages/OnboardingPage.tsx                    :226  h1  serif(Fraunces)  text-2xl               font-medium
+  pages/PaymentReturnPage.tsx                 :65   h1  serif(Fraunces)  text-xl                font-medium
+  pages/PaymentReturnPage.tsx                 :73   h1  serif(Fraunces)  text-xl                font-medium
+  pages/PaymentReturnPage.tsx                 :83   h1  serif(Fraunces)  text-xl                font-medium
+  pages/PaymentReturnPage.tsx                 :94   h1  serif(Fraunces)  text-xl                font-medium
+  pages/PaymentReturnPage.tsx                 :99   h1  serif(Fraunces)  text-xl                font-medium
+  pages/PaymentsPage.tsx                      :83   h1  serif(Fraunces)  text-[28px]            font-medium
+  pages/ProfilePage.tsx                       :123  h1  serif(Fraunces)  text-[28px]            font-medium
+  pages/RegisterPage.tsx                      :62   h1  sans             —                      —
+  pages/RegisterPage.tsx                      :100  h1  sans             —                      —
+  pages/RegisterPage.tsx                      :130  h1  serif(Fraunces)  text-2xl               font-medium
+  pages/ResetPasswordPage.tsx                 :41   h1  serif(Fraunces)  text-2xl               font-medium
+  pages/UserPublicProfilePage.tsx             :174  h1  serif(Fraunces)  text-2xl               font-medium
+  pages/UserPublicProfilePage.tsx             :215  h2  sans             text-[16px]            font-bold
+  pages/UserPublicProfilePage.tsx             :334  h2  sans             text-[16px]            font-bold
+  pages/landing/Bento.tsx                     :17   h3  sans             text-lg                font-extrabold
+  pages/landing/Bento.tsx                     :33   h2  landing-h2       (css)                  —
+  pages/landing/CompatDemo.tsx                :143  h2  landing-h2       (css)                  —
+  pages/landing/CtaSplit.tsx                  :13   h2  landing-h2       (css)                  —
+  pages/landing/FaqSection.tsx                :11   h2  landing-h2       (css)                  —
+  pages/landing/PricingSection.tsx            :90   h2  landing-h2       (css)                  —
+  pages/landing/phone/PhoneStory.tsx          :47   h2  landing-h2       (css)                  —
+  pages/landing/phone/PhoneStory.tsx          :52   h3  sans             text-2xl               font-extrabold
+  pages/legal/LegalLayout.tsx                 :14   h1  serif(Fraunces)  text-[32px]            font-medium
+  pages/legal/LegalLayout.tsx                 :26   h2  sans             —                      —
+  pages/legal/PrivacyPolicyPage.tsx           :29   h3  sans             —                      —
+  pages/legal/PrivacyPolicyPage.tsx           :48   h3  sans             —                      —
+  pages/legal/PrivacyPolicyPage.tsx           :64   h3  sans             —                      —
+  pages/legal/PrivacyPolicyPage.tsx           :107  h3  sans             —                      —
+  pages/legal/PrivacyPolicyPage.tsx           :120  h3  sans             —                      —
+  pages/legal/PrivacyPolicyPage.tsx           :132  h3  sans             —                      —
+
+  font-serif (Fraunces): 20 usos em 15 arquivos
+  fonte mono: [('pages/home.css', 319), ('pages/home.css', 319)]
+
+====================================================================================================
+5. LOGO
+====================================================================================================
+  components/Logo.tsx:13  <LogoMark />
+  components/NavBar.tsx:36  <Logo />
+  pages/LoginPage.tsx:37  <Logo className="text-2xl" />
+  pages/RegisterPage.tsx:63  <Logo className="text-2xl" />
+  pages/RegisterPage.tsx:101  <Logo className="text-2xl" />
+  pages/landing/LandingFooter.tsx:19  <Logo className="text-lg" />
+  pages/landing/LandingHeader.tsx:21  <Logo className="text-lg" />
+  escrita à mão (Racha<span):  [('components/Logo.tsx', 15)]
+  LoginPage            tem Logo: True
+  RegisterPage         tem Logo: True
+  ForgotPasswordPage   tem Logo: False
+  ResetPasswordPage    tem Logo: False
+  ConfirmEmailPage     tem Logo: False
+  OnboardingPage       tem Logo: False
+  PaymentReturnPage    tem Logo: False
+
+====================================================================================================
+6. LANDING x APP
+====================================================================================================
+  landing: raios [('rounded-lg', 1)]
+  app: raios [('rounded-md', 159), ('rounded-lg', 54), ('rounded-sm', 16), ('rounded-full', 15), ('rounded-[7px]', 1), ('rounded-[5px]', 1)]
+  landing (home.css): raios [('999px', 13), ('50%', 6), ('16px', 4), ('6px', 3), ('14px', 2), ('var(--card-radius)', 2), ('2px', 1), ('11px', 1)]
