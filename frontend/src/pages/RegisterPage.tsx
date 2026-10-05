@@ -60,7 +60,7 @@ export default function RegisterPage() {
       <div className="flex min-h-screen items-center justify-center bg-paper px-4">
         <div className="w-full max-w-sm rounded-lg border border-line bg-surface p-8">
           <h1 className="mb-2 flex justify-center">
-            <Logo className="text-2xl" />
+            <Logo size="lg" />
           </h1>
           <p className="mb-6 text-center text-sm text-ink-3">O que você quer fazer?</p>
 
@@ -98,7 +98,7 @@ export default function RegisterPage() {
             voltar
           </button>
           <h1 className="mb-2 flex justify-center">
-            <Logo className="text-2xl" />
+            <Logo size="lg" />
           </h1>
           <p className="mb-6 text-center text-sm text-ink-3">O que você quer anunciar?</p>
 

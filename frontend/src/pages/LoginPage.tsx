@@ -34,7 +34,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-paper px-4">
       <div className="w-full max-w-sm rounded-lg border border-line bg-surface p-8">
         <h1 className="mb-2 flex justify-center">
-          <Logo className="text-2xl" />
+          <Logo size="lg" />
         </h1>
         <p className="mb-6 text-center text-sm text-ink-3">Encontre com quem dividir o aluguel</p>
 

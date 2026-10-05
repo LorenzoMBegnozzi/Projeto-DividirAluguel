@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "oxlint",
-    "preview": "vite preview"
+    "lint": "oxlint && node scripts/check-design.mjs",
+    "preview": "vite preview",
+    "lint:design": "node scripts/check-design.mjs"
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.10.0",

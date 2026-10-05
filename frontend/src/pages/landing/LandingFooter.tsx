@@ -16,7 +16,7 @@ export default function LandingFooter() {
     <footer className="mx-auto max-w-6xl px-4 pb-10 pt-8 sm:px-6">
       <div className="grid gap-10 border-t border-line pt-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
         <div>
-          <Logo className="text-lg" />
+          <Logo size="md" />
           <p className="mt-3 max-w-xs text-sm text-ink-3">Para achar com quem dividir o aluguel em Maringá, sem grupo de WhatsApp.</p>
           {contactEmail && (
             <a href={`mailto:${contactEmail}`} className="mt-3 inline-block text-sm font-semibold text-brand hover:underline">{contactEmail}</a>

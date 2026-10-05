@@ -1,44 +1,109 @@
-@import url('https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800;900&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&display=swap');
+/* só os pesos usados (400–800); display=swap + fallback com métricas ajustadas (sem pulo de layout) */
+@import url('https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
+
+/* Fallback com as métricas da Schibsted Grotesk (medidas no Chrome contra a Arial): enquanto a
+   fonte baixa (display=swap), o texto já ocupa quase o mesmo espaço → sem pulo de layout. */
+@font-face {
+  font-family: "Schibsted Fallback";
+  src: local("Arial"), local("Helvetica Neue"), local("Helvetica");
+  font-weight: 400 600;
+  size-adjust: 102.8%;
+  ascent-override: 95.3%;
+  descent-override: 25.3%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Schibsted Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Helvetica Neue Bold"), local("Arial");
+  font-weight: 700 900;
+  size-adjust: 89.7%;
+  ascent-override: 109.3%;
+  descent-override: 29%;
+  line-gap-override: 0%;
+}
 @import "leaflet/dist/leaflet.css";
 
 @theme {
-  --font-sans: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
-  --font-serif: "Fraunces", Georgia, "Times New Roman", serif;
+  /* =====================================================================================
+     Design system do RachaAi: FONTE ÚNICA DE VERDADE. Nenhuma cor, tamanho de texto, raio,
+     sombra, camada ou curva fora daqui (scripts/check-design.mjs falha se voltar).
+     Guia de uso: docs/10-DESIGN-SYSTEM.md
+     ===================================================================================== */
 
-  /* Paleta "NTI", versão clara: mesma base (quase preto / azul / cinza), mas com tons
-     mais altos de luminosidade pra não pesar a interface. Textos usam cinza-chumbo em vez
-     de quase preto, o azul de ação ficou mais vivo (#237fa4, 4,52:1 com texto branco — ainda
-     dentro do mínimo de 4,5:1) e o fundo/bordas ganharam mais luz. No escuro, os fundos
-     saíram do quase-preto pra um chumbo mais claro, mantendo o azul vivo como cor de ação. */
+  /* ---------- tipografia: uma família (Schibsted Grotesk) + mono ---------- */
+  --font-sans: "Schibsted Grotesk", "Schibsted Fallback", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  /* TEMPORÁRIO: some quando a migração terminar (títulos passam a ser sans 800) */
+  --font-serif: var(--font-sans);
+
+  /* escala nomeada: cada classe text-<nome> já traz altura de linha, peso e tracking */
+  --text-display: clamp(2.625rem, 6.4vw, 4.75rem);   /* 42–76 px: topo da landing */
+  --text-display--line-height: 0.98;
+  --text-display--font-weight: 800;
+  --text-display--letter-spacing: -0.045em;
+  --text-h1: clamp(1.75rem, 1.45rem + 0.75vw, 2rem);  /* 28 px no celular → 32 px: título de tela */
+  --text-h1--line-height: 1.15;
+  --text-h1--font-weight: 800;
+  --text-h1--letter-spacing: -0.03em;
+  --text-h2: 1.5rem;              /* 24 px: título de seção/modal */
+  --text-h2--line-height: 1.875rem;
+  --text-h2--font-weight: 800;
+  --text-h2--letter-spacing: -0.025em;
+  --text-h3: 1.125rem;            /* 18 px: título de cartão */
+  --text-h3--line-height: 1.5rem;
+  --text-h3--font-weight: 700;
+  --text-h3--letter-spacing: -0.015em;
+  --text-body: 1rem;              /* 16 px: texto corrido */
+  --text-body--line-height: 1.5rem;
+  --text-small: 0.875rem;         /* 14 px: texto de apoio, botões, campos */
+  --text-small--line-height: 1.25rem;
+  --text-caption: 0.8125rem;      /* 13 px: legenda, metadado, ajuda de campo */
+  --text-caption--line-height: 1.125rem;
+  --text-label: 0.75rem;          /* 12 px: kicker / rótulo em caixa alta */
+  --text-label--line-height: 1rem;
+  --text-label--font-weight: 800;
+  --text-label--letter-spacing: 0.12em;
+  --text-micro: 0.6875rem;        /* 11 px: só selo/contador (nunca texto corrido) */
+  --text-micro--line-height: 0.875rem;
+  --text-logo-sm: 1rem;           /* nome "RachaAi" no Logo (tamanhos fixos do componente) */
+  --text-logo-md: 1.25rem;
+  --text-logo-lg: 1.75rem;
+  --text-landing-h2: clamp(2rem, 4.2vw, 3rem);       /* 32–48 px: títulos de seção da landing */
+  --text-landing-h2--line-height: 1.05;
+  --text-landing-h2--font-weight: 800;
+  --text-landing-h2--letter-spacing: -0.035em;
+
+  /* ---------- cores (tema claro; o escuro sobrescreve em :root[data-theme='dark']) ---------- */
   /* Identidade "azul petróleo e coral": fundo creme quente, azul petróleo como cor de ação
-     (#1e5f7a, ~7:1 com texto branco) e coral como o segundo tom da marca (lado "anunciar").
-     Textos em tinta azul-acinzentada em vez de cinza neutro. */
+     e coral como o segundo tom da marca (lado "anunciar"). Valores conferidos no AA
+     (texto ≥ 4,5:1; borda de campo e foco ≥ 3:1) — ver docs/10-DESIGN-SYSTEM.md §5. */
   --color-paper: #faf7f2;
   --color-surface: #ffffff;
   --color-surface-sunk: #f1ece3;
 
-  --color-line: #e3dccf;
-  --color-line-strong: #b9af9f;
+  --color-line: #e3dccf;          /* borda decorativa (cartão, divisória) */
+  --color-line-strong: #b9af9f;   /* borda de destaque / hover */
+  --color-field: #958d80;         /* borda de campo e controle: 3:1 */
 
   --color-ink: #1b2b33;
   --color-ink-2: #46565e;
-  --color-ink-3: #62727a;
+  --color-ink-3: #5e6d75;
 
   --color-brand: #1e5f7a;
   --color-brand-strong: #174c62;
   --color-brand-tint: #dcebf1;
   --color-on-brand: #ffffff;
 
-  --color-coral: #c9522d;
+  --color-coral: #c04e2b;
   --color-coral-strong: #ae4421;
-  --color-coral-bright: #e8704a;
+  --color-coral-bright: #e8704a;  /* só marca/ilustração (logo, 3D), nunca texto */
   --color-coral-tint: #fbe3d9;
 
-  --color-leaf: #2a8a63;
+  --color-leaf: #257a58;
   --color-leaf-tint: #e3f4ea;
 
-  --color-mel: #a3690a;
+  --color-mel: #9a6309;
   --color-mel-tint: #fdf2dc;
   --color-star: #c2860f;
 
@@ -49,22 +114,50 @@
   --color-on-inverse: #faf7f2;
 
   --color-scrim: rgba(27, 43, 51, 0.45);
-  --color-focus: #3a9cc2;
+  --color-focus: #3898be;
 
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
+  /* ---------- raios ---------- */
+  --radius-sm: 8px;    /* selo, tag, chip interno */
+  --radius-md: 12px;   /* botão, campo, item de lista */
+  --radius-lg: 16px;   /* painel interno, popover */
+  --radius-xl: 22px;   /* cartão, modal */
 
-  --shadow-pop: 0 18px 40px -16px rgba(27, 43, 51, 0.22), 0 2px 6px rgba(27, 43, 51, 0.06);
+  /* ---------- sombras (3 níveis; escuro sobrescreve) ---------- */
+  --shadow-sm: 0 1px 2px rgba(27, 43, 51, 0.05), 0 10px 26px -20px rgba(27, 43, 51, 0.32);
+  --shadow-md: 0 1px 2px rgba(27, 43, 51, 0.06), 0 24px 46px -26px rgba(27, 43, 51, 0.45);
+  --shadow-lg: 0 18px 40px -16px rgba(27, 43, 51, 0.28), 0 2px 6px rgba(27, 43, 51, 0.06);
+  --shadow-pop: var(--shadow-lg);  /* TEMPORÁRIO: nome antigo, some ao fim da migração */
+
+  /* ---------- movimento ---------- */
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-:root[data-theme='dark'] {
+/* durações e camadas não têm namespace no @theme do Tailwind 4: ficam como variáveis e são
+   usadas com a sintaxe de propriedade, ex.: z-(--z-modal), duration-(--dur-base) */
+:root {
+  --dur-fast: 150ms;
+  --dur-base: 250ms;
+  --dur-slow: 400ms;
+
+  --z-raised: 10;
+  --z-sticky: 20;     /* NavBar, BottomNav */
+  --z-dropdown: 30;   /* notificações, autocomplete, botão de tema flutuante */
+  --z-overlay: 40;    /* palco 3D da landing */
+  --z-modal: 50;
+  --z-toast: 60;
+}
+
+/* também vale para um trecho da página com data-theme="dark" (usado na galeria /dev/ui) */
+:root[data-theme='dark'], [data-theme='dark'] {
   --color-paper: #1a2228;
   --color-surface: #243038;
   --color-surface-sunk: #2d3a43;
 
   --color-line: #3a4953;
   --color-line-strong: #5e7079;
+  --color-field: #697a82;
 
   --color-ink: #f4efe8;
   --color-ink-2: #ddd7cd;
@@ -96,7 +189,9 @@
   --color-scrim: rgba(0, 0, 0, 0.55);
   --color-focus: #5fb3d1;
 
-  --shadow-pop: 0 18px 40px -12px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(244, 239, 232, 0.07);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 28px -20px rgba(0, 0, 0, 0.7);
+  --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.35), 0 26px 48px -24px rgba(0, 0, 0, 0.8);
+  --shadow-lg: 0 18px 40px -12px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(244, 239, 232, 0.07);
 
   color-scheme: dark;
 }

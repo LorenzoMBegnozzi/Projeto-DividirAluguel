@@ -18,7 +18,7 @@ export default function LandingHeader() {
   return (
     <header className={`landing-header${scrolled ? ' is-scrolled' : ''}`}>
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-        <a href="#topo" aria-label="RachaAi, voltar ao topo"><Logo className="text-lg" /></a>
+        <a href="#topo" aria-label="RachaAi, voltar ao topo"><Logo size="md" /></a>
         <nav className="hidden items-center gap-1 md:flex" aria-label="Seções">
           {nav.map(([label, href]) => (
             <a key={href} href={href} className="nav-link">{label}</a>

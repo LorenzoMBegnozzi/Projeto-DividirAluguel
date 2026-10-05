@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
@@ -31,6 +32,9 @@ import AdminPage from './pages/AdminPage'
 import PrivacyPolicyPage from './pages/legal/PrivacyPolicyPage'
 import TermsPage from './pages/legal/TermsPage'
 import ConfirmEmailPage from './pages/ConfirmEmailPage'
+
+// Galeria do design system: só existe em desenvolvimento (fora do build de produção)
+const DevUiPage = import.meta.env.DEV ? lazy(() => import('./pages/DevUiPage')) : null
 
 export default function App() {
   return (
@@ -172,6 +176,7 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+        {DevUiPage && <Route path="/dev/ui" element={<Suspense fallback={null}><DevUiPage /></Suspense>} />}
         <Route path="*" element={<HomeRedirect />} />
       </Routes>
       </div>
