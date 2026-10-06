@@ -1,287 +1,319 @@
 ---
 name: competitors
-description: "When the user wants to create competitor comparison or alternative pages for SEO and buyer-facing use. Also use when the user mentions 'alternative page,' 'vs page,' 'competitor comparison,' 'comparison page,' '[Product] vs [Product],' '[Product] alternative,' 'competitive landing pages,' 'how do we compare to X,' 'competitor teardown,' 'audit our competitor pages,' 'are our comparison pages out of date,' or 'competitive asset audit.' Use this for any content that positions your product against competitors. Covers four formats: singular alternative, plural alternatives, you vs competitor, and competitor vs competitor. For auditing existing claims (not researching competitors from scratch, which is competitor-profiling; not technical SEO on these pages, which is seo-audit), use the asset audit here. For internal battle cards and sales-specific competitor docs, see sales-enablement."
+description: "Quando o usuário quiser criar páginas de comparação de concorrente ou alternativa para SEO e capacitação de vendas. Use também quando o usuário mencionar 'página de alternativa,' 'página vs,' 'comparação de concorrente,' 'página de comparação,' '[Produto] vs [Produto],' 'alternativa ao [Produto],' 'landing pages competitivas,' 'como a gente se compara a X,' 'battle card,' ou 'teardown de concorrente.' Use isso para qualquer conteúdo que posicione seu produto contra concorrentes. Cobre quatro formatos: alternativa singular, alternativas plurais, você vs. concorrente, e concorrente vs. concorrente. Para docs de concorrente específicos de vendas, veja sales-enablement."
 metadata:
-  version: 2.3.0
+  version: 2.0.1
 ---
 
-# Competitor & Alternative Pages
+# Páginas de Concorrente e Alternativa
 
-You are an expert in creating competitor comparison and alternative pages. Your goal is to build pages that rank for competitive search terms, provide genuine value to evaluators, and position your product effectively.
+Você é um especialista em criar páginas de comparação de concorrente e
+alternativa. Seu objetivo é construir páginas que rankeiam para termos de
+busca competitivos, oferecem valor genuíno para quem está avaliando, e
+posicionam seu produto de forma eficaz.
 
-## Initial Assessment
+## Avaliação inicial
 
-**Check for product marketing context first:**
-If `.agents/product-marketing.md` exists (or `.claude/product-marketing.md`, or the legacy `product-marketing-context.md` filename, in older setups), read it before asking questions. Use that context and only ask for information not already covered or specific to this task.
+**Primeiro, verifique se há contexto de produto:**
+Se `.agents/product-marketing.md` existir (ou `.claude/product-marketing.md`,
+ou o nome de arquivo legado `product-marketing-context.md`, em setups mais
+antigos), leia-o antes de fazer perguntas. Use esse contexto e só pergunte o
+que não estiver coberto ou for específico desta tarefa.
 
-**Never guess the competitor.** If the request doesn't name one and the context file doesn't identify it, ask, and stop there. Don't draft a polished page around the most likely candidate.
+Antes de criar páginas de concorrente, entenda:
 
-Before creating competitor pages, understand:
+1. **Seu produto**
+   - Proposta de valor central
+   - Principais diferenciadores
+   - Perfil de cliente ideal
+   - Modelo de preço
+   - Forças e fraquezas honestas
 
-1. **Your Product**
-   - Core value proposition
-   - Key differentiators
-   - Ideal customer profile
-   - Pricing model
-   - Strengths and honest weaknesses
+2. **Panorama competitivo**
+   - Concorrentes diretos
+   - Concorrentes indiretos/adjacentes
+   - Posicionamento de mercado de cada um
+   - Volume de busca para termos de concorrente
 
-2. **Competitive Landscape**
-   - Direct competitors
-   - Indirect/adjacent competitors
-   - Market positioning of each
-   - Search volume for competitor terms
-
-3. **Goals**
-   - SEO traffic capture
-   - Sales enablement
-   - Conversion from competitor users
-   - Brand positioning
-
----
-
-## Core Principles
-
-### 1. Honesty Builds Trust
-- Acknowledge competitor strengths
-- Be accurate about your limitations
-- Don't misrepresent competitor features
-- Readers are comparing—they'll verify claims
-
-### 2. Depth Over Surface
-- Go beyond feature checklists
-- Explain *why* differences matter
-- Include use cases and scenarios
-- Show, don't just tell
-
-### 3. Help Them Decide
-- Different tools fit different needs
-- Be clear about who you're best for
-- Be clear about who competitor is best for
-- Reduce evaluation friction
-
-### 4. Modular Content Architecture
-- Competitor data should be centralized
-- Updates propagate to all pages
-- Single source of truth per competitor
-
-### 5. Evidence Discipline
-Comparison pages are public claims about another company. Every one should survive the competitor's own team reading it.
-- **"Not observed" is not "doesn't have."** A pricing page that doesn't list SSO is evidence about the page, not the product. Write "not listed on their pricing page (as of Mar 2026)" or drop the row. Use ✗ or "not available" only when their docs or a hands-on trial confirm the absence.
-- **Date competitor facts.** Pricing and features change. Put an "as of" date on pricing tables and in the competitor data file, and re-verify before republishing.
-- **One look is a snapshot.** A single visit can't support "they haven't changed pricing in years" or "no new features since 2024." That needs dated history (changelog, archived pages).
-- **State what changed, not why.** "They moved SSO to the Enterprise tier" is a fact. "Because they're squeezing upmarket" is a guess. Leave motive out unless they've said it publicly.
-- **Separate fact from interpretation.** Keep what their site says apart from what you think it means for the buyer, and keep both apart from what you recommend.
+3. **Objetivos**
+   - Captura de tráfego de SEO
+   - Capacitação de vendas
+   - Conversão de usuários de concorrente
+   - Posicionamento de marca
 
 ---
 
-## Page Formats
+## Princípios centrais
 
-### Format 1: [Competitor] Alternative (Singular)
+### 1. Honestidade constrói confiança
 
-**Search intent**: User is actively looking to switch from a specific competitor
+- Reconheça as forças do concorrente
+- Seja preciso sobre suas limitações
+- Não deturpe as features do concorrente
+- Os leitores estão comparando — eles vão verificar as afirmações
 
-**URL pattern**: `/alternatives/[competitor]` or `/[competitor]-alternative`
+### 2. Profundidade antes de superfície
 
-**Target keywords**: "[Competitor] alternative", "alternative to [Competitor]", "switch from [Competitor]"
+- Vá além de listas de checklist de feature
+- Explique *por que* as diferenças importam
+- Inclua casos de uso e cenários
+- Mostre, não só conte
 
-**Page structure**:
-1. Why people look for alternatives (validate their pain)
-2. Summary: You as the alternative (quick positioning)
-3. Detailed comparison (features, service, pricing)
-4. Who should switch (and who shouldn't)
-5. Migration path
-6. Social proof from switchers
+### 3. Ajude a decidir
+
+- Ferramentas diferentes atendem necessidades diferentes
+- Seja claro sobre para quem você é melhor
+- Seja claro sobre para quem o concorrente é melhor
+- Reduza a fricção de avaliação
+
+### 4. Arquitetura de conteúdo modular
+
+- O dado de concorrente deve ser centralizado
+- Atualizações se propagam para todas as páginas
+- Uma única fonte de verdade por concorrente
+
+---
+
+## Formatos de página
+
+### Formato 1: Alternativa ao [Concorrente] (Singular)
+
+**Intenção de busca**: o usuário está ativamente buscando trocar de um
+concorrente específico
+
+**Padrão de URL**: `/alternativas/[concorrente]` ou
+`/alternativa-ao-[concorrente]`
+
+**Palavras-chave alvo**: "alternativa ao [Concorrente]", "alternativa para
+[Concorrente]", "trocar de [Concorrente]"
+
+**Estrutura da página**:
+
+1. Por que as pessoas buscam alternativas (valide a dor delas)
+2. Resumo: você como a alternativa (posicionamento rápido)
+3. Comparação detalhada (features, atendimento, preço)
+4. Quem deveria trocar (e quem não deveria)
+5. Caminho de migração
+6. Prova social de quem trocou
 7. CTA
 
 ---
 
-### Format 2: [Competitor] Alternatives (Plural)
+### Formato 2: Alternativas ao [Concorrente] (Plural)
 
-**Search intent**: User is researching options, earlier in journey
+**Intenção de busca**: o usuário está pesquisando opções, mais no início
+da jornada
 
-**URL pattern**: `/alternatives/[competitor]-alternatives`
+**Padrão de URL**: `/alternativas/[concorrente]-alternativas`
 
-**Target keywords**: "[Competitor] alternatives", "best [Competitor] alternatives", "tools like [Competitor]"
+**Palavras-chave alvo**: "alternativas ao [Concorrente]", "melhores
+alternativas ao [Concorrente]", "ferramentas como [Concorrente]"
 
-**Page structure**:
-1. Why people look for alternatives (common pain points)
-2. What to look for in an alternative (criteria framework)
-3. List of alternatives (you first, but include real options)
-4. Comparison table (summary)
-5. Detailed breakdown of each alternative
-6. Recommendation by use case
+**Estrutura da página**:
+
+1. Por que as pessoas buscam alternativas (pontos de dor comuns)
+2. O que procurar em uma alternativa (framework de critério)
+3. Lista de alternativas (você primeiro, mas inclua opções reais)
+4. Tabela de comparação (resumo)
+5. Detalhamento de cada alternativa
+6. Recomendação por caso de uso
 7. CTA
 
-**Important**: Include 4-7 real alternatives. Being genuinely helpful builds trust and ranks better.
+**Importante**: inclua 4-7 alternativas reais. Ser genuinamente útil
+constrói confiança e rankeia melhor.
 
-**AI-answer expectations by stage**: these pages often earn *citations* in AI answers, but whether AI *recommends* your brand from them depends on offsite consensus (reviews, forums, analysts) — for emerging brands, a self-ranked list can surface the competitors in the AI answer while you get only the citation. Still publish for search intent and category framing, but set expectations accordingly — see ai-seo's citations-vs-recommendations reference for the data.
+**Expectativas de resposta de IA por estágio**: essas páginas
+frequentemente ganham *citações* em respostas de IA, mas se a IA de fato
+*recomenda* sua marca a partir delas depende de consenso fora do site
+(avaliações, fóruns, analistas) — para marcas emergentes, uma lista
+autoclassificada pode acabar mostrando os concorrentes na resposta da IA
+enquanto você só ganha a citação. Ainda assim, publique pela intenção de
+busca e enquadramento de categoria, mas ajuste as expectativas de acordo —
+veja a referência citations-vs-recommendations da skill ai-seo para o
+dado.
 
 ---
 
-### Format 3: You vs [Competitor]
+### Formato 3: Você vs. [Concorrente]
 
-**Search intent**: User is directly comparing you to a specific competitor
+**Intenção de busca**: o usuário está comparando você diretamente com um
+concorrente específico
 
-**URL pattern**: `/vs/[competitor]` or `/compare/[you]-vs-[competitor]`
+**Padrão de URL**: `/vs/[concorrente]` ou `/comparar/[voce]-vs-[concorrente]`
 
-**Target keywords**: "[You] vs [Competitor]", "[Competitor] vs [You]"
+**Palavras-chave alvo**: "[Você] vs [Concorrente]", "[Concorrente] vs
+[Você]"
 
-**Page structure**:
-1. TL;DR summary (key differences in 2-3 sentences)
-2. At-a-glance comparison table
-3. Detailed comparison by category (Features, Pricing, Support, Ease of use, Integrations)
-4. Who [You] is best for
-5. Who [Competitor] is best for (be honest)
-6. What customers say (testimonials from switchers)
-7. Migration support
+**Estrutura da página**:
+
+1. Resumo TL;DR (principais diferenças em 2-3 frases)
+2. Tabela de comparação rápida
+3. Comparação detalhada por categoria (Features, Preço, Suporte,
+   Facilidade de uso, Integrações)
+4. Para quem [Você] é melhor
+5. Para quem [Concorrente] é melhor (seja honesto)
+6. O que os clientes dizem (depoimentos de quem trocou)
+7. Suporte de migração
 8. CTA
 
 ---
 
-### Format 4: [Competitor A] vs [Competitor B]
+### Formato 4: [Concorrente A] vs [Concorrente B]
 
-**Search intent**: User comparing two competitors (not you directly)
+**Intenção de busca**: o usuário está comparando dois concorrentes (não
+você diretamente)
 
-**URL pattern**: `/compare/[competitor-a]-vs-[competitor-b]`
+**Padrão de URL**: `/comparar/[concorrente-a]-vs-[concorrente-b]`
 
-**Page structure**:
-1. Overview of both products
-2. Comparison by category
-3. Who each is best for
-4. The third option (introduce yourself)
-5. Comparison table (all three)
+**Estrutura da página**:
+
+1. Visão geral dos dois produtos
+2. Comparação por categoria
+3. Para quem cada um é melhor
+4. A terceira opção (se apresente)
+5. Tabela de comparação (os três)
 6. CTA
 
-**Why this works**: Captures search traffic for competitor terms, positions you as knowledgeable.
+**Por que isso funciona**: captura tráfego de busca para termos de
+concorrente, posiciona você como conhecedor.
 
 ---
 
-## Essential Sections
+## Seções essenciais
 
-### TL;DR Summary
-Start every page with a quick summary for scanners—key differences in 2-3 sentences.
+### Resumo TL;DR
 
-### Paragraph Comparisons
-Go beyond tables. For each dimension, write a paragraph explaining the differences and when each matters.
+Comece toda página com um resumo rápido para quem está escaneando —
+principais diferenças em 2-3 frases.
 
-### Feature Comparison
-For each category: describe how each handles it, list strengths and limitations, give bottom line recommendation.
+### Comparações em parágrafo
 
-### Pricing Comparison
-Include tier-by-tier comparison, what's included, hidden costs, and total cost calculation for sample team size.
+Vá além das tabelas. Para cada dimensão, escreva um parágrafo explicando
+as diferenças e quando cada uma importa.
 
-### Who It's For
-Be explicit about ideal customer for each option. Honest recommendations build trust.
+### Comparação de feature
 
-### Migration Section
-Cover what transfers, what needs reconfiguration, support offered, and quotes from customers who switched.
+Para cada categoria: descreva como cada um lida com isso, liste forças e
+limitações, dê a recomendação final.
 
-**For detailed templates**: See [references/templates.md](references/templates.md)
+### Comparação de preço
 
----
+Inclua comparação plano a plano, o que está incluído, custos escondidos, e
+cálculo de custo total para um tamanho de time de exemplo.
 
-## Content Architecture
+### Para quem é
 
-### Centralized Competitor Data
-Create a single source of truth for each competitor with:
-- Positioning and target audience
-- Pricing (all tiers)
-- Feature ratings
-- Strengths and weaknesses
-- Best for / not ideal for
-- Common complaints (from reviews)
-- Migration notes
+Seja explícito sobre o cliente ideal para cada opção. Recomendações
+honestas constroem confiança.
 
-**For data structure and examples**: See [references/content-architecture.md](references/content-architecture.md)
+### Seção de migração
+
+Cubra o que é transferido, o que precisa ser reconfigurado, o suporte
+oferecido, e citações de clientes que trocaram.
+
+**Para templates detalhados**: veja
+[references/templates.md](references/templates.md)
 
 ---
 
-## Research Process
+## Arquitetura de conteúdo
 
-### Deep Competitor Research
+### Dado de concorrente centralizado
 
-For each competitor, gather:
+Crie uma única fonte de verdade para cada concorrente com:
 
-1. **Product research**: Sign up, use it, document features/UX/limitations
-2. **Pricing research**: Current pricing, what's included, hidden costs
-3. **Review mining**: G2, Capterra, TrustRadius for common praise/complaint themes
-4. **Customer feedback**: Talk to customers who switched (both directions)
-5. **Content research**: Their positioning, their comparison pages, their changelog
+- Posicionamento e audiência-alvo
+- Preço (todos os planos)
+- Avaliação de feature
+- Forças e fraquezas
+- Melhor para / não ideal para
+- Reclamações comuns (de avaliações)
+- Notas de migração
 
-### Ongoing Updates
-
-- **Quarterly**: Verify pricing, check for major feature changes
-- **When notified**: Customer mentions competitor change
-- **Annually**: Full refresh of all competitor data
-
-### Competitive Asset Audit
-
-When asked to check existing competitive content for stale or risky claims, audit every asset that makes claims about competitors: vs and alternative pages, battle cards, talk tracks, objection docs, and comparison tables in decks.
-
-1. **List each claim** about a competitor, with the asset and line it lives in.
-2. **Re-verify each claim** against the competitor's current site, docs, or changelog, and note the date you checked. If you can't browse, mark claims unchecked and list what to verify. Never mark one Current without a check date.
-3. **Mark each one**:
-   - **Current**: still true, source and date updated
-   - **Changed**: now wrong, with what it says now
-   - **Unverifiable**: had a source once, but nothing current confirms or rules it out. Soften to "not listed (as of date)" or remove
-   - **Overclaimed**: stated as fact with no source behind it (an unconfirmed ✗, a guessed motive, a "why we win" with no evidence). Rewrite to what the evidence supports or remove
-4. **Prioritize fixes**: public pages first (buyers and competitors read them), then anything reps say on calls, then internal docs.
-5. **Report**: assets audited, claims checked, counts by status, and a fix list with the replacement wording.
-
-Apply the Evidence Discipline rules above to every claim, including those in internal sales assets. Where several assets repeat one fact, fix it in the centralized competitor data so the fix carries through.
+**Para estrutura de dado e exemplos**: veja
+[references/content-architecture.md](references/content-architecture.md)
 
 ---
 
-## SEO Considerations
+## Processo de pesquisa
 
-### Keyword Targeting
+### Pesquisa profunda de concorrente
 
-| Format | Primary Keywords |
-|--------|-----------------|
-| Alternative (singular) | [Competitor] alternative, alternative to [Competitor] |
-| Alternatives (plural) | [Competitor] alternatives, best [Competitor] alternatives |
-| You vs Competitor | [You] vs [Competitor], [Competitor] vs [You] |
-| Competitor vs Competitor | [A] vs [B], [B] vs [A] |
+Para cada concorrente, reúna:
 
-### Internal Linking
-- Link between related competitor pages
-- Link from feature pages to relevant comparisons
-- Create hub page linking to all competitor content
+1. **Pesquisa de produto**: cadastre-se, use, documente features/UX/limitações
+2. **Pesquisa de preço**: preço atual, o que está incluído, custos escondidos
+3. **Garimpagem de avaliação**: G2, Capterra, TrustRadius (e Reclame Aqui no
+   Brasil) para temas comuns de elogio/reclamação
+4. **Feedback de cliente**: converse com clientes que trocaram (nas duas
+   direções)
+5. **Pesquisa de conteúdo**: o posicionamento deles, as páginas de
+   comparação deles, o changelog deles
 
-### Schema Markup
-Consider FAQ schema for common questions like "What is the best alternative to [Competitor]?"
+### Atualizações contínuas
 
----
-
-## Output Format
-
-### Competitor Data File
-Complete competitor profile in YAML format for use across all comparison pages.
-
-### Page Content
-For each page: URL, meta tags, full page copy organized by section, comparison tables, CTAs.
-
-### Page Set Plan
-Recommended pages to create with priority order based on search volume.
-
-### Asset Audit Report
-Claims checked per asset, status counts (current / changed / unverifiable / overclaimed), and a prioritized fix list with replacement wording.
+- **Trimestral**: verifique preço, confira mudanças de feature importantes
+- **Quando avisado**: cliente menciona mudança de concorrente
+- **Anual**: atualização completa de todo dado de concorrente
 
 ---
 
-## Task-Specific Questions
+## Considerações de SEO
 
-1. What are common reasons people switch to you?
-2. Do you have customer quotes about switching?
-3. What's your pricing vs. competitors?
-4. Do you offer migration support?
+### Direcionamento de palavra-chave
+
+| Formato | Palavras-chave primárias |
+|---|---|
+| Alternativa (singular) | alternativa ao [Concorrente], alternativa para [Concorrente] |
+| Alternativas (plural) | alternativas ao [Concorrente], melhores alternativas ao [Concorrente] |
+| Você vs Concorrente | [Você] vs [Concorrente], [Concorrente] vs [Você] |
+| Concorrente vs Concorrente | [A] vs [B], [B] vs [A] |
+
+### Links internos
+
+- Linke entre páginas de concorrente relacionadas
+- Linke de páginas de feature para comparações relevantes
+- Crie uma página hub linkando para todo o conteúdo de concorrente
+
+### Schema markup
+
+Considere schema de FAQ para perguntas comuns como "Qual é a melhor
+alternativa ao [Concorrente]?"
 
 ---
 
-## Related Skills
+## Formato de saída
 
-- **programmatic-seo**: For building competitor pages at scale
-- **copywriting**: For writing compelling comparison copy
-- **seo-audit**: For optimizing competitor pages
-- **schema**: For FAQ and comparison schema
-- **sales-enablement**: For battle cards and internal sales collateral, decks, and objection docs
+### Arquivo de dado de concorrente
+
+Perfil de concorrente completo em formato YAML para uso em todas as
+páginas de comparação.
+
+### Conteúdo da página
+
+Para cada página: URL, meta tags, copy completa da página organizada por
+seção, tabelas de comparação, CTAs.
+
+### Plano de conjunto de página
+
+Páginas recomendadas para criar, com ordem de prioridade baseada em
+volume de busca.
+
+---
+
+## Perguntas específicas da tarefa
+
+1. Quais são os motivos comuns pelos quais as pessoas trocam para você?
+2. Você tem citações de cliente sobre a troca?
+3. Qual é seu preço vs. concorrentes?
+4. Você oferece suporte de migração?
+
+---
+
+## Skills relacionadas
+
+- **programmatic-seo**: para construir páginas de concorrente em escala
+- **copywriting**: para escrever copy de comparação persuasiva
+- **seo-audit**: para otimizar páginas de concorrente
+- **schema**: para schema de FAQ e comparação
+- **sales-enablement**: para material interno de vendas, decks, e docs de objeção

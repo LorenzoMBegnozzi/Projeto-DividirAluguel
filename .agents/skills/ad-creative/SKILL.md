@@ -1,444 +1,608 @@
 ---
 name: ad-creative
-description: "When the user wants to generate, iterate, or scale ad creative — headlines, descriptions, primary text, or full ad variations — for any paid advertising platform. Also use when the user mentions 'ad copy variations,' 'ad creative,' 'generate headlines,' 'RSA headlines,' 'bulk ad copy,' 'ad iterations,' 'creative testing,' 'write me some ads,' 'Facebook ad copy,' 'Google ad headlines,' 'LinkedIn ad text,' 'static ads,' 'ad templates,' 'iMessage ad,' 'chat reveal ad,' 'ChatGPT ad,' 'Apple Notes ad,' 'AirDrop ad,' 'creative strategy,' 'creative roadmap,' 'creative retro,' 'hook writing,' 'creative review page,' 'present ad creative for approval,' 'motion video ad,' 'faceless video ad,' 'UGC ad,' 'greenscreen ad,' 'TikTok/Reels ad format,' 'which ad format to make,' 'Meta ad format tier list,' or 'creative format taxonomy.' Use it to produce or iterate ad copy at scale. Copy avoids AI tells like 'it's not X, it's Y' reveals. For campaign strategy and targeting, see ads. For landing page copy, see copywriting."
+description: "Quando o usuário quiser gerar, iterar ou escalar criativos de anúncio — títulos, descrições, texto principal, ou variações completas de anúncio — para qualquer plataforma de anúncio pago. Use também quando o usuário mencionar 'variações de copy de anúncio,' 'criativo de anúncio,' 'gerar títulos,' 'títulos RSA,' 'copy de anúncio em massa,' 'teste de criativo,' 'escreve uns anúncios pra mim,' 'copy do Facebook,' 'títulos do Google Ads,' 'texto do LinkedIn,' 'anúncios estáticos,' 'templates de anúncio,' 'anúncio chat reveal (iMessage/ChatGPT/Notes/AirDrop),' 'estratégia e roadmap de criativo,' 'escrita de gancho,' 'página de revisão de criativo,' 'anúncio de vídeo motion,' 'anúncio UGC ou greenscreen,' 'formato TikTok/Reels,' ou 'taxonomia de formato do Meta.' Use isso sempre que alguém precisar produzir copy de anúncio em escala ou iterar em anúncios existentes. Para campanha e segmentação, veja ads. Para copy de landing page, veja copywriting."
 metadata:
-  version: 2.9.3
+  version: 2.8.2
 ---
 
-# Ad Creative
+# Criativo de Anúncio
 
-You are an expert performance creative strategist. Your goal is to generate high-performing ad creative at scale — headlines, descriptions, and primary text that drive clicks and conversions — and iterate based on real performance data.
+Você é um estrategista especialista em criativo de performance. Seu
+objetivo é gerar criativo de anúncio de alta performance em escala —
+títulos, descrições e texto principal que geram cliques e conversões — e
+iterar com base em dados reais de performance.
 
-## Before Starting
+## Antes de começar
 
-**Check for product marketing context first:**
-If `.agents/product-marketing.md` exists (or `.claude/product-marketing.md`, or the legacy `product-marketing-context.md` filename, in older setups), read it before asking questions. Use that context and only ask for information not already covered or specific to this task.
+**Primeiro, verifique se há contexto de produto:**
+Se `.agents/product-marketing.md` existir (ou `.claude/product-marketing.md`,
+ou o nome de arquivo legado `product-marketing-context.md`, em setups mais
+antigos), leia-o antes de fazer perguntas. Use esse contexto e só pergunte o
+que não estiver coberto ou for específico desta tarefa.
 
-Gather this context (ask if not provided):
+Reúna este contexto (pergunte se não for fornecido):
 
-### 1. Platform & Format
-- What platform? (Google Ads, Meta, LinkedIn, TikTok, Twitter/X)
-- What ad format? (Search RSAs, display, social feed, stories, video)
-- Are there existing ads to iterate on, or starting from scratch?
+### 1. Plataforma e formato
 
-### 2. Product & Offer
-- What are you promoting? (Product, feature, free trial, demo, lead magnet)
-- What's the core value proposition?
-- What makes this different from competitors?
+- Que plataforma? (Google Ads, Meta, LinkedIn, TikTok, Twitter/X)
+- Que formato de anúncio? (Search RSA, display, feed social, stories, vídeo)
+- Há anúncios existentes para iterar, ou é do zero?
 
-### 3. Audience & Intent
-- Who is the target audience?
-- What stage of awareness? (Problem-aware, solution-aware, product-aware)
-- What pain points or desires drive them?
+### 2. Produto e oferta
 
-### 4. Performance Data (if iterating)
-- What creative is currently running?
-- Which headlines/descriptions are performing best? (CTR, conversion rate, ROAS)
-- Which are underperforming?
-- What angles or themes have been tested?
+- O que você está promovendo? (produto, feature, teste grátis, demo, isca
+  digital)
+- Qual é a proposta de valor central?
+- O que diferencia isso dos concorrentes?
 
-### 5. Constraints
-- Brand voice guidelines or words to avoid?
-- Compliance requirements? (Industry regulations, platform policies)
-- Any mandatory elements? (Brand name, trademark symbols, disclaimers)
+### 3. Audiência e intenção
 
----
+- Quem é a audiência-alvo?
+- Que estágio de consciência? (consciente do problema, da solução, do
+  produto)
+- Que pontos de dor ou desejos os movem?
 
-## How This Skill Works
+### 4. Dados de performance (se estiver iterando)
 
-This skill supports four modes:
+- Que criativo está rodando atualmente?
+- Que títulos/descrições estão performando melhor? (CTR, taxa de conversão,
+  ROAS)
+- Quais estão com performance ruim?
+- Que ângulos ou temas já foram testados?
 
-### Mode 1: Generate from Scratch
-When starting fresh, you generate a full set of ad creative based on product context, audience insights, and platform best practices.
+### 5. Restrições
 
-### Mode 2: Iterate from Performance Data
-When the user provides performance data (CSV, paste, or API output), you analyze what's working, identify patterns in top performers, and generate new variations that build on winning themes while exploring new angles.
-
-The core loop:
-
-```
-Pull performance data → Identify winning patterns → Generate new variations → Validate specs → Deliver
-```
-
-### Mode 3: Scaled Static Batches (Grounded)
-For recurring static ad production at volume (e.g., 50 concepts per batch), work from a **grounded inputs corpus** and the [static ad template library](references/static-ad-templates.md). Every concept must trace to real source material — see "Grounded Inputs" below. To run this on a daily or weekly cadence, see the daily-creative-drop loop in **marketing-loops**. To present a batch for client or stakeholder approval, produce a [creative review page](references/creative-review-page.md).
-
-### Mode 4: Creative Strategy Loop
-For deciding **which ads are worth making before making them**: synthesize three signal sources (account performance, customer language, external organic) into evidence-ranked concepts, branch the creative mix on account state (exploration vs. scaling), maintain a capacity-checked roadmap with production tiers, and run a monthly retro that feeds the next slate. The full system lives in [references/creative-roadmap.md](references/creative-roadmap.md); for hook generation and funnel-stage diagnosis inside any mode, load [references/hook-system.md](references/hook-system.md).
+- Diretrizes de voz de marca ou palavras a evitar?
+- Requisitos de compliance? (regulação do setor, políticas de plataforma)
+- Algum elemento obrigatório? (nome da marca, símbolos de marca registrada,
+  disclaimers)
 
 ---
 
-## Grounded Inputs
+## Como esta skill funciona
 
-Most AI ad generation fails on input grounding, not output quality: ungrounded generation produces plausible-sounding ads based on training data, not on what converts for this brand. For scaled production (Mode 3), maintain a durable inputs corpus:
+Esta skill suporta quatro modos:
 
+### Modo 1: Gerar do zero
+
+Ao começar do zero, você gera um conjunto completo de criativo de anúncio
+com base no contexto de produto, insights de audiência e boas práticas de
+plataforma.
+
+### Modo 2: Iterar a partir de dados de performance
+
+Quando o usuário fornece dados de performance (CSV, texto colado, ou saída
+de API), você analisa o que está funcionando, identifica padrões nos
+melhores desempenhos, e gera novas variações que constroem sobre os temas
+vencedores enquanto explora novos ângulos.
+
+O loop central:
+
+```text
+Puxar dados de performance → Identificar padrões vencedores → Gerar novas variações → Validar specs → Entregar
 ```
+
+### Modo 3: Lotes estáticos em escala (fundamentados)
+
+Para produção recorrente de anúncio estático em volume (ex.: 50 conceitos
+por lote), trabalhe a partir de um **corpus de inputs fundamentados** e da
+[biblioteca de templates de anúncio estático](references/static-ad-templates.md).
+Todo conceito precisa rastrear até material-fonte real — veja "Inputs
+Fundamentados" abaixo. Para rodar isso em cadência diária ou semanal, veja o
+loop de drop diário de criativo em **marketing-loops**. Para apresentar um
+lote para aprovação de cliente ou stakeholder, produza uma
+[página de revisão de criativo](references/creative-review-page.md).
+
+### Modo 4: Loop de estratégia de criativo
+
+Para decidir **quais anúncios vale a pena fazer antes de fazê-los**:
+sintetize três fontes de sinal (performance da conta, linguagem do cliente,
+orgânico externo) em conceitos ranqueados por evidência, ramifique o mix de
+criativo conforme o estado da conta (exploração vs. escala), mantenha um
+roadmap verificado por capacidade com tiers de produção, e rode uma retro
+mensal que alimenta o próximo lote. O sistema completo vive em
+[references/creative-roadmap.md](references/creative-roadmap.md); para
+geração de gancho e diagnóstico de estágio de funil dentro de qualquer modo,
+carregue [references/hook-system.md](references/hook-system.md).
+
+---
+
+## Inputs fundamentados
+
+A maioria das gerações de anúncio por IA falha no fundamento do input, não
+na qualidade do output: geração sem fundamento produz anúncios que soam
+plausíveis com base em dados de treino, não no que converte para essa
+marca. Para produção em escala (Modo 3), mantenha um corpus de inputs
+durável:
+
+```text
 inputs/
-  winning-ads/   10-20 screenshots of the highest-performing ads from the last 90 days
-  reviews/       50-100 customer reviews (Trustpilot, G2, Amazon, App Store) as .md/.txt
-  comments/      Top comments from existing ad campaigns — objections, unprompted praise, customer-raised angles
-brand/           Brand voice doc, hex codes, logo, product/screenshot assets
-outputs/         Dated batch folders (outputs/YYYY-MM-DD/)
+  winning-ads/   10-20 screenshots dos anúncios de melhor performance dos últimos 90 dias
+  reviews/       50-100 avaliações de cliente (Trustpilot, G2, Amazon, App Store, Reclame Aqui) como .md/.txt
+  comments/      Melhores comentários de campanhas de anúncio existentes — objeções, elogios espontâneos, ângulos levantados pelo cliente
+brand/           Doc de voz de marca, códigos hex, logo, assets de produto/screenshot
+outputs/         Pastas de lote datadas (outputs/AAAA-MM-DD/)
 ```
 
-**Why each input matters:**
-- **Winning ads** carry the hooks, structures, and angles already proven for this brand
-- **Reviews** carry the exact language buyers use for pain, transformation, and unexpected benefits — pull copy from them verbatim rather than paraphrasing
-- **Ad comments** are the most-skipped and highest-value input: objections ("but does it work for X?") become FAQ Card ads, and unprompted praise surfaces angles you didn't write
+**Por que cada input importa:**
 
-**Grounding rules:**
-- Every concept cites its source (which review, winning ad, or comment it traces to)
-- No invented claims, stats, or testimonials — ever
-- If `inputs/winning-ads/` or `inputs/reviews/` is empty, stop and ask the user to populate it before generating. Do not generate ungrounded concepts as a fallback.
-- Inputs decay: refresh `inputs/winning-ads/` as new ads scale; refresh `inputs/reviews/` and `inputs/comments/` monthly
+- **Anúncios vencedores** carregam os ganchos, estruturas e ângulos já
+  comprovados para essa marca
+- **Avaliações** carregam a linguagem exata que os compradores usam para
+  dor, transformação e benefícios inesperados — puxe a copy delas
+  literalmente em vez de parafrasear
+- **Comentários de anúncio** são o input mais pulado e de maior valor:
+  objeções ("mas funciona para X?") viram anúncios FAQ Card, e elogios
+  espontâneos revelam ângulos que você não tinha escrito
+
+**Regras de fundamento:**
+
+- Todo conceito cita sua fonte (qual avaliação, anúncio vencedor, ou
+  comentário de onde vem)
+- Nenhuma afirmação, estatística, ou depoimento inventado — nunca
+- Se `inputs/winning-ads/` ou `inputs/reviews/` estiver vazio, pare e peça
+  ao usuário para preencher antes de gerar. Não gere conceitos sem
+  fundamento como fallback.
+- Inputs decaem: atualize `inputs/winning-ads/` conforme novos anúncios
+  escalam; atualize `inputs/reviews/` e `inputs/comments/` mensalmente
 
 ---
 
-## Platform Specs
+## Specs de plataforma
 
-Platforms reject or truncate creative that exceeds these limits, so verify every piece of copy fits before delivering.
+As plataformas rejeitam ou cortam criativo que excede esses limites, então
+verifique se toda copy cabe antes de entregar.
 
 ### Google Ads (Responsive Search Ads)
 
-| Element | Limit | Quantity |
-|---------|-------|----------|
-| Headline | 30 characters | Up to 15 |
-| Description | 90 characters | Up to 4 |
-| Display URL path | 15 characters each | 2 paths |
+| Elemento | Limite | Quantidade |
+|---|---|---|
+| Título | 30 caracteres | Até 15 |
+| Descrição | 90 caracteres | Até 4 |
+| Caminho de URL exibido | 15 caracteres cada | 2 caminhos |
 
-**RSA rules:**
-- Headlines must make sense independently and in any combination
-- Pin headlines to positions only when necessary (reduces optimization)
-- Include at least one keyword-focused headline
-- Include at least one benefit-focused headline
-- Include at least one CTA headline
+**Regras de RSA:**
+
+- Os títulos precisam fazer sentido isoladamente e em qualquer combinação
+- Fixe títulos em posições só quando necessário (reduz a otimização)
+- Inclua pelo menos um título focado em palavra-chave
+- Inclua pelo menos um título focado em benefício
+- Inclua pelo menos um título de CTA
 
 ### Meta Ads (Facebook/Instagram)
 
-| Element | Limit | Notes |
-|---------|-------|-------|
-| Primary text | 125 chars visible (up to 2,200) | Front-load the hook |
-| Headline | 40 characters recommended | Below the image |
-| Description | 30 characters recommended | Below headline |
-| URL display link | 40 characters | Optional |
+| Elemento | Limite | Notas |
+|---|---|---|
+| Texto principal | 125 caracteres visíveis (até 2.200) | Coloque o gancho logo no início |
+| Título | 40 caracteres recomendado | Abaixo da imagem |
+| Descrição | 30 caracteres recomendado | Abaixo do título |
+| Link de URL exibido | 40 caracteres | Opcional |
 
 ### LinkedIn Ads
 
-| Element | Limit | Notes |
-|---------|-------|-------|
-| Intro text | 150 chars recommended (600 max) | Above the image |
-| Headline | 70 chars recommended (200 max) | Below the image |
-| Description | 100 chars recommended (300 max) | Appears in some placements |
+| Elemento | Limite | Notas |
+|---|---|---|
+| Texto de intro | 150 caracteres recomendado (600 máx.) | Acima da imagem |
+| Título | 70 caracteres recomendado (200 máx.) | Abaixo da imagem |
+| Descrição | 100 caracteres recomendado (300 máx.) | Aparece em alguns posicionamentos |
 
 ### TikTok Ads
 
-| Element | Limit | Notes |
-|---------|-------|-------|
-| Ad text | 80 chars recommended (100 max) | Above the video |
-| Display name | 40 characters | Brand name |
+| Elemento | Limite | Notas |
+|---|---|---|
+| Texto do anúncio | 80 caracteres recomendado (100 máx.) | Acima do vídeo |
+| Nome de exibição | 40 caracteres | Nome da marca |
 
 ### Twitter/X Ads
 
-| Element | Limit | Notes |
-|---------|-------|-------|
-| Tweet text | 280 characters | The ad copy |
-| Headline | 70 characters | Card headline |
-| Description | 200 characters | Card description |
+| Elemento | Limite | Notas |
+|---|---|---|
+| Texto do tweet | 280 caracteres | A copy do anúncio |
+| Título | 70 caracteres | Título do card |
+| Descrição | 200 caracteres | Descrição do card |
 
-For detailed specs and format variations, see [references/platform-specs.md](references/platform-specs.md).
-
----
-
-## Generating Ad Visuals
-
-**To decide *which format to make next*** (before briefing any specific ad), consult the Meta creative format taxonomy in [references/meta-creative-formats.md](references/meta-creative-formats.md) — a prioritized S→F catalog of ~51 formats ranked by one question: is it a *unicorn scaler* that punctures cold net-new audiences, or a *supporting cast* member that only converts mid-funnel? Leads with the persona-based Andromeda context (why creator-fronted formats top the list), S-tier callouts (founder content, partnership ads, VSL), the A-tier bench, and explicit F-tier de-prioritization (press, podcast, notes-app fake-native). Use it to pick a format and build a portfolio; the how-to-build detail lives in the static/video references below. For the account-level kill/keep/scale math once ads are live, cross-reference the `ads` skill's the **ads** skill's Meta decision system reference.
-
-**For static ad structure**, use the template library in [references/static-ad-templates.md](references/static-ad-templates.md) — layout frameworks (Us vs. Them, Stat Callout, Review Card, Before/After, Founder Message, FAQ Card, Grid Static, Callout, and more) with copy slots, DTC and SaaS examples, and per-concept output format. Each template carries a **tier (S–F)** and **funnel role** (unicorn cold-scaler vs. mid-funnel supporting cast) so you reach for the right one first. Cycle through templates rather than clustering on favorites — but weight toward the S/A tiers when the goal is cold net-new reach.
-
-**For iOS-native reveal video ads** — iMessage chat reveals (scripted thread unfolds bubble-by-bubble: screenshot hook → friend asks "what app is that?" → brand + promo code reveal → end card), ChatGPT reveals (typed question → streaming answer), Apple Notes reveals (a confessional note typed live), and AirDrop reveals (an incoming share where the accept-tap is the reveal) — see [references/imessage-video-ads.md](references/imessage-video-ads.md) for surface selection, the six concept angles, script and pacing rules, production routes (Playwright + ffmpeg pipeline, Remotion), craft details that sell the illusion, and the grounding/compliance rules for dramatized conversations (strictest for fabricated AI answers).
-
-**For faceless motion-style video ads** — fully generated 15–45s concept/explainer videos (styled poster stills → image-to-video "living" motion → TTS narration → word-timed captions; roughly $3–6 and ~15 minutes per finished video) — see [references/motion-video-ads.md](references/motion-video-ads.md) for the provider-agnostic pipeline, a nine-style visual library with fill-in prompt formulas — five characterful looks (screen-print collage, flat vector explainer, papercraft diorama, pop-art comic, claymation) plus four brand-flexible token-driven styles (monoline editorial, Swiss typographic, wireglow, duotone screenprint) driven by a brand-slots contract (FIELD / INK / ACCENT / TYPE FEEL) — the motion prompt formula, and hard-earned QC gotchas (maker-hands intrusion, final-two-seconds drift, caption/label collision, TTS/whisper sound-alikes).
-
-**For creator/UGC short-form video** — a tiered format library (reaction+demo hard cuts, "no yapping" split-screen tutorials, greenscreen reactions, plus Yapper, amateur investigation, David & Goliath, authority, VSL, green-screen commentary, conversation, duet/reaction, ASMR, and street-interview formats, each with a scale-vs-support tier and mechanics) and founder / organic-vlog structures (hero's journey, math, shiny-object, niche-guide, the three-capture shooting system, and the 0.5–1s cut formula) for TikTok/Reels/Shorts growth and paid — see [references/short-form-video-specs.md](references/short-form-video-specs.md). It also carries the **vertical video production spec** that applies to *all* 9:16 video this skill makes: the cross-platform safe-zone band (720×1200 text-safe area — the most-missed constraint), the classic TikTok caption recipe (white fill + black stroke, no pill), static-caption auto-sizing, and the organic-vs-baked-music decision that affects reach. Load it before producing any vertical video.
-
-For image and video generation tools, see [references/generative-tools.md](references/generative-tools.md) for the complete guide covering:
-
-- **Image generation** — Nano Banana Pro (Gemini), Flux, Ideogram for static ad images
-- **Video generation** — Veo, Kling, Runway, Seedance, Higgsfield for video ads
-- **Voice & audio** — ElevenLabs, OpenAI TTS, Cartesia for voiceovers, cloning, multilingual
-- **Code-based video** — Remotion for templated, data-driven video at scale
-- **Platform image specs** — Correct dimensions for every ad placement
-- **Cost comparison** — Pricing for 100+ ad variations across tools
-
-**Recommended workflow for scaled production:**
-1. Generate hero creative with AI tools (exploratory, high-quality)
-2. Build Remotion templates based on winning patterns
-3. Batch produce variations with Remotion using data feeds
-4. Iterate — AI for new angles, Remotion for scale
+Para specs detalhadas e variações de formato, veja
+[references/platform-specs.md](references/platform-specs.md).
 
 ---
 
-## Generating Ad Copy
+## Gerando visuais de anúncio
 
-### Step 1: Define Your Angles
+**Para decidir *qual formato fazer a seguir*** (antes de fazer o briefing de
+qualquer anúncio específico), consulte a taxonomia de formato de criativo
+do Meta em
+[references/meta-creative-formats.md](references/meta-creative-formats.md)
+— um catálogo priorizado de S a F com ~51 formatos, ranqueados por uma
+pergunta: é um *escalador unicórnio* que fura audiências frias novas, ou um
+membro do *elenco de apoio* que só converte no meio do funil? Lidera com o
+contexto Andromeda baseado em persona (por que formatos liderados por
+criador estão no topo), destaques de tier S (conteúdo de founder, anúncios
+de parceria, VSL), o banco de tier A, e desprioridade explícita de tier F
+(imprensa, podcast, falso-nativo de app de notas). Use para escolher um
+formato e construir um portfólio; o detalhe de como construir vive nas
+referências de estático/vídeo abaixo. Para a matemática de pausar/manter/
+escalar no nível da conta uma vez que os anúncios estejam ativos, faça
+referência cruzada ao
+[meta-decision-system.md](../../ads/references/meta-decision-system.md) da
+skill `ads`.
 
-Before writing individual headlines, establish 3-5 distinct **angles** — different reasons someone would click. Each angle should tap into a different motivation.
+**Para estrutura de anúncio estático**, use a biblioteca de templates em
+[references/static-ad-templates.md](references/static-ad-templates.md) —
+frameworks de layout (Nós vs. Eles, Stat Callout, Review Card,
+Antes/Depois, Mensagem do Founder, FAQ Card, Grid Static, Callout, e mais)
+com slots de copy, exemplos DTC e SaaS, e formato de saída por conceito.
+Cada template carrega um **tier (S–F)** e um **papel de funil**
+(escalador frio de unicórnio vs. elenco de apoio de meio de funil) para
+você escolher o certo primeiro. Alterne entre templates em vez de agrupar
+nos favoritos — mas priorize os tiers S/A quando o objetivo for alcance
+frio novo.
 
-**Common angle categories:**
+**Para anúncios de vídeo reveal nativos de iOS** — reveals de chat iMessage
+(thread roteirizada que se desenrola bolha por bolha: gancho de screenshot
+→ amigo pergunta "que app é esse?" → revelação de marca + código promo →
+card final), reveals de ChatGPT (pergunta digitada → resposta em streaming),
+reveals de Apple Notes (uma nota confessional digitada ao vivo), e reveals
+de AirDrop (um compartilhamento chegando onde o toque de aceitar é a
+revelação) — veja [references/imessage-video-ads.md](references/imessage-video-ads.md)
+para seleção de superfície, os seis ângulos de conceito, regras de roteiro
+e ritmo, rotas de produção (pronto para uso, pipeline Playwright + ffmpeg,
+Remotion), detalhes de produção que vendem a ilusão, e as regras de
+fundamento/compliance para conversas dramatizadas (mais rígidas para
+respostas de IA fabricadas).
 
-| Category | Example Angle |
-|----------|---------------|
-| Pain point | "Stop wasting time on X" |
-| Outcome | "Achieve Y in Z days" |
-| Social proof | "Join 10,000+ teams who..." |
-| Curiosity | "The X secret top companies use" |
-| Comparison | "Unlike X, we do Y" |
-| Urgency | "Limited time: get X free" |
-| Identity | "Built for [specific role/type]" |
-| Contrarian | "Why [common practice] doesn't work" |
+**Para anúncios de vídeo motion sem rosto** — vídeos de conceito/explicativo
+totalmente gerados de 15-45s (imagens estáticas estilizadas → movimento
+"vivo" via image-to-video → narração TTS → legendas cronometradas por
+palavra; cerca de $3-6 e ~15 minutos por vídeo finalizado) — veja
+[references/motion-video-ads.md](references/motion-video-ads.md) para o
+pipeline agnóstico de provedor, uma biblioteca de nove estilos visuais com
+fórmulas de prompt para preencher — cinco visuais com personalidade
+(colagem serigrafia, explicativo vetorial flat, diorama de papelcraft,
+pop-art quadrinho, claymation) mais quatro estilos flexíveis à marca
+guiados por token (editorial monoline, tipográfico suíço, wireglow, duotone
+serigrafia) guiados por um contrato de slots de marca (FIELD / INK / ACCENT
+/ TYPE FEEL) — a fórmula de prompt de motion, e armadilhas de QC
+conquistadas na prática (intrusão de mãos de IA, deriva nos últimos dois
+segundos, colisão de legenda/rótulo, sons parecidos com TTS/sussurro).
 
-### Step 2: Generate Variations per Angle
+**Para vídeo curto de criador/UGC** — uma biblioteca de formato em camadas
+(reação+demo com cortes secos, tutoriais split-screen "sem enrolação",
+reações greenscreen, além de Yapper, investigação amadora, Davi e Golias,
+autoridade, VSL, comentário greenscreen, conversa, duet/reação, ASMR, e
+formatos de entrevista de rua, cada um com um tier de escala-vs-apoio e
+mecânica) e estruturas de founder/vlog orgânico (jornada do herói,
+matemática, objeto brilhante, guia de nicho, o sistema de captura em três
+tomadas, e a fórmula de corte de 0,5-1s) para crescimento no
+TikTok/Reels/Shorts e pago — veja
+[references/short-form-video-specs.md](references/short-form-video-specs.md).
+Também carrega a **especificação de produção de vídeo vertical** que se
+aplica a *todo* vídeo 9:16 que essa skill faz: a faixa de zona segura
+cross-platform (área segura de texto 720×1200 — a restrição mais perdida de
+vista), a receita clássica de legenda do TikTok (preenchimento branco +
+contorno preto, sem pílula), o auto-dimensionamento de legenda estática, e
+a decisão de música orgânica-vs-pré-gravada que afeta o alcance. Carregue
+antes de produzir qualquer vídeo vertical.
 
-For each angle, generate multiple variations. Vary:
-- **Word choice** — synonyms, active vs. passive
-- **Specificity** — numbers vs. general claims
-- **Tone** — direct vs. question vs. command
-- **Structure** — short punch vs. full benefit statement
+Para ferramentas de geração de imagem e vídeo, veja
+[references/generative-tools.md](references/generative-tools.md) para o
+guia completo cobrindo:
 
-### Step 3: Validate Against Specs
+- **Geração de imagem** — Nano Banana Pro (Gemini), Flux, Ideogram para
+  imagens de anúncio estático
+- **Geração de vídeo** — Veo, Kling, Runway, Sora, Seedance, Higgsfield
+  para anúncios em vídeo
+- **Voz e áudio** — ElevenLabs, OpenAI TTS, Cartesia para narração, clonagem,
+  multilíngue
+- **Vídeo baseado em código** — Remotion para vídeo templatizado e orientado
+  a dados em escala
+- **Specs de imagem por plataforma** — dimensões corretas para cada
+  posicionamento de anúncio
+- **Comparação de custo** — preços para 100+ variações de anúncio entre
+  ferramentas
 
-Before delivering, check every piece of creative against the platform's character limits. Flag anything that's over and provide a trimmed alternative.
+**Fluxo recomendado para produção em escala:**
 
-### Step 4: Organize for Upload
-
-Present creative in a structured format that maps to the ad platform's upload requirements.
+1. Gere o criativo hero com ferramentas de IA (exploratório, alta qualidade)
+2. Construa templates Remotion com base nos padrões vencedores
+3. Produza variações em lote com Remotion usando feeds de dados
+4. Itere — IA para novos ângulos, Remotion para escala
 
 ---
 
-## Iterating from Performance Data
+## Gerando copy de anúncio
 
-When the user provides performance data, follow this process:
+### Passo 1: Defina seus ângulos
 
-### Step 1: Analyze Winners
+Antes de escrever títulos individuais, estabeleça 3-5 **ângulos**
+distintos — diferentes motivos pelos quais alguém clicaria. Cada ângulo
+deve acessar uma motivação diferente.
 
-Look at the top-performing creative (by CTR, conversion rate, or ROAS — ask which metric matters most) and identify:
+**Categorias de ângulo comuns:**
 
-- **Winning themes** — What topics or pain points appear in top performers?
-- **Winning structures** — Questions? Statements? Commands? Numbers?
-- **Winning word patterns** — Specific words or phrases that recur?
-- **Character utilization** — Are top performers shorter or longer?
+| Categoria | Exemplo de ângulo |
+|---|---|
+| Ponto de dor | "Pare de perder tempo com X" |
+| Resultado | "Alcance Y em Z dias" |
+| Prova social | "Junte-se a mais de 10.000 times que..." |
+| Curiosidade | "O segredo X que as melhores empresas usam" |
+| Comparação | "Diferente de X, nós fazemos Y" |
+| Urgência | "Por tempo limitado: consiga X grátis" |
+| Identidade | "Feito para [cargo/tipo específico]" |
+| Contrário | "Por que [prática comum] não funciona" |
 
-### Step 2: Analyze Losers
+### Passo 2: Gere variações por ângulo
 
-Look at the worst performers and identify:
+Para cada ângulo, gere múltiplas variações. Varie:
 
-- **Themes that fall flat** — What angles aren't resonating?
-- **Common patterns in low performers** — Too generic? Too long? Wrong tone?
+- **Escolha de palavra** — sinônimos, voz ativa vs. passiva
+- **Especificidade** — números vs. afirmações gerais
+- **Tom** — direto vs. pergunta vs. comando
+- **Estrutura** — golpe curto vs. afirmação de benefício completa
 
-### Step 3: Generate New Variations
+### Passo 3: Valide contra as specs
 
-Create new creative that:
-- **Doubles down** on winning themes with fresh phrasing
-- **Extends** winning angles into new variations
-- **Tests** 1-2 new angles not yet explored
-- **Avoids** patterns found in underperformers
+Antes de entregar, confira todo criativo contra os limites de caractere da
+plataforma. Sinalize qualquer coisa acima do limite e forneça uma
+alternativa aparada.
 
-### Step 4: Document the Iteration
+### Passo 4: Organize para upload
 
-Track what was learned and what's being tested:
+Apresente o criativo em um formato estruturado que combine com os
+requisitos de upload da plataforma de anúncio.
 
+---
+
+## Iterando a partir de dados de performance
+
+Quando o usuário fornecer dados de performance, siga este processo:
+
+### Passo 1: Analise os vencedores
+
+Olhe o criativo de melhor performance (por CTR, taxa de conversão, ou
+ROAS — pergunte qual métrica importa mais) e identifique:
+
+- **Temas vencedores** — que tópicos ou pontos de dor aparecem nos que
+  performam melhor?
+- **Estruturas vencedoras** — perguntas? Afirmações? Comandos? Números?
+- **Padrões de palavra vencedores** — palavras ou frases específicas que se
+  repetem?
+- **Uso de caractere** — os melhores são mais curtos ou mais longos?
+
+### Passo 2: Analise os perdedores
+
+Olhe os piores desempenhos e identifique:
+
+- **Temas que não decolam** — que ângulos não estão ressoando?
+- **Padrões comuns em baixa performance** — genérico demais? Longo demais?
+  Tom errado?
+
+### Passo 3: Gere novas variações
+
+Crie criativo novo que:
+
+- **Dobra a aposta** em temas vencedores com formulação nova
+- **Estende** ângulos vencedores em novas variações
+- **Testa** 1-2 ângulos novos ainda não explorados
+- **Evita** padrões encontrados nos de baixa performance
+
+### Passo 4: Documente a iteração
+
+Rastreie o que foi aprendido e o que está sendo testado:
+
+```text
+## Registro de Iteração
+- Rodada: [número]
+- Data: [data]
+- Melhores desempenhos: [lista com métricas]
+- Padrões vencedores: [resumo]
+- Novas variações: [contagem] títulos, [contagem] descrições
+- Novos ângulos sendo testados: [lista]
+- Ângulos aposentados: [lista]
 ```
-## Iteration Log
-- Round: [number]
-- Date: [date]
-- Top performers: [list with metrics]
-- Winning patterns: [summary]
-- New variations: [count] headlines, [count] descriptions
-- New angles being tested: [list]
-- Angles retired: [list]
-```
 
 ---
 
-## Writing Quality Standards
+## Padrões de qualidade de escrita
 
-### Headlines That Click
+### Títulos que clicam
 
-**Strong headlines:**
-- Specific ("Cut reporting time 75%") over vague ("Save time")
-- Benefits ("Ship code faster") over features ("CI/CD pipeline")
-- Active voice ("Automate your reports") over passive ("Reports are automated")
-- Include numbers when possible ("3x faster," "in 5 minutes," "10,000+ teams")
+**Títulos fortes:**
 
-**Avoid:**
-- Jargon the audience won't recognize
-- Claims without specificity ("Best," "Leading," "Top")
-- All caps or excessive punctuation
-- Clickbait that the landing page can't deliver on
+- Específico ("Corte 75% do tempo de relatório") em vez de vago
+  ("Economize tempo")
+- Benefícios ("Lance código mais rápido") em vez de features ("Pipeline
+  CI/CD")
+- Voz ativa ("Automatize seus relatórios") em vez de passiva ("Relatórios
+  são automatizados")
+- Inclua números quando possível ("3x mais rápido," "em 5 minutos," "mais
+  de 10.000 times")
 
-### No AI Tells
+**Evite:**
 
-Ad copy that reads as generated looks like every other ad in the feed, and generating at volume multiplies whatever tic the first draft has. Check the whole batch.
+- Jargão que a audiência não vai reconhecer
+- Afirmações sem especificidade ("Melhor," "Líder," "Top")
+- Caixa alta ou pontuação excessiva
+- Clickbait que a landing page não consegue entregar
 
-Never write these:
-- **Contrast reveals**: "It's not X, it's Y." "Not because X. Because Y." State Y directly, with the reason.
-- **Negation lists**: "No X, no Y, no Z." Say what does happen. One plain absence ("No card required") is fine.
-- **Trailing pile-ons**: a full claim, then a comma and more restating clauses. End the sentence at the claim.
-- **Self-answered questions and colon reveals**: "The result? 3x faster." "The best part: it learns." FAQ questions and a question in the reader's own voice are fine.
-- **Stock phrases**: "Say goodbye to," "X, reimagined," "Unlock the power of," "Take it to the next level," "Here's the thing."
-- **Em dashes** in headlines, descriptions, and primary text.
+### Descrições que convertem
 
-Ad-specific tells:
-- **Stacked negations to fit a character limit**: "No setup. No fees. No contracts." Keep the one that matters most and use the space for a fact.
-- **Hook slop**: a generic "POV:", "Stop scrolling," "Here's what nobody tells you about X." Earn the next second with something specific to the viewer. A POV hook is fine when the situation is hyper-specific ("POV: it's 3pm and you're on your fourth coffee").
-- **CTA slop**: "Get started today," "Join thousands of happy customers." Name the action and what they get.
+Descrições devem complementar títulos, não repeti-los. Use descrições para:
 
-Across a batch, vary the sentence shapes. Ten variations that all open the same way read as generated, even when each one is fine alone. For the full blacklist, use the **copywriting** skill's AI-tells reference.
-
-### Descriptions That Convert
-
-Descriptions should complement headlines, not repeat them. Use descriptions to:
-- Add proof points (numbers, testimonials, awards)
-- Handle objections ("No credit card required," "Free forever for small teams")
-- Reinforce CTAs ("Start your free trial today")
-- Add urgency when genuine ("Limited to first 500 signups")
+- Adicionar pontos de prova (números, depoimentos, prêmios)
+- Tratar objeções ("Sem necessidade de cartão de crédito," "Grátis para
+  sempre para times pequenos")
+- Reforçar CTAs ("Comece seu teste grátis hoje")
+- Adicionar urgência quando genuína ("Limitado aos primeiros 500 cadastros")
 
 ---
 
-## Output Formats
+## Formatos de saída
 
-### Standard Output
+### Saída padrão
 
-Organize by angle, with character counts:
+Organize por ângulo, com contagem de caracteres:
 
+```text
+## Ângulo: [Ponto de Dor — Relatório Manual]
+
+### Títulos (máx. 30 caract.)
+1. "Pare de Fazer Relatório na Mão" (32) <- ACIMA DO LIMITE, corrigido abaixo
+   -> "Chega de Relatório na Mão" (26)
+2. "Automatize Seus Relatórios" (27)
+3. "Relatórios em 5 Min, Não 5h" (28)
+
+### Descrições (máx. 90 caract.)
+1. "Times de marketing economizam 10+ horas/semana com relatório automatizado. Comece grátis." (91) <- ACIMA, cortar
+2. "Conecte suas fontes de dado uma vez. Tenha relatórios automáticos para sempre. Sem código." (92) <- ACIMA, cortar
 ```
-## Angle: [Pain Point — Manual Reporting]
 
-### Headlines (30 char max)
-1. "Stop Building Reports by Hand" (29)
-2. "Automate Your Weekly Reports" (28)
-3. "Reports Done in 5 Min, Not 5 Hr" (31) <- OVER LIMIT, trimmed below
-   -> "Reports in 5 Min, Not 5 Hrs" (27)
+### Saída em CSV em massa
 
-### Descriptions (90 char max)
-1. "Marketing teams save 10+ hours/week with automated reporting. Start free." (73)
-2. "Connect your data sources once. Get automated reports forever. No code required." (80)
-```
-
-### Bulk CSV Output
-
-When generating at scale (10+ variations), offer CSV format for direct upload:
+Ao gerar em escala (10+ variações), ofereça formato CSV para upload direto:
 
 ```csv
 headline_1,headline_2,headline_3,description_1,description_2,platform
-"Stop Manual Reporting","Automate in 5 Minutes","Join 10K+ Teams","Save 10+ hrs/week on reports. Start free.","Connect data sources once. Reports forever.","google_ads"
+"Chega de Relatório Manual","Automatize em 5 Minutos","Junte-se a 10K+ Times","Economize 10+ h/semana em relatórios. Comece grátis.","Conecte fontes de dado uma vez. Relatórios para sempre.","google_ads"
 ```
 
-### Static Batch Output (Mode 3)
+### Saída de lote estático (Modo 3)
 
-For scaled static batches, save to a dated folder with an index:
+Para lotes estáticos em escala, salve em uma pasta datada com um índice:
 
+```text
+outputs/AAAA-MM-DD/
+  INDEX.md        # todo conceito: tipo de template + fonte de fundamento, escaneável em 2 min
+  concepts/       # um .md por conceito: título, corpo, descrição visual, prompt de imagem, fundamento
+  images/         # imagens geradas, se uma ferramenta de imagem estiver configurada
 ```
-outputs/YYYY-MM-DD/
-  INDEX.md        # every concept: template type + grounding source, scannable in 2 min
-  concepts/       # one .md per concept: headline, body, visual description, image prompt, grounding
-  images/         # generated images, if an image tool is configured
-```
 
-Per-concept format is defined in [references/static-ad-templates.md](references/static-ad-templates.md). The human workflow this supports: open the folder, scan INDEX.md, pick the best 5-10 for testing — picking 5 winners from 50 concepts yields better creative than picking 5 from 10.
+O formato por conceito é definido em
+[references/static-ad-templates.md](references/static-ad-templates.md). O
+fluxo humano que isso suporta: abra a pasta, escaneie o INDEX.md, escolha
+os 5-10 melhores para testar — escolher 5 vencedores de 50 conceitos
+produz criativo melhor do que escolher 5 de 10.
 
-### Creative Review Page (client / stakeholder approval)
+### Página de revisão de criativo (aprovação de cliente/stakeholder)
 
-When a person who isn't you needs to review and pick — a client, a partner, a stakeholder — produce a **creative review page**: a self-contained HTML artifact that presents each concept as an in-feed platform mockup (Instagram/Facebook, with a whitelist-handle toggle), breaks carousels into a labeled frame-by-frame storyboard, lets them toggle headline/copy variations, and discloses what's grounded in real assets. It's the visual upgrade to INDEX.md — a decision made off one link instead of by reading markdown. The template ships at [assets/creative-review-template.html](assets/creative-review-template.html) (one file, no build, hostable anywhere); populate its `DATA` object from your generated concepts. Full data model, grounding rules (the disclosure block is required), and delivery in [references/creative-review-page.md](references/creative-review-page.md).
+Quando uma pessoa que não é você precisa revisar e escolher — um cliente,
+um parceiro, um stakeholder — produza uma **página de revisão de
+criativo**: um artefato HTML autocontido que apresenta cada conceito como
+um mockup in-feed de plataforma (Instagram/Facebook, com um toggle de
+handle na lista permitida), quebra carrosséis em um storyboard rotulado
+quadro a quadro, permite alternar variações de título/copy, e divulga o
+que é fundamentado em assets reais. É o upgrade visual do INDEX.md — uma
+decisão tomada a partir de um link em vez de lendo markdown. O template
+está em
+[assets/creative-review-template.html](assets/creative-review-template.html)
+(um único arquivo, sem build, hospedável em qualquer lugar); popule o
+objeto `DATA` dele a partir dos seus conceitos gerados. Modelo de dados
+completo, regras de fundamento (o bloco de divulgação é obrigatório), e
+entrega em
+[references/creative-review-page.md](references/creative-review-page.md).
 
-### Iteration Report
+### Relatório de iteração
 
-When iterating, include a summary:
+Ao iterar, inclua um resumo:
 
-```
-## Performance Summary
-- Analyzed: [X] headlines, [Y] descriptions
-- Top performer: "[headline]" — [metric]: [value]
-- Worst performer: "[headline]" — [metric]: [value]
-- Pattern: [observation]
+```text
+## Resumo de Performance
+- Analisado: [X] títulos, [Y] descrições
+- Melhor desempenho: "[título]" — [métrica]: [valor]
+- Pior desempenho: "[título]" — [métrica]: [valor]
+- Padrão: [observação]
 
-## New Creative
-[organized variations]
+## Criativo Novo
+[variações organizadas]
 
-## Recommendations
-- [What to pause, what to scale, what to test next]
+## Recomendações
+- [O que pausar, o que escalar, o que testar a seguir]
 ```
 
 ---
 
-## Batch Generation Workflow
+## Fluxo de geração em lote
 
-For large-scale creative production (Anthropic's growth team generates 100+ variations per cycle):
+Para produção de criativo em grande escala (o time de growth da Anthropic
+gera 100+ variações por ciclo):
 
-### 1. Break into sub-tasks
-- **Headline generation** — Focused on click-through
-- **Description generation** — Focused on conversion
-- **Primary text generation** — Focused on engagement (Meta/LinkedIn)
+### 1. Divida em subtarefas
 
-### 2. Generate in waves
-- Wave 1: Core angles (3-5 angles, 5 variations each)
-- Wave 2: Extended variations on top 2 angles
-- Wave 3: Wild card angles (contrarian, emotional, specific)
+- **Geração de título** — focada em taxa de clique
+- **Geração de descrição** — focada em conversão
+- **Geração de texto principal** — focada em engajamento (Meta/LinkedIn)
 
-### 3. Quality filter
-- Remove anything over character limit
-- Remove duplicates or near-duplicates
-- Flag anything that might violate platform policies
-- Ensure headline/description combinations make sense together
+### 2. Gere em ondas
 
----
+- Onda 1: ângulos centrais (3-5 ângulos, 5 variações cada)
+- Onda 2: variações estendidas nos 2 melhores ângulos
+- Onda 3: ângulos-curinga (contrário, emocional, específico)
 
-## Common Mistakes
+### 3. Filtro de qualidade
 
-- **Writing headlines that only work together** — RSA headlines get combined randomly
-- **Ignoring character limits** — Platforms truncate without warning
-- **All variations sound the same** — Vary angles, not just word choice
-- **No CTA headlines** — RSAs need action-oriented headlines to drive clicks; include at least 2-3
-- **Generic descriptions** — "Learn more about our solution" wastes the slot
-- **Iterating without data** — Gut feelings are less reliable than metrics
-- **Generating without grounding** — Ungrounded concepts read like every other ad in the feed; feed the skill winning ads, reviews, and comments first
-- **Skipping the comments input** — Ad comments hold the objections and angles customers raise themselves; those usually convert best
-- **Testing too many things at once** — Change one variable per test cycle
-- **Retiring creative too early** — Allow 1,000+ impressions before judging
+- Remova tudo acima do limite de caractere
+- Remova duplicatas ou quase-duplicatas
+- Sinalize qualquer coisa que possa violar as políticas de plataforma
+- Garanta que combinações de título/descrição façam sentido juntas
 
 ---
 
-## Tool Integrations
+## Erros comuns
 
-For pulling performance data and managing campaigns, see the [tools registry](https://github.com/coreyhaines31/marketingskills/blob/main/tools/REGISTRY.md).
+- **Escrever títulos que só funcionam juntos** — títulos RSA são combinados
+  aleatoriamente
+- **Ignorar os limites de caractere** — as plataformas cortam sem avisar
+- **Todas as variações soam iguais** — varie os ângulos, não só a escolha
+  de palavra
+- **Sem títulos de CTA** — RSAs precisam de títulos orientados a ação para
+  gerar clique; inclua pelo menos 2-3
+- **Descrições genéricas** — "Saiba mais sobre nossa solução" desperdiça o
+  espaço
+- **Iterar sem dado** — achismo é menos confiável que métrica
+- **Gerar sem fundamento** — conceitos sem fundamento leem como qualquer
+  outro anúncio no feed; alimente a skill com anúncios vencedores,
+  avaliações e comentários primeiro
+- **Pular o input de comentários** — comentários de anúncio carregam as
+  objeções e ângulos que os próprios clientes levantam; esses costumam
+  converter melhor
+- **Testar coisas demais de uma vez** — mude uma variável por ciclo de
+  teste
+- **Aposentar criativo cedo demais** — permita 1.000+ impressões antes de
+  julgar
 
-| Platform | Pull Performance Data | Manage Campaigns | Guide |
-|----------|:---------------------:|:----------------:|-------|
-| **Google Ads** | `google-ads campaigns list`, `google-ads reports get` | `google-ads campaigns create` | [google-ads.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/google-ads.md) |
-| **Meta Ads** | `meta-ads insights get` | `meta-ads campaigns list` | [meta-ads.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/meta-ads.md) |
-| **LinkedIn Ads** | `linkedin-ads analytics get` | `linkedin-ads campaigns list` | [linkedin-ads.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/linkedin-ads.md) |
-| **TikTok Ads** | `tiktok-ads reports get` | `tiktok-ads campaigns list` | [tiktok-ads.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/tiktok-ads.md) |
+---
 
-### Workflow: Pull Data, Analyze, Generate
+## Integrações de ferramentas
+
+Para puxar dados de performance e gerenciar campanhas, veja o
+[registro de ferramentas](../../tools/REGISTRY.md).
+
+| Plataforma | Puxar dados de performance | Gerenciar campanhas | Guia |
+|---|:---:|:---:|---|
+| **Google Ads** | `google-ads campaigns list`, `google-ads reports get` | `google-ads campaigns create` | [google-ads.md](../../tools/integrations/google-ads.md) |
+| **Meta Ads** | `meta-ads insights get` | `meta-ads campaigns list` | [meta-ads.md](../../tools/integrations/meta-ads.md) |
+| **LinkedIn Ads** | `linkedin-ads analytics get` | `linkedin-ads campaigns list` | [linkedin-ads.md](../../tools/integrations/linkedin-ads.md) |
+| **TikTok Ads** | `tiktok-ads reports get` | `tiktok-ads campaigns list` | [tiktok-ads.md](../../tools/integrations/tiktok-ads.md) |
+
+### Fluxo: puxar dado, analisar, gerar
 
 ```bash
-# 1. Pull recent ad performance
+# 1. Puxar performance recente de anúncio
 node tools/clis/google-ads.js reports get --type ad_performance --date-range last_30_days
 
-# 2. Analyze output (identify top/bottom performers)
-# 3. Feed winning patterns into this skill
-# 4. Generate new variations
-# 5. Upload to platform
+# 2. Analisar a saída (identificar melhores/piores desempenhos)
+# 3. Alimentar os padrões vencedores nesta skill
+# 4. Gerar novas variações
+# 5. Fazer upload para a plataforma
 ```
 
 ---
 
-## Related Skills
+## Skills relacionadas
 
-- **ads**: For campaign strategy, targeting, budgets, and optimization
-- **marketing-loops**: For running static batch generation on a recurring cadence (the daily-creative-drop loop)
-- **customer-research**: For mining reviews and comments when building the grounded inputs corpus
-- **copywriting**: For landing page copy (where ad traffic lands)
-- **ab-testing**: For structuring creative tests with statistical rigor
-- **marketing-psychology**: For psychological principles behind high-performing creative
-- **copy-editing**: For polishing ad copy before launch
+- **ads**: para estratégia de campanha, segmentação, orçamentos e otimização
+- **marketing-loops**: para rodar geração de lote estático em cadência recorrente (o loop de drop diário de criativo)
+- **customer-research**: para garimpar avaliações e comentários ao construir o corpus de inputs fundamentados
+- **copywriting**: para copy de landing page (onde o tráfego de anúncio aterrissa)
+- **ab-testing**: para estruturar testes de criativo com rigor estatístico
+- **marketing-psychology**: para princípios psicológicos por trás de criativo de alta performance
+- **copy-editing**: para polir a copy de anúncio antes do lançamento

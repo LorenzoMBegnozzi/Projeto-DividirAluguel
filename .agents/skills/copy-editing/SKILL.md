@@ -1,489 +1,542 @@
 ---
 name: copy-editing
-description: "When the user wants to edit, review, or improve existing marketing copy, or refresh outdated content. Also use when the user mentions 'edit this copy,' 'review my copy,' 'copy feedback,' 'proofread,' 'polish this,' 'make this better,' 'copy sweep,' 'tighten this up,' 'this reads awkwardly,' 'clean up this text,' 'too wordy,' 'sharpen the messaging,' 'refresh this content,' 'update this page,' 'this content is outdated,' or 'content audit,' 'this sounds like AI,' 'AI slop,' 'de-slop this,' or 'make it sound human.' Use this when the user already has copy and wants it improved or refreshed rather than rewritten from scratch. Every edit removes AI tells such as 'it's not X, it's Y' reveals, 'no X, no Y, no Z' lists, and sentences that trail into extra comma clauses. For writing new copy, see copywriting."
+description: "Quando o usuário quiser editar, revisar ou melhorar copy de marketing existente, ou atualizar conteúdo desatualizado. Use também quando o usuário mencionar 'edita essa copy,' 'revisa minha copy,' 'feedback de copy,' 'revisão de texto,' 'poli isso,' 'deixa isso melhor,' 'varredura de copy,' 'aperta esse texto,' 'isso soa estranho,' 'limpa esse texto,' 'muito prolixo,' 'afia a mensagem,' 'atualiza esse conteúdo,' 'atualiza essa página,' 'esse conteúdo está desatualizado,' ou 'auditoria de conteúdo.' Use isso quando o usuário já tem copy e quer melhorá-la ou atualizá-la, em vez de reescrever do zero. Para escrever copy nova, veja copywriting."
 metadata:
-  version: 2.1.0
+  version: 2.0.0
 ---
 
-# Copy Editing
+# Edição de Copy
 
-You are an expert copy editor specializing in marketing and conversion copy. Your goal is to systematically improve existing copy through focused editing passes while preserving the core message.
+Você é um editor de copy especialista, focado em copy de marketing e
+conversão. Seu objetivo é melhorar sistematicamente a copy existente através
+de passadas de edição focadas, preservando a mensagem central.
 
-## Core Philosophy
+## Filosofia central
 
-**Check for product marketing context first:**
-If `.agents/product-marketing.md` exists (or `.claude/product-marketing.md`, or the legacy `product-marketing-context.md` filename, in older setups), read it before editing. Use brand voice and customer language from that context to guide your edits.
+**Primeiro, verifique se há contexto de produto:**
+Se `.agents/product-marketing.md` existir (ou `.claude/product-marketing.md`,
+ou o nome de arquivo legado `product-marketing-context.md`, em setups mais
+antigos), leia-o antes de editar. Use a voz da marca e a linguagem do
+cliente desse contexto para guiar suas edições.
 
-Good copy editing improves what's already there. Each pass focuses on one dimension, catching issues that get missed when you try to fix everything at once.
+Boa edição de copy não é sobre reescrever — é sobre aprimorar. Cada passada
+foca em uma dimensão, capturando problemas que passam despercebidos quando
+você tenta consertar tudo de uma vez.
 
-**Key principles:**
-- Don't change the core message; focus on enhancing it
-- Multiple focused passes beat one unfocused review
-- Each edit should have a clear reason
-- Preserve the author's voice while improving clarity
+**Princípios-chave:**
 
----
-
-## The Seven Sweeps Framework
-
-Edit copy through seven sequential passes, each focusing on one dimension. After each sweep, loop back to check previous sweeps aren't compromised.
-
-### Sweep 1: Clarity
-
-**Focus:** Can the reader understand what you're saying?
-
-**What to check:**
-- Confusing sentence structures
-- Unclear pronoun references
-- Jargon or insider language
-- Ambiguous statements
-- Missing context
-
-**Common clarity killers:**
-- Sentences trying to say too much
-- Abstract language instead of concrete
-- Assuming reader knowledge they don't have
-- Burying the point in qualifications
-
-**Process:**
-1. Read through quickly, highlighting unclear parts
-2. Don't correct yet—just note problem areas
-3. After marking issues, recommend specific edits
-4. Verify edits maintain the original intent
-
-**After this sweep:** Confirm the "Rule of One" (one main idea per section) and "You Rule" (copy speaks to the reader) are intact.
+- Não mude a mensagem central; foque em aprimorá-la
+- Múltiplas passadas focadas vencem uma revisão sem foco
+- Toda edição deve ter uma razão clara
+- Preserve a voz do autor enquanto melhora a clareza
 
 ---
 
-### Sweep 2: Voice and Tone
+## O Framework das Sete Varreduras
 
-**Focus:** Is the copy consistent in how it sounds?
+Edite a copy em sete passadas sequenciais, cada uma focando em uma dimensão.
+Depois de cada varredura, volte para checar se as varreduras anteriores não
+foram comprometidas.
 
-**What to check:**
-- Shifts between formal and casual
-- Inconsistent brand personality
-- Mood changes that feel jarring
-- Word choices that don't match the brand
+### Varredura 1: Clareza
 
-**Common voice issues:**
-- Starting casual, becoming corporate
-- Mixing "we" and "the company" references
-- Humor in some places, serious in others (unintentionally)
-- Technical language appearing randomly
+**Foco:** o leitor consegue entender o que você está dizendo?
 
-**Process:**
-1. Read aloud to hear inconsistencies
-2. Mark where tone shifts unexpectedly
-3. Recommend edits that smooth transitions
-4. Ensure personality remains throughout
+**O que checar:**
 
-**After this sweep:** Return to Clarity Sweep to ensure voice edits didn't introduce confusion.
+- Estruturas de frase confusas
+- Referências de pronome pouco claras
+- Jargão ou linguagem de iniciado
+- Afirmações ambíguas
+- Contexto faltando
 
----
+**Assassinos de clareza comuns:**
 
-### Sweep 3: So What
+- Frases tentando dizer coisa demais
+- Linguagem abstrata em vez de concreta
+- Presumir conhecimento que o leitor não tem
+- Enterrar o ponto em qualificações
 
-**Focus:** Does every claim answer "why should I care?"
+**Processo:**
 
-**What to check:**
-- Features without benefits
-- Claims without consequences
-- Statements that don't connect to reader's life
-- Missing "which means..." bridges
+1. Leia rapidamente, destacando partes pouco claras
+2. Não corrija ainda — só anote as áreas problemáticas
+3. Depois de marcar os problemas, recomende edições específicas
+4. Verifique se as edições mantêm a intenção original
 
-**The So What test:**
-For every statement, ask "Okay, so what?" If the copy doesn't answer that question with a deeper benefit, it needs work.
-
-❌ "Our platform uses AI-powered analytics"
-*So what?*
-✅ "Our AI-powered analytics surface insights you'd miss manually—so you can make better decisions in half the time"
-
-**Common So What failures:**
-- Feature lists without benefit connections
-- Impressive-sounding claims that don't land
-- Technical capabilities without outcomes
-- Company achievements that don't help the reader
-
-**Process:**
-1. Read each claim and literally ask "so what?"
-2. Highlight claims missing the answer
-3. Add the benefit bridge or deeper meaning
-4. Ensure benefits connect to real reader desires
-
-**After this sweep:** Return to Voice and Tone, then Clarity.
+**Depois desta varredura:** confirme se a "Regra do Um" (uma ideia
+principal por seção) e a "Regra do Você" (a copy fala com o leitor) estão
+intactas.
 
 ---
 
-### Sweep 4: Prove It
+### Varredura 2: Voz e Tom
 
-**Focus:** Is every claim supported with evidence?
+**Foco:** a copy é consistente em como soa?
 
-**What to check:**
-- Unsubstantiated claims
-- Missing social proof
-- Assertions without backup
-- "Best" or "leading" without evidence
+**O que checar:**
 
-**Types of proof to look for:**
-- Testimonials with names and specifics
-- Case study references
-- Statistics and data
-- Third-party validation
-- Guarantees and risk reversals
-- Customer logos
-- Review scores
+- Mudanças entre formal e casual
+- Personalidade de marca inconsistente
+- Mudanças de clima que soam bruscas
+- Escolhas de palavra que não combinam com a marca
 
-**Common proof gaps:**
-- "Trusted by thousands" (which thousands?)
-- "Industry-leading" (according to whom?)
-- "Customers love us" (show them saying it)
-- Results claims without specifics
+**Problemas de voz comuns:**
 
-**Process:**
-1. Identify every claim that needs proof
-2. Check if proof exists nearby
-3. Flag unsupported assertions
-4. Recommend adding proof or softening claims
+- Começar casual, ficar corporativo
+- Misturar "nós" e referências à "a empresa"
+- Humor em alguns lugares, sério em outros (sem querer)
+- Linguagem técnica aparecendo aleatoriamente
 
-**After this sweep:** Return to So What, Voice and Tone, then Clarity.
+**Processo:**
+
+1. Leia em voz alta para ouvir as inconsistências
+2. Marque onde o tom muda inesperadamente
+3. Recomende edições que suavizem as transições
+4. Garanta que a personalidade se mantenha ao longo do texto
+
+**Depois desta varredura:** volte à Varredura de Clareza para garantir que
+as edições de voz não introduziram confusão.
 
 ---
 
-### Sweep 5: Specificity
+### Varredura 3: E Daí
 
-**Focus:** Is the copy concrete enough to be compelling?
+**Foco:** toda afirmação responde "por que eu deveria me importar?"
 
-**What to check:**
-- Vague language ("improve," "enhance," "optimize")
-- Generic statements that could apply to anyone
-- Round numbers that feel made up
-- Missing details that would make it real
+**O que checar:**
 
-**Specificity upgrades:**
+- Features sem benefícios
+- Afirmações sem consequências
+- Declarações que não conectam com a vida do leitor
+- Pontes "o que significa..." faltando
 
-| Vague | Specific |
-|-------|----------|
-| Save time | Save 4 hours every week |
-| Many customers | 2,847 teams |
-| Fast results | Results in 14 days |
-| Improve your workflow | Cut your reporting time in half |
-| Great support | Response within 2 hours |
+**O teste do "E Daí":**
+Para cada afirmação, pergunte "Ok, e daí?" Se a copy não responde essa
+pergunta com um benefício mais profundo, precisa de trabalho.
 
-**Common specificity issues:**
-- Adjectives doing the work nouns should do
-- Benefits without quantification
-- Outcomes without timeframes
-- Claims without concrete examples
+❌ "Nossa plataforma usa analytics com IA"
+*E daí?*
+✅ "Nosso analytics com IA revela insights que você perderia manualmente —
+então você toma decisões melhores na metade do tempo"
 
-**Process:**
-1. Highlight vague words and phrases
-2. Ask "Can this be more specific?"
-3. Add numbers, timeframes, or examples
-4. Remove content that can't be made specific (it's probably filler)
+**Falhas comuns de "E Daí":**
 
-**After this sweep:** Return to Prove It, So What, Voice and Tone, then Clarity.
+- Listas de feature sem conexão a benefício
+- Afirmações que soam impressionantes mas não aterrissam
+- Capacidades técnicas sem resultado
+- Conquistas da empresa que não ajudam o leitor
 
----
+**Processo:**
 
-### Sweep 6: Heightened Emotion
+1. Leia cada afirmação e pergunte literalmente "e daí?"
+2. Destaque afirmações sem a resposta
+3. Adicione a ponte do benefício ou o significado mais profundo
+4. Garanta que os benefícios conectem com desejos reais do leitor
 
-**Focus:** Does the copy make the reader feel something?
-
-**What to check:**
-- Flat, informational language
-- Missing emotional triggers
-- Pain points mentioned but not felt
-- Aspirations stated but not evoked
-
-**Emotional dimensions to consider:**
-- Pain of the current state
-- Frustration with alternatives
-- Fear of missing out
-- Desire for transformation
-- Pride in making smart choices
-- Relief from solving the problem
-
-**Techniques for heightening emotion:**
-- Paint the "before" state vividly
-- Use sensory language
-- Tell micro-stories
-- Reference shared experiences
-- Ask questions that prompt reflection
-
-**Process:**
-1. Read for emotional impact—does it move you?
-2. Identify flat sections that should resonate
-3. Add emotional texture while staying authentic
-4. Ensure emotion serves the message (not manipulation)
-
-**After this sweep:** Return to Specificity, Prove It, So What, Voice and Tone, then Clarity.
+**Depois desta varredura:** volte para Voz e Tom, depois Clareza.
 
 ---
 
-### Sweep 7: Zero Risk
+### Varredura 4: Prove
 
-**Focus:** Have we removed every barrier to action?
+**Foco:** toda afirmação está sustentada com evidência?
 
-**What to check:**
-- Friction near CTAs
-- Unanswered objections
-- Missing trust signals
-- Unclear next steps
-- Hidden costs or surprises
+**O que checar:**
 
-**Risk reducers to look for:**
-- Money-back guarantees
-- Free trials
-- "No credit card required"
-- "Cancel anytime"
-- Social proof near CTA
-- Clear expectations of what happens next
-- Privacy assurances
+- Afirmações não comprovadas
+- Prova social faltando
+- Asserções sem sustentação
+- "Melhor" ou "líder" sem evidência
 
-**Common risk issues:**
-- CTA asks for commitment without earning trust
-- Objections raised but not addressed
-- Fine print that creates doubt
-- Vague "Contact us" instead of clear next step
+**Tipos de prova a procurar:**
 
-**Process:**
-1. Focus on sections near CTAs
-2. List every reason someone might hesitate
-3. Check if the copy addresses each concern
-4. Add risk reversals or trust signals as needed
+- Depoimentos com nomes e especificidades
+- Referências a cases
+- Estatísticas e dados
+- Validação de terceiros
+- Garantias e reversões de risco
+- Logos de clientes
+- Notas de avaliação
 
-**After this sweep:** Return through all previous sweeps one final time: Heightened Emotion, Specificity, Prove It, So What, Voice and Tone, Clarity.
+**Lacunas de prova comuns:**
 
----
+- "Confiado por milhares" (quais milhares?)
+- "Líder de mercado" (segundo quem?)
+- "Os clientes nos amam" (mostre eles dizendo isso)
+- Afirmações de resultado sem especificidade
 
-## Expert Panel Scoring
+**Processo:**
 
-Use this after completing the Seven Sweeps for an additional quality gate. For high-stakes copy (landing pages, launch emails, sales pages), a multi-persona expert review catches issues that a single perspective misses.
+1. Identifique toda afirmação que precisa de prova
+2. Verifique se a prova existe por perto
+3. Sinalize asserções sem sustentação
+4. Recomende adicionar prova ou suavizar a afirmação
 
-### How It Works
-
-1. **Assemble 3-5 expert personas** relevant to the copy type
-2. **Each persona scores the copy 1-10** on their area of expertise
-3. **Collect specific critiques** — not just scores, but what to fix
-4. **Revise based on feedback** — address the lowest-scoring areas first
-5. **Re-score after revisions** — iterate until all personas score 7+, with an average of 8+ across the panel
-
-### Recommended Expert Panels
-
-**Landing page copy:**
-- Conversion copywriter (clarity, CTA strength, benefit hierarchy)
-- UX writer (scannability, cognitive load, user flow)
-- Target customer persona (does this speak to me? do I trust it?)
-- Brand strategist (voice consistency, positioning accuracy)
-
-**Email sequence:**
-- Email marketing specialist (subject lines, open/click optimization)
-- Copywriter (hooks, storytelling, persuasion)
-- Spam filter analyst (deliverability red flags, trigger words)
-- Target customer persona (relevance, value, unsubscribe risk)
-
-**Sales page / long-form:**
-- Direct response copywriter (offer structure, objection handling, urgency)
-- Skeptical buyer persona (proof gaps, trust issues, red flags)
-- Editor (flow, readability, conciseness)
-- SEO specialist (keyword coverage, search intent alignment)
-
-### Scoring Rubric
-
-| Score | Meaning |
-|-------|---------|
-| 9-10 | Publish-ready. No meaningful improvements. |
-| 7-8 | Strong. Minor tweaks only. |
-| 5-6 | Functional but has clear gaps. Needs another pass. |
-| 3-4 | Significant issues. Major revision needed. |
-| 1-2 | Fundamentally broken. Rethink approach. |
-
-### When to Use
-
-- **Always** for launch copy, pricing pages, and high-traffic landing pages
-- **Recommended** for email sequences, sales pages, and ad copy
-- **Optional** for blog posts, social content, and internal docs
-- **Skip** for quick updates, minor edits, and low-stakes content
+**Depois desta varredura:** volte para E Daí, Voz e Tom, depois Clareza.
 
 ---
 
-## Quick-Pass Editing Checks
+### Varredura 5: Especificidade
 
-Use these for faster reviews when a full seven-sweep process isn't needed.
+**Foco:** a copy é concreta o suficiente para ser persuasiva?
 
-### Word-Level Checks
+**O que checar:**
 
-**Cut these words:**
-- Very, really, extremely, incredibly (weak intensifiers)
-- Just, actually, basically (filler)
-- In order to (use "to")
-- That (often unnecessary)
-- Things, stuff (vague)
+- Linguagem vaga ("melhorar," "aprimorar," "otimizar")
+- Declarações genéricas que se aplicariam a qualquer um
+- Números redondos que parecem inventados
+- Detalhes faltando que tornariam a afirmação real
 
-**Replace these:**
+**Upgrades de especificidade:**
 
-| Weak | Strong |
-|------|--------|
-| Utilize | Use |
-| Implement | Set up |
-| Leverage | Use |
-| Facilitate | Help |
+| Vago | Específico |
+|---|---|
+| Economize tempo | Economize 4 horas toda semana |
+| Muitos clientes | 2.847 times |
+| Resultados rápidos | Resultados em 14 dias |
+| Melhore seu fluxo de trabalho | Corte seu tempo de relatório pela metade |
+| Ótimo suporte | Resposta em até 2 horas |
 
-**Replace with the fact** (a synonym swap just makes a new tell):
+**Problemas de especificidade comuns:**
 
-| Vague | Write the fact instead |
-|-------|------------------------|
-| Innovative / cutting-edge | What it does that alternatives don't |
-| Robust | The uptime, scale, or failure case it handles |
-| Seamless | The real setup step count or time |
+- Adjetivos fazendo o trabalho que substantivos deveriam fazer
+- Benefícios sem quantificação
+- Resultados sem prazo
+- Afirmações sem exemplos concretos
 
-**Watch for:**
-- Adverbs (usually unnecessary)
-- Passive voice (switch to active)
-- Nominalizations (verb → noun: "make a decision" → "decide")
+**Processo:**
 
-### Sentence-Level Checks
+1. Destaque palavras e frases vagas
+2. Pergunte "isso pode ser mais específico?"
+3. Adicione números, prazos ou exemplos
+4. Remova conteúdo que não pode ser tornado específico (provavelmente é
+   enchimento)
 
-- One idea per sentence
-- Vary sentence length (mix short and long)
-- Front-load important information
-- Max 3 conjunctions per sentence
-- No more than 25 words (usually)
-
-### Paragraph-Level Checks
-
-- One topic per paragraph
-- Short paragraphs (2-4 sentences for web)
-- Strong opening sentences
-- Logical flow between paragraphs
-- White space for scannability
-
-### AI-Tell Check
-
-Run this on every edit, after the sweeps. A reader who spots an AI tell tends to doubt the claims around it. The shape of a sentence gives it away more than any word does.
-
-**Fix every instance of these:**
-
-| Pattern | Example | Fix |
-|---------|---------|-----|
-| Contrast reveal | "It's not X, it's Y." "Not because X. Because Y." | State Y directly, with the reason |
-| Negation list | "No setup call, no templates, no waiting on IT." | Say what does happen; keep one absence if it matters ("No card required") |
-| Trailing pile-on | "...the data you already have, no exports, no spreadsheets." / "..., ensuring nothing slips." | End the sentence at the claim; give the benefit its own sentence |
-| Self-answered question | "The result? 3x faster." | Delete the question, keep the answer |
-| Colon reveal | "The best part: it learns." | Write a normal sentence |
-| Stock phrases | "In today's fast-paced world," "Whether you're X or Y," "Here's the thing," "Say goodbye to," "X, reimagined," "Unlock the power of" | Cut, then open with the reader's problem or the fact |
-| Em dashes in short copy | Headlines, subheads, CTAs, ads, social posts, subject lines (1–2 per page max in long copy) | Period, comma, or colon |
-
-**Cap these:** one fragment and one list of three per section (a hero, a page section, or one short post). Treat seamless, robust, powerful, streamline, and empower as placeholders: replace them with the fact they stand for where you can, and if two show up in one paragraph, rewrite the paragraph.
-
-**How to fix:** go back to the facts (the mechanism, number, customer, or step) and rewrite from those. Swapping in synonyms creates new tells. If the fact isn't available, mark `[NEED: ...]` instead of inventing one. Keep the brand's register. A formal sentence that makes a specific claim is fine.
-
-**Leave these alone:** FAQ questions, a single "No card required" by the CTA, a list of three when there really are three features, and a clause after a comma that adds a new fact ("Imports run nightly, keeping your existing IDs").
-
-For the full blacklist with examples, use the **copywriting** skill's AI-tells reference.
+**Depois desta varredura:** volte para Prove, E Daí, Voz e Tom, depois
+Clareza.
 
 ---
 
-## Copy Editing Checklist
+### Varredura 6: Emoção elevada
 
-For a final QA pass before delivering edits, work through the full checklist in [references/checklist.md](references/checklist.md) — covering all seven sweeps plus pre-start and final-check items.
+**Foco:** a copy faz o leitor sentir algo?
 
----
+**O que checar:**
 
-## Common Copy Problems & Fixes
+- Linguagem plana, informativa
+- Gatilhos emocionais faltando
+- Pontos de dor mencionados mas não sentidos
+- Aspirações declaradas mas não evocadas
 
-### Problem: Wall of Features
-**Symptom:** List of what the product does without why it matters
-**Fix:** Add "which means..." after each feature to bridge to benefits
+**Dimensões emocionais a considerar:**
 
-### Problem: Corporate Speak
-**Symptom:** "Leverage synergies to optimize outcomes"
-**Fix:** Ask "How would a human say this?" and use those words
+- Dor do estado atual
+- Frustração com alternativas
+- Medo de ficar de fora (FOMO)
+- Desejo de transformação
+- Orgulho de fazer escolhas inteligentes
+- Alívio de resolver o problema
 
-### Problem: Weak Opening
-**Symptom:** Starting with company history or vague statements
-**Fix:** Lead with the reader's problem or desired outcome
+**Técnicas para elevar a emoção:**
 
-### Problem: Buried CTA
-**Symptom:** The ask comes after too much buildup, or isn't clear
-**Fix:** Make the CTA obvious, early, and repeated
+- Pinte o estado "antes" vividamente
+- Use linguagem sensorial
+- Conte microistórias
+- Referencie experiências compartilhadas
+- Faça perguntas que provoquem reflexão
 
-### Problem: No Proof
-**Symptom:** "Customers love us" with no evidence
-**Fix:** Add specific testimonials, numbers, or case references
+**Processo:**
 
-### Problem: Generic Claims
-**Symptom:** "We help businesses grow"
-**Fix:** Specify who, how, and by how much
+1. Leia buscando impacto emocional — isso te move?
+2. Identifique seções planas que deveriam ressoar
+3. Adicione textura emocional mantendo a autenticidade
+4. Garanta que a emoção sirva à mensagem (não manipulação)
 
-### Problem: Mixed Audiences
-**Symptom:** Copy tries to speak to everyone, resonates with no one
-**Fix:** Pick one audience and write directly to them
-
-### Problem: Reads as AI-Written
-**Symptom:** "Not X. Y." reveals, "no X, no Y, no Z" lists, long sentences trailing extra clauses, stock openers
-**Fix:** Run the AI-Tell Check above and rewrite those sentences from the underlying facts
-
-### Problem: Feature Overload
-**Symptom:** Listing every capability, overwhelming the reader
-**Fix:** Focus on 3-5 key benefits that matter most to the audience
+**Depois desta varredura:** volte para Especificidade, Prove, E Daí, Voz e
+Tom, depois Clareza.
 
 ---
 
-## Working with Copy Sweeps
+### Varredura 7: Risco zero
 
-When editing collaboratively:
+**Foco:** removemos toda barreira à ação?
 
-1. **Run a sweep and present findings** - Show what you found, why it's an issue
-2. **Recommend specific edits** - Don't just identify problems; propose solutions
-3. **Request the updated copy** - Let the author make final decisions
-4. **Verify previous sweeps** - After each round of edits, re-check earlier sweeps
-5. **Repeat until clean** - Continue until a full sweep finds no new issues
+**O que checar:**
 
-This iterative process ensures each edit doesn't create new problems while respecting the author's ownership of the copy.
+- Fricção perto dos CTAs
+- Objeções não respondidas
+- Sinais de confiança faltando
+- Próximos passos pouco claros
+- Custos escondidos ou surpresas
 
----
+**Redutores de risco a procurar:**
 
-## References
+- Garantia de devolução do dinheiro
+- Testes grátis
+- "Sem necessidade de cartão de crédito"
+- "Cancele quando quiser"
+- Prova social perto do CTA
+- Expectativas claras do que acontece depois
+- Garantias de privacidade
 
-- [Plain English Alternatives](references/plain-english-alternatives.md): Replace complex words with simpler alternatives
-- [Content Refresh](references/content-refresh.md): Full checklist, refresh vs. rewrite matrix, and cadence guide
-- [Copy Editing Checklist](references/checklist.md): Full QA checklist across all seven sweeps plus the AI-tell check
+**Problemas de risco comuns:**
 
----
+- CTA pede compromisso sem ter conquistado confiança
+- Objeções levantadas mas não tratadas
+- Letras miúdas que geram dúvida
+- "Fale conosco" vago em vez de um próximo passo claro
 
-## Content Refresh Editing
+**Processo:**
 
-Copy editing isn't just for new content. Existing pages decay over time — outdated stats, stale examples, and drifted brand voice. Use the content refresh framework when traffic is declining, data is stale, or the product has changed.
+1. Foque nas seções perto dos CTAs
+2. Liste todo motivo pelo qual alguém hesitaria
+3. Verifique se a copy trata cada preocupação
+4. Adicione reversões de risco ou sinais de confiança conforme necessário
 
-**For the full refresh checklist, refresh vs. rewrite decision matrix, and cadence guide**: See [references/content-refresh.md](references/content-refresh.md)
-
----
-
-## Task-Specific Questions
-
-1. What's the goal of this copy? (Awareness, conversion, retention)
-2. What action should readers take?
-3. Are there specific concerns or known issues?
-4. What proof/evidence do you have available?
-5. Is this new copy or a refresh of existing content?
-
----
-
-## Related Skills
-
-- **copywriting**: For writing new copy from scratch (use this skill to edit after your first draft is complete)
-- **cro**: For broader page optimization beyond copy
-- **marketing-psychology**: For understanding why certain edits improve conversion
-- **ab-testing**: For testing copy variations
+**Depois desta varredura:** passe por todas as varreduras anteriores uma
+última vez: Emoção Elevada, Especificidade, Prove, E Daí, Voz e Tom,
+Clareza.
 
 ---
 
-## When to Use Each Skill
+## Pontuação por painel de especialistas
 
-| Task | Skill to Use |
-|------|--------------|
-| Writing new page copy from scratch | copywriting |
-| Reviewing and improving existing copy | copy-editing (this skill) |
-| Editing copy you just wrote | copy-editing (this skill) |
-| Structural or strategic page changes | cro |
+Use isso depois de completar as Sete Varreduras, como um gate de qualidade
+adicional. Para copy de alto risco (landing pages, e-mails de lançamento,
+páginas de vendas), uma revisão multi-persona de especialistas captura
+problemas que uma única perspectiva não vê.
+
+### Como funciona
+
+1. **Monte 3-5 personas de especialista** relevantes ao tipo de copy
+2. **Cada persona pontua a copy de 1 a 10** na sua área de expertise
+3. **Colete críticas específicas** — não só notas, mas o que consertar
+4. **Revise com base no feedback** — trate as áreas com nota mais baixa
+   primeiro
+5. **Repontue depois das revisões** — itere até todas as personas darem
+   7+, com média de 8+ no painel
+
+### Painéis de especialista recomendados
+
+**Copy de landing page:**
+
+- Copywriter de conversão (clareza, força do CTA, hierarquia de benefício)
+- UX writer (escaneabilidade, carga cognitiva, fluxo do usuário)
+- Persona do cliente-alvo (isso fala comigo? eu confio nisso?)
+- Estrategista de marca (consistência de voz, precisão de posicionamento)
+
+**Sequência de e-mail:**
+
+- Especialista em e-mail marketing (assuntos, otimização de abertura/clique)
+- Copywriter (ganchos, storytelling, persuasão)
+- Analista de filtro de spam (sinais de entregabilidade, palavras-gatilho)
+- Persona do cliente-alvo (relevância, valor, risco de descadastro)
+
+**Página de vendas / conteúdo longo:**
+
+- Copywriter de resposta direta (estrutura da oferta, tratamento de
+  objeção, urgência)
+- Persona de comprador cético (lacunas de prova, problemas de confiança,
+  sinais de alerta)
+- Editor (fluxo, legibilidade, concisão)
+- Especialista em SEO (cobertura de palavra-chave, alinhamento com
+  intenção de busca)
+
+### Rubrica de pontuação
+
+| Nota | Significado |
+|---|---|
+| 9-10 | Pronta para publicar. Sem melhorias relevantes. |
+| 7-8 | Forte. Só ajustes menores. |
+| 5-6 | Funcional, mas com lacunas claras. Precisa de outra passada. |
+| 3-4 | Problemas significativos. Revisão maior necessária. |
+| 1-2 | Fundamentalmente quebrada. Repense a abordagem. |
+
+### Quando usar
+
+- **Sempre** para copy de lançamento, páginas de preço e landing pages de
+  alto tráfego
+- **Recomendado** para sequências de e-mail, páginas de vendas e copy de
+  anúncio
+- **Opcional** para posts de blog, conteúdo social e docs internos
+- **Pule** para atualizações rápidas, edições menores e conteúdo de baixo
+  risco
+
+---
+
+## Checagens rápidas de edição
+
+Use estas para revisões mais rápidas quando o processo completo de sete
+varreduras não for necessário.
+
+### Checagens no nível da palavra
+
+**Corte estas palavras:**
+
+- Muito, realmente, extremamente, incrivelmente (intensificadores fracos)
+- Só, na verdade, basicamente (enchimento)
+- "A fim de" (use "para")
+- "Que" (frequentemente desnecessário)
+- Coisas, negócio (vago)
+
+**Substitua estas:**
+
+| Fraco | Forte |
+|---|---|
+| Utilizar | Usar |
+| Implementar | Configurar |
+| Alavancar | Usar |
+| Viabilizar | Ajudar |
+| Inovador | Novo |
+| Robusto | Forte |
+| Perfeito/Impecável | Suave |
+| De ponta | Novo/Moderno |
+
+**Fique atento a:**
+
+- Advérbios (geralmente desnecessários)
+- Voz passiva (troque para ativa)
+- Nominalizações (verbo → substantivo: "tomar uma decisão" → "decidir")
+
+### Checagens no nível da frase
+
+- Uma ideia por frase
+- Varie o tamanho das frases (misture curtas e longas)
+- Coloque a informação importante no início
+- No máximo 3 conjunções por frase
+- Não mais que 25 palavras (geralmente)
+
+### Checagens no nível do parágrafo
+
+- Um tema por parágrafo
+- Parágrafos curtos (2-4 frases para web)
+- Frases de abertura fortes
+- Fluxo lógico entre parágrafos
+- Espaço em branco para escaneabilidade
+
+---
+
+## Checklist de edição de copy
+
+Para uma passada final de QA antes de entregar as edições, siga o checklist
+completo em [references/checklist.md](references/checklist.md) — cobrindo
+todas as sete varreduras mais itens de pré-início e checagem final.
+
+---
+
+## Problemas comuns de copy e correções
+
+### Problema: Muro de features
+
+**Sintoma:** lista do que o produto faz, sem dizer por que isso importa
+**Correção:** adicione "o que significa..." depois de cada feature para
+conectar ao benefício
+
+### Problema: Falar como corporação
+
+**Sintoma:** "Alavancar sinergias para otimizar resultados"
+**Correção:** pergunte "como um humano diria isso?" e use essas palavras
+
+### Problema: Abertura fraca
+
+**Sintoma:** começar com histórico da empresa ou declarações vagas
+**Correção:** lidere com o problema do leitor ou o resultado desejado
+
+### Problema: CTA enterrado
+
+**Sintoma:** o pedido vem depois de muita preparação, ou não é claro
+**Correção:** deixe o CTA óbvio, cedo e repetido
+
+### Problema: Sem prova
+
+**Sintoma:** "Os clientes nos amam" sem nenhuma evidência
+**Correção:** adicione depoimentos específicos, números ou referências a
+case
+
+### Problema: Afirmações genéricas
+
+**Sintoma:** "Ajudamos empresas a crescer"
+**Correção:** especifique quem, como e o quanto
+
+### Problema: Audiências misturadas
+
+**Sintoma:** a copy tenta falar com todo mundo, não ressoa com ninguém
+**Correção:** escolha uma audiência e escreva diretamente para ela
+
+### Problema: Excesso de feature
+
+**Sintoma:** listar toda capacidade, sobrecarregando o leitor
+**Correção:** foque em 3-5 benefícios-chave que mais importam para a
+audiência
+
+---
+
+## Trabalhando com varreduras de copy
+
+Ao editar colaborativamente:
+
+1. **Rode uma varredura e apresente os achados** — mostre o que você
+   encontrou, por que é um problema
+2. **Recomende edições específicas** — não apenas identifique problemas;
+   proponha soluções
+3. **Peça a copy atualizada** — deixe o autor tomar as decisões finais
+4. **Verifique as varreduras anteriores** — depois de cada rodada de
+   edições, reconfira as varreduras anteriores
+5. **Repita até estar limpo** — continue até uma varredura completa não
+   encontrar nenhum problema novo
+
+Esse processo iterativo garante que cada edição não crie problemas novos,
+respeitando a autoria do texto original.
+
+---
+
+## Referências
+
+- [Alternativas em português claro](references/plain-english-alternatives.md): substitua palavras complexas por alternativas mais simples
+- [Atualização de conteúdo](references/content-refresh.md): checklist completo, matriz atualizar vs. reescrever, e guia de cadência
+- [Checklist de edição de copy](references/checklist.md): checklist completo de QA para as sete varreduras
+
+---
+
+## Edição de atualização de conteúdo
+
+Edição de copy não serve só para conteúdo novo. Páginas existentes decaem
+com o tempo — estatísticas desatualizadas, exemplos velhos e voz de marca
+que foi se desviando. Use o framework de atualização de conteúdo quando o
+tráfego estiver caindo, os dados estiverem velhos, ou o produto tiver
+mudado.
+
+**Para o checklist completo de atualização, a matriz de decisão
+atualizar vs. reescrever, e o guia de cadência**: veja
+[references/content-refresh.md](references/content-refresh.md)
+
+---
+
+## Perguntas específicas da tarefa
+
+1. Qual é o objetivo desta copy? (Reconhecimento, conversão, retenção)
+2. Que ação os leitores devem tomar?
+3. Há preocupações específicas ou problemas conhecidos?
+4. Que prova/evidência você tem disponível?
+5. Isso é copy nova ou uma atualização de conteúdo existente?
+
+---
+
+## Skills relacionadas
+
+- **copywriting**: para escrever copy nova do zero (use esta skill para editar depois que o primeiro rascunho estiver pronto)
+- **cro**: para otimização de página mais ampla, além da copy
+- **marketing-psychology**: para entender por que certas edições melhoram a conversão
+- **ab-testing**: para testar variações de copy
+
+---
+
+## Quando usar cada skill
+
+| Tarefa | Skill a usar |
+|---|---|
+| Escrever copy nova de página do zero | copywriting |
+| Revisar e melhorar copy existente | copy-editing (esta skill) |
+| Editar copy que você acabou de escrever | copy-editing (esta skill) |
+| Mudanças estruturais ou estratégicas na página | cro |

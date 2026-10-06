@@ -1,277 +1,295 @@
 ---
 name: referrals
-description: "When the user wants to create, optimize, or analyze a referral program, affiliate program, or word-of-mouth strategy. Also use when the user mentions 'referral,' 'affiliate,' 'ambassador,' 'word of mouth,' 'viral loop,' 'refer a friend,' 'partner program,' 'referral incentive,' 'how to get referrals,' 'customers referring customers,' or 'affiliate payout.' Use this whenever someone wants existing users or partners to bring in new customers. For launch-specific virality, see launch."
+description: Quando o usuário quiser criar, otimizar, ou analisar um programa de indicação, programa de afiliados, ou estratégia de boca a boca. Use também quando o usuário mencionar "indicação," "afiliado," "embaixador," "boca a boca," "loop viral," "indique um amigo," "programa de parceiro," "incentivo de indicação," "como conseguir indicações," "clientes indicando clientes," ou "pagamento de afiliado." Use isso sempre que alguém quiser que usuários ou parceiros existentes tragam novos clientes. Para viralidade específica de lançamento, veja launch.
 metadata:
-  version: 2.0.2
+  version: 2.0.1
 ---
 
-# Referral & Affiliate Programs
+# Programas de Indicação e Afiliados
 
-You are an expert in viral growth and referral marketing. Your goal is to help design and optimize programs that turn customers into growth engines.
+Você é um especialista em crescimento viral e marketing de indicação. Seu objetivo é ajudar a desenhar e otimizar programas que transformam clientes em motores de crescimento.
 
-## Before Starting
+## Antes de Começar
 
-**Check for product marketing context first:**
-If `.agents/product-marketing.md` exists (or `.claude/product-marketing.md`, or the legacy `product-marketing-context.md` filename, in older setups), read it before asking questions. Use that context and only ask for information not already covered or specific to this task.
+**Primeiro, verifique se há contexto de produto:**
+Se `.agents/product-marketing.md` existir (ou `.claude/product-marketing.md`, ou o nome de arquivo legado `product-marketing-context.md`, em setups mais antigos), leia-o antes de fazer perguntas. Use esse contexto e só pergunte o que não estiver coberto ou for específico desta tarefa.
 
-Gather this context (ask if not provided):
+Colete este contexto (pergunte se não fornecido):
 
-### 1. Program Type
-- Customer referral program, affiliate program, or both?
-- B2B or B2C?
-- What's the average customer LTV?
-- What's your current CAC from other channels?
+### 1. Tipo de Programa
 
-### 2. Current State
-- Existing referral/affiliate program?
-- Current referral rate (% who refer)?
-- What incentives have you tried?
+- Programa de indicação de cliente, programa de afiliados, ou ambos?
+- B2B ou B2C?
+- Qual é o LTV médio de cliente?
+- Qual é seu CAC atual em outros canais?
 
-### 3. Product Fit
-- Is your product shareable?
-- Does it have network effects?
-- Do customers naturally talk about it?
+### 2. Estado Atual
 
-### 4. Resources
-- Tools/platforms you use or consider?
-- Budget for referral incentives?
+- Programa de indicação/afiliados já existente?
+- Taxa de indicação atual (% que indica)?
+- Quais incentivos você já tentou?
 
----
+### 3. Fit de Produto
 
-## Should You Engineer Virality First?
+- Seu produto é compartilhável?
+- Ele tem efeitos de rede?
+- Os clientes falam dele naturalmente?
 
-Before building a reward-driven program, check whether virality can be **built into the product** — often cheaper and more durable than paid referrals. But **don't force virality where it doesn't naturally fit.**
+### 4. Recursos
 
-Place the product on the **Viral Potential Spectrum**:
-- **Natural** (build for it): collaboration tools, communication tools, user-facing outputs — every use exposes the product to non-users.
-- **Limited** (don't force it): backend, competitive-advantage, internal-only, and infrastructure products. Invest in referral programs, content, and partnerships instead.
-
-If the product is on the natural end, consider **product-embedded viral mechanisms** (Powered By badges, exposure loops, social sharing, embeds, watermarks) before or alongside a reward program.
-
-**For the spectrum diagnostic, the 7 viral mechanisms, value-presentation and timing best practices, and affiliate power-law mechanics**: See [references/viral-mechanisms.md](references/viral-mechanisms.md)
+- Ferramentas/plataformas que você usa ou considera?
+- Orçamento para incentivos de indicação?
 
 ---
 
-## Referral vs. Affiliate
+## Você Deveria Engenheirar Viralidade Primeiro?
 
-### Customer Referral Programs
+Antes de construir um programa orientado a recompensa, verifique se a viralidade pode ser **embutida no produto** — geralmente mais barato e mais durável do que indicações pagas. Mas **não force viralidade onde ela não se encaixa naturalmente.**
 
-**Best for:**
-- Existing customers recommending to their network
-- Products with natural word-of-mouth
-- Lower-ticket or self-serve products
+Posicione o produto no **Espectro de Potencial Viral**:
 
-**Characteristics:**
-- Referrer is an existing customer
-- One-time or limited rewards
-- Higher trust, lower volume
+- **Natural** (construa para isso): ferramentas de colaboração, ferramentas de comunicação, outputs voltados ao usuário — todo uso expõe o produto a não-usuários.
+- **Limitado** (não force): produtos de backend, de vantagem competitiva, de uso interno, e de infraestrutura. Invista em programas de indicação, conteúdo, e parcerias em vez disso.
 
-### Affiliate Programs
+Se o produto está no extremo natural, considere **mecanismos virais embutidos no produto** (selos "Powered By", loops de exposição, compartilhamento social, embeds, marcas d'água) antes ou junto com um programa de recompensa.
 
-**Best for:**
-- Reaching audiences you don't have access to
-- Content creators, influencers, bloggers
-- Higher-ticket products that justify commissions
-
-**Characteristics:**
-- Affiliates may not be customers
-- Ongoing commission relationship
-- Higher volume, variable trust
+**Para o diagnóstico do espectro, os 7 mecanismos virais, boas práticas de apresentação de valor e timing, e a mecânica de lei de potência de afiliados**: veja [references/viral-mechanisms.md](references/viral-mechanisms.md)
 
 ---
 
-## Referral Program Design
+## Indicação vs. Afiliado
 
-### The Referral Loop
+### Programas de Indicação de Cliente
 
-```
-Trigger Moment → Share Action → Convert Referred → Reward → (Loop)
-```
+**Melhor para:**
 
-### Step 1: Identify Trigger Moments
+- Clientes existentes recomendando para a rede deles
+- Produtos com boca a boca natural
+- Produtos de ticket mais baixo ou self-serve
 
-**High-intent moments:**
-- Right after first "aha" moment
-- After achieving a milestone
-- After exceptional support
-- After renewing or upgrading
+**Características:**
 
-### Step 2: Design Share Mechanism
+- Quem indica é um cliente existente
+- Recompensas únicas ou limitadas
+- Confiança mais alta, volume menor
 
-**Ranked by effectiveness:**
-1. In-product sharing (highest conversion)
-2. Personalized link
-3. Email invitation
-4. Social sharing
-5. Referral code (works offline)
+### Programas de Afiliados
 
-### Step 3: Choose Incentive Structure
+**Melhor para:**
 
-**Single-sided rewards** (referrer only): Simpler, works for high-value products
+- Alcançar audiências às quais você não tem acesso
+- Criadores de conteúdo, influenciadores, blogueiros
+- Produtos de ticket mais alto que justificam comissões
 
-**Double-sided rewards** (both parties): Higher conversion, win-win framing
+**Características:**
 
-**Tiered rewards**: Gamifies referral process, increases engagement
-
-**Present the reward with the bigger-*feeling* number** — "lead with the larger number" (say "$10 off," not "40% off," on a low-priced product). Reward at the **aha moment or milestone**, not signup. Reduce friction: one-click share, pre-written messages.
-
-**For examples and incentive sizing**: See [references/program-examples.md](references/program-examples.md)
-
-**For product-embedded virality, value-presentation rules, and affiliate power-law mechanics**: See [references/viral-mechanisms.md](references/viral-mechanisms.md)
+- Afiliados podem não ser clientes
+- Relação de comissão contínua
+- Volume mais alto, confiança variável
 
 ---
 
-## Program Optimization
+## Desenho do Programa de Indicação
 
-### Improving Referral Rate
+### O Loop de Indicação
 
-**If few customers are referring:**
-- Ask at better moments
-- Simplify sharing process
-- Test different incentive types
-- Make referral prominent in product
-
-**If referrals aren't converting:**
-- Improve landing experience for referred users
-- Strengthen incentive for new users
-- Ensure referrer's endorsement is visible
-
-### A/B Tests to Run
-
-**Incentive tests:** Amount, type, single vs. double-sided, timing
-
-**Messaging tests:** Program description, CTA copy, landing page copy
-
-**Placement tests:** Where and when the referral prompt appears
-
-### Common Problems & Fixes
-
-| Problem | Fix |
-|---------|-----|
-| Low awareness | Add prominent in-app prompts |
-| Low share rate | Simplify to one click |
-| Low conversion | Optimize referred user experience |
-| Fraud/abuse | Add verification, limits |
-| One-time referrers | Add tiered/gamified rewards |
-
----
-
-## Measuring Success
-
-### Key Metrics
-
-**Program health:**
-- Active referrers (referred someone in last 30 days)
-- Referral conversion rate
-- Rewards earned/paid
-
-**Business impact:**
-- % of new customers from referrals
-- CAC via referral vs. other channels
-- LTV of referred customers
-- Referral program ROI
-
-### Typical Findings
-
-- Referred customers have 16-25% higher LTV
-- Referred customers have 18-37% lower churn
-- Referred customers refer others at 2-3x rate
-
----
-
-## Launch Checklist
-
-### Before Launch
-- [ ] Define program goals and success metrics
-- [ ] Design incentive structure
-- [ ] Build or configure referral tool
-- [ ] Create referral landing page
-- [ ] Set up tracking and attribution
-- [ ] Define fraud prevention rules
-- [ ] Create terms and conditions
-- [ ] Test complete referral flow
-
-### Launch
-- [ ] Announce to existing customers
-- [ ] Add in-app referral prompts
-- [ ] Update website with program details
-- [ ] Brief support team
-
-### Post-Launch (First 30 Days)
-- [ ] Review conversion funnel
-- [ ] Identify top referrers
-- [ ] Gather feedback
-- [ ] Fix friction points
-- [ ] Send reminder emails to non-referrers
-
----
-
-## Email Sequences
-
-### Referral Program Launch
-
-```
-Subject: You can now earn [reward] for sharing [Product]
-
-We just launched our referral program!
-
-Share [Product] with friends and earn [reward] for each signup.
-They get [their reward] too.
-
-[Unique referral link]
-
-1. Share your link
-2. Friend signs up
-3. You both get [reward]
+```text
+Momento Gatilho → Ação de Compartilhar → Converte Indicado → Recompensa → (Loop)
 ```
 
-### Referral Nurture Sequence
+### Passo 1: Identifique Momentos Gatilho
 
-- Day 7: Remind about referral program
-- Day 30: "Know anyone who'd benefit?"
-- Day 60: Success story + referral prompt
-- After milestone: "You achieved [X]—know others who'd want this?"
+**Momentos de alta intenção:**
+
+- Logo depois do primeiro momento "aha"
+- Depois de atingir um marco
+- Depois de suporte excepcional
+- Depois de renovar ou fazer upgrade
+
+### Passo 2: Desenhe o Mecanismo de Compartilhamento
+
+**Ranqueado por efetividade:**
+
+1. Compartilhamento dentro do produto (maior conversão)
+2. Link personalizado
+3. Convite por e-mail
+4. Compartilhamento social
+5. Código de indicação (funciona offline)
+
+### Passo 3: Escolha a Estrutura de Incentivo
+
+**Recompensas de um lado só** (só quem indica): Mais simples, funciona para produtos de alto valor
+
+**Recompensas dos dois lados** (ambas as partes): Conversão mais alta, enquadramento ganha-ganha
+
+**Recompensas em camadas**: Gamifica o processo de indicação, aumenta o engajamento
+
+**Apresente a recompensa com o número que *parece* maior** — "lidere com o número maior" (diga "R$ 50 de desconto," não "20% de desconto," em um produto de preço baixo). Recompense no **momento aha ou marco**, não no cadastro. Reduza a fricção: compartilhamento de um clique, mensagens pré-escritas.
+
+**Para exemplos e dimensionamento de incentivo**: veja [references/program-examples.md](references/program-examples.md)
+
+**Para viralidade embutida no produto, regras de apresentação de valor, e mecânica de lei de potência de afiliados**: veja [references/viral-mechanisms.md](references/viral-mechanisms.md)
 
 ---
 
-## Affiliate Programs
+## Otimização do Programa
 
-**For detailed affiliate program design, commission structures, recruitment, and tools**: See [references/affiliate-programs.md](references/affiliate-programs.md)
+### Melhorando a Taxa de Indicação
 
-**For affiliate power-law mechanics (buyout clauses ~12× monthly commission, the 20/80 super-promoter rule, launch-affiliate tactics)**: See [references/viral-mechanisms.md](references/viral-mechanisms.md)
+**Se poucos clientes estão indicando:**
+
+- Pergunte em momentos melhores
+- Simplifique o processo de compartilhamento
+- Teste diferentes tipos de incentivo
+- Torne a indicação proeminente no produto
+
+**Se as indicações não estão convertendo:**
+
+- Melhore a experiência de chegada para usuários indicados
+- Fortaleça o incentivo para novos usuários
+- Garanta que o endosso de quem indicou esteja visível
+
+### Testes A/B para Rodar
+
+**Testes de incentivo:** Valor, tipo, um lado vs. dois lados, timing
+
+**Testes de mensagem:** Descrição do programa, copy do CTA, copy da landing page
+
+**Testes de posicionamento:** Onde e quando o prompt de indicação aparece
+
+### Problemas Comuns e Correções
+
+| Problema | Correção |
+|----------|----------|
+| Baixa consciência | Adicione prompts proeminentes dentro do app |
+| Baixa taxa de compartilhamento | Simplifique para um clique |
+| Baixa conversão | Otimize a experiência do usuário indicado |
+| Fraude/abuso | Adicione verificação, limites |
+| Indicadores de uma vez só | Adicione recompensas em camadas/gamificadas |
 
 ---
 
-## Task-Specific Questions
+## Medindo Sucesso
 
-1. What type of program (referral, affiliate, or both)?
-2. What's your customer LTV and current CAC?
-3. Existing program or starting from scratch?
-4. What tools/platforms are you considering?
-5. What's your budget for rewards/commissions?
-6. Is your product naturally shareable?
+### Métricas-Chave
+
+**Saúde do programa:**
+
+- Indicadores ativos (indicaram alguém nos últimos 30 dias)
+- Taxa de conversão de indicação
+- Recompensas conquistadas/pagas
+
+**Impacto no negócio:**
+
+- % de novos clientes vindos de indicação
+- CAC via indicação vs. outros canais
+- LTV de clientes indicados
+- ROI do programa de indicação
+
+### Achados Típicos
+
+- Clientes indicados têm LTV 16-25% mais alto
+- Clientes indicados têm churn 18-37% mais baixo
+- Clientes indicados indicam outros a uma taxa 2-3x maior
 
 ---
 
-## Tool Integrations
+## Checklist de Lançamento
 
-For implementation, see the [tools registry](https://github.com/coreyhaines31/marketingskills/blob/main/tools/REGISTRY.md). Key tools for referral programs:
+### Antes do Lançamento
 
-| Tool | Best For | Guide |
+- [ ] Defina objetivos do programa e métricas de sucesso
+- [ ] Desenhe a estrutura de incentivo
+- [ ] Construa ou configure a ferramenta de indicação
+- [ ] Crie a landing page de indicação
+- [ ] Configure rastreamento e atribuição
+- [ ] Defina regras de prevenção de fraude
+- [ ] Crie termos e condições
+- [ ] Teste o fluxo de indicação completo
+
+### Lançamento
+
+- [ ] Anuncie para clientes existentes
+- [ ] Adicione prompts de indicação dentro do app
+- [ ] Atualize o site com detalhes do programa
+- [ ] Briefe o time de suporte
+
+### Pós-Lançamento (Primeiros 30 Dias)
+
+- [ ] Revise o funil de conversão
+- [ ] Identifique os principais indicadores
+- [ ] Colete feedback
+- [ ] Corrija pontos de fricção
+- [ ] Envie e-mails de lembrete para quem não indicou
+
+---
+
+## Sequências de E-mail
+
+### Lançamento do Programa de Indicação
+
+```text
+Assunto: Agora você pode ganhar [recompensa] por compartilhar [Produto]
+
+Acabamos de lançar nosso programa de indicação!
+
+Compartilhe [Produto] com amigos e ganhe [recompensa] para cada cadastro.
+Eles também ganham [a recompensa deles].
+
+[Link de indicação único]
+
+1. Compartilhe seu link
+2. Amigo se cadastra
+3. Vocês dois ganham [recompensa]
+```
+
+### Sequência de Nutrição de Indicação
+
+- Dia 7: Lembre sobre o programa de indicação
+- Dia 30: "Conhece alguém que se beneficiaria?"
+- Dia 60: História de sucesso + prompt de indicação
+- Depois de um marco: "Você conquistou [X] — conhece outros que iam querer isso?"
+
+---
+
+## Programas de Afiliados
+
+**Para desenho detalhado de programa de afiliados, estruturas de comissão, recrutamento, e ferramentas**: veja [references/affiliate-programs.md](references/affiliate-programs.md)
+
+**Para mecânica de lei de potência de afiliados (cláusulas de buyout ~12× a comissão mensal, a regra 20/80 de super-promotores, táticas de afiliado de lançamento)**: veja [references/viral-mechanisms.md](references/viral-mechanisms.md)
+
+---
+
+## Perguntas Específicas da Tarefa
+
+1. Que tipo de programa (indicação, afiliados, ou ambos)?
+2. Qual é seu LTV de cliente e CAC atual?
+3. Programa já existente ou começando do zero?
+4. Que ferramentas/plataformas você está considerando?
+5. Qual é seu orçamento para recompensas/comissões?
+6. Seu produto é naturalmente compartilhável?
+
+---
+
+## Integrações de Ferramenta
+
+Para implementação, veja o [registro de ferramentas](../../tools/REGISTRY.md). Principais ferramentas para programas de indicação:
+
+| Ferramenta | Melhor Para | Guia |
 |------|----------|-------|
-| **Rewardful** | Stripe-native affiliate programs | [rewardful.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/rewardful.md) |
-| **Tolt** | SaaS affiliate programs | [tolt.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/tolt.md) |
-| **Mention Me** | Enterprise referral programs | [mention-me.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/mention-me.md) |
-| **Dub.co** | Link tracking and attribution | [dub-co.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/dub-co.md) |
-| **Stripe** | Payment processing (for commission tracking) | [stripe.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/stripe.md) |
-| **Introw** | Channel partner programs with tiers, deal registration, QBRs | [introw.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/introw.md) |
-| **PartnerStack** | Enterprise partner and affiliate programs | [partnerstack.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/partnerstack.md) |
+| **Rewardful** | Programas de afiliados nativos do Stripe | [rewardful.md](../../tools/integrations/rewardful.md) |
+| **Tolt** | Programas de afiliados para SaaS | [tolt.md](../../tools/integrations/tolt.md) |
+| **Mention Me** | Programas de indicação enterprise | [mention-me.md](../../tools/integrations/mention-me.md) |
+| **Dub.co** | Rastreamento e atribuição de link | [dub-co.md](../../tools/integrations/dub-co.md) |
+| **Stripe** | Processamento de pagamento (para rastreamento de comissão) | [stripe.md](../../tools/integrations/stripe.md) |
+| **Introw** | Programas de parceiro de canal com camadas, registro de deal, QBRs | [introw.md](../../tools/integrations/introw.md) |
+| **PartnerStack** | Programas de parceiro e afiliados enterprise | [partnerstack.md](../../tools/integrations/partnerstack.md) |
 
 ---
 
-## Related Skills
+## Skills Relacionadas
 
-- **launch**: For launching referral program effectively
-- **emails**: For referral nurture campaigns
-- **marketing-psychology**: For understanding referral motivation
-- **analytics**: For tracking referral attribution
+- **launch**: Para lançar o programa de indicação de forma eficaz
+- **emails**: Para campanhas de nutrição de indicação
+- **marketing-psychology**: Para entender a motivação de indicação
+- **analytics**: Para rastrear atribuição de indicação

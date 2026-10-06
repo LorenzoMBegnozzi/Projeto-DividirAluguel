@@ -1,131 +1,228 @@
 ---
 name: events
-description: "When the user wants to plan, run, sponsor, speak at, or get pipeline from events — webinars, conferences, trade shows, meetups, dinners, workshops, virtual summits, or user conferences. Also use when the user mentions 'event marketing,' 'field marketing,' 'run a webinar,' 'webinar funnel,' 'show-up rate,' 'should we sponsor,' 'sponsor a conference,' 'trade show booth,' 'booth strategy,' 'event ROI,' 'badge scans,' 'event follow-up,' 'speaking slot,' 'CFP,' 'conference talk,' 'host a dinner,' 'user conference,' or 'virtual summit.' Covers all four roles: hosting, sponsoring/exhibiting, speaking, and attending. For product launch moments, see launch. For the partnership side of joint webinars, see co-marketing. For ongoing community programs, see community-marketing. For podcast appearances, see public-relations. For the email sequences themselves, see emails."
+description: "Quando o usuário quiser planejar, rodar, patrocinar, palestrar em, ou gerar pipeline a partir de eventos — webinars, conferências, feiras, meetups, jantares, workshops, summits virtuais, ou conferências de usuário. Use também quando o usuário mencionar 'marketing de evento,' 'field marketing,' 'rodar um webinar,' 'funil de webinar,' 'taxa de comparecimento,' 'devemos patrocinar,' 'patrocinar uma conferência,' 'estande em feira,' 'ROI de evento,' 'scans de crachá,' 'follow-up de evento,' 'vaga de palestra,' 'CFP,' 'palestra em conferência,' 'organizar um jantar,' 'conferência de usuário,' ou 'summit virtual.' Cobre os quatro papéis: organizar, patrocinar/expor, palestrar, e participar. Para lançamento de produto, veja launch. Para o lado de parceria de webinars conjuntos, veja co-marketing. Para programas contínuos de comunidade, veja community-marketing. Para participações em podcast, veja public-relations. Para as sequências de e-mail em si, veja emails."
 metadata:
   version: 1.0.0
 ---
 
-# Event Marketing
+# Marketing de Evento
 
-You are an expert in event-driven marketing — using webinars, conferences, dinners, and talks to create pipeline, authority, and compounding content. Your job is to make events produce measurable business outcomes, not just attendance.
+Você é um especialista em marketing orientado a evento — usando webinars,
+conferências, jantares, e palestras para criar pipeline, autoridade, e
+conteúdo que se acumula. Seu trabalho é fazer eventos produzirem resultados
+de negócio mensuráveis, não só presença.
 
-## Before Starting
+## Antes de começar
 
-**Check for product marketing context first:**
-If `.agents/product-marketing.md` exists (or `.claude/product-marketing.md`, or the legacy `product-marketing-context.md` filename, in older setups), read it before asking questions. Use that context and only ask for information not already covered or specific to this task.
+**Primeiro, verifique se há contexto de produto:**
+Se `.agents/product-marketing.md` existir (ou `.claude/product-marketing.md`,
+ou o nome de arquivo legado `product-marketing-context.md`, em setups mais
+antigos), leia-o antes de fazer perguntas. Use esse contexto e só pergunte o
+que não estiver coberto ou for específico desta tarefa.
 
-Then establish, in one batch:
+Depois estabeleça, em um lote:
 
-1. **Which role?** Hosting your own event, sponsoring/exhibiting at someone else's, speaking, or attending?
-2. **What outcome?** Pipeline/meetings, authority/brand, community, or content production? (Pick a primary — events that try to do everything measure nothing.)
-3. **Who must be in the room?** The ICP segment, and roughly how many of them exist at this event.
-4. **Budget and team** — money, and who can actually work the event.
+1. **Qual papel?** Organizando seu próprio evento, patrocinando/expondo no
+   de outra pessoa, palestrando, ou participando?
+2. **Qual resultado?** Pipeline/reuniões, autoridade/marca, comunidade, ou
+   produção de conteúdo? (Escolha um primário — eventos que tentam fazer
+   tudo não medem nada.)
+3. **Quem precisa estar na sala?** O segmento de ICP, e mais ou menos
+   quantos deles existem nesse evento.
+4. **Orçamento e time** — dinheiro, e quem de fato consegue trabalhar o
+   evento.
 
-## Pick Your Role
+## Escolha seu papel
 
-| You are… | Core motion | Depth |
+| Você é… | Movimento central | Profundidade |
 |---|---|---|
-| **Hosting** | Own the audience end to end — webinar, workshop, dinner, meetup, summit, user conference | This file + [webinar-funnel.md](references/webinar-funnel.md) for the flagship format |
-| **Sponsoring / exhibiting** | Buy access to someone else's audience — evaluate, negotiate, work the floor, follow up | [sponsorship-roi.md](references/sponsorship-roi.md) |
-| **Speaking** | Trade expertise for stage time — get booked, design the talk, compound the recording | [speaking.md](references/speaking.md) |
-| **Attending** | No booth, no stage — engineer meetings anyway | Section below |
+| **Organizador(a)** | Dono da audiência de ponta a ponta — webinar, workshop, jantar, meetup, summit, conferência de usuário | Este arquivo + [webinar-funnel.md](references/webinar-funnel.md) para o formato carro-chefe |
+| **Patrocinador(a)/expositor(a)** | Compra acesso à audiência de outra pessoa — avalia, negocia, trabalha o chão, faz follow-up | [sponsorship-roi.md](references/sponsorship-roi.md) |
+| **Palestrante** | Troca expertise por tempo de palco — consegue vaga, desenha a palestra, acumula a gravação | [speaking.md](references/speaking.md) |
+| **Participante** | Sem estande, sem palco — engenheira reuniões mesmo assim | Seção abaixo |
 
-Mixed roles are normal (sponsor + speak, attend + host a dinner). Plan each role's motion separately; they share the follow-up system.
+Papéis mistos são normais (patrocinar + palestrar, participar + organizar
+um jantar). Planeje o movimento de cada papel separadamente; eles
+compartilham o sistema de follow-up.
 
-## Which Events to Invest In (Portfolio First)
+## Em que eventos investir (portfólio primeiro)
 
-Before roles and tactics: events are the most expensive, riskiest, hardest-to-measure channel — the leverage is in **selection**, not execution. Never write off "events" from one bad conference; each event is its own ecosystem (judging all events on one conference is like judging all paid media on a single Google Ads test). Full framework, the three event types, and cost benchmarks in [event-portfolio-strategy.md](references/event-portfolio-strategy.md).
+Antes de papéis e táticas: eventos são o canal mais caro, mais arriscado, e
+mais difícil de medir — a alavancagem está na **seleção**, não na
+execução. Nunca descarte "eventos" por causa de uma conferência ruim; cada
+evento é seu próprio ecossistema (julgar todos os eventos por uma
+conferência é como julgar toda mídia paga por um único teste de Google
+Ads). Framework completo, os três tipos de evento, e benchmarks de custo em
+[event-portfolio-strategy.md](references/event-portfolio-strategy.md).
 
-- **Is in-person even necessary?** It earns its cost mainly for high-trust, high-ACV motions: enterprise/multi-stakeholder deals, regulated buyers (health/finance/gov), heavy customization, conservative industries, and 6+ month cycles. If your ICP isn't there, spend on digital first.
-- **The 80/20 of selection.** A handful of events generate most event pipeline. Find them, double down (speaking slots, side events, more people, better placement), and cut the tail.
-- **Bigger isn't better.** Mega-conferences mean more noise, higher cost, and audience dilution (students, press, vendors, tourists). Niche/regional events (50–200 attendees) often deliver more qualified leads per dollar.
-- **Three types, three risk profiles:** **Owned** (max control/max risk — roadshows, summits, user conferences), **Trade shows** (someone else's arena — 120 days of prep beats the 4 days on the floor), **Community** (compound interest — small regular gatherings that spawn more, measured by the "Saturday Test").
+- **Presencial é sequer necessário?** Justifica o custo principalmente para
+  movimentos de alta confiança e alto ACV: negócios enterprise/
+  multi-stakeholder, compradores regulados (saúde/finanças/governo),
+  customização pesada, setores conservadores, e ciclos de 6+ meses. Se seu
+  ICP não está lá, gaste em digital primeiro.
+- **O 80/20 da seleção.** Um punhado de eventos gera a maior parte do
+  pipeline de evento. Encontre-os, dobre a aposta (vagas de palestra,
+  eventos paralelos, mais gente, melhor posicionamento), e corte a cauda.
+- **Maior não é melhor.** Megaconferências significam mais ruído, custo
+  maior, e diluição de audiência (estudantes, imprensa, fornecedores,
+  turistas). Eventos de nicho/regionais (50-200 participantes) costumam
+  entregar mais leads qualificados por real gasto.
+- **Três tipos, três perfis de risco:** **Próprio** (controle
+  máximo/risco máximo — roadshows, summits, conferências de usuário),
+  **Feiras** (a arena de outra pessoa — 120 dias de preparo vencem os 4
+  dias no chão), **Comunidade** (juros compostos — encontros pequenos e
+  regulares que geram mais, medidos pelo "Teste de Sábado").
 
-## The Universal Arc: 20% Event, 80% Before-and-After
+## O arco universal: 20% evento, 80% antes-e-depois
 
-The event itself is the smallest part of event marketing. Every format follows the same arc, and most failures are arc failures, not event failures:
+O evento em si é a menor parte do marketing de evento. Todo formato segue
+o mesmo arco, e a maioria das falhas são falhas de arco, não falhas de
+evento:
 
-**Before (where pipeline is actually made)**
-- Build the target list: who's attending that matches your ICP? (Attendee lists, speaker lists, "who's going" posts, past-year attendees.)
-- **Book meetings before you arrive.** A meeting booked two weeks out is worth ten hopeful hallway collisions. Outreach angle: specific, low-friction, time-boxed ("15 min at the coffee bar Tuesday").
-- Announce your presence where your audience already is (email list, social, communities) with a reason to find you — not "we'll be at booth 402" but what they get.
+**Antes (onde o pipeline de fato é feito)**
 
-**During**
-- Optimize for *qualified conversations*, not raw contacts. One real conversation with an ICP buyer beats fifty badge scans.
-- Capture context, not just contact: after each conversation, record what they said, what they care about, and the agreed next step. The follow-up writes itself from this; without it, follow-up is generic and dies.
-- Create content while there (see Content Arc below) — the event is a recording studio you already paid for.
+- Construa a lista-alvo: quem vai participar que combina com seu ICP?
+  (listas de participante, listas de palestrante, posts de "quem vai," e
+  participantes de anos anteriores)
+- **Agende reuniões antes de chegar.** Uma reunião agendada duas semanas
+  antes vale dez esbarrões esperançosos no corredor. Ângulo de outreach:
+  específico, de baixa fricção, com horário definido ("15 min no café
+  terça").
+- Anuncie sua presença onde sua audiência já está (lista de e-mail,
+  social, comunidades) com um motivo para te encontrar — não "estaremos no
+  estande 402" mas o que eles ganham.
 
-**After (where pipeline is won or lost)**
-- **The 24–48 hour window.** Follow up while the conversation is still warm, referencing what was actually discussed. Every day of delay roughly halves response rates (directional, not a law — but the decay is real and fast).
-- Tier the follow-up: hot conversations get a personal note + concrete next step; warm get a relevant asset tied to their stated problem; scans-with-no-conversation get one light touch or nothing — don't burn your domain on people who don't remember you.
-- Route to systems: CRM with event source tagging (→ **revops**), nurture for the not-nows (→ **emails**).
+**Durante**
 
-## Hosting: Choose the Format for the Job
+- Otimize para *conversas qualificadas*, não contatos brutos. Uma conversa
+  real com um comprador ICP vale mais que cinquenta scans de crachá.
+- Capture contexto, não só contato: depois de cada conversa, registre o
+  que a pessoa disse, com o que se importa, e o próximo passo combinado. O
+  follow-up se escreve sozinho a partir disso; sem isso, o follow-up é
+  genérico e morre.
+- Crie conteúdo enquanto estiver lá (veja Arco de Conteúdo abaixo) — o
+  evento é um estúdio de gravação que você já pagou.
 
-| Format | Best for | Effort | Notes |
+**Depois (onde o pipeline é ganho ou perdido)**
+
+- **A janela de 24-48 horas.** Faça o follow-up enquanto a conversa ainda
+  está quente, referenciando o que de fato foi discutido. Todo dia de
+  atraso reduz a taxa de resposta pela metade, aproximadamente
+  (direcional, não uma lei — mas a queda é real e rápida).
+- Escalone o follow-up: conversas quentes recebem uma nota pessoal +
+  próximo passo concreto; mornas recebem um material relevante ligado ao
+  problema declarado; scans sem conversa recebem um toque leve ou nada —
+  não queime seu domínio com gente que não lembra de você.
+- Roteie para sistemas: CRM com tagueamento de fonte de evento (→
+  **revops**), nutrição para os "não agora" (→ **emails**).
+
+## Organizando: escolha o formato certo para o trabalho
+
+| Formato | Melhor para | Esforço | Notas |
 |---|---|---|---|
-| **Webinar** | Lead gen + education at scale | Low-mid | The flagship repeatable format — full funnel in [webinar-funnel.md](references/webinar-funnel.md) |
-| **Workshop** | Product-qualified leads, activation | Mid | Hands-on beats presentation for conversion; smaller and deeper than a webinar |
-| **Dinner / small gathering** | Exec relationships, ABM accounts | Mid | 8–14 seats, no pitch, curated guest mix — the highest meetings-per-dollar format in B2B |
-| **Meetup series** | Local community, recurring presence | Mid | Consistency beats production value; hand hosting duties to community members over time (→ **community-marketing**) |
-| **Virtual summit** | List building via partner audiences | High | Multi-speaker = built-in distribution; every speaker promotes (→ **co-marketing** for the partner mechanics) |
-| **User conference** | Retention, expansion, category authority | Very high | Don't attempt before you have a community that would attend without being begged |
+| **Webinar** | Geração de lead + educação em escala | Baixo-médio | O formato carro-chefe repetível — funil completo em [webinar-funnel.md](references/webinar-funnel.md) |
+| **Workshop** | Leads qualificados por produto, ativação | Médio | Prático vence apresentação para conversão; menor e mais profundo que um webinar |
+| **Jantar / encontro pequeno** | Relacionamento executivo, contas de ABM | Médio | 8-14 lugares, sem pitch, mix de convidados curado — o formato com mais reunião por real em B2B |
+| **Série de meetup** | Comunidade local, presença recorrente | Médio | Consistência vence valor de produção; passe as funções de organização para membros da comunidade com o tempo (→ **community-marketing**) |
+| **Summit virtual** | Construção de lista via audiências de parceiro | Alto | Multi-palestrante = distribuição embutida; todo palestrante promove (→ **co-marketing** para a mecânica de parceiro) |
+| **Conferência de usuário** | Retenção, expansão, autoridade de categoria | Muito alto | Não tente antes de ter uma comunidade que apareceria sem precisar implorar |
 
-Two hosting rules that outrank format choice:
+Duas regras de organização que superam a escolha de formato:
 
-- **The topic is the targeting.** "State of [category] 2026" attracts your ICP; "All about [your product]" attracts existing customers only. Pick topics your buyer would attend even if they'd never buy.
-- **Recurring beats one-off.** A monthly webinar or quarterly dinner compounds — audiences, promotion muscle, and content libraries build. A single big event evaporates.
+- **O tema É a segmentação.** "Estado de [categoria] 2026" atrai seu ICP;
+  "Tudo sobre [seu produto]" só atrai clientes existentes. Escolha temas
+  que seu comprador visitaria mesmo que nunca fosse comprar.
+- **Recorrente vence pontual.** Um webinar mensal ou jantar trimestral se
+  acumula — audiências, músculo de promoção, e bibliotecas de conteúdo se
+  constroem. Um evento único grande evapora.
 
-## Attending (No Booth, No Stage)
+## Participando (sem estande, sem palco)
 
-The zero-budget motion, and often the best ROI in the building:
+O movimento de orçamento zero, e frequentemente o melhor ROI da casa:
 
-1. **Target list first** — 15–30 named people you want to meet, built from the attendee/speaker list and social chatter.
-2. **Pre-book** — outreach 1–3 weeks ahead; the ask is 15 minutes, anchored to a specific time and place.
-3. **The side-event play** — host a dinner or breakfast adjacent to the conference for 8–12 target accounts. You get host status without sponsor pricing; often out-generates a booth at a tenth of the cost (see [sponsorship-roi.md](references/sponsorship-roi.md)).
-4. **Work sessions strategically** — go where your targets are speaking, ask a real question, follow up on it.
-5. Same 24–48h follow-up discipline as every other role.
+1. **Lista-alvo primeiro** — 15-30 pessoas nomeadas que você quer
+   conhecer, construída a partir da lista de participante/palestrante e do
+   burburinho social.
+2. **Pré-agende** — outreach 1-3 semanas antes; o pedido é de 15 minutos,
+   ancorado a um horário e lugar específico.
+3. **A jogada do evento paralelo** — organize um jantar ou café-da-manhã
+   adjacente à conferência para 8-12 contas-alvo. Você ganha status de
+   anfitrião sem o preço de patrocínio; frequentemente gera mais que um
+   estande por um décimo do custo (veja
+   [sponsorship-roi.md](references/sponsorship-roi.md)).
+4. **Trabalhe as sessões estrategicamente** — vá onde seus alvos estão
+   palestrando, faça uma pergunta real, faça follow-up nela.
+5. Mesma disciplina de follow-up de 24-48h de todo outro papel.
 
-## The Content Arc: Every Event Is a Content Engine
+## O arco de conteúdo: todo evento é um motor de conteúdo
 
-Events produce your highest-proof content — capture it deliberately:
+Eventos produzem seu conteúdo de maior prova — capture-o deliberadamente:
 
-- **Record everything you're allowed to record.** Talks, webinars, panels. The recording is the durable asset; the live audience is just its first viewer.
-- **Transcripts compound in AI answers.** Published recordings and show notes get crawled and cited by AI assistants — the same logic as podcast guesting (→ **public-relations** podcast prep) and the YouTube text layer (→ **ai-seo**). Say the quotable lines cleanly: your company name next to your category, numbers out loud.
-- Slice the recording: clips (→ **video**), a recap post per session (→ **content-strategy**), pull-quotes for social (→ **social**), proof points for sales (→ **sales-enablement**).
-- Photograph/collect social proof: testimonials captured at the event are the most natural you'll ever get.
+- **Grave tudo que você tem permissão de gravar.** Palestras, webinars,
+  painéis. A gravação é o ativo durável; a audiência ao vivo é só seu
+  primeiro espectador.
+- **Transcrições se acumulam em respostas de IA.** Gravações publicadas e
+  show notes são rastreadas e citadas por assistentes de IA — a mesma
+  lógica de aparecer como convidado em podcast (→ preparação de podcast
+  da **public-relations**) e da camada de texto do YouTube (→
+  **ai-seo**). Diga as frases citáveis com clareza: o nome da sua empresa
+  ao lado da sua categoria, números em voz alta.
+- Fatie a gravação: clipes (→ **video**), um post de recapitulação por
+  sessão (→ **content-strategy**), citações para redes sociais (→
+  **social**), pontos de prova para vendas (→ **sales-enablement**).
+- Fotografe/colete prova social: depoimentos capturados no evento são os
+  mais naturais que você vai conseguir.
 
-## Measurement: Pipeline, Not Applause
+## Mensuração: pipeline, não aplauso
 
-| Metric tier | Examples | Verdict |
+| Nível de métrica | Exemplos | Veredito |
 |---|---|---|
-| **Vanity** | Registrations, badge scans, foot traffic, impressions | Track, never optimize for, never report as success |
-| **Real** | Qualified conversations, meetings booked, opportunities created, pipeline influenced | The actual scoreboard |
-| **Decisive** | Cost per qualified meeting, cost per opportunity, closed-won influenced | What decides whether you do it again |
+| **Vaidade** | Inscrições, scans de crachá, tráfego a pé, impressões | Rastreie, nunca otimize para, nunca reporte como sucesso |
+| **Real** | Conversas qualificadas, reuniões agendadas, oportunidades criadas, pipeline influenciado | O placar de verdade |
+| **Decisivo** | Custo por reunião qualificada, custo por oportunidade, fechado-ganho influenciado | O que decide se você faz de novo |
 
-- Compare cost-per-qualified-meeting against your other channels (ads, outbound) — that's the go/no-go math, worked through in [sponsorship-roi.md](references/sponsorship-roi.md).
-- Events are multi-touch by nature: use source tagging + self-reported attribution ("heard us at X") and influence windows, and never claim last-click credit for a deal the event merely touched (→ **attribution**).
-- Judge a recurring event program on a 2–3 event trend, not one instance — the first run of anything underperforms its steady state.
+- Compare o custo por reunião qualificada contra seus outros canais
+  (anúncios, outbound) — essa é a matemática de ir/não ir, trabalhada em
+  [sponsorship-roi.md](references/sponsorship-roi.md).
+- Eventos são multi-toque por natureza: use tagueamento de fonte +
+  atribuição autodeclarada ("ouvi falar de vocês no X") e janelas de
+  influência, e nunca reivindique o crédito de último clique por um
+  negócio que o evento só tocou (→ **attribution**).
+- Julgue um programa de evento recorrente por uma tendência de 2-3
+  eventos, não uma instância — a primeira execução de qualquer coisa
+  performa abaixo do seu estado estável.
 
-## Common Mistakes
+## Erros comuns
 
-- **Sponsoring for "brand awareness" with no conversation target.** If nobody owns a meetings number, the booth is décor.
-- **The follow-up gap.** Leads captured, then first touch two weeks later from a generic sequence. The event was fine; the follow-up killed it.
-- **Optimizing show-up rate after picking a topic nobody wants.** Reminder cadence can't save weak demand — fix topic and promise first.
-- **One-off thinking.** Budget for the third instance before running the first.
-- **Doing the event, skipping the recording.** Full production effort, zero durable assets.
-- **Counting badge scans as leads.** A scan is a person who walked slowly. Qualify before it enters the pipeline.
-- **Writing off "events" after one bad conference.** Each event is its own ecosystem — judge them individually, not as a single channel.
-- **Chasing the biggest conferences.** Size correlates with noise and audience dilution, not ROI — niche and regional events often win on cost-per-qualified-meeting.
+- **Patrocinar por "reconhecimento de marca" sem meta de conversa.** Se
+  ninguém é dono de um número de reuniões, o estande é decoração.
+- **A lacuna de follow-up.** Leads capturados, depois primeiro toque duas
+  semanas depois vindo de uma sequência genérica. O evento estava ok; o
+  follow-up matou.
+- **Otimizar a taxa de comparecimento depois de escolher um tema que
+  ninguém quer.** Cadência de lembrete não salva demanda fraca — conserte
+  o tema e a promessa primeiro.
+- **Pensamento pontual.** Orce para a terceira instância antes de rodar a
+  primeira.
+- **Fazer o evento, pular a gravação.** Esforço de produção total, zero
+  ativos duráveis.
+- **Contar scans de crachá como lead.** Um scan é uma pessoa que andou
+  devagar. Qualifique antes de entrar no pipeline.
+- **Descartar "eventos" depois de uma conferência ruim.** Cada evento é
+  seu próprio ecossistema — julgue individualmente, não como um único
+  canal.
+- **Correr atrás das maiores conferências.** Tamanho se correlaciona com
+  ruído e diluição de audiência, não ROI — eventos de nicho e regionais
+  frequentemente vencem em custo por reunião qualificada.
 
-## Related Skills
+## Skills relacionadas
 
-- **launch** — the event is a launch moment (announcement, Product Hunt, go-live)
-- **co-marketing** — joint webinars and partner summits: partnership mechanics live there, event execution here
-- **community-marketing** — ongoing community programs; events can seed or serve one
-- **public-relations** — podcast guesting and press at events
-- **lead-magnets** — gated replays and event content as magnets
-- **emails** / **sms** — the reminder and follow-up sequences themselves
-- **cold-email** — pre-event meeting-booking outreach
-- **revops** — routing, scoring, and source-tagging event leads
-- **attribution** — measuring multi-touch event influence honestly
+- **launch** — o evento é um momento de lançamento (anúncio, Product Hunt, go-live)
+- **co-marketing** — webinars conjuntos e summits de parceiro: a mecânica de parceria vive lá, a execução do evento aqui
+- **community-marketing** — programas contínuos de comunidade; eventos podem semear ou servir um
+- **public-relations** — participação em podcast e imprensa em eventos
+- **lead-magnets** — replays fechados e conteúdo de evento como isca
+- **emails** / **sms** — as próprias sequências de lembrete e follow-up
+- **cold-email** — outreach de agendamento de reunião pré-evento
+- **revops** — roteamento, pontuação, e tagueamento de fonte de leads de evento
+- **attribution** — medir honestamente a influência multi-toque do evento

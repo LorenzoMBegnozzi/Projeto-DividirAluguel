@@ -1,154 +1,150 @@
 ---
 name: public-relations
-description: "When the user wants help with public relations, earned media, press coverage, journalist outreach, or media strategy (not pull requests). Also use when the user mentions 'PR,' 'press,' 'press release,' 'media outreach,' 'pitch a journalist,' 'get featured,' 'media list,' 'media kit,' 'press kit,' 'newsjacking,' 'news hijack,' 'HARO,' 'Qwoted,' 'Featured,' 'reporter request,' 'tech press,' 'TechCrunch,' 'thought leadership placement,' 'op-ed,' 'guest article,' 'press contacts,' 'podcast prep,' 'podcast guest,' 'prep me for this podcast,' 'how do I get press,' 'PR crisis,' 'crisis communications,' 'respond to backlash,' 'we got hacked,' 'data breach statement,' or 'holding statement.' Also covers crisis response when something goes wrong. For startup/SaaS/AI directory submissions, see directory-submissions. For product launches, see launch. For social-media engagement, see social. For cold-email outreach to prospects, see cold-email."
+description: Quando o usuário quiser ajuda com relações públicas, mídia espontânea, cobertura de imprensa, abordagem de jornalista, ou estratégia de mídia (não pull requests). Use também quando o usuário mencionar "PR," "relações públicas," "imprensa," "press release," "cobertura de imprensa," "abordagem de mídia," "pitch para jornalista," "aparecer na mídia," "lista de mídia," "media kit," "newsjacking," "HARO," "Qwoted," "Featured," "pedido de repórter," "imprensa de tech," "TechCrunch," "thought leadership," "artigo de opinião," "contatos de imprensa," "preparo para podcast," "vou participar de um podcast," ou "como consigo imprensa." Use isso para mídia espontânea — encontrar jornalistas, fazer pitch de histórias, newsjacking, preparar aparições em podcast, e responder a pedidos de imprensa. Para diretórios de startup/SaaS/IA, veja directory-submissions. Para lançamentos, veja launch. Para redes sociais, veja social. Para cold-email a prospects, veja cold-email.
 metadata:
-  version: 1.2.0
+  version: 1.1.1
 ---
 
-# Public Relations & Earned Media
+# Relações Públicas e Mídia Espontânea
 
-You are an expert in earned media for software products. Your goal is to help the user get covered by journalists, podcasts, and newsletters — efficiently, with respect for the people on the other end of the pitch.
+Você é um especialista em mídia espontânea para produtos de software. Seu objetivo é ajudar o usuário a conseguir cobertura de jornalistas, podcasts, e newsletters — de forma eficiente, com respeito pelas pessoas do outro lado do pitch.
 
-## Before Starting
+## Antes de Começar
 
-**Check for product marketing context first:**
-If `.agents/product-marketing.md` exists (or `.claude/product-marketing.md`, or the legacy `product-marketing-context.md` filename, in older setups), read it before asking questions. Use that context and only ask for information not already covered or specific to this task.
-
----
-
-## Core Philosophy
-
-PR is not a substitute for distribution. It's a multiplier for it.
-
-- **Earned media doesn't drive direct conversions.** A TechCrunch hit will not give you 1,000 paying customers. It will give you backlinks, brand legitimacy, AI-citation surface area, and ammo for sales conversations.
-- **Pitch journalists like you'd pitch a customer:** specific, useful, fast, and never about you.
-- **The story is not your product. The story is the trend, the data, the conflict, or the human.** Your product is the evidence. Every pitchable story bends toward one of three angles — Founding Story, David vs Goliath, or Have an Enemy (a *broken system*, never a competitor). See [references/story-angles.md](references/story-angles.md).
-- **Chase press for the compound effect, not the traffic bump.** The bump fades in a day; authority, journalist relationships, and AI-citation surface compound. Build media relationships *before* you need them, and run one core asset through the whole repurposing flywheel.
-- **Speed beats polish on reactive PR.** A B+ pitch in the first hour of a story beats an A+ pitch on day three.
-
-### When PR is worth it
-
-- You have **a real story** — proprietary data, a strong opinion, a milestone, a customer with a sharp before/after, or a fresh angle on a trending topic
-- You have **founder/exec time** — journalists want quotes from people with skin in the game, not from a PR rep
-- You have **a destination** — a press page, blog post, or product launch that converts attention into something useful
-
-### When to skip PR (for now)
-
-- Pre-launch with no story beyond "we exist"
-- No one on the team can sustain pitching for 4–6 weeks (PR is a momentum game)
-- You don't have a clear ICP — journalists ask "who reads my piece because of this?" and if you can't answer, neither can they
+**Primeiro, verifique se há contexto de produto:**
+Se `.agents/product-marketing.md` existir (ou `.claude/product-marketing.md`, ou o nome de arquivo legado `product-marketing-context.md`, em setups mais antigos), leia-o antes de fazer perguntas. Use esse contexto e só pergunte o que não estiver coberto ou for específico desta tarefa.
 
 ---
 
-## The PR Mix
+## Filosofia Central
 
-Four modes. Most teams over-index on one. Run at least three.
+PR não é um substituto para distribuição. É um multiplicador dela.
 
-| Mode | What it is | Effort | Speed to coverage |
-|------|------------|--------|-------------------|
-| **Reactive (newsjacking)** | Inject your POV into trending news | Low–medium | Hours to days |
-| **Proactive (pitching)** | Build a media list, pitch original stories | High | 2–8 weeks |
-| **Inbound (press requests)** | Respond to journalist queries on HARO/Qwoted/Featured | Low | Days to weeks |
-| **Owned (press page + media kit)** | Make it easy for journalists to find you | One-time setup | N/A |
+- **Mídia espontânea não gera conversões diretas.** Uma matéria no TechCrunch (ou no InfoMoney, StartSe, ou Exame no contexto brasileiro) não vai te dar 1.000 clientes pagantes. Vai te dar backlinks, legitimidade de marca, superfície de citação por IA, e munição para conversas de venda.
+- **Faça pitch para jornalistas como você faria para um cliente:** específico, útil, rápido, e nunca sobre você.
+- **A história não é o seu produto. A história é a tendência, o dado, o conflito, ou o humano.** Seu produto é a evidência. Toda história pitchável se encaixa em um de três ângulos — História de Fundação, Davi contra Golias, ou Ter um Inimigo (um *sistema quebrado*, nunca um concorrente). Veja [references/story-angles.md](references/story-angles.md).
+- **Persiga imprensa pelo efeito composto, não pelo pico de tráfego.** O pico desaparece em um dia; autoridade, relacionamentos com jornalistas, e superfície de citação por IA se compõem. Construa relacionamentos de mídia *antes* de precisar deles, e faça um único ativo central passar por todo o flywheel de reaproveitamento.
+- **Velocidade vence acabamento em PR reativo.** Um pitch B+ na primeira hora de uma história vence um pitch A+ no terceiro dia.
 
-**For the story angle taxonomy (Founding Story / David vs Goliath / Have an Enemy), data stories, media relationship-building, and the PR repurposing flywheel** — see [references/story-angles.md](references/story-angles.md)
+### Quando PR vale a pena
 
-**For the reactive newsjacking workflow** — see [references/newsjacking.md](references/newsjacking.md)
+- Você tem **uma história de verdade** — dado proprietário, uma opinião forte, um marco, um cliente com um antes/depois nítido, ou um ângulo fresco sobre um tópico em alta
+- Você tem **tempo de fundador/executivo** — jornalistas querem citações de pessoas com pele em jogo, não de um assessor de imprensa
+- Você tem **um destino** — uma página de imprensa, post de blog, ou lançamento de produto que converte atenção em algo útil
 
-**For proactive journalist pitching** — see [references/journalist-pitching.md](references/journalist-pitching.md)
+### Quando pular PR (por ora)
 
-**For inbound press-request platforms (HARO, Qwoted, etc.)** — see [references/press-platforms.md](references/press-platforms.md)
-
-**For where to pitch (media outlets, podcasts, newsletters)** — see [references/media-outlets.md](references/media-outlets.md). For startup/SaaS/AI directories, use the separate `directory-submissions` skill — different intent, different list.
-
-**For prepping a podcast appearance you've landed** — see [references/podcast-guest-prep.md](references/podcast-guest-prep.md). Episodes get transcribed and cited by AI assistants, so a good appearance compounds in AI answers for years — prep is an AI-visibility play, not just interview polish.
-
----
-
-## When Something Goes Wrong
-
-PR also has a reactive side: breaches, outages, viral complaints, executive controversies. The story is already running, so the goal shifts from earning coverage to responding fast and accurately.
-
-Start by assigning a severity tier, then run the first-60-minutes checklist: confirm facts, designate one spokesperson, publish a holding statement, set the next update time. For a data breach, injury, lawsuit, or regulator, loop in legal counsel before admitting fault or publishing.
-
-**For severity tiers, channel order, and playbooks by crisis type** — see [references/crisis-communications.md](references/crisis-communications.md)
-
-**For holding, breach, outage, apology, billing-error, and postmortem templates** — see [references/statement-templates.md](references/statement-templates.md)
+- Pré-lançamento sem história além de "existimos"
+- Ninguém no time consegue sustentar o pitch por 4–6 semanas (PR é um jogo de momentum)
+- Você não tem um ICP claro — jornalistas perguntam "quem lê minha matéria por causa disso?" e se você não consegue responder, eles também não
 
 ---
 
-## Owned: Press Page + Media Kit
+## O Mix de PR
 
-Set this up once. It's the cheapest PR investment with the highest ROI on every future story.
+Quatro modos. A maioria dos times superindexa em um. Rode pelo menos três.
 
-**Press page (`/press` or `/newsroom`) should include:**
-- One-paragraph company description (copy/paste ready)
-- Founder bios with headshots (high-res, downloadable)
-- Logo pack (SVG + PNG, light + dark, with usage guidelines)
-- Product screenshots (high-res)
-- Recent coverage list (social proof for the next journalist)
-- Founding date, employee count, funding (if disclosed)
-- Press contact email (not a form — journalists hate forms)
-- Recent press releases / announcements
+| Modo | O que é | Esforço | Velocidade até a cobertura |
+|------|---------|---------|------------------------------|
+| **Reativo (newsjacking)** | Injetar seu ponto de vista em notícias em alta | Baixo–médio | Horas a dias |
+| **Proativo (pitching)** | Construir uma lista de mídia, fazer pitch de histórias originais | Alto | 2–8 semanas |
+| **Inbound (pedidos de imprensa)** | Responder a consultas de jornalista no HARO/Qwoted/Featured | Baixo | Dias a semanas |
+| **Próprio (página de imprensa + media kit)** | Facilitar que jornalistas te encontrem | Configuração única | N/A |
 
-**One sentence at the top:** "For interview requests or assets, email press@yourcompany.com — we respond within 24 hours."
+**Para a taxonomia de ângulo de história (História de Fundação / Davi contra Golias / Ter um Inimigo), histórias de dado, construção de relacionamento de mídia, e o flywheel de reaproveitamento de PR** — veja [references/story-angles.md](references/story-angles.md)
 
-Then *actually* respond within 24 hours.
+**Para o fluxo de newsjacking reativo** — veja [references/newsjacking.md](references/newsjacking.md)
 
----
+**Para pitch proativo de jornalista** — veja [references/journalist-pitching.md](references/journalist-pitching.md)
 
-## Quick Reference: Pitch Quality Bar
+**Para plataformas de pedido de imprensa inbound (HARO, Qwoted, etc.)** — veja [references/press-platforms.md](references/press-platforms.md)
 
-Before sending any pitch, the answer to all of these should be yes:
+**Para onde fazer pitch (veículos de mídia, podcasts, newsletters)** — veja [references/media-outlets.md](references/media-outlets.md). Para diretórios de startup/SaaS/IA, use a skill separada `directory-submissions` — intenção diferente, lista diferente.
 
-- [ ] Does this journalist cover this beat? (Check their last 5 articles.)
-- [ ] Is there a clear news hook — something that just happened or is about to?
-- [ ] Could this journalist write a complete story from this email alone? (Data, quotes, customer name, contact.)
-- [ ] Is the subject line specific enough to predict the article's headline?
-- [ ] Is the pitch under 150 words?
-- [ ] Did you avoid the words "revolutionary," "game-changing," "disruptive," and "synergy"?
-- [ ] Is the ask clear? (Interview? Embargo? Exclusive? Quote?)
-
-If any answer is no, don't send.
+**Para preparar uma aparição de podcast que você já conseguiu** — veja [references/podcast-guest-prep.md](references/podcast-guest-prep.md). Episódios são transcritos e citados por assistentes de IA, então uma boa aparição se compõe em respostas de IA por anos — o preparo é uma jogada de visibilidade em IA, não só polimento de entrevista.
 
 ---
 
-## Measurement
+## Próprio: Página de Imprensa + Media Kit
 
-What to track:
+Configure isso uma vez. É o investimento de PR mais barato com o maior ROI em toda história futura.
 
-| Metric | Why |
-|--------|-----|
-| **Coverage count** (placements / month) | Activity baseline |
-| **Domain rating of placements** | Backlink value |
-| **Referral traffic from coverage** | Did anyone actually click? |
-| **Brand search lift** | Did people search you after reading? |
-| **AI citation rate** (ChatGPT, Perplexity quote your brand?) | The new measurement that matters |
-| **Sales conversations citing the article** | The only one that matters for revenue |
+**A página de imprensa (`/imprensa` ou `/newsroom`) deve incluir:**
 
-What not to obsess over: AVE (advertising value equivalency) — it's a vanity metric PR firms invented.
+- Descrição da empresa em um parágrafo (pronta para copiar/colar)
+- Bios dos fundadores com fotos (alta resolução, baixáveis)
+- Pacote de logo (SVG + PNG, claro + escuro, com diretrizes de uso)
+- Screenshots do produto (alta resolução)
+- Lista de cobertura recente (prova social para o próximo jornalista)
+- Data de fundação, número de funcionários, captação (se divulgada)
+- E-mail de contato de imprensa (não um formulário — jornalistas odeiam formulário)
+- Press releases / anúncios recentes
+
+**Uma frase no topo:** "Para pedidos de entrevista ou materiais, escreva para <imprensa@suaempresa.com.br> — respondemos em até 24 horas."
+
+Depois, *de fato* responda em até 24 horas.
 
 ---
 
-## Common Workflows
+## Referência Rápida: Barra de Qualidade do Pitch
 
-### "Help me newsjack [trending story]"
-Go to [newsjacking.md](references/newsjacking.md), run the scoring rubric, draft 2–3 angles, pick the best, draft the pitch.
+Antes de enviar qualquer pitch, a resposta a todas essas deveria ser sim:
 
-### "Find journalists who cover [beat]"
-Go to [journalist-pitching.md](references/journalist-pitching.md), use the discovery checklist + dev-browser to research recent articles, build a scored list.
+- [ ] Esse jornalista cobre essa pauta? (Confira as últimas 5 matérias dele.)
+- [ ] Há um gancho de notícia claro — algo que acabou de acontecer ou está prestes a acontecer?
+- [ ] Esse jornalista conseguiria escrever uma matéria completa só com este e-mail? (Dado, citações, nome de cliente, contato.)
+- [ ] O assunto é específico o suficiente para prever o título da matéria?
+- [ ] O pitch tem menos de 150 palavras?
+- [ ] Você evitou as palavras "revolucionário," "inovador que muda o jogo," "disruptivo," e "sinergia"?
+- [ ] O pedido está claro? (Entrevista? Embargo? Exclusividade? Citação?)
 
-### "What's worth pitching this week?"
-Combine: recent product milestones + active news cycles + any data you've collected. Score each potential story by the quality bar above.
+Se qualquer resposta for não, não envie.
 
-### "What's my story angle?" / "How do I get press with no news?"
-Go to [story-angles.md](references/story-angles.md). Fit the situation to one of the three angles (Founding Story / David vs Goliath / Have an Enemy), or turn proprietary data into a data story. Remember: a milestone alone isn't a story — milestone *with narrative* is.
+---
 
-### "Respond to this HARO query"
-Go to [press-platforms.md](references/press-platforms.md), use the response template, keep it under 200 words.
+## Medição
 
-### "I'm going on [podcast] next week — help me prep"
-Go to [podcast-guest-prep.md](references/podcast-guest-prep.md): research the show (RSS feed → site → Apple Podcasts → web), extract the recurring threads and host profiles, map the guest's stories onto them, deliver the brief.
+O que acompanhar:
 
-### "Build my press page"
-Use the checklist above. Most companies do this in an afternoon and forget about it for a year — that's fine.
+| Métrica | Por quê |
+|---------|---------|
+| **Contagem de cobertura** (inserções / mês) | Linha de base de atividade |
+| **Domain rating das inserções** | Valor de backlink |
+| **Tráfego de referência da cobertura** | Alguém de fato clicou? |
+| **Elevação de busca de marca** | As pessoas te buscaram depois de ler? |
+| **Taxa de citação por IA** (ChatGPT, Perplexity citam sua marca?) | A nova métrica que importa |
+| **Conversas de venda citando a matéria** | A única que importa para receita |
+
+Com o que não obcecar: AVE (equivalência de valor publicitário) — é uma métrica de vaidade que as assessorias de imprensa inventaram.
+
+---
+
+## Fluxos de Trabalho Comuns
+
+### "Me ajude a fazer newsjacking de [história em alta]"
+
+Vá para [newsjacking.md](references/newsjacking.md), rode a rubrica de pontuação, rascunhe 2–3 ângulos, escolha o melhor, rascunhe o pitch.
+
+### "Encontre jornalistas que cobrem [pauta]"
+
+Vá para [journalist-pitching.md](references/journalist-pitching.md), use o checklist de descoberta + navegador de dev para pesquisar matérias recentes, construa uma lista pontuada.
+
+### "O que vale a pena fazer pitch essa semana?"
+
+Combine: marcos recentes de produto + ciclos de notícia ativos + qualquer dado que você coletou. Pontue cada história potencial pela barra de qualidade acima.
+
+### "Qual é meu ângulo de história?" / "Como consigo imprensa sem notícia?"
+
+Vá para [story-angles.md](references/story-angles.md). Encaixe a situação em um dos três ângulos (História de Fundação / Davi contra Golias / Ter um Inimigo), ou transforme dado proprietário em uma história de dado. Lembre-se: um marco sozinho não é uma história — marco *com narrativa* é.
+
+### "Responder a essa consulta do HARO"
+
+Vá para [press-platforms.md](references/press-platforms.md), use o template de resposta, mantenha abaixo de 200 palavras.
+
+### "Vou participar de [podcast] semana que vem — me ajude a preparar"
+
+Vá para [podcast-guest-prep.md](references/podcast-guest-prep.md): pesquise o programa (feed RSS → site → Apple Podcasts → web), extraia os fios recorrentes e perfis do host, mapeie as histórias do convidado sobre eles, entregue o briefing.
+
+### "Construa minha página de imprensa"
+
+Use o checklist acima. A maioria das empresas faz isso em uma tarde e esquece por um ano — tudo bem.

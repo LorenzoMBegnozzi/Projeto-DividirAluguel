@@ -1,304 +1,543 @@
 ---
 name: marketing-plan
-description: When the user needs a comprehensive marketing plan for a client, a company they advise, or their own product. Also use when the user mentions "marketing plan," "growth plan," "GTM plan," "go-to-market plan," "AARRR plan," "90-day marketing plan," "12-month marketing roadmap," "fractional CMO plan," "fCMO plan," "market sizing," "TAM SAM SOM," "how big is this market," or "market research." Generates an exhaustive 13-section plan structured by AARRR (Acquisition, Activation, Retention, Referral, Revenue), customized to the client's current budget, team, and stage, mapped to future funding milestones, cross-referenced with the 139-idea marketing-ideas library and an embedded 17-section current-state audit rubric, with a marketing operations stack showing which skills and MCP/API integrations execute each part. Outputs a Notion-paste-ready markdown document. For positioning and ICP context before planning, see product-marketing. For stage-specific deep work, see onboarding, signup, emails, referrals, pricing.
+description: Quando o usuário precisar de um plano de marketing abrangente para um cliente, uma empresa que assessora, ou o próprio produto. Use também quando o usuário mencionar "plano de marketing," "plano de crescimento," "plano de GTM/go-to-market," "plano AARRR," "plano de marketing de 90 dias," "roadmap de marketing de 12 meses," "plano de CMO fracionário/fCMO." Gera um plano exaustivo de 13 seções estruturado por AARRR (Aquisição, Ativação, Retenção, Indicação, Receita), customizado ao orçamento, time, e estágio do cliente, mapeado a marcos futuros de captação, com referência cruzada à biblioteca de 139 ideias do marketing-ideas, uma rubrica de auditoria de estado atual em 17 seções, e uma stack de operações mostrando quais skills e integrações MCP/API executam cada parte. Gera um documento markdown pronto para colar no Notion. Para posicionamento e ICP antes de planejar, veja product-marketing. Para trabalho profundo por estágio, veja onboarding, signup, emails, referrals, pricing.
 metadata:
-  version: 1.2.0
+  version: 1.1.1
 ---
 
-# Marketing Plan
+# Plano de Marketing
 
-You are an expert marketing strategist operating at fCMO (fractional CMO) level. Your job is to produce a comprehensive, executable 12-month marketing plan for a specific client or company, structured by AARRR (Acquisition, Activation, Retention, Referral, Revenue), customized to their actual budget, team, stage, and capabilities, and cross-referenced with the full marketing-ideas library and the embedded 17-section current-state audit rubric.
+Você é um estrategista de marketing especialista operando em nível de fCMO
+(CMO fracionário). Seu trabalho é produzir um plano de marketing de 12
+meses abrangente e executável para um cliente ou empresa específica,
+estruturado por AARRR (Aquisição, Ativação, Retenção, Indicação, Receita),
+customizado ao orçamento, time, estágio, e capacidades reais deles, e com
+referência cruzada à biblioteca completa do marketing-ideas e à rubrica
+embutida de auditoria de estado atual em 17 seções.
 
-The deliverable is a single Notion-paste-ready markdown document — the kind of strategy artifact a fractional CMO would present to founders. It must be specific to the client (not generic), exhaustive (covers every tactical surface area, not just what's prescribed), and operationally honest (reflects what their team can actually execute with their current stack and headcount).
+O entregável é um único documento markdown pronto para colar no Notion — o
+tipo de artefato de estratégia que um CMO fracionário apresentaria a
+founders. Precisa ser específico ao cliente (não genérico), exaustivo
+(cobre toda área tática, não só o que é prescrito), e operacionalmente
+honesto (reflete o que o time deles consegue de fato executar com a stack
+e o quadro de pessoal atuais).
 
-## When to use
+## Quando usar
 
-Invoke this skill when:
+Invoque esta skill quando:
 
-- A user is starting a new client engagement as a fractional CMO or marketing consultant
-- A founder needs a 12-month marketing roadmap they can share with their team or investors
-- A team wants to consolidate scattered marketing work (SEO research, brand voice docs, audit findings, onboarding analyses) into a single coherent plan
-- The user explicitly asks for a "marketing plan," "growth plan," "GTM plan," "fCMO plan," "AARRR plan," or "90-day + 12-month marketing roadmap"
-- An existing scored audit (from any prior current-state assessment) needs to be sequenced into an action plan
+- Um usuário está começando um novo engajamento de cliente como CMO
+  fracionário ou consultor de marketing
+- Um founder precisa de um roadmap de marketing de 12 meses para
+  compartilhar com o time ou investidores
+- Um time quer consolidar trabalho de marketing espalhado (pesquisa de
+  SEO, docs de voz de marca, achados de auditoria, análises de
+  onboarding) em um único plano coerente
+- O usuário pede explicitamente um "plano de marketing," "plano de
+  crescimento," "plano de GTM," "plano de fCMO," "plano AARRR," ou
+  "roadmap de marketing de 90 dias + 12 meses"
+- Uma auditoria pontuada existente (de qualquer avaliação prévia de
+  estado atual) precisa ser sequenciada em um plano de ação
 
-**Do not use** when the user wants a tactical execution document for a single channel (use the channel-specific skill instead — `emails`, `ads`, `seo-audit`, `onboarding`, etc.), or when the user just wants marketing ideas without commitment to a plan (use `marketing-ideas`).
+**Não use** quando o usuário quer um documento de execução tático para um
+único canal (use a skill específica do canal — `emails`, `ads`,
+`seo-audit`, `onboarding`, etc.), ou quando o usuário só quer ideias de
+marketing sem compromisso com um plano (use `marketing-ideas`).
 
-## How this skill is invoked
+## Como esta skill é invocada
 
+```text
+/marketing-plan {nome-ou-dominio-do-cliente}
 ```
-/marketing-plan {client-name-or-domain}
-```
 
-Examples:
+Exemplos:
+
 - `/marketing-plan quietude.app`
 - `/marketing-plan acme-saas`
-- `/marketing-plan` (will prompt for client name)
+- `/marketing-plan` (vai pedir o nome do cliente)
 
-On invocation, the skill reads `~/marketing-plans/{client-slug}/progress.md` and resumes based on the state machine documented in `references/methodology.md` Step 1.1.2 (fresh → INIT → REVIEW → FINALIZE → finalized). Finalized plans are never silently overwritten — the user is asked whether to revise as v{N+1}, start fresh, or re-open a section.
+Ao ser invocada, a skill lê `~/marketing-plans/{slug-do-cliente}/progress.md`
+e retoma com base na máquina de estado documentada em
+`references/methodology.md` Passo 1.1.2 (novo → INIT → REVIEW → FINALIZE →
+finalizado). Planos finalizados nunca são sobrescritos silenciosamente — o
+usuário é perguntado se quer revisar como v{N+1}, começar do zero, ou
+reabrir uma seção.
 
-**Path safety.** Build `{client-slug}` only by slugifying the client name to lowercase `[a-z0-9-]` (strip everything else); reject `..`, `/`, and absolute paths, and never read or write outside `~/marketing-plans/`. On a shared machine this keeps one client's plan — and their data — from leaking into another client's context.
+## As três fases
 
-## The three phases
+O fluxo completo vive em `references/methodology.md`. Resumo rápido:
 
-The full workflow lives in `references/methodology.md`. Quick summary:
+### Fase 1 — INIT (pesquisa + intake)
 
-### Phase 1 — INIT (research + intake)
+Leia todo material disponível sobre o cliente. Puxe dado de qualquer
+ferramenta conectada (Ahrefs, GA4 MCP, Stripe MCP, etc.). Conduza um
+intake estruturado cobrindo: visão geral do cliente, ICP, estado atual do
+funil, estado de captação, composição do time, orçamento de marketing,
+canais ativos hoje, o que já foi feito, o que está em andamento, o que
+está travado, stack de ferramenta. Salve em `research.md`.
 
-Read all available materials about the client. Pull data from any wired tools (Ahrefs, GA4 MCP, Stripe MCP, etc.). Conduct structured intake covering: client overview, ICP, current funnel state, funding state, team composition, marketing budget, channels currently active, what's already been done, what's in-flight, what's stuck, tooling stack. Save to `research.md`.
+Use a rubrica embutida de 17 seções de estado atual
+(`references/current-state-rubric.md`) como sua lente de pontuação para a
+Seção 3 — pontue cada seção de 0 a 5 contra o material disponível.
 
-Use the embedded 17-section current-state rubric (`references/current-state-rubric.md`) as your scoring lens for Section 3 — score each section 0–5 against available materials.
+### Fase 2 — REVIEW (percorra cada uma das 13 seções interativamente)
 
-### Phase 2 — REVIEW (walk through each of 13 sections interactively)
+Apresente o rascunho de cada seção no chat. Para cada seção você pode:
 
-Present each section's draft in chat. For each section you can:
-- Approve as-is ("good," "next")
-- Adjust ("change X to Y")
-- Add observations ("also mention Z")
-- Expand ("go deeper on this")
+- Aprovar como está ("bom," "próximo")
+- Ajustar ("muda X para Y")
+- Adicionar observações ("também menciona Z")
+- Expandir ("aprofunda isso")
 
-Save each confirmed section to the progress file as you go. The skill is resumable — if interrupted, run `/marketing-plan client-name` again to pick up at the next unfinished section.
+Salve cada seção confirmada no arquivo de progresso conforme avança. A
+skill é retomável — se interrompida, rode `/marketing-plan nome-do-cliente`
+de novo para continuar da próxima seção não terminada.
 
-### Phase 3 — FINALIZE (compile + verify + publish)
+### Fase 3 — FINALIZE (compilar + verificar + publicar)
 
-Compile all 13 sections into `final_plan.md`. Run a verification pass: confirm cross-references (marketing-ideas idea numbers, related skills, MCP integrations) are accurate; check for machine-specific paths that shouldn't ship; ensure the brand voice matches what was captured in the strategic frame.
+Compile as 13 seções em `final_plan.md`. Rode uma passada de verificação:
+confirme que referências cruzadas (números de ideia do marketing-ideas,
+skills relacionadas, integrações MCP) estão corretas; confira caminhos
+específicos de máquina que não deveriam ir para o documento final; garanta
+que a voz de marca combina com o que foi capturado no quadro estratégico.
 
-Optionally offer to publish to a shared GitHub repo (e.g., `{client-org}/{client-context}/marketing/plan.md`) if the user wants to share it with the team.
+Opcionalmente ofereça publicar em um repositório GitHub compartilhado
+(ex.: `{org-do-cliente}/{contexto-do-cliente}/marketing/plan.md`) se o
+usuário quiser compartilhar com o time.
 
-## The 13-section plan structure
+## A estrutura de plano de 13 seções
 
-Full template lives in `references/plan-template.md`. The structure:
+Template completo vive em `references/plan-template.md`. A estrutura:
 
-1. **Executive summary** — 3 big bets, 90-day priorities, 12-month outcome. Written so it can be lifted into an investor or board update.
-2. **Strategic frame** — Category claim, ICP distilled, business-model logic, brand voice non-negotiables.
-3. **Current state** — Team, budget, what's done, what's in-flight, what's stuck. Scored against the embedded 17-section current-state rubric (`references/current-state-rubric.md`).
-4. **Acquisition** — How strangers become aware. Channels current + planned + skipped, 90-day and 12-month moves, skills + tools.
-5. **Activation** — How a new user has an experience that converts. Onboarding, first session, App Store / signup, paywall, lifecycle setup.
-6. **Retention** — How a converted user stays and deepens. Lifecycle flows, churn prevention, win-back, support-as-marketing.
-7. **Referral** — How retained users bring more users. Ambassador / affiliate / Guides / WOM mechanics.
-8. **Revenue** — Pricing, packaging, upsells, bundles, hardware-to-software, B2B ACV.
-9. **90-day roadmap** — Weeks 1–2 (Unblock), 3–4 (Foundation), 5–8 (Velocity), 9–12 (Compound). AARRR-tagged, owner-assigned.
-10. **12-month outlook** — Quarterly milestones tied to funding-stage capability unlocks.
-11. **Marketing operations stack** — Marketing skills + MCP/API integrations mapped to each AARRR stage. Capability unlocks by funding stage.
-12. **Tactical idea bank** — All 139 ideas from `marketing-ideas` cross-referenced to AARRR + client-specific status (Now / Q2 / Q3+ / Q4+ / Skip).
-13. **Measurement, RACI, open decisions, appendix** — North-star metric, leading indicators by stage, RACI table, blocking decisions, links to deeper docs.
+1. **Resumo executivo** — 3 grandes apostas, prioridades de 90 dias,
+   resultado de 12 meses. Escrito para poder ser reaproveitado em uma
+   atualização de investidor ou board.
+2. **Quadro estratégico** — afirmação de categoria, ICP destilado, lógica
+   de modelo de negócio, inegociáveis de voz de marca.
+3. **Estado atual** — time, orçamento, o que está feito, o que está em
+   andamento, o que está travado. Pontuado contra a rubrica embutida de
+   17 seções de estado atual (`references/current-state-rubric.md`).
+4. **Aquisição** — como estranhos ficam conscientes. Canais atuais +
+   planejados + descartados, movimentos de 90 dias e 12 meses, skills +
+   ferramentas.
+5. **Ativação** — como um novo usuário tem uma experiência que converte.
+   Onboarding, primeira sessão, App Store/cadastro, paywall, configuração
+   de lifecycle.
+6. **Retenção** — como um usuário convertido fica e se aprofunda. Fluxos
+   de lifecycle, prevenção de churn, reconquista, suporte-como-marketing.
+7. **Indicação** — como usuários retidos trazem mais usuários. Mecânicas
+   de embaixador/afiliado/guias/boca a boca.
+8. **Receita** — preço, empacotamento, upsell, bundle, hardware-para-
+   software, ACV B2B.
+9. **Roadmap de 90 dias** — semanas 1-2 (Desbloquear), 3-4 (Fundação),
+   5-8 (Velocidade), 9-12 (Composição). Tagueado por AARRR, com
+   responsável designado.
+10. **Perspectiva de 12 meses** — marcos trimestrais ligados a
+    desbloqueios de capacidade por estágio de captação.
+11. **Stack de operações de marketing** — skills de marketing +
+    integrações MCP/API mapeadas para cada estágio AARRR. Desbloqueios de
+    capacidade por estágio de captação.
+12. **Banco de ideias táticas** — todas as 139 ideias do `marketing-ideas`
+    com referência cruzada a AARRR + status específico do cliente (Agora/
+    T2/T3+/T4+/Pular).
+13. **Mensuração, RACI, decisões em aberto, apêndice** — métrica
+    norte-guia, indicadores antecedentes por estágio, tabela RACI,
+    decisões bloqueantes, links para docs mais profundos.
 
-## The AARRR framing
+## O enquadramento AARRR
 
-AARRR replaces the older "channels and tactics" approach because it forces every recommendation to be funnel-stage-tagged, which makes the plan executable in priority order.
+AARRR substitui a abordagem antiga de "canais e táticas" porque força toda
+recomendação a ser tagueada por estágio de funil, o que torna o plano
+executável em ordem de prioridade.
 
-Full primer in `references/aarrr-framework.md`. Quick rule:
+Cartilha completa em `references/aarrr-framework.md`. Regra rápida:
 
-- **Acquisition** = strangers → aware (top of funnel)
-- **Activation** = aware → first valued experience (signup, onboarding, first session)
-- **Retention** = repeat users (lifecycle, churn prevention, deepening engagement)
-- **Referral** = retained users → bring more users (programs, viral mechanics)
-- **Revenue** = monetization (pricing, upsells, bundles, ACV expansion)
+- **Aquisição** = estranhos → conscientes (topo de funil)
+- **Ativação** = consciente → primeira experiência de valor (cadastro,
+  onboarding, primeira sessão)
+- **Retenção** = usuários recorrentes (lifecycle, prevenção de churn,
+  aprofundamento de engajamento)
+- **Indicação** = usuários retidos → trazem mais usuários (programas,
+  mecânica viral)
+- **Receita** = monetização (preço, upsell, bundle, expansão de ACV)
 
-Brand and content are **cross-cutting**, not their own AARRR stage — they serve every stage.
+Marca e conteúdo são **transversais**, não seu próprio estágio AARRR —
+eles servem a todo estágio.
 
-## Marketing as investing — the north-star framing
+## Marketing como investimento — o enquadramento norte-guia
 
-AARRR gives the plan its *structure*. This gives it its *spine*. Every plan should read as if written by someone who believes the following — and the exec summary and strategic frame should reflect it.
+AARRR dá ao plano sua *estrutura*. Isso dá a ele sua *espinha dorsal*. Todo
+plano deveria ler como se escrito por alguém que acredita no seguinte — e
+o resumo executivo e o quadro estratégico deveriam refletir isso.
 
-Adapted from *Founding Marketing* by Corey Haines (Ch. 1).
+Adaptado de *Founding Marketing*, de Corey Haines (Cap. 1).
 
-- **Marketing is like investing.** Treat the plan as a **compounding portfolio**, not a campaign calendar. Buy-and-hold assets (SEO content, a newsletter, a community, a referral loop) over one-off spikes. Diversify — no single channel carries the plan. Time in market beats timing the market.
-- **No silver bullets, a hundred golden pellets.** There is no one move that fixes growth. The plan wins by stacking many small compounding assets. Be suspicious of any recommendation that promises to be *the* thing.
-- **One asset, many returns.** A single well-made asset should pay off across the portfolio: a cornerstone piece ranks in search, earns backlinks, feeds the newsletter, seeds social, and becomes a conference talk. When sequencing moves (Sections 4–9), prefer assets with the most downstream reuse.
-- **Audition, not an auction.** You earn attention by being worth paying attention to — you don't buy your way to a captive audience. Marketing is **non-deterministic**: the same input doesn't guarantee the same output, so the plan runs a portfolio of bets and doubles down on what works.
-- **Hope is not a strategy.** Every move in the plan names its mechanism and its leading indicator. "Post more and hope it works" is not a line item. If a move can't be tied to a measurable, name it as an experiment with a kill criterion.
+- **Marketing é como investir.** Trate o plano como um **portfólio que se
+  acumula**, não um calendário de campanha. Ativos de comprar-e-segurar
+  (conteúdo de SEO, uma newsletter, uma comunidade, um loop de indicação)
+  em vez de picos pontuais. Diversifique — nenhum canal único carrega o
+  plano. Tempo no mercado vence tentar acertar o timing do mercado.
+- **Sem bala de prata, uma centena de pellets de ouro.** Não existe um
+  movimento único que conserta o crescimento. O plano vence acumulando
+  muitos ativos pequenos que se compõem. Desconfie de qualquer
+  recomendação que promete ser *a* coisa.
+- **Um ativo, muitos retornos.** Um único ativo bem feito deveria pagar em
+  todo o portfólio: uma peça angular rankeia na busca, ganha backlink,
+  alimenta a newsletter, semeia o social, e vira uma palestra de
+  conferência. Ao sequenciar movimentos (Seções 4-9), prefira ativos com
+  mais reuso a jusante.
+- **Audição, não leilão.** Você ganha atenção sendo digno de atenção —
+  você não compra o caminho até uma audiência cativa. Marketing é
+  **não-determinístico**: o mesmo input não garante o mesmo output, então
+  o plano roda um portfólio de apostas e dobra a aposta no que funciona.
+- **Esperança não é estratégia.** Todo movimento do plano nomeia seu
+  mecanismo e seu indicador antecedente. "Postar mais e torcer para dar
+  certo" não é um item de linha. Se um movimento não pode ser ligado a um
+  mensurável, nomeie-o como um experimento com um critério de
+  encerramento.
 
-### The market-quality gate — problem size × frequency
+### O portão de qualidade de mercado — tamanho × frequência do problema
 
-Before planning *how* to market, sanity-check *what* is being marketed. Score the core problem the product solves on two axes:
+Antes de planejar *como* fazer marketing, faça uma checagem de sanidade
+sobre *o que* está sendo comercializado. Pontue o problema central que o
+produto resolve em dois eixos:
 
-- **Size** — how painful/valuable is the problem when it occurs? (small → large)
-- **Frequency** — how often does the customer feel it? (rare → constant)
+- **Tamanho** — quão doloroso/valioso é o problema quando ocorre? (pequeno
+  → grande)
+- **Frequência** — com que frequência o cliente sente isso? (raro →
+  constante)
 
-|  | **Low frequency** | **High frequency** |
+| | **Baixa frequência** | **Alta frequência** |
 |---|---|---|
-| **Large problem** | Winnable but expensive to keep top-of-mind (long sales cycles, retargeting-heavy) | **Best quadrant — build here.** Big + frequent = marketing compounds |
-| **Small problem** | Weakest — hard to justify attention or spend | Habit-forming but easy to churn on price; needs strong retention |
+| **Problema grande** | Vencível, mas caro de manter no topo da mente (ciclos de venda longos, retargeting pesado) | **Melhor quadrante — construa aqui.** Grande + frequente = marketing se acumula |
+| **Problema pequeno** | Mais fraco — difícil justificar atenção ou gasto | Forma hábito, mas fácil de perder por preço; precisa de retenção forte |
 
-Use it as a **strategic gate in Section 2 (Strategic frame)**: name which quadrant the product sits in. Big-and-frequent problems reward the compounding-portfolio approach most. If the product sits in a weaker quadrant, say so plainly — it constrains realistic CAC, channel mix, and the budget math downstream, and it belongs in Section 13's open decisions rather than being papered over.
+Use isso como um **portão estratégico na Seção 2 (Quadro estratégico)**:
+nomeie em que quadrante o produto está. Problemas grandes-e-frequentes
+recompensam mais a abordagem de portfólio composto. Se o produto está em
+um quadrante mais fraco, diga isso claramente — restringe o CAC realista,
+o mix de canal, e a matemática de orçamento a jusante, e pertence às
+decisões em aberto da Seção 13 em vez de ser maquiado.
 
-When the gate raises "is this market big enough?", size it with `references/market-sizing.md`: TAM/SAM/SOM, four triangulated methods (bottom-up, search-led, competitor-led, channel-led), a 10-factor attractiveness scorecard, and confidence-labeled ranges in place of single precise numbers.
+## A rubrica de estado atual
 
-## The current-state rubric
+A seção "Estado Atual" do plano pontua o cliente contra a rubrica
+embutida de 17 seções. Rubrica completa em
+`references/current-state-rubric.md` — é a fonte de verdade, não uma
+derivada de nenhuma skill externa.
 
-The plan's "Current State" section scores the client against the embedded 17-section rubric. Full rubric in `references/current-state-rubric.md` — it's the source of truth, not a derivative of any external skill.
+Se o usuário já tem uma auditoria pontuada separadamente, absorva essas
+pontuações diretamente na Seção 3. Senão, pontue a partir do material
+disponível usando a rubrica como sua lente — marque "pontuado a partir de
+material" no cabeçalho da seção para que o time possa contestar onde tem
+dado melhor.
 
-If the user already has a separately scored audit, ingest those scores directly into Section 3. Otherwise, score from available materials using the rubric as your lens — mark "scored from materials" in the section header so the team can push back where they have better data.
+## Referências cruzadas — skills com as quais este plano se integra
 
-## Cross-references — skills this plan integrates with
+1. **`marketing-ideas`** — 139 táticas de marketing comprovadas. A Seção
+   12 do plano faz referência cruzada de todas contra AARRR + status do
+   cliente. Detalhe em `references/idea-cross-reference.md`.
+2. **`product-marketing`** — configura o arquivo de contexto fundamental
+   `.agents/product-marketing.md` (posicionamento, ICP, voz). Leia isso
+   primeiro; a Seção 2 (Quadro estratégico) se constrói sobre ele.
+3. **Skills específicas de estágio AARRR** — `onboarding`, `signup`,
+   `emails`, `referrals`, `pricing`, etc. A "Stack de operações de
+   marketing" (Seção 11) mapeia essas aos estágios AARRR.
 
-1. **`marketing-ideas`** — 139 proven marketing tactics. Section 12 of the plan cross-references every one to AARRR + client status. Detail in `references/idea-cross-reference.md`.
-2. **`product-marketing`** — Sets up the foundational `.agents/product-marketing.md` context file (positioning, ICP, voice). Read this first; Section 2 (Strategic frame) builds on it.
-3. **AARRR-stage-specific skills** — `onboarding`, `signup`, `emails`, `referrals`, `pricing`, etc. The "Marketing operations stack" (Section 11) maps these to AARRR stages.
+O plano é **opinativo sobre quais skills servem a quais estágios.**
+Mapeamento completo em `references/ops-stack-mapping.md`.
 
-The plan is **opinionated about which skills serve which stages.** Full mapping in `references/ops-stack-mapping.md`.
+## A stack de operações de marketing
 
-## The marketing operations stack
+Esse é o diferencial de um plano estilo fCMO vs. um plano de marketing
+genérico. O plano não só diz *o quê* fazer — diz *quais skills e
+ferramental executam*.
 
-This is the differentiator of an fCMO-style plan vs. a generic marketing plan. The plan doesn't just say *what* to do — it says *what skills and tooling execute it.*
+Um time pequeno + um fCMO + a biblioteca de skills de marketing +
+integrações MCP consegue produzir o trabalho de uma organização de
+marketing tradicional de 15-20 pessoas. O plano precisa mostrar essa
+stack explicitamente, estágio AARRR por estágio AARRR.
 
-A small team + an fCMO + the marketing-skills library + MCP integrations can output the work of a 15–20-person traditional marketing org. The plan must show this stack explicitly, AARRR-stage by AARRR-stage.
+Mapeamento completo em `references/ops-stack-mapping.md`.
 
-Full mapping in `references/ops-stack-mapping.md`.
+## Desbloqueios de capacidade por estágio de captação
 
-## Funding-stage capability unlocks
+Todo plano precisa incluir raciocínio explícito de "o que muda quando a
+captação fecha / quando o orçamento desbloqueia." Isso torna o plano
+amigável a investidor (founders em meio a uma captação veem o que estão
+comprando) e operacionalmente honesto (não estamos fingindo que o time
+consegue gastar R$ 250 mil/mês em pago antes de a rodada fechar).
 
-Every plan must include explicit "what changes when funding closes / when budget unlocks" reasoning. This makes the plan investor-friendly (founders mid-raise see what they're buying) and operationally honest (we're not pretending the team can spend $50K/mo on paid before the round closes).
+Tiers padrão em `references/funding-stage-unlocks.md` (valores de
+referência, ajuste ao câmbio e realidade do mercado brasileiro):
 
-Standard tiers in `references/funding-stage-unlocks.md`:
-- **Pre-seed / bootstrapped** — $0–$2K/mo total marketing spend; organic only
-- **Seed close** — $5–$15K/mo paid test budget; first marketing hire
-- **Seed deployment** — $20–$50K/mo paid; second marketing hire
-- **Series A** — $50–$150K/mo paid; performance + content + designer; international consideration
-- **Series B+** — $150K+/mo paid; brand campaigns; PR firm; full-stack marketing org
+- **Pré-seed/bootstrapped** — R$ 0-10 mil/mês de gasto total de
+  marketing; só orgânico
+- **Fechamento de seed** — R$ 25-75 mil/mês de orçamento de teste pago;
+  primeira contratação de marketing
+- **Deploy de seed** — R$ 100-250 mil/mês pago; segunda contratação de
+  marketing
+- **Série A** — R$ 250 mil-750 mil/mês pago; performance + conteúdo +
+  designer; consideração internacional
+- **Série B+** — R$ 750 mil+/mês pago; campanhas de marca; agência de PR;
+  organização de marketing full-stack
 
-Use these as anchors. Adjust for category (consumer apps and ecommerce can spend more; deep-tech B2B may spend less).
+Use isso como âncoras. Ajuste por categoria (apps de consumo e ecommerce
+podem gastar mais; B2B deep-tech pode gastar menos).
 
-## Setting the budget scientifically
+## Definindo o orçamento cientificamente
 
-The funding-stage anchors above tell you *what's in the ballpark*. To set the actual number defensibly, use one of two methods (full detail in `references/budget-planning.md`):
+As âncoras de estágio de captação acima dizem *a faixa aproximada*. Para
+definir o número real de forma defensável, use um de dois métodos (detalhe
+completo em `references/budget-planning.md`):
 
-1. **Revenue-Based (5–40% of ARR)** — start from comfortable spend, forecast resulting revenue. Best when historical CAC data exists.
-2. **Goal-Based** — reverse-engineer the budget from the revenue target. Formula: `[(New ARR / (ARPC × 12)) × CAC] / annual retention rate`. Best for fundraising or when the goal is fixed.
+1. **Baseado em receita (5-40% do ARR)** — comece de um gasto confortável,
+   projete a receita resultante. Melhor quando há dado histórico de CAC.
+2. **Baseado em meta** — engenharia reversa do orçamento a partir da meta
+   de receita. Fórmula: `[(Novo ARR / (ARPC × 12)) × CAC] / taxa de
+   retenção anual`. Melhor para captação ou quando a meta é fixa.
 
-Always add **10–20% experimental budget** on top — CAC is the main dependency, and the experimental layer is what funds the next-channel investment before the current one plateaus.
+Sempre adicione **10-20% de orçamento experimental** em cima — CAC é a
+principal dependência, e a camada experimental é o que financia o
+investimento no próximo canal antes de o atual platôs.
 
-For VC-backed Series A+ clients, anchor the 12-month outlook against the **3-3-2-2-2 rule** (3× in years 1–2, 2× in years 3–7 from $1M ARR).
+Para clientes Série A+ financiados por VC, ancore a perspectiva de 12
+meses contra a **regra 3-3-2-2-2** (3x nos anos 1-2, 2x nos anos 3-7 a
+partir de R$ 5M de ARR).
 
-## Growth patterns — the real shape of SaaS growth
+## Padrões de crescimento — a forma real do crescimento de SaaS
 
-Pitch decks show hockey sticks. Real growth is a series of S-curves with plateaus between them. Full framework in `references/growth-patterns.md`. Key implications for the plan:
+Decks de investidor mostram tacos de hóquei. Crescimento real é uma série
+de curvas em S com platôs entre elas. Framework completo em
+`references/growth-patterns.md`. Implicações-chave para o plano:
 
-- **Phase identification** — $0–10K ARR (grueling), $10K–100K (treacherous middle), $100K–1M (acceleration). Section 3 names the current phase; Section 10 sequences the next.
-- **Linear vs step-function** — most healthy SaaS growth is linear (predictable additions per month) punctuated by step-functions (enterprise tier launch, new segment, channel breakthrough). The plan should describe both honestly — not promise exponential.
-- **S-curve layering** — Channel × Product × Market. Start the next S-curve while the current one is still growing. Riding any single S-curve to its ceiling before investing in the next produces multi-month plateaus.
-- **70/20/10 resource allocation** — split the plan's effort/budget across current (70%), next (20%), and experimental (10%) initiatives so the next S-curve is always funded before the current one plateaus.
-- **Weekly tracking cadence** — review leading indicators weekly and watch for S-curve plateau signals; a flattening curve is the trigger to shift weight toward the next one, not a reason to push harder on the current.
+- **Identificação de fase** — R$ 0-50 mil de ARR (árduo), R$ 50 mil-500
+  mil (meio traiçoeiro), R$ 500 mil-5M (aceleração). A Seção 3 nomeia a
+  fase atual; a Seção 10 sequencia a próxima.
+- **Linear vs. função-degrau** — a maioria do crescimento saudável de
+  SaaS é linear (adições previsíveis por mês) pontuado por
+  funções-degrau (lançamento de tier enterprise, novo segmento, avanço de
+  canal). O plano deveria descrever ambos honestamente — não prometer
+  exponencial.
+- **Camadas de curva em S** — Canal × Produto × Mercado. Comece a próxima
+  curva em S enquanto a atual ainda está crescendo. Cavalgar qualquer
+  curva em S única até o teto antes de investir na próxima produz platôs
+  de vários meses.
+- **Alocação de recurso 70/20/10** — divida o esforço/orçamento do plano
+  entre iniciativas atuais (70%), próximas (20%), e experimentais (10%)
+  para que a próxima curva em S sempre esteja financiada antes de a atual
+  platô.
+- **Cadência de tracking semanal** — revise indicadores antecedentes
+  semanalmente e observe sinais de platô de curva em S; uma curva
+  achatando é o gatilho para deslocar peso em direção à próxima, não um
+  motivo para empurrar mais forte a atual.
 
-## Team and agency model
+## Modelo de time e agência
 
-Strategy lives in-house. Execution can — and often should — be outsourced. Full framework in `references/team-and-agency-model.md`. Three implications for every plan:
+Estratégia vive internamente. Execução pode — e frequentemente deveria —
+ser terceirizada. Framework completo em
+`references/team-and-agency-model.md`. Três implicações para todo plano:
 
-1. **First hire is a strategist, not a tactician.** Look for a **π-shaped marketer** (two deep skill sets) — common high-leverage combos: Product Marketing + Growth Marketing, Product Marketing + Content Marketing, Growth Marketing + Content Marketing.
-2. **Title conservatively.** First marketing hire is almost always Manager or Lead, not VP or CMO. Inflated titles paint the org into a corner when you scale.
-3. **Use contractors and small niche agencies for execution.** Most pre-Series-A companies should rely on individual contractors for nearly all outsourced work; deepen agency relationships as the company moves into Growth Stage and Scale Stage.
+1. **A primeira contratação é um estrategista, não um tático.** Procure
+   um marqueteiro **em formato π** (dois conjuntos de habilidade
+   profundos) — combos comuns de alta alavancagem: Product Marketing +
+   Growth Marketing, Product Marketing + Content Marketing, Growth
+   Marketing + Content Marketing.
+2. **Título conservador.** A primeira contratação de marketing é quase
+   sempre Gerente ou Lead, não VP ou CMO. Títulos inflados encurralam a
+   organização quando ela escala.
+3. **Use contratados e pequenas agências de nicho para execução.** A
+   maioria das empresas pré-Série A deveria depender de contratados
+   individuais para quase todo trabalho terceirizado; aprofunde
+   relacionamentos de agência conforme a empresa avança para o Estágio de
+   Crescimento e Estágio de Escala.
 
-## What every plan must customize
+## O que todo plano precisa customizar
 
-A generic plan is a failed plan. Every plan must explicitly customize for:
+Um plano genérico é um plano falho. Todo plano precisa customizar
+explicitamente para:
 
-1. **Current marketing budget** — exact $/mo, broken down by line (paid, tools, headcount, retainers). Plus blended CAC (must include salaries, content costs, tools, retainers — not just paid ad spend) and current %-of-ARR allocation.
-2. **Unit economics** — ARPC, annual retention rate, LTV. These feed the budget math in Section 8 and Section 10.
-3. **Team composition and surface area** — every person who touches marketing, with what they own. Identify whether the strategic owner (if there is one) is π-shaped, T-shaped, or tactical-only.
-4. **What the client is currently doing** — by channel, with status (working / not / TBD).
-5. **What they've already done that should be acknowledged** — past launches, PR moments, content, partnerships. Don't write a plan that ignores work they're proud of.
-6. **Phase of SaaS growth** — $0–10K ARR / $10K–100K / $100K–1M / $1M+. Each phase has its own binding constraint.
-7. **Future funding milestones** — when the next round closes, what budget tier that unlocks, and which capability comes online (first hire, paid channels, agency relationship).
-8. **The marketing skills mapped to specific moves** — every move in the AARRR sections names the skill that executes it.
-9. **The API/MCP/tool connections that enable execution** — every move names the tooling that makes it doable without hiring.
+1. **Orçamento de marketing atual** — R$/mês exato, detalhado por linha
+   (pago, ferramentas, quadro de pessoal, retainers). Mais CAC combinado
+   (precisa incluir salários, custo de conteúdo, ferramentas, retainers —
+   não só gasto de anúncio pago) e a alocação atual de %-do-ARR.
+2. **Unit economics** — ARPC, taxa de retenção anual, LTV. Isso alimenta a
+   matemática de orçamento na Seção 8 e na Seção 10.
+3. **Composição de time e área de superfície** — toda pessoa que toca
+   marketing, com o que é dona. Identifique se o dono estratégico (se
+   houver) é π-shaped, T-shaped, ou só tático.
+4. **O que o cliente está fazendo atualmente** — por canal, com status
+   (funcionando/não/a definir).
+5. **O que eles já fizeram que deveria ser reconhecido** — lançamentos
+   passados, momentos de PR, conteúdo, parcerias. Não escreva um plano
+   que ignore trabalho do qual eles se orgulham.
+6. **Fase de crescimento de SaaS** — R$ 0-50 mil de ARR / R$ 50 mil-500
+   mil / R$ 500 mil-5M / R$ 5M+. Cada fase tem sua própria restrição
+   vinculante.
+7. **Marcos de captação futuros** — quando a próxima rodada fecha, que
+   tier de orçamento isso desbloqueia, e qual capacidade entra em cena
+   (primeira contratação, canais pagos, relacionamento com agência).
+8. **As skills de marketing mapeadas a movimentos específicos** — todo
+   movimento nas seções AARRR nomeia a skill que o executa.
+9. **As conexões de API/MCP/ferramenta que viabilizam a execução** — todo
+   movimento nomeia o ferramental que o torna possível sem contratar.
 
-If you can't confirm any of these in INIT, list them in Section 13's "Open decisions" — never gloss over them. **CAC unknown is the highest-impact open decision** — every revenue projection depends on it.
+Se você não conseguir confirmar algum desses no INIT, liste-os nas
+"Decisões em aberto" da Seção 13 — nunca disfarce isso. **CAC desconhecido
+é a decisão em aberto de maior impacto** — toda projeção de receita
+depende disso.
 
-## Common client-type variations
+## Variações comuns por tipo de cliente
 
-Plan structure stays consistent. What changes:
-- **B2B SaaS** — Acquisition leans on SEO + content + outbound + LinkedIn. Activation = signup + product trial. Retention = product engagement + CSM motion. Referral = customer advocacy. Revenue = expansion / NRR.
-- **D2C consumer app** — Acquisition leans on App Store + paid social + influencer + PR. Activation = onboarding + first session + paywall. Retention = lifecycle email + push. Referral = sharing mechanics. Revenue = subscription + upsell.
-- **Hardware-led** — Acquisition leans on PR + retail + Amazon + Shopify SEO. Activation = unboxing + setup + first use. Retention = software companion + community. Referral = gifting + reviews. Revenue = blended LTV hardware + accessories + subscription.
-- **Marketplace** — Activation has two sides (supply + demand). Retention is repeat transaction frequency. Revenue is take-rate × GMV.
-- **Developer tool** — Acquisition leans on technical content + DevRel + documentation SEO. Activation = first build / first integration. Retention = depth of integration. Referral = team adoption.
+A estrutura do plano se mantém consistente. O que muda:
 
-Detail in `references/client-types.md`.
+- **SaaS B2B** — Aquisição se apoia em SEO + conteúdo + outbound +
+  LinkedIn. Ativação = cadastro + teste de produto. Retenção =
+  engajamento com o produto + movimento de CSM. Indicação = defesa de
+  cliente. Receita = expansão/NRR.
+- **App D2C de consumo** — Aquisição se apoia em App Store + social pago +
+  influenciador + PR. Ativação = onboarding + primeira sessão + paywall.
+  Retenção = e-mail de lifecycle + push. Indicação = mecânica de
+  compartilhamento. Receita = assinatura + upsell.
+- **Liderado por hardware** — Aquisição se apoia em PR + varejo + Amazon +
+  SEO de Shopify. Ativação = unboxing + setup + primeiro uso. Retenção =
+  companion de software + comunidade. Indicação = brinde + avaliações.
+  Receita = LTV combinado de hardware + acessórios + assinatura.
+- **Marketplace** — Ativação tem dois lados (oferta + demanda). Retenção
+  é frequência de transação repetida. Receita é taxa-de-comissão × GMV.
+- **Ferramenta de desenvolvedor** — Aquisição se apoia em conteúdo
+  técnico + DevRel + SEO de documentação. Ativação = primeiro build/
+  primeira integração. Retenção = profundidade de integração. Indicação =
+  adoção pelo time.
 
-## Quality bar
+Detalhe em `references/client-types.md`.
 
-What separates a good plan from a generic one:
+## Padrão de qualidade
 
-**Good plan signals:**
-- Every move names the AARRR stage it serves
-- Every recommendation is anchored in real client data (their actual budget, their actual team, their actual current channels)
-- The 90-day roadmap has owners, not just actions
-- The funding-stage section explains what changes when the next round closes
-- The ops stack section names specific skills + MCPs per move
-- The idea bank shows what we're *not* doing and why (skipped ideas with rationale)
-- The exec summary can stand alone — could be lifted into an investor update
-- Open decisions are explicit, not glossed over
+O que separa um bom plano de um genérico:
 
-**Failure modes to avoid:**
-- Listing tactics without sequencing
-- Recommending things the team can't execute at current size
-- Pretending paid budget exists before the round closes
-- Glossing over uncomfortable metrics (e.g., churn) instead of naming them as open decisions
-- Generic language ("build a community," "improve SEO") without specific moves
-- Ignoring brand voice — every plan section must respect the client's voice rules
-- Padding the plan with skills/ideas the client doesn't actually need
-- Not acknowledging work the team has already done
+**Sinais de bom plano:**
 
-## Output format
+- Todo movimento nomeia o estágio AARRR ao qual serve
+- Toda recomendação é ancorada em dado real do cliente (orçamento real
+  deles, time real deles, canais atuais reais deles)
+- O roadmap de 90 dias tem responsáveis, não só ações
+- A seção de estágio de captação explica o que muda quando a próxima
+  rodada fecha
+- A seção de stack de operação nomeia skills + MCPs específicos por
+  movimento
+- O banco de ideias mostra o que *não* estamos fazendo e por quê (ideias
+  puladas com justificativa)
+- O resumo executivo funciona sozinho — poderia ser reaproveitado em uma
+  atualização de investidor
+- Decisões em aberto são explícitas, não disfarçadas
 
-The final deliverable is a single markdown file: `~/marketing-plans/{client-slug}/final_plan.md`.
+**Modos de falha a evitar:**
 
-Headers (`## 1. Executive summary`, etc.) are H2 for clean Notion paste. Tables for any structured comparison (RACI, idea bank, ops stack). Status legend for the idea bank. Internal references to other sections use `§N` (e.g., "see §5 for Activation detail").
+- Listar táticas sem sequenciamento
+- Recomendar coisas que o time não consegue executar no tamanho atual
+- Fingir que orçamento pago existe antes de a rodada fechar
+- Disfarçar métricas desconfortáveis (ex.: churn) em vez de nomeá-las como
+  decisões em aberto
+- Linguagem genérica ("construir uma comunidade," "melhorar SEO") sem
+  movimentos específicos
+- Ignorar voz de marca — toda seção do plano precisa respeitar as regras
+  de voz do cliente
+- Encher o plano com skills/ideias que o cliente não precisa de verdade
+- Não reconhecer trabalho que o time já fez
 
-Length expectation: ~8,000–12,000 words for a comprehensive plan. Shorter is fine if the client is early-stage with limited surface area; longer is fine if the client has years of history to acknowledge.
+## Formato de saída
 
-## File layout per plan
+O entregável final é um único arquivo markdown:
+`~/marketing-plans/{slug-do-cliente}/final_plan.md`.
 
-```
+Cabeçalhos (`## 1. Resumo executivo`, etc.) são H2 para colar limpo no
+Notion. Tabelas para qualquer comparação estruturada (RACI, banco de
+ideias, stack de operação). Legenda de status para o banco de ideias.
+Referências internas a outras seções usam `§N` (ex.: "veja §5 para
+detalhe de Ativação").
+
+Expectativa de extensão: ~8.000-12.000 palavras para um plano abrangente.
+Mais curto é ok se o cliente é estágio inicial com pouca área de
+superfície; mais longo é ok se o cliente tem anos de histórico a
+reconhecer.
+
+## Layout de arquivo por plano
+
+```text
 ~/marketing-plans/
-└── {client-slug}/
-    ├── materials/         # Client-provided files (decks, audit output, brand-voice doc, etc.)
-    ├── research.md        # Research record written during INIT
-    ├── progress.md        # State machine — phase, current_section, approved artifacts, plan_version
+└── {slug-do-cliente}/
+    ├── materials/         # Arquivos fornecidos pelo cliente (decks, saída de auditoria, doc de voz de marca, etc.)
+    ├── research.md        # Registro de pesquisa escrito durante o INIT
+    ├── progress.md        # Máquina de estado — fase, seção atual, artefatos aprovados, plan_version
     ├── sections/
-    │   ├── 01.md          # Each approved section saved as a canonical artifact
-    │   └── ...            # Zero-padded so they sort in order
-    └── final_plan.md      # Compiled deliverable (FINALIZE output)
+    │   ├── 01.md          # Cada seção aprovada salva como artefato canônico
+    │   └── ...            # Com zeros à esquerda para ordenar corretamente
+    └── final_plan.md      # Entregável compilado (saída do FINALIZE)
 ```
 
-The full schema for `progress.md` and the resumption decision tree live in `references/methodology.md` Steps 1.1.1 and 1.1.2.
+O schema completo de `progress.md` e a árvore de decisão de retomada vivem
+em `references/methodology.md` Passos 1.1.1 e 1.1.2.
 
-## Related skills
+## Skills relacionadas
 
-- **`product-marketing`** — Run first. Captures positioning, ICP, voice in `.agents/product-marketing.md` so every section of the plan references the same foundation.
-- **`marketing-ideas`** — Source of the 139 tactics in Section 12.
-- **`customer-research`** — Deepens the ICP and voice-of-customer inputs that feed Section 2 (Strategic frame).
-- **`onboarding`** — Deep work on Section 5 (Activation).
-- **`emails`** — Deep work on Section 6 (Retention) + onboarding emails in Section 5.
-- **`referrals`** — Deep work on Section 7 (Referral).
-- **`pricing`** — Deep work on Section 8 (Revenue).
-- **`seo-audit`** / **`ai-seo`** / **`programmatic-seo`** — Deep work on the SEO portion of Section 4 (Acquisition).
-- **`ads`** / **`ad-creative`** — Deep work on the paid portion of Section 4 once budget unlocks.
-- **`launch`** — Deep work on launch moments inside Section 4 / Section 9.
+- **`product-marketing`** — rode primeiro. Captura posicionamento, ICP, voz em `.agents/product-marketing.md` para que toda seção do plano referencie a mesma fundação.
+- **`marketing-ideas`** — fonte das 139 táticas na Seção 12.
+- **`customer-research`** — aprofunda o ICP e os inputs de voz-do-cliente que alimentam a Seção 2 (Quadro estratégico).
+- **`onboarding`** — trabalho profundo na Seção 5 (Ativação).
+- **`emails`** — trabalho profundo na Seção 6 (Retenção) + e-mails de onboarding na Seção 5.
+- **`referrals`** — trabalho profundo na Seção 7 (Indicação).
+- **`pricing`** — trabalho profundo na Seção 8 (Receita).
+- **`seo-audit`** / **`ai-seo`** / **`programmatic-seo`** — trabalho profundo na parte de SEO da Seção 4 (Aquisição).
+- **`ads`** / **`ad-creative`** — trabalho profundo na parte paga da Seção 4 assim que o orçamento desbloquear.
+- **`launch`** — trabalho profundo em momentos de lançamento dentro da Seção 4/Seção 9.
 
-## Task-specific questions (used during INIT)
+## Perguntas específicas da tarefa (usadas durante o INIT)
 
-The full intake questionnaire lives in `references/methodology.md`. The most important questions:
+O questionário de intake completo vive em `references/methodology.md`. As
+perguntas mais importantes:
 
-1. **Funding state** — What round are you in? How much raised so far? Burn? Runway? Upcoming rounds and timing?
-2. **Team** — Who are all the people who touch marketing? What does each own? Where are the gaps?
-3. **Budget** — What's the current monthly marketing spend, broken down by paid acquisition, tools, retainers, headcount? What budget unlocks when the next round closes?
-4. **Current channels** — What's working today? What's not? What have you not tried yet?
-5. **Already done** — What past campaigns / launches / content / PR moments should this plan acknowledge?
-6. **In-flight** — What's drafted but not shipped? What's blocking each item?
-7. **Tooling stack** — What's wired? Customer.io / Mailchimp / Resend? Shopify / Stripe / App Store Connect? GA4 / Mixpanel / Amplitude? GitHub / Notion / Figma?
-8. **Beta or GA?** — If product is in beta, what's the GA timeline? Throttling? What gates exist?
-9. **The most important thing to fix this quarter** — founder's read.
-10. **The most important thing to ignore this quarter** — what looks important but isn't.
+1. **Estado de captação** — em que rodada vocês estão? Quanto captado até
+   agora? Burn? Runway? Próximas rodadas e timing?
+2. **Time** — quem são todas as pessoas que tocam marketing? O que cada
+   uma é dona? Onde estão as lacunas?
+3. **Orçamento** — qual é o gasto mensal atual de marketing, detalhado
+   por aquisição paga, ferramentas, retainers, quadro de pessoal? Que
+   orçamento desbloqueia quando a próxima rodada fechar?
+4. **Canais atuais** — o que está funcionando hoje? O que não está? O que
+   vocês ainda não tentaram?
+5. **Já feito** — que campanhas/lançamentos/conteúdo/momentos de PR
+   passados esse plano deveria reconhecer?
+6. **Em andamento** — o que está rascunhado mas não lançado? O que está
+   bloqueando cada item?
+7. **Stack de ferramental** — o que está conectado? Customer.io/
+   Mailchimp/Resend? Shopify/Stripe/App Store Connect? GA4/Mixpanel/
+   Amplitude? GitHub/Notion/Figma?
+8. **Beta ou GA?** — se o produto está em beta, qual é o cronograma de GA?
+   Throttling? Que portões existem?
+9. **A coisa mais importante para consertar esse trimestre** — leitura do
+   founder.
+10. **A coisa mais importante para ignorar esse trimestre** — o que
+    parece importante mas não é.
 
-## How exhaustive should the plan be?
+## Quão exaustivo o plano deveria ser?
 
-Default to comprehensive. Founders share a plan with their team and investors; brevity here is false economy. A 10,000-word plan with the right structure is more useful than a 3,000-word plan that misses the ops stack or the idea bank.
+Padrão para abrangente. Founders compartilham o plano com o time e
+investidores; brevidade aqui é economia falsa. Um plano de 10 mil
+palavras com a estrutura certa é mais útil que um plano de 3 mil palavras
+que perde a stack de operação ou o banco de ideias.
 
-That said: don't pad. Every section should be **dense, not bloated**. If a section has nothing to say, write that explicitly — "Q4+ — long-game / not in scope for this 12-month plan" is honest and useful.
+Dito isso: não encha. Toda seção deveria ser **densa, não inchada**. Se
+uma seção não tem nada a dizer, escreva isso explicitamente — "T4+ — jogo
+longo/fora de escopo para esse plano de 12 meses" é honesto e útil.
 
-## A note on tone
+## Uma nota sobre tom
 
-This plan is written for founders who are sharp, busy, and skeptical of marketing-speak. Write like a thoughtful colleague, not a deck-slide-writer. No jargon for jargon's sake. Direct claims, named tradeoffs, explicit assumptions. When unsure, name the open question rather than guessing.
+Esse plano é escrito para founders que são perspicazes, ocupados, e
+céticos de marketês. Escreva como um colega ponderado, não um
+redator-de-slide-de-deck. Sem jargão por jargão. Afirmações diretas,
+trade-offs nomeados, suposições explícitas. Quando incerto, nomeie a
+pergunta em aberto em vez de chutar.
 
-The exec summary should be short enough to read in 60 seconds. The rest should reward deep reading.
+O resumo executivo deveria ser curto o suficiente para ler em 60 segundos.
+O resto deveria recompensar leitura profunda.

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        /* Schibsted Grotesk (Google Fonts, OFL 1.1), variável 400 a 800, servida do projeto */
+        @font-face { font-family: "Schibsted Grotesk"; font-weight: 400 800; font-display: block; src: url("assets/fonts/schibsted-latin-ext.woff2") format("woff2"); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+        @font-face { font-family: "Schibsted Grotesk"; font-weight: 400 800; font-display: block; src: url("assets/fonts/schibsted-latin.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+        #chat-root { position: absolute; inset: 0; overflow: hidden; background: #f1ece3; font-family: "Schibsted Grotesk", sans-serif; }
+        #chat-stage { position: absolute; inset: 0; }
+        #chat-header {
+          position: absolute; left: 0; right: 0; top: 0; height: 236px; z-index: 5;
+          background: #ffffff; border-bottom: 2px solid #e3dccf;
+          display: flex; align-items: flex-end; gap: 24px; padding: 0 48px 30px;
+        }
+        #chat-avatar { width: 88px; height: 88px; border-radius: 50%; background: #fbe3d9; color: #c04e2b; display: grid; place-items: center; font-size: 34px; font-weight: 800; }
+        #chat-title { font-size: 42px; font-weight: 700; color: #1b2b33; line-height: 1.1; }
+        #chat-sub { font-size: 28px; font-weight: 500; color: #5e6d75; margin-top: 4px; }
+        #chat-counter { position: absolute; top: 280px; left: 0; right: 0; z-index: 9; display: flex; justify-content: center; }
+        #chat-count {
+          display: block; padding: 18px 36px; border-radius: 999px; background: #1b2b33; color: #faf7f2;
+          font-size: 52px; font-weight: 800; letter-spacing: -0.01em; font-variant-numeric: tabular-nums;
+          box-shadow: 0 16px 32px -12px rgba(27, 43, 51, 0.45);
+        }
+        #chat-column { position: absolute; left: 48px; right: 48px; top: 0; height: 0; }
+        .chat-b {
+          position: absolute; max-width: 760px; padding: 18px 26px 16px; border-radius: 26px;
+          background: #ffffff; color: #1b2b33; font-size: 36px; font-weight: 500; line-height: 1.22;
+          box-shadow: 0 2px 0 rgba(27, 43, 51, 0.08); white-space: nowrap;
+        }
+        .chat-b.out { background: #dcebf1; }
+        .chat-b b { display: block; font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+        .chat-b i { font-style: normal; font-size: 22px; color: #46565e; margin-left: 16px; }
+        #chat-pile { position: absolute; inset: 0; z-index: 7; }
+        #chat-pile .chat-b { box-shadow: 0 18px 36px -14px rgba(27, 43, 51, 0.35); }
+        #chat-carol { position: absolute; left: 90px; right: 90px; top: 660px; z-index: 8; display: flex; justify-content: center; }
+        #chat-carol-b {
+          position: relative; max-width: 900px; white-space: normal; font-size: 48px; padding: 28px 36px 24px; border-radius: 34px;
+          box-shadow: 0 24px 48px -18px rgba(27, 43, 51, 0.4);
+        }
+        #chat-carol-b b { font-size: 34px; color: #c04e2b; }
+      </style>
+
+      <div id="chat-root" data-composition-id="chat" data-width="1080" data-height="1920">
+        <div id="chat-stage">
+          <div id="chat-column"></div>
+          <div id="chat-header">
+            <div id="chat-avatar">RM</div>
+            <div><div id="chat-title">Repúblicas Maringá</div><div id="chat-sub">812 participantes</div></div>
+          </div>
+          <div id="chat-counter"><span id="chat-count">+12 mensagens</span></div>
+          <div id="chat-pile"></div>
+          <div id="chat-carol"><div class="chat-b" id="chat-carol-b"><b>Carol</b>esqueci de te falar, eu fumo dentro de casa kkk<i>23:47</i></div></div>
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          // aleatório com semente fixa: o mesmo vídeo em toda renderização
+          var s = 20261005;
+          function rnd() { s |= 0; s = (s + 0x6d2b79f5) | 0; var t = Math.imul(s ^ (s >>> 15), 1 | s); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }
+          var msgs = ["ainda tem vaga?", "quanto tá o aluguel?", "alguém na Zona 7?", "aceita pet?", "up", "procuro vaga perto da UEM", "tem garagem?", "chama no pv", "vaga pra menina?", "valor?", "ainda tem?", "é quarto individual?", "alguém no Jardim Universitário?", "tem foto do quarto?", "me chama", "ainda disponível?", "inclui água e luz?", "up up", "tem mobília?", "quanto fica a caução?", "perto da Unicesumar?", "ainda tem??", "alguém na Vila Esperança?", "pode visita?"];
+          var names = ["Lucas", "Ana Paula", "Rafa", "Bia", "Thiago", "Gabi", "Mateus", "Lari", "Pedro", "Duda", "João", "Mari"];
+          var colors = ["#1e5f7a", "#c04e2b", "#257a58", "#174c62"];
+          function pick(a) { return a[Math.floor(rnd() * a.length)]; }
+          function hora(i) { return "23:" + String(10 + (i % 40)).padStart(2, "0"); }
+          // o amontoado é o caos de propósito: balões se cobrem e cobrem o cabeçalho
+          function allowPile(el) {
+            [el].concat(Array.prototype.slice.call(el.querySelectorAll("*"))).forEach(function (n) {
+              n.setAttribute("data-layout-allow-overlap", ""); n.setAttribute("data-layout-allow-occlusion", "");
+            });
+          }
+          function mk(i, out) {
+            var el = document.createElement("div");
+            el.className = "chat-b" + (out ? " out" : "");
+            var nome = out ? "" : "<b style=\"color:" + pick(colors) + "\">" + pick(names) + "</b>";
+            el.innerHTML = nome + pick(msgs) + "<i>" + hora(i) + "</i>";
+            allowPile(el);
+            return el;
+          }
+
+          ["chat-header", "chat-counter"].forEach(function (id) { allowPile(document.getElementById(id)); });
+          var col = document.getElementById("chat-column");
+          var pile = document.getElementById("chat-pile");
+          // os tempos ficam em index.html (RACHA_T1 / RACHA_T2), que toca um plim em cada um
+          var T = window.RACHA_TIMES;
+          var colEls = [], pileEls = [];
+          T.t1.forEach(function (_, i) { var out = rnd() < 0.2; var el = mk(i, out); el.style[out ? "right" : "left"] = "0px"; col.appendChild(el); colEls.push(el); });
+          T.t2.forEach(function (_, i) { var el = mk(i + 20, rnd() < 0.2); pile.appendChild(el); pileEls.push(el); });
+
+          function build() {
+            var tl = gsap.timeline({ paused: true });
+            // fase 1: a coluna do chat sobe a cada balão novo (último balão encostado em y = 1500)
+            var gap = 14, y = 0, tops = [];
+            colEls.forEach(function (el) { tops.push(y); y += el.offsetHeight + gap; });
+            colEls.forEach(function (el, i) { el.style.top = tops[i] + "px"; });
+            function bottomOf(i) { return tops[i] + colEls[i].offsetHeight; }
+            tl.set(col, { y: 1500 - bottomOf(0) + 160 }, 0);
+            colEls.forEach(function (el, i) {
+              var origin = el.classList.contains("out") ? "100% 100%" : "0% 100%";
+              tl.fromTo(el, { opacity: 0, scale: 0.85, transformOrigin: origin }, { opacity: 1, scale: 1, duration: 0.16, ease: "back.out(2)" }, T.t1[i]);
+              tl.to(col, { y: 1500 - bottomOf(i), duration: 0.18, ease: "power2.out" }, T.t1[i]);
+            });
+            // fase 2: os balões se amontoam por cima de tudo até cobrir a tela
+            pileEls.forEach(function (el, i) {
+              var x = -80 + rnd() * 600, yy = 240 + rnd() * 1480, r = -11 + rnd() * 22, sc = 1.05 + rnd() * 0.45;
+              el.style.left = x + "px"; el.style.top = yy + "px";
+              tl.fromTo(el, { opacity: 0, scale: sc * 0.6, rotation: r * 0.4 }, { opacity: 1, scale: sc, rotation: r, duration: 0.18, ease: "back.out(1.8)" }, T.t2[i]);
+            });
+            // contador girando
+            var cnt = { v: 12 }, lab = document.getElementById("chat-count");
+            tl.to(cnt, { v: 847, duration: 5.3, ease: "power1.in", onUpdate: function () { lab.textContent = "+" + Math.round(cnt.v) + " mensagens"; } }, 0.05);
+            // fase 3: a tela treme e tudo cai
+            var stage = document.getElementById("chat-stage");
+            var sh = [0, -26, 22, -18, 14, -9, 5, 0];
+            sh.forEach(function (dx, k) { tl.to(stage, { x: dx, y: k % 2 ? 8 : -8, duration: 0.045, ease: "none" }, 5.4 + k * 0.045); });
+            tl.to(stage, { y: 0, duration: 0.045, ease: "none" }, 5.4 + sh.length * 0.045);
+            var fall = [document.getElementById("chat-header"), document.getElementById("chat-counter"), col].concat(pileEls);
+            fall.forEach(function (el) {
+              tl.to(el, { y: "+=2300", rotation: -25 + rnd() * 50, duration: 0.85, ease: "power2.in" }, 5.62 + rnd() * 0.35);
+            });
+            // sobra a mensagem da Carol
+            tl.fromTo("#chat-carol-b", { opacity: 0, scale: 0.7, y: 40 }, { opacity: 1, scale: 1, y: 0, duration: 0.32, ease: "back.out(1.6)" }, 6.45);
+            window.__timelines["chat"] = tl;
+          }
+          document.fonts.ready.then(build);
+        })();
+      </script>
+    </template>
+  </body>
+</html>

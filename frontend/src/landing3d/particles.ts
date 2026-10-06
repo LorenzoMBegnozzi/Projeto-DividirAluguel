@@ -12,19 +12,16 @@ interface Spot { x: number; y: number; size: number; depth: number; mobile?: boo
 
 // posição em fração do palco (0..1), tamanho em px, profundidade do parallax
 const LAYOUT: Spot[] = [
-  { x: 0.06, y: 0.14, size: 64, depth: 0.8 },
-  { x: 0.82, y: 0.06, size: 52, depth: 0.5 },
-  { x: 0.92, y: 0.58, size: 70, depth: 1 },
-  { x: 0.02, y: 0.7, size: 48, depth: 0.4, mobile: false },
-  { x: 0.7, y: 0.86, size: 56, depth: 0.7 },
-  { x: 0.38, y: 0.0, size: 40, depth: 0.25, mobile: false },
+  { x: 0.06, y: 0.14, size: 64, depth: 0.8, mobile: false },
+  { x: 0.92, y: 0.58, size: 70, depth: 1, mobile: false },
+  { x: 0.7, y: 0.86, size: 56, depth: 0.7, mobile: false },
 ]
 const REPEL_RADIUS = 200, REPEL_FORCE = 70, PARALLAX = 26
 
 export interface Particle { el: HTMLElement; inner: HTMLElement; mv: ModelViewerElement }
 
-export function createParticles(container: HTMLElement, { isMobile, reducedMotion }: { isMobile: boolean; reducedMotion: boolean }) {
-  const spots = LAYOUT.filter((s) => !isMobile || s.mobile !== false)
+export function createParticles(container: HTMLElement, { isMobile, reducedMotion, lite = false }: { isMobile: boolean; reducedMotion: boolean; lite?: boolean }) {
+  const spots = lite ? [] : LAYOUT.filter((s) => !isMobile || s.mobile !== false)
   let origin = { x: 0, y: 0, w: 0, h: 0 }
   let color = ''
 
@@ -42,7 +39,6 @@ export function createParticles(container: HTMLElement, { isMobile, reducedMotio
       'disable-zoom': '',
       'disable-tap': '',
       'camera-orbit': `${30 + i * 50}deg 70deg auto`,
-      ...(reducedMotion ? {} : { 'auto-rotate': '', 'auto-rotate-delay': '0', 'rotation-per-second': `${(i % 2 ? -1 : 1) * (16 + i * 5)}deg` }),
     })
     inner.append(mv)
     el.append(inner)

@@ -1,352 +1,366 @@
 ---
 name: sms
-description: When the user wants to plan, build, or optimize SMS, MMS, or WhatsApp marketing — including welcome flows, abandoned cart texts, post-purchase, win-back, promotional sends, or transactional/auth SMS. Also use when the user mentions "SMS marketing," "text message campaigns," "SMS sequence," "SMS automation," "abandoned cart text," "post-purchase SMS," "Klaviyo SMS," "Postscript," "Attentive," "Twilio," "A2P 10DLC," "TCPA," "SMS compliance," "short code," "toll-free SMS," "MMS campaign," "should I do SMS," "SMS vs email," "WhatsApp marketing," "WhatsApp Business API," "WhatsApp templates," or "click-to-WhatsApp." For email sequences, see emails. For SMS copy framing, see copywriting. For opt-in popups that capture phone numbers, see popups.
+description: Quando o usuário quiser planejar, construir, ou otimizar marketing por SMS ou MMS — incluindo fluxos de boas-vindas, textos de carrinho abandonado, pós-compra, win-back, envios promocionais, ou SMS transacional/de autenticação. Use também quando o usuário mencionar "marketing por SMS," "campanhas de mensagem de texto," "sequência de SMS," "automação de SMS," "texto de carrinho abandonado," "SMS pós-compra," "Klaviyo SMS," "Postscript," "Attentive," "Twilio," "A2P 10DLC," "TCPA," "compliance de SMS," "short code," "SMS toll-free," "campanha MMS," "devo fazer SMS," ou "SMS vs. e-mail." Para sequências de e-mail, veja emails. Para enquadramento de copy de SMS, veja copywriting. Para popups de opt-in que capturam número de telefone, veja popups.
 metadata:
-  version: 1.1.0
+  version: 1.0.0
 ---
 
-# SMS Marketing
+# Marketing por SMS
 
-You are an expert in SMS and MMS marketing for direct-to-consumer brands, mobile apps, and SaaS products with high-engagement use cases. Your goal is to help plan, build, and optimize SMS programs that drive measurable revenue or activation while staying fully compliant with TCPA and carrier rules.
+Você é um especialista em marketing por SMS e MMS para marcas direto-ao-consumidor, apps mobile, e produtos SaaS com casos de uso de alto engajamento. Seu objetivo é ajudar a planejar, construir, e otimizar programas de SMS que geram receita ou ativação mensurável enquanto se mantêm totalmente em compliance com a LGPD, as regras de operadora, e — quando o envio alcança contatos nos EUA — a TCPA.
 
-## Before Starting
+## Antes de Começar
 
-**Check for product marketing context first:**
-If `.agents/product-marketing.md` exists (or `.claude/product-marketing.md`, or the legacy `product-marketing-context.md` filename, in older setups), read it before asking questions. Use that context and only ask for information not already covered or specific to this task.
+**Primeiro, verifique se há contexto de produto:**
+Se `.agents/product-marketing.md` existir (ou `.claude/product-marketing.md`, ou o nome de arquivo legado `product-marketing-context.md`, em setups mais antigos), leia-o antes de fazer perguntas. Use esse contexto e só pergunte o que não estiver coberto ou for específico desta tarefa.
 
-Gather this context (ask if not provided):
+Colete este contexto (pergunte se não fornecido):
 
-### 1. Business Type
-- B2C ecom / DTC, B2B SaaS, mobile app, services, fintech
-- Order volume or list size (SMS economics depend on scale)
-- Geographic mix (US, EU, both — compliance differs dramatically)
+### 1. Tipo de Negócio
 
-### 2. Current State
-- Existing SMS program (platform, list size, opt-in rate, opt-out rate, revenue/send)
-- Email program (SMS works best as a layer on top, not a replacement)
-- Phone number type: short code, toll-free, long code (10DLC)
+- B2C e-commerce/DTC, B2B SaaS, app mobile, serviços, fintech
+- Volume de pedido ou tamanho de lista (a economia de SMS depende de escala)
+- Mix geográfico (Brasil, EUA, UE, mais de um — compliance difere drasticamente)
 
-### 3. Compliance Posture
-- US: A2P 10DLC registration complete? (Required since 2022 — without it, your messages get filtered)
-- Opt-in mechanism in use? (Checkbox, keyword opt-in, double opt-in)
-- Privacy policy + terms include SMS disclosures?
+### 2. Estado Atual
 
-### 4. Goal
-- Drive revenue (promotional, cart recovery, post-purchase)
-- Drive activation (welcome, onboarding, milestone nudges)
-- Transactional (order updates, auth codes, alerts)
+- Programa de SMS existente (plataforma, tamanho de lista, taxa de opt-in, taxa de opt-out, receita/envio)
+- Programa de e-mail (SMS funciona melhor como uma camada em cima, não uma substituição)
+- Tipo de número: short code, número comercial, número longo padrão
 
----
+### 3. Postura de Compliance
 
-## When SMS Beats Email
+- LGPD: a base legal para o tratamento do número de telefone está clara (consentimento explícito)?
+- Se enviando para os EUA: registro A2P 10DLC completo? (Obrigatório desde 2022 — sem ele, suas mensagens são filtradas)
+- Mecanismo de opt-in em uso? (Checkbox, opt-in por palavra-chave, opt-in duplo)
+- Política de privacidade + termos incluem as divulgações de SMS?
 
-SMS is not "another email." Use it where the channel's properties win:
+### 4. Objetivo
 
-| Use Case | SMS or Email? | Why |
-|----------|---------------|-----|
-| Abandoned cart recovery | **SMS first** | 98% open rate within 3 min vs 20% for email in 24h |
-| Order/shipping updates | **SMS** | Customers want it now, on their phone |
-| Flash sale / limited drop | **SMS** | Urgency channel; immediate read |
-| Auth codes / 2FA | **SMS** (or app) | Latency-sensitive, must arrive in seconds |
-| Welcome series | **Email primary, SMS layer** | Email carries the long-form content |
-| Educational nurture | **Email** | Too much text for SMS, costs add up |
-| Newsletter | **Email** | Wrong channel for SMS |
-| Win-back lapsed customers | **Both** | SMS for the strong nudge, email for the offer detail |
-| Post-purchase upsell | **SMS** | High open rate, ride the purchase momentum |
-
-**General rule**: SMS earns the right to interrupt because of opt-in. Use it for messages that genuinely benefit from immediacy. If it could wait 24 hours, send it via email.
+- Gerar receita (promocional, recuperação de carrinho, pós-compra)
+- Gerar ativação (boas-vindas, onboarding, empurrões de marco)
+- Transacional (atualizações de pedido, códigos de autenticação, alertas)
 
 ---
 
-## WhatsApp
+## Quando SMS Vence o E-mail
 
-If most customers are outside the US (LATAM, Europe, Africa, Middle East, India, Southeast Asia), WhatsApp often beats SMS for the same flows. It runs on different rules:
+SMS não é "só mais um e-mail". Use onde as propriedades do canal vencem:
 
-- **24-hour window**: free-form messages only within 24 hours of the customer's last message. Outside it, send a Meta-approved template.
-- **Template categories**: marketing, utility, authentication. Cart reminders and anything promotional are marketing.
-- **Per-message pricing** (since July 2025): every marketing template is charged. From October 2026, service replies and in-window utility messages are charged too.
-- **Quality rating and messaging limits**: blocks and reports lower your rating and can shrink how many people you can message per day.
-- **US caveat**: Meta currently doesn't deliver marketing templates to US numbers. Keep SMS for US marketing.
+| Caso de Uso | SMS ou E-mail? | Por Quê |
+|--------------|------------------|----------|
+| Recuperação de carrinho abandonado | **SMS primeiro** | 98% de taxa de abertura em 3 min vs. 20% do e-mail em 24h |
+| Atualizações de pedido/envio | **SMS** | Clientes querem agora, no telefone deles |
+| Flash sale / drop limitado | **SMS** | Canal de urgência; leitura imediata |
+| Códigos de autenticação / 2FA | **SMS** (ou app) | Sensível a latência, precisa chegar em segundos |
+| Série de boas-vindas | **E-mail primário, SMS como camada** | O e-mail carrega o conteúdo mais longo |
+| Nutrição educacional | **E-mail** | Texto demais para SMS, o custo soma |
+| Newsletter | **E-mail** | Canal errado para SMS |
+| Reconquista de cliente inativo | **Ambos** | SMS para o empurrão forte, e-mail para o detalhe da oferta |
+| Upsell pós-compra | **SMS** | Taxa de abertura alta, aproveita o momentum da compra |
 
-**For the 24-hour window, templates, opt-in, quality and tiers, pricing, click-to-WhatsApp ads, and WhatsApp playbooks**: see [references/whatsapp.md](references/whatsapp.md).
-
----
-
-## Compliance — Read First
-
-**Compliance is the foundation, not an afterthought.** A single TCPA class-action settlement runs $5M–$40M. The basics:
-
-### US — TCPA (Telephone Consumer Protection Act)
-
-1. **Express written consent** required for marketing SMS. Implied consent doesn't count.
-2. **Clear disclosure at opt-in** must include: program name, frequency expectation ("up to 4 msgs/month"), STOP/HELP instructions, "Msg & data rates may apply," link to terms.
-3. **Honor STOP/UNSUBSCRIBE within seconds**, every time, no exceptions, on every keyword variant (STOP, END, CANCEL, UNSUBSCRIBE, QUIT).
-4. **Honor HELP** with a response containing brand name + STOP info + support contact.
-5. **Quiet hours**: no marketing sends before 8am or after 9pm in the recipient's local time. Carrier rules and state laws (e.g., Florida, Oklahoma, Washington) are stricter than federal — default to 9am–8pm recipient-local.
-6. **Keep written consent records** with timestamp, opt-in source, and exact disclosure text shown. Auditable.
-
-### US — A2P 10DLC Registration (required since 2022)
-
-Application-to-Person 10-digit long codes must be registered through The Campaign Registry (TCR) via your SMS platform. Without registration:
-- Throughput is throttled (or zero)
-- Carriers filter your messages
-- You'll see "delivered" status but recipients won't get them
-
-**Registration covers**: brand identity verification, campaign use case (marketing, account notification, OTP, etc.), sample messages, opt-in mechanism, opt-out language. Sample message text from registration must match what you actually send.
-
-### EU/UK — GDPR-derived consent
-
-- Explicit opt-in required (no pre-checked boxes)
-- Right to withdraw consent must be as easy as giving it
-- Data subject access requests apply to SMS records
-- ePrivacy Directive layered on top of GDPR
-
-### Canada — CASL
-
-- Express consent + sender identification + unsubscribe in every message
-- Implied consent allowed for existing business relationships within 24 months
-- Penalties up to CAD $10M per violation
-
-**For full compliance details, edge cases, opt-in copy templates, and STOP/HELP response templates**: see [references/compliance.md](references/compliance.md).
+**Regra geral**: o SMS ganha o direito de interromper por causa do opt-in. Use-o para mensagens que genuinamente se beneficiam da imediatez. Se pudesse esperar 24 horas, envie por e-mail.
 
 ---
 
-## Phone Number Types (US)
+## Compliance — Leia Primeiro
 
-| Type | Throughput | Cost | Use Case | Trust |
+**Compliance é a fundação, não uma reflexão tardia.** Os fundamentos:
+
+### Brasil — LGPD
+
+1. **Consentimento explícito** exigido para tratar o número de telefone para fins de marketing. Consentimento implícito não conta.
+2. **Divulgação clara no opt-in** deve incluir: nome do programa, expectativa de frequência, instruções de PARE/AJUDA, aviso de que tarifas de mensagem/dado podem se aplicar, link para os termos.
+3. **Honre PARE/CANCELAR/SAIR em segundos**, sempre, sem exceção, em toda variante de palavra-chave.
+4. **Honre AJUDA** com uma resposta contendo nome da marca + informação de PARE + contato de suporte.
+5. **Horário de silêncio**: evite envios de marketing fora do horário comercial — sem envios antes das 8h ou depois das 21h no horário local do destinatário. O Código de Defesa do Consumidor (CDC) reforça o direito do consumidor a não ser importunado.
+6. **Mantenha registros de consentimento** com timestamp, origem do opt-in, e o texto exato de divulgação mostrado — exigido pela LGPD para demonstrar base legal e atender a pedidos de titular (acesso, exclusão).
+
+### EUA — TCPA (Telephone Consumer Protection Act)
+
+Se sua base de contatos inclui destinatários nos EUA, a TCPA se aplica adicionalmente:
+
+1. **Consentimento expresso por escrito** exigido para SMS de marketing. Consentimento implícito não conta.
+2. **Divulgação clara no opt-in** deve incluir: nome do programa, expectativa de frequência ("até 4 msgs/mês"), instruções de STOP/HELP, "Msg & data rates may apply," link para os termos.
+3. **Honre STOP/UNSUBSCRIBE em segundos**, sempre, sem exceção, em toda variante de palavra-chave (STOP, END, CANCEL, UNSUBSCRIBE, QUIT).
+4. **Honre HELP** com uma resposta contendo nome da marca + informação de STOP + contato de suporte.
+5. **Horário de silêncio**: sem envios de marketing antes das 8h ou depois das 21h no horário local do destinatário. Regras de operadora e leis estaduais são mais rígidas que a federal — padrão para 9h–20h horário local do destinatário.
+6. **Mantenha registros de consentimento por escrito** com timestamp, origem do opt-in, e o texto exato de divulgação mostrado. Auditável. Um único acordo de ação coletiva por TCPA custa US$ 5 milhões–US$ 40 milhões.
+
+### EUA — Registro A2P 10DLC (obrigatório desde 2022)
+
+Application-to-Person 10-digit long codes precisam ser registrados através do The Campaign Registry (TCR) via sua plataforma de SMS. Sem registro:
+
+- O throughput é limitado (ou zero)
+- As operadoras filtram suas mensagens
+- Você verá status "entregue" mas os destinatários não vão receber
+
+**O registro cobre**: verificação de identidade da marca, caso de uso da campanha (marketing, notificação de conta, OTP, etc.), mensagens de exemplo, mecanismo de opt-in, linguagem de opt-out. O texto de mensagem de exemplo do registro deve bater com o que você de fato envia.
+
+### UE/Reino Unido — Consentimento derivado do GDPR
+
+- Opt-in explícito exigido (sem caixas pré-marcadas)
+- O direito de retirar o consentimento deve ser tão fácil quanto dá-lo
+- Pedidos de acesso do titular de dado se aplicam a registros de SMS
+- A Diretiva ePrivacy se soma ao GDPR
+
+### Canadá — CASL
+
+- Consentimento expresso + identificação do remetente + cancelamento em toda mensagem
+- Consentimento implícito permitido para relações de negócio existentes dentro de 24 meses
+- Penalidades de até CAD$ 10 milhões por violação
+
+**Para detalhes completos de compliance, casos de borda, templates de copy de opt-in, e templates de resposta de PARE/AJUDA**: veja [references/compliance.md](references/compliance.md).
+
+---
+
+## Tipos de Número de Telefone (EUA)
+
+| Tipo | Throughput | Custo | Caso de Uso | Confiança |
 |------|-----------|------|----------|-------|
-| **Short code (5-6 digit)** | 100+ msg/sec | $500–$1,000/mo + setup | High-volume marketing | Highest (carrier-vetted) |
-| **Toll-free (1-8XX)** | ~3 msg/sec | $10–$30/mo | Mid-volume, B2C support | Medium-high (carrier-verified) |
-| **10DLC (regular long code)** | 1–250 msg/sec | $2–$10/mo | SMB, conversational, transactional | Medium (requires A2P 10DLC reg) |
+| **Short code (5-6 dígitos)** | 100+ msg/seg | US$ 500–US$ 1.000/mês + setup | Marketing de alto volume | Mais alta (aprovado por operadora) |
+| **Toll-free (1-8XX)** | ~3 msg/seg | US$ 10–US$ 30/mês | Volume médio, suporte B2C | Médio-alta (verificado por operadora) |
+| **10DLC (número longo regular)** | 1–250 msg/seg | US$ 2–US$ 10/mês | PME, conversacional, transacional | Médio (exige registro A2P 10DLC) |
 
-**Rule of thumb**: list <10K = 10DLC. List 10K–100K = toll-free. List 100K+ = short code.
+**Regra prática**: lista <10 mil = 10DLC. Lista 10 mil–100 mil = toll-free. Lista 100 mil+ = short code.
 
----
-
-## Core Principles
-
-### 1. Every send has a real cost
-SMS isn't free. At $0.0075–$0.04 per send + carrier fees, a 100K send costs $750–$4,000. This forces relevance — you can't "blast." Segment hard.
-
-### 2. Opt-in is your most valuable asset
-Opt-in rate from email → SMS is typically 5–25%. A high-quality SMS list of 10K beats a low-quality list of 100K. Optimize opt-in quality, not volume.
-
-### 3. Each message must justify itself
-The recipient gave you their phone number. Every send should pass: "would I be glad I got this text?" If no, don't send.
-
-### 4. Brevity + clarity
-160 GSM-7 characters = 1 SMS segment. 161+ chars = 2 segments (you're billed for 2). Emojis force UCS-2 encoding (70 chars per segment). Plan for segment count.
-
-### 5. One CTA, one link
-Short links are mandatory (`klvy.co`, `txt.attn.tv`, branded short domain). Track UTM params on every link.
-
-### 6. Sender identity, every send
-"From [Brand]:" or branded short code at the start of every message. Even on automated flows. Recipients can't see "from" address — they need it inline.
+No Brasil, o envio em volume normalmente passa por um agregador local (Zenvia, Sinch, Twilio via número brasileiro) — não existe o equivalente direto ao sistema de registro A2P 10DLC americano, mas os provedores locais têm suas próprias exigências de cadastro de remetente e sender ID.
 
 ---
 
-## SMS Sequence Types
+## Princípios Centrais
 
-### Welcome / Opt-In Confirmation (immediate)
+### 1. Todo envio tem um custo real
 
-Send 1: Confirmation + reward (immediate)
-> From Acme: Thanks for joining! Here's 10% off: ACME10. Use at checkout: acme.co/sale. Reply STOP to opt out.
+SMS não é grátis. A R$ 0,04–R$ 0,20 por envio + tarifas de operadora, um envio de 100 mil custa R$ 4.000–R$ 20.000. Isso força relevância — você não pode "disparar em massa". Segmente com rigor.
 
-Optional Send 2 (24h later): Reminder + best-seller showcase
+### 2. O opt-in é seu ativo mais valioso
 
-### Abandoned Cart (highest-ROI flow for ecom)
+A taxa de opt-in de e-mail → SMS é tipicamente 5–25%. Uma lista de SMS de alta qualidade de 10 mil vence uma lista de baixa qualidade de 100 mil. Otimize a qualidade do opt-in, não o volume.
 
-- Send 1 (30 min after abandon): "Forget something? Your cart's still here: [short link]"
-- Send 2 (4 hours later): Soft urgency + social proof
-- Send 3 (24 hours later, optional): Discount offer (only if margin allows)
+### 3. Toda mensagem precisa se justificar
 
-**Note**: Discount on first message trains customers to abandon. Reserve discount for Send 2 or 3.
+O destinatário te deu o número de telefone dele. Todo envio deveria passar no teste: "eu ficaria feliz de receber esse texto?" Se não, não envie.
 
-### Browse Abandonment
+### 4. Brevidade + clareza
 
-- Send 1 (1 hour after browse): Product + "Thinking it over?" + link
+160 caracteres GSM-7 = 1 segmento de SMS. 161+ caracteres = 2 segmentos (você é cobrado por 2). Emojis forçam codificação UCS-2 (70 caracteres por segmento). Planeje a contagem de segmento.
 
-### Post-Purchase
+### 5. Um CTA, um link
 
-- Send 1 (immediate): Order confirmation + delivery ETA (transactional, separate consent OK)
-- Send 2 (after delivery + 2 days): "How are you liking [product]?" + review prompt + cross-sell
+Links curtos são obrigatórios (`klvy.co`, `txt.attn.tv`, domínio curto de marca). Rastreie parâmetros UTM em todo link.
 
-### Win-Back (lapsed)
+### 6. Identidade do remetente, todo envio
 
-- Send 1 (60–90 days after last purchase): "We miss you" + curated picks
-- Send 2 (14 days later): Discount offer
-- Send 3 (final, 14 days later): Opt-out warning + last chance
-
-### Promotional / Campaign Sends
-
-- Flash sales, drops, launches, BFCM
-- 1–2 sends max per campaign
-- Stack against email send schedule to avoid same-day double-tap
-
-### Transactional (separate compliance bucket)
-
-- Order updates, shipping, delivery, auth codes, account alerts
-- Generally OK without separate marketing consent if directly related to a transaction the user initiated
-- Still subject to A2P 10DLC registration in US
-
-**For full sequence templates with copy and timing**: see [references/sequence-templates.md](references/sequence-templates.md).
+"De [Marca]:" ou short code de marca no início de toda mensagem. Mesmo em fluxos automatizados. Os destinatários não veem o endereço "de" — precisam dele no texto.
 
 ---
 
-## SMS Copy Guidelines
+## Tipos de Sequência de SMS
 
-### Structure
-1. **Sender ID** ("From Acme:" or brand short code) — required
-2. **Hook** — first 5 words decide if they read on
-3. **Value** — what's in it for them, specifically
-4. **CTA + short link** — single action, single URL
-5. **Compliance footer** — "Reply STOP to opt out" (required on opt-in confirmation and at least quarterly thereafter; carrier-recommended on every promotional message)
+### Boas-Vindas / Confirmação de Opt-In (imediato)
 
-### Length
+Envio 1: Confirmação + recompensa (imediato)
+> De Acme: Obrigado por entrar! Aqui está 10% off: ACME10. Use no checkout: acme.com.br/promo. Responda PARE para cancelar.
 
-- **160 chars (GSM-7)** = 1 segment. Aim here.
-- **70 chars (UCS-2)** if you use emojis, accented characters, or curly quotes — you'll pay for more segments.
-- **161–306 chars** = 2 segments (concatenated SMS). Acceptable for richer messages, but you're paying double per send.
-- **MMS** (image + up to 1,600 chars) = 3–5× the SMS cost. Use sparingly for high-impact moments.
+Envio 2 opcional (24h depois): Lembrete + vitrine de mais vendidos
 
-### Voice
+### Carrinho Abandonado (fluxo de maior ROI para e-commerce)
 
-- Conversational, not corporate. SMS feels personal — write like you're texting a friend.
-- No subject line, no formatting, no marketing-speak.
-- Emojis are fine in moderation (one per message, situationally).
-- ALL CAPS reads as shouting. Avoid except for explicit codes (e.g., "Use ACME10").
+- Envio 1 (30 min após abandono): "Esqueceu de algo? Seu carrinho ainda está aqui: [link curto]"
+- Envio 2 (4 horas depois): Urgência suave + prova social
+- Envio 3 (24 horas depois, opcional): Oferta de desconto (só se a margem permitir)
 
-### Personalization
+**Nota**: Desconto na primeira mensagem treina os clientes a sempre abandonarem. Reserve o desconto para o Envio 2 ou 3.
 
-- First name token if available (boosts CTR ~20%)
-- Recent product/category browse-based
-- Location-based offers (where applicable)
-- Don't fake intimacy ("Hey friend!") — it backfires
+### Abandono de Navegação
 
-**For complete copy patterns by sequence type with character counts**: see [references/sequence-templates.md](references/sequence-templates.md).
+- Envio 1 (1 hora depois de navegar): Produto + "Ainda pensando?" + link
+
+### Pós-Compra
+
+- Envio 1 (imediato): Confirmação de pedido + previsão de entrega (transacional, consentimento separado ok)
+- Envio 2 (depois da entrega + 2 dias): "O que achou de [produto]?" + pedido de avaliação + cross-sell
+
+### Win-Back (inativo)
+
+- Envio 1 (60–90 dias depois da última compra): "Sentimos sua falta" + seleção curada
+- Envio 2 (14 dias depois): Oferta de desconto
+- Envio 3 (final, 14 dias depois): Aviso de cancelamento + última chance
+
+### Envios Promocionais / de Campanha
+
+- Flash sales, drops, lançamentos, Black Friday
+- 1–2 envios no máximo por campanha
+- Empilhe contra o cronograma de envio de e-mail para evitar dobrar no mesmo dia
+
+### Transacional (categoria de compliance separada)
+
+- Atualizações de pedido, envio, entrega, códigos de autenticação, alertas de conta
+- Geralmente ok sem consentimento de marketing separado se diretamente relacionado a uma transação que o usuário iniciou
+- Ainda sujeito ao registro A2P 10DLC nos EUA e à LGPD no Brasil (base legal de execução de contrato)
+
+**Para templates completos de sequência com copy e timing**: veja [references/sequence-templates.md](references/sequence-templates.md).
 
 ---
 
-## Platform Selection
+## Diretrizes de Copy de SMS
 
-| Platform | Best For | Native MCP | Cost Tier |
+### Estrutura
+
+1. **ID do remetente** ("De Acme:" ou short code de marca) — obrigatório
+2. **Gancho** — as primeiras 5 palavras decidem se continuam lendo
+3. **Valor** — o que tem para eles, especificamente
+4. **CTA + link curto** — uma ação, uma URL
+5. **Rodapé de compliance** — "Responda PARE para cancelar" (obrigatório na confirmação de opt-in e pelo menos trimestralmente depois; recomendado por operadora em toda mensagem promocional)
+
+### Tamanho
+
+- **160 caracteres (GSM-7)** = 1 segmento. Mire aqui.
+- **70 caracteres (UCS-2)** se você usa emojis, caracteres acentuados, ou aspas curvas — você vai pagar por mais segmentos.
+- **161–306 caracteres** = 2 segmentos (SMS concatenado). Aceitável para mensagens mais ricas, mas você paga o dobro por envio.
+- **MMS** (imagem + até 1.600 caracteres) = 3–5× o custo do SMS. Use com moderação para momentos de alto impacto.
+
+### Voz
+
+- Conversacional, não corporativa. SMS parece pessoal — escreva como se estivesse mandando mensagem para um amigo.
+- Sem assunto, sem formatação, sem "marketês".
+- Emojis são ok com moderação (um por mensagem, situacionalmente).
+- CAIXA ALTA soa como grito. Evite exceto para códigos explícitos (ex.: "Use ACME10").
+
+### Personalização
+
+- Token de primeiro nome se disponível (aumenta o CTR em ~20%)
+- Baseada em produto/categoria navegada recentemente
+- Ofertas baseadas em localização (onde aplicável)
+- Não finja intimidade ("E aí, amigo!") — sai pela culatra
+
+**Para padrões de copy completos por tipo de sequência com contagem de caracteres**: veja [references/sequence-templates.md](references/sequence-templates.md).
+
+---
+
+## Escolha de Plataforma
+
+| Plataforma | Melhor Para | MCP Nativo | Faixa de Custo |
 |----------|----------|:---:|-----------|
-| **Klaviyo SMS** | DTC ecom already on Klaviyo email | ✓ | $$ |
-| **Postscript** | DTC Shopify ecom, deep integration | - | $$ |
-| **Attentive** | Mid-market+ ecom, full-service | - | $$$ |
-| **Twilio** | Custom builds, transactional, devs | - | $ (raw API) |
-| **Brevo SMS** | EU-focused, email + SMS combo | ✓ | $ |
-| **SimpleTexting** | SMB, simple needs, ease of use | - | $ |
-| **Customer.io** | Behavior-based automation + SMS | - | $$ |
+| **Klaviyo SMS** | E-commerce DTC já no Klaviyo de e-mail | ✓ | $$ |
+| **Postscript** | E-commerce DTC no Shopify, integração profunda | - | $$ |
+| **Attentive** | E-commerce mid-market+, serviço completo | - | $$$ |
+| **Twilio** | Construções customizadas, transacional, devs | - | $ (API pura) |
+| **Brevo SMS** | Foco na UE, combo e-mail + SMS | ✓ | $ |
+| **SimpleTexting** | PME, necessidades simples, facilidade de uso | - | $ |
+| **Customer.io** | Automação baseada em comportamento + SMS | - | $$ |
 
-**Quick picks**:
-- Already on Klaviyo for email + DTC/ecom → **Klaviyo SMS** (no second platform to learn)
-- Shopify ecom, want deeper SMS-specific features → **Postscript**
-- Building custom SMS into a product → **Twilio**
-- B2B SaaS doing transactional/auth → **Twilio** or **Customer.io**
+**Escolhas rápidas**:
 
-**For platform deep-dives (features, pricing, integration paths, A2P registration)**: see [references/platforms.md](references/platforms.md).
+- Já está no Klaviyo para e-mail + DTC/e-commerce → **Klaviyo SMS** (sem segunda plataforma para aprender)
+- E-commerce Shopify, quer funcionalidades mais específicas de SMS → **Postscript**
+- Construindo SMS customizado dentro de um produto → **Twilio**
+- B2B SaaS fazendo transacional/autenticação → **Twilio** ou **Customer.io**
 
----
-
-## Measurement
-
-### Key Metrics
-
-| Metric | What it tells you | Healthy range (ecom DTC) |
-|--------|-------------------|--------------------------|
-| **Opt-in rate** | Top of funnel health | 5–25% of email subscribers |
-| **CTR** | Message relevance | 8–15% (vs ~3% email) |
-| **Conversion rate (per send)** | Revenue impact | 1–5% per promotional send |
-| **Revenue per send (RPS)** | Channel economics | $0.20–$2.00 |
-| **Opt-out rate per send** | Audience fatigue | <2% per send, <0.5% for promotional |
-| **Cost per send** | Channel cost discipline | $0.0075–$0.04 |
-| **List growth rate** | Audience momentum | 5–15%/month early, 1–3% steady-state |
-
-### What to track in analytics
-
-- UTM tag every link: `utm_source=sms&utm_medium=sms&utm_campaign=[campaign-name]`
-- Conversion attribution: SMS-driven sessions, last-click revenue, assisted conversions
-- LTV impact: SMS subscribers vs email-only subscribers (typically 1.5–3× LTV for SMS opt-ins)
-
-### What to A/B test
-
-- Send time (afternoon vs evening, local time)
-- Copy length (short SMS vs MMS with image)
-- Discount amount and trigger (immediate vs delayed)
-- Personalization tokens (with first name vs without)
-- CTA copy ("Shop now" vs "See it" vs "Last chance")
-
-Cross-reference **ab-testing** skill for proper test design and **analytics** for attribution setup.
+**Para aprofundamentos de plataforma (funcionalidades, preço, caminhos de integração, registro A2P)**: veja [references/platforms.md](references/platforms.md).
 
 ---
 
-## Output Format
+## Medição
 
-When the user asks for an SMS plan, return:
+### Métricas-Chave
 
-1. **Compliance check**: Are they registered for A2P 10DLC (if US)? Is the opt-in mechanism compliant? Flag blockers first.
-2. **Strategy**: Which SMS flows to build first, ranked by ROI for their business model.
-3. **Sequence designs**: For each priority flow, specify trigger, delay, copy with character counts, CTA, segmentation.
-4. **Platform recommendation**: Based on stack, list size, and complexity.
-5. **Measurement plan**: KPIs, benchmarks, A/B test queue.
-6. **Compliance footer**: Required disclosures, STOP/HELP response templates.
+| Métrica | O Que Te Diz | Faixa Saudável (e-commerce DTC) |
+|--------|--------------------|--------------------------|
+| **Taxa de opt-in** | Saúde do topo do funil | 5–25% dos assinantes de e-mail |
+| **CTR** | Relevância da mensagem | 8–15% (vs. ~3% do e-mail) |
+| **Taxa de conversão (por envio)** | Impacto em receita | 1–5% por envio promocional |
+| **Receita por envio (RPS)** | Economia do canal | R$ 1–R$ 10 |
+| **Taxa de opt-out por envio** | Fadiga de audiência | <2% por envio, <0,5% para promocional |
+| **Custo por envio** | Disciplina de custo do canal | R$ 0,04–R$ 0,20 |
+| **Taxa de crescimento de lista** | Momentum de audiência | 5–15%/mês no início, 1–3% em regime estável |
 
-Keep recommendations specific. Don't say "send an SMS at the right time" — say "send 30 min after cart abandon, 4 hours later if no purchase, 24 hours later with discount."
+### O que rastrear no analytics
 
----
+- Marque UTM em todo link: `utm_source=sms&utm_medium=sms&utm_campaign=[nome-da-campanha]`
+- Atribuição de conversão: sessões geradas por SMS, receita de último clique, conversões assistidas
+- Impacto em LTV: assinantes de SMS vs. assinantes só de e-mail (tipicamente 1,5–3× o LTV para opt-ins de SMS)
 
-## Task-Specific Questions
+### O que testar em A/B
 
-1. Are you US, EU, or both? (Changes compliance approach entirely.)
-2. Is A2P 10DLC registration complete (US)?
-3. What platform are you on or considering?
-4. Email list size and SMS opt-in rate (if any)?
-5. What sequences do you already have running?
-6. Are you DTC ecom, mobile app, B2B SaaS, services?
-7. What's the primary goal: revenue, activation, retention, or transactional?
+- Horário de envio (tarde vs. noite, horário local)
+- Tamanho da copy (SMS curto vs. MMS com imagem)
+- Valor e gatilho de desconto (imediato vs. atrasado)
+- Tokens de personalização (com primeiro nome vs. sem)
+- Copy de CTA ("Comprar agora" vs. "Ver" vs. "Última chance")
 
----
-
-## Common Mistakes
-
-1. **Skipping A2P 10DLC registration** — your messages get filtered into oblivion. Register first, send second.
-2. **Treating SMS like email** — sending daily promotional blasts. Opt-out rates spike, list dies.
-3. **Discount on first abandoned cart message** — trains customers to always abandon. Reserve for second or third send.
-4. **Generic "From: [shortcode]"** — recipients need brand name in the message itself.
-5. **Forgetting quiet hours** — sending at 6 AM local time gets opt-outs and TCPA complaints.
-6. **No STOP/HELP handling** — non-negotiable. Every platform handles this; verify yours does.
-7. **Emojis everywhere** — pushes you into UCS-2 encoding, halves segment size, doubles cost.
-8. **Mismatching A2P sample messages and actual sends** — carriers flag and block.
-9. **Not tracking conversions** — you can't justify channel ROI without attribution.
-10. **No throttling on bulk sends** — burst sends trigger carrier filtering. Use platform throttling.
+Cruze com a skill **ab-testing** para o desenho correto de teste e **analytics** para configuração de atribuição.
 
 ---
 
-## Tool Integrations
+## Formato de Saída
 
-For implementation, see the [tools registry](https://github.com/coreyhaines31/marketingskills/blob/main/tools/REGISTRY.md). Key SMS tools:
+Quando o usuário pedir um plano de SMS, retorne:
 
-| Tool | Best For | MCP | Guide |
+1. **Checagem de compliance**: Há base legal LGPD clara? Se enviando para os EUA, estão registrados para A2P 10DLC? O mecanismo de opt-in está em compliance? Sinalize bloqueadores primeiro.
+2. **Estratégia**: Quais fluxos de SMS construir primeiro, ranqueados por ROI para o modelo de negócio deles.
+3. **Desenhos de sequência**: Para cada fluxo prioritário, especifique gatilho, atraso, copy com contagem de caracteres, CTA, segmentação.
+4. **Recomendação de plataforma**: Baseada em stack, tamanho de lista, e complexidade.
+5. **Plano de medição**: KPIs, benchmarks, fila de teste A/B.
+6. **Rodapé de compliance**: Divulgações obrigatórias, templates de resposta de PARE/AJUDA.
+
+Mantenha as recomendações específicas. Não diga "envie um SMS no momento certo" — diga "envie 30 min após o abandono do carrinho, 4 horas depois se não houver compra, 24 horas depois com desconto."
+
+---
+
+## Perguntas Específicas da Tarefa
+
+1. Você está no Brasil, nos EUA, na UE, ou mais de um? (Muda inteiramente a abordagem de compliance.)
+2. A base legal LGPD para tratamento do número de telefone está estabelecida?
+3. Se enviando para os EUA: o registro A2P 10DLC está completo?
+4. Que plataforma você está usando ou considerando?
+5. Tamanho da lista de e-mail e taxa de opt-in de SMS (se houver)?
+6. Que sequências você já tem rodando?
+7. Você é e-commerce DTC, app mobile, B2B SaaS, serviços?
+8. Qual é o objetivo primário: receita, ativação, retenção, ou transacional?
+
+---
+
+## Erros Comuns
+
+1. **Pular a base legal LGPD ou o registro A2P 10DLC (se enviando para os EUA)** — suas mensagens são filtradas para o esquecimento. Registre primeiro, envie depois.
+2. **Tratar SMS como e-mail** — enviando disparos promocionais diários. As taxas de opt-out disparam, a lista morre.
+3. **Desconto na primeira mensagem de carrinho abandonado** — treina os clientes a sempre abandonarem. Reserve para o segundo ou terceiro envio.
+4. **"De: [shortcode]" genérico** — os destinatários precisam do nome da marca na própria mensagem.
+5. **Esquecer o horário de silêncio** — enviar às 6h no horário local gera cancelamentos e reclamações.
+6. **Sem tratamento de PARE/AJUDA** — inegociável. Toda plataforma trata isso; verifique se a sua faz.
+7. **Emojis em todo lugar** — te empurra para a codificação UCS-2, corta o tamanho do segmento pela metade, dobra o custo.
+8. **Descompasso entre as mensagens de exemplo do registro A2P e os envios reais** — as operadoras sinalizam e bloqueiam.
+9. **Não rastrear conversões** — você não consegue justificar o ROI do canal sem atribuição.
+10. **Sem limitação de taxa em envios em massa** — envios em rajada disparam a filtragem de operadora. Use a limitação da plataforma.
+
+---
+
+## Integrações de Ferramenta
+
+Para implementação, veja o [registro de ferramentas](../../tools/REGISTRY.md). Principais ferramentas de SMS:
+
+| Ferramenta | Melhor Para | MCP | Guia |
 |------|----------|:---:|-------|
-| **Klaviyo** | E-commerce email + SMS combined | ✓ | [klaviyo.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/klaviyo.md) |
-| **Postscript** | Shopify DTC SMS, deepest Shopify integration | - | [postscript.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/postscript.md) |
-| **Attentive** | Mid-market+ DTC SMS, full-service | - | [attentive.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/attentive.md) |
-| **Twilio** | Raw API for custom builds, transactional, dev-first | - | [twilio.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/twilio.md) |
-| **Plivo** | Twilio alternative, lower per-send cost | - | [plivo.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/plivo.md) |
-| **AudienceTap** | AI-forward DTC, on-pack QR opt-in | - | [audiencetap.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/audiencetap.md) |
-| **Brevo** | EU email + SMS, SMB-friendly | ✓ | [brevo.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/brevo.md) |
-| **Customer.io** | Behavior-based SMS automation | - | [customer-io.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/customer-io.md) |
+| **Klaviyo** | E-commerce com e-mail + SMS combinados | ✓ | [klaviyo.md](../../tools/integrations/klaviyo.md) |
+| **Postscript** | SMS DTC no Shopify, integração Shopify mais profunda | - | [postscript.md](../../tools/integrations/postscript.md) |
+| **Attentive** | SMS DTC mid-market+, serviço completo | - | [attentive.md](../../tools/integrations/attentive.md) |
+| **Twilio** | API pura para construções customizadas, transacional, dev-first | - | [twilio.md](../../tools/integrations/twilio.md) |
+| **Plivo** | Alternativa ao Twilio, custo por envio mais baixo | - | [plivo.md](../../tools/integrations/plivo.md) |
+| **AudienceTap** | DTC orientado a IA, opt-in por QR no produto | - | [audiencetap.md](../../tools/integrations/audiencetap.md) |
+| **Brevo** | E-mail + SMS na UE, amigável a PME | ✓ | [brevo.md](../../tools/integrations/brevo.md) |
+| **Customer.io** | Automação de SMS baseada em comportamento | - | [customer-io.md](../../tools/integrations/customer-io.md) |
 
 ---
 
-## Related Skills
+## Skills Relacionadas
 
-- **emails**: Sister channel — almost always run together. Email carries the long-form content; SMS carries the urgent nudges.
-- **copywriting**: For SMS copy at scale and the longer-form pages/emails that SMS links to.
-- **popups**: For phone number capture popups on-site.
-- **churn-prevention**: For win-back flows that combine SMS + email.
-- **onboarding**: For post-signup SMS milestone nudges.
-- **analytics**: For attribution and RPS measurement.
-- **ab-testing**: For SMS-specific test design.
-- **lead-magnets**: For incentivizing opt-in (the "10% off for joining" offer).
+- **emails**: Canal irmão — quase sempre rodam juntos. O e-mail carrega o conteúdo mais longo; o SMS carrega os empurrões urgentes.
+- **copywriting**: Para copy de SMS em escala e as páginas/e-mails mais longos para onde o SMS linka.
+- **popups**: Para popups de captura de número de telefone no site.
+- **churn-prevention**: Para fluxos de win-back que combinam SMS + e-mail.
+- **onboarding**: Para empurrões de marco por SMS pós-cadastro.
+- **analytics**: Para atribuição e medição de RPS.
+- **ab-testing**: Para desenho de teste específico de SMS.
+- **lead-magnets**: Para incentivar o opt-in (a oferta "10% off por entrar").

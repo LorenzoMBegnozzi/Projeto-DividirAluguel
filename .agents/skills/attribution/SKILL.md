@@ -1,227 +1,408 @@
 ---
 name: attribution
-description: When the user wants to figure out which marketing actually drives conversions and revenue, choose or interpret an attribution model, or reconcile conflicting numbers across tools. Also use when the user mentions "attribution," "attribution model," "first-touch vs last-touch," "multi-touch," "which channel drives revenue," "what's my real CAC," "my dashboards disagree," "Google/Meta says X but GA says Y," "media mix model," "MMM," "incrementality," "geo lift," "holdout test," "how did you hear about us," "self-reported attribution," "dark social," or wants to instrument attribution themselves — "stitch my bookings to their source," "SavvyCal/Calendly attribution," "close the identify gap," "track conversions on a third-party domain," "first-party / self-hosted attribution." For event tracking setup and UTMs, see analytics. For ad-platform pixels/CAPI, see ads. For pipeline and CRM revenue reporting, see revops. For the AI-search attribution blind spot, see ai-seo.
+description: Quando o usuário quiser descobrir qual marketing realmente gera conversões e receita, escolher ou interpretar um modelo de atribuição, ou reconciliar números conflitantes entre ferramentas. Use também quando o usuário mencionar "atribuição," "modelo de atribuição," "first-touch vs last-touch," "multi-touch," "que canal gera receita," "qual é meu CAC real," "meus dashboards não batem," "Google/Meta diz X mas o GA diz Y," "media mix model," "MMM," "incrementalidade," "geo lift," "teste holdout," "atribuição autodeclarada," "dark social," ou quiser instrumentar a atribuição sozinho — "conectar agendamentos à origem," "fechar a lacuna de identify," "rastrear conversões em domínio terceiro," "atribuição própria/self-hosted." Para setup de tracking e UTMs, veja analytics. Para pixels/CAPI de anúncio, veja ads. Para relatório de pipeline e receita, veja revops. Para o ponto cego de atribuição em busca por IA, veja ai-seo.
 metadata:
-  version: 1.1.2
+  version: 1.1.0
 ---
 
-# Attribution
+# Atribuição
 
-You help users answer the hardest question in marketing: **which of my efforts actually caused this conversion and this revenue?** Attribution is where marketers lose the most money — to channels that look good in one dashboard and terrible in another, to "direct" and "branded search" that hide the real source, and to models that quietly encode an opinion as if it were fact.
+Você ajuda os usuários a responder a pergunta mais difícil do marketing:
+**qual dos meus esforços realmente causou essa conversão e essa receita?**
+Atribuição é onde o marketing mais perde dinheiro — para canais que parecem
+bons em um dashboard e péssimos em outro, para "direto" e "busca de marca"
+que escondem a origem real, e para modelos que silenciosamente codificam
+uma opinião como se fosse fato.
 
-This skill has two pillars. Know which one the user needs before you dive in:
+Esta skill tem dois pilares. Saiba de qual o usuário precisa antes de
+entrar de cabeça:
 
-- **(A) Interpretation** — choosing an attribution model, picking a measurement approach, and *reconciling the conflicting numbers* your tools report. This applies to everyone, even with zero engineering.
-- **(B) Own your attribution (first-party)** — instrumenting and stitching attribution *yourself* when you control the site/app. This is the build track. Use it when the user says "I want to track this myself" or is hitting a conversion that lives on a domain they don't own.
+- **(A) Interpretação** — escolher um modelo de atribuição, escolher uma
+  abordagem de mensuração, e *reconciliar os números conflitantes* que
+  suas ferramentas reportam. Isso se aplica a todo mundo, mesmo sem
+  nenhuma engenharia.
+- **(B) Instrumente sua própria atribuição (first-party)** — instrumentar e
+  costurar atribuição *você mesmo* quando você controla o site/app. Essa é
+  a trilha de construção. Use quando o usuário disser "eu quero rastrear
+  isso eu mesmo" ou estiver esbarrando em uma conversão que vive em um
+  domínio que ele não é dono.
 
-Most requests start with (A). Reach for (B) only when they control the surface and want to build.
+A maioria dos pedidos começa em (A). Recorra a (B) só quando eles controlam
+a superfície e querem construir.
 
-Product context: check for `.agents/product-marketing.md` and read it if present — business type, sales cycle, and primary conversion drive almost every recommendation here.
+Contexto de produto: verifique se `.agents/product-marketing.md` existe e
+leia-o se presente — tipo de negócio, ciclo de venda, e conversão principal
+informam quase toda recomendação aqui.
 
-## Boundaries — what this skill does NOT own
+## Limites — o que esta skill NÃO cobre
 
-State these up front so you don't rebuild neighboring skills:
+Declare isso logo de início para não reconstruir skills vizinhas:
 
-- **General event tracking, tracking plans, UTM setup, GA4/GTM** → **analytics**. Attribution *assumes tracking exists*. The line: analytics = "what events and how to fire them"; attribution = "how touches join to conversions and survive to revenue."
-- **Ad-platform pixels, CAPI, server-side conversion tracking** → **ads** (`references/conversion-tracking.md`). Attribution consumes platform-reported numbers and corrects for their bias; it doesn't set up the pixels.
-- **Pipeline stages, lead lifecycle, CRM revenue dashboards** → **revops**. Attribution feeds pipeline data; it doesn't define stages.
-- **Showing up in / measuring AI search** → **ai-seo**. Attribution names AI traffic as a blind spot only.
+- **Tracking geral de evento, planos de tracking, setup de UTM, GA4/GTM** →
+  **analytics**. Atribuição *presume que o tracking já existe*. A linha:
+  analytics = "que eventos e como dispará-los"; atribuição = "como os
+  toques se juntam às conversões e sobrevivem até a receita."
+- **Pixels de plataforma de anúncio, CAPI, tracking de conversão
+  server-side** → **ads** (`references/conversion-tracking.md`).
+  Atribuição consome os números reportados pela plataforma e corrige o
+  viés deles; não configura os pixels.
+- **Estágios de pipeline, lifecycle de lead, dashboards de receita do
+  CRM** → **revops**. Atribuição alimenta o dado de pipeline; não define
+  os estágios.
+- **Aparecer em / medir busca por IA** → **ai-seo**. Atribuição só nomeia
+  o tráfego de IA como um ponto cego.
 
 ---
 
-## Pillar A — Interpretation
+## Pilar A — Interpretação
 
-### 1. What attribution can and can't tell you
+### 1. O que atribuição pode e não pode te dizer
 
-Set expectations before touching a number:
+Estabeleça expectativas antes de tocar em um número:
 
-- **Attribution is directional, not truth.** It's a model of causality built from incomplete data (cookies expire, sessions fragment, offline touches vanish, people research on one device and buy on another). Treat it as a strong hint, never a verdict.
-- **Every model is an opinion.** "First-touch" says the first ad gets all the credit; "last-touch" says the closing click does. Both are wrong in opposite directions. Choosing a model is choosing whose story to believe — say so out loud.
-- **The attribution gap is normal.** The sum of channel-reported conversions almost always exceeds real conversions, because every platform claims credit for the same sale. Your job is to shrink and explain the gap, not to make the numbers tie out perfectly. They won't.
+- **Atribuição é direcional, não verdade.** É um modelo de causalidade
+  construído com dado incompleto (cookies expiram, sessões se fragmentam,
+  toques offline desaparecem, pessoas pesquisam em um dispositivo e compram
+  em outro). Trate como um forte indício, nunca um veredito.
+- **Todo modelo é uma opinião.** "First-touch" diz que o primeiro anúncio
+  leva todo o crédito; "last-touch" diz que o clique que fecha leva. Os
+  dois estão errados em direções opostas. Escolher um modelo é escolher em
+  qual história acreditar — diga isso em voz alta.
+- **A lacuna de atribuição é normal.** A soma das conversões reportadas por
+  canal quase sempre excede as conversões reais, porque toda plataforma
+  reivindica crédito pela mesma venda. Seu trabalho é encolher e explicar
+  a lacuna, não fazer os números baterem perfeitamente. Eles não vão bater.
 
-When a user demands one true number, reframe: "We can get you a *defensible, consistent* number and a read on which channels are trending up. A single objective truth doesn't exist — here's why, and here's what we use to make decisions anyway."
+Quando um usuário exigir um único número verdadeiro, reformule: "Podemos
+te dar um número *defensável e consistente* e uma leitura de quais canais
+estão em alta. Uma única verdade objetiva não existe — aqui está o
+porquê, e aqui está o que usamos para decidir mesmo assim."
 
-### 2. Attribution models
+### 2. Modelos de atribuição
 
-The classic rule-based set plus data-driven — and when each one lies. **Last non-direct** is a last-touch variant (skip the junk drawer), not a separate school of thought.
+Os seis modelos padrão e quando cada um mente:
 
-| Model | Credit rule | Best for | How it lies |
+| Modelo | Regra de crédito | Melhor para | Como mente |
 |---|---|---|---|
-| **First-touch** | 100% to the first known touch | Top-of-funnel / demand-gen valuation; short cycles | Ignores everything that closed the deal; over-credits awareness channels |
-| **Last-touch** | 100% to the last touch before conversion | Direct-response, quick e-comm | Over-credits bottom-funnel + branded search/direct; ignores what created demand |
-| **Last non-direct** | 100% to last touch, skipping "direct" | A cheap fix for direct pollution | Still single-touch; just moves the blind spot |
-| **Linear** | Equal credit to every touch | Long, multi-touch journeys where every step matters | Treats a throwaway visit like a demo; flatters high-frequency channels |
-| **Time-decay** | More credit to touches nearer conversion | Longer cycles where recency matters | Under-credits the top of funnel; still an assumption, not a measurement |
-| **Position-based (U-shaped)** | 40% first, 40% last, 20% middle | B2B with clear "created" + "closed" moments | The 40/40/20 split is arbitrary; middle touches get shortchanged |
-| **Data-driven (algorithmic/Shapley)** | Credit from modeled marginal contribution | High-volume accounts with enough conversions | A black box; needs volume; can't see offline/dark touches it was never fed |
+| **First-touch** | 100% para o primeiro toque conhecido | Avaliação de topo de funil/demand-gen; ciclos curtos | Ignora tudo que fechou o negócio; supercredita canais de reconhecimento |
+| **Last-touch** | 100% para o último toque antes da conversão | Resposta direta, e-commerce rápido | Supercredita fundo de funil + busca de marca/direto; ignora o que criou a demanda |
+| **Last non-direct** | 100% para o último toque, pulando "direto" | Uma correção barata para a poluição do "direto" | Ainda é single-touch; só move o ponto cego |
+| **Linear** | Crédito igual para todo toque | Jornadas longas e multi-toque onde todo passo importa | Trata uma visita descartável como uma demo; favorece canais de alta frequência |
+| **Time-decay** | Mais crédito para toques mais perto da conversão | Ciclos mais longos onde a recência importa | Subcredita o topo de funil; ainda é uma suposição, não uma medição |
+| **Baseado em posição (U-shaped)** | 40% primeiro, 40% último, 20% no meio | B2B com momentos claros de "criou" + "fechou" | A divisão 40/40/20 é arbitrária; os toques do meio saem perdendo |
+| **Orientado por dado (algorítmico/Shapley)** | Crédito da contribuição marginal modelada | Contas de alto volume com conversões suficientes | Uma caixa-preta; precisa de volume; não vê toques offline/escuros que nunca foram alimentados |
 
-**Platform availability note:** Google Ads and GA4 retired first-click, linear, time-decay, and position-based as selectable reporting models (2023). Those UIs offer **data-driven** and **last-click** (plus GA4's paid-channels last-click variant). Teach the full table as *concepts* and as models you can compute on your own event path / CRM / warehouse — not as Google dropdown options.
+**Regras de ouro:**
 
-**Rules of thumb:**
-- Never report a single model in isolation for a long sales cycle. Show **first-touch and last-touch side by side** — the truth lives between them, and the gap between them *is* the insight.
-- Data-driven attribution needs volume. Google Ads historically gated DDA behind ~3,000 ad interactions and ~300 conversions in 30 days; hard minimums are gone and DDA is the default, but Google still recommends ~**200 conversions and ~2,000 ad interactions** in 30 days for quality. Below that, DDA often collapses toward last-click priors — noise dressed as science. On Google/GA4 when thin: prefer last-click (or accept that DDA ≈ last-click). Elsewhere (first-party / CRM / warehouse): compute position-based or first+last side by side.
-- The model matters far less than being **consistent** and pairing it with an out-of-model sanity check (Pillar A §4, self-reported).
+- Nunca reporte um único modelo isoladamente para um ciclo de venda longo.
+  Mostre **first-touch e last-touch lado a lado** — a verdade vive entre
+  os dois, e a lacuna entre eles *é* o insight.
+- Atribuição orientada por dado precisa de volume (o Google Ads
+  historicamente exigia ~3.000 interações de anúncio e ~300 conversões em
+  30 dias; desde então relaxou os mínimos e tornou o DDA padrão, mas
+  volume baixo ainda vira ruído disfarçado de ciência). Use baseado em
+  posição em vez disso quando o volume for baixo.
+- O modelo importa muito menos do que ser **consistente** e combiná-lo com
+  uma checagem de sanidade fora do modelo (Pilar A §4, autodeclarado).
 
-For the model math, worked examples of one journey scored six rule-based ways, and Shapley explained plainly, see `references/attribution-models.md`.
+Para a matemática dos modelos, exemplos resolvidos de uma jornada pontuada
+de seis formas, e Shapley explicado de forma simples, veja
+`references/attribution-models.md`.
 
-### 3. The three measurement paradigms
+### 3. Os três paradigmas de mensuração
 
-Models split credit *within* your tracked data. Paradigms are how you get at *causality* — increasingly rigorous, increasingly expensive:
+Modelos dividem crédito *dentro* do seu dado rastreado. Paradigmas são como
+você chega perto da *causalidade* — cada vez mais rigorosos, cada vez mais
+caros:
 
-| Paradigm | What it is | Answers | Needs | Watch out |
+| Paradigma | O que é | Responde | Precisa | Cuidado |
 |---|---|---|---|---|
-| **MTA** (multi-touch attribution) | Stitch user-level touches, apply a model | "Which touchpoints appear on converting journeys?" | Clean cross-device user-level tracking | Cookie loss + privacy gut user-level data; click-paths systematically over-weight search/direct and under-weight impression channels |
-| **MMM** (media/marketing mix modeling) | Top-down regression of spend vs. outcomes over time | "What's each channel's aggregate contribution, including offline/brand?" | 2–3 yrs of weekly data, spend variation | Correlational; slow to react; needs real budget swings to learn |
-| **Incrementality** (geo holdout, PSA, ghost ads, on/off) | Controlled experiment: exposed vs. withheld | "Did this channel *cause* lift I wouldn't have gotten anyway?" | Ability to withhold; enough volume for significance | The gold standard, but you can only test a few things at a time |
+| **MTA** (atribuição multi-touch) | Costura toques no nível do usuário, aplica um modelo | "Que touchpoints aparecem em jornadas que convertem?" | Tracking limpo cross-device no nível do usuário | Perda de cookie + privacidade destruíram o dado no nível do usuário; subestima silenciosamente |
+| **MMM** (modelagem de mix de mídia) | Regressão top-down de gasto vs. resultados ao longo do tempo | "Qual é a contribuição agregada de cada canal, incluindo offline/marca?" | 2-3 anos de dado semanal, variação de gasto | Correlacional; reage devagar; precisa de variações reais de orçamento para aprender |
+| **Incrementalidade** (geo holdout, PSA, ghost ads, on/off) | Experimento controlado: exposto vs. retido | "Esse canal *causou* um ganho que eu não teria de qualquer forma?" | Capacidade de reter; volume suficiente para significância | O padrão-ouro, mas você só consegue testar algumas coisas por vez |
 
-**How to choose:** small budget / short cycle → good UTM + last-non-direct + a self-reported survey beats a fancy model. Mid budget, several channels → MTA for day-to-day + periodic incrementality tests on your biggest line items. Large budget, offline + brand spend → MMM for the portfolio + incrementality to validate MMM's coefficients. Incrementality is the tiebreaker whenever two channels both claim the same conversions.
+**Como escolher:** orçamento pequeno / ciclo curto → boa UTM + last-non-
+direct + uma pesquisa autodeclarada vence um modelo chique. Orçamento
+médio, vários canais → MTA para o dia a dia + testes de incrementalidade
+periódicos nos maiores itens de linha. Orçamento grande, gasto offline +
+marca → MMM para o portfólio + incrementalidade para validar os
+coeficientes do MMM. Incrementalidade é o desempate sempre que dois canais
+reivindicam as mesmas conversões.
 
-Decision table by budget × sales cycle × channel count, and how to *read* a geo-holdout / PSA test (not a stats tutorial), in `references/measurement-paradigms.md`.
+Tabela de decisão por orçamento × ciclo de venda × contagem de canal, e
+como *ler* um teste geo-holdout/PSA (não um tutorial de estatística), em
+`references/measurement-paradigms.md`.
 
-### 4. Self-reported attribution
+### 4. Atribuição autodeclarada
 
-The most underused signal, and often the most honest for long cycles and dark social. A post-conversion "How did you hear about us?" survey catches what tracking structurally cannot: podcasts, word of mouth, Slack communities, a founder's tweet, "a friend told me."
+O sinal mais subutilizado, e frequentemente o mais honesto para ciclos
+longos e dark social. Uma pesquisa pós-conversão "Como você conheceu a
+gente?" captura o que o tracking estruturalmente não consegue: podcasts,
+boca a boca, comunidades no Slack, um tweet do founder, "um amigo me
+contou."
 
-- **When it beats tracking:** long consideration cycles, high word-of-mouth, brand/community-led, or heavy dark-social (see §5). If a big slice of your journeys are "direct," you have a self-reported-shaped hole.
-- **Ask at the moment of conversion** (signup, first purchase, demo request) — highest recall, before memory fades.
-- **Wording:** open-ended ("How did you first hear about us?") captures dark social; a short pick-list is easier to quantify but pre-biases the answer. Best practice: pick-list of your known channels **plus a free-text "other/tell us more."**
-- **Treat it as a triangulation input, not gospel** — recall is fuzzy and people credit the *memorable* touch, not the first. **Discount survey share when turning it into credit** (e.g. 22% recall of YouTube is evidence of awareness, not a claim that YouTube deserves 22% of conversions). Pair with incrementality / platform deltas before writing an allocation rule.
-- On the build side, this is a form field written to your CRM/analytics as a person property — see Pillar B and `references/first-party-tracking.md`.
+- **Quando vence o tracking:** ciclos de consideração longos, alto boca a
+  boca, marca/comunidade forte, ou muito dark social (veja §5). Se uma
+  fatia grande das suas jornadas é "direto," você tem um buraco no
+  formato de autodeclarado.
+- **Pergunte no momento da conversão** (cadastro, primeira compra,
+  solicitação de demo) — recall mais alto, antes da memória desbotar.
+- **Formulação:** aberta ("Como você conheceu a gente pela primeira
+  vez?") captura dark social; uma lista curta de opções é mais fácil de
+  quantificar mas pré-vicia a resposta. Melhor prática: lista dos seus
+  canais conhecidos **mais um campo livre "outro/nos conte mais."**
+- **Trate como um input de triangulação, não como verdade absoluta** — o
+  recall é impreciso e as pessoas dão crédito ao toque *memorável*, não ao
+  primeiro. É a checagem fora do modelo que mantém seus modelos rastreados
+  honestos.
+- No lado da construção, isso é um campo de formulário gravado como
+  propriedade de pessoa no seu CRM/analytics — veja o Pilar B e
+  `references/first-party-tracking.md`.
 
-### 5. Reconciling conflicting sources
+### 5. Reconciliando fontes conflitantes
 
-The request behind most attribution work: **"Google says 50, Meta says 40, GA says 60, my CRM says 35 — who's right?"** Nobody is. Here's the framework.
+O pedido por trás da maioria dos trabalhos de atribuição: **"o Google diz
+50, o Meta diz 40, o GA diz 60, meu CRM diz 35 — quem está certo?"**
+Ninguém. Aqui está o framework.
 
-**Why each source systematically lies:**
+**Por que cada fonte mente sistematicamente:**
 
-| Source | Biased toward | Because |
+| Fonte | Viesada para | Porque |
 |---|---|---|
-| **Ad platforms** (Google/Meta/LinkedIn) | Over-counts *itself* | Claims view-through + click conversions in its own window; every platform counts the same sale; motivated to look good |
-| **GA / web analytics** | Last non-direct click | Loses cross-device, loses cookie-blocked users, dumps the unknown into direct |
-| **CRM** | Whatever the rep typed / the form captured | Human entry, lead-source overwrites, offline deals with no digital trail |
-| **Self-reported survey** | The *memorable* touch | Recall bias; under-counts boring-but-real touches like retargeting |
+| **Plataformas de anúncio** (Google/Meta/LinkedIn) | Superconta *a si mesma* | Reivindica conversões view-through + clique dentro da própria janela; toda plataforma conta a mesma venda; motivada a parecer boa |
+| **GA / web analytics** | Último clique não-direto | Perde cross-device, perde usuários bloqueados por cookie, joga o desconhecido em "direto" |
+| **CRM** | O que o vendedor digitou / o formulário capturou | Entrada humana, sobrescritas de fonte de lead, negócios offline sem rastro digital |
+| **Pesquisa autodeclarada** | O toque *memorável* | Viés de recall; subconta toques chatos-mas-reais como retargeting |
 
-**How to triangulate:**
-1. **Pick one source of truth for the conversion count** — usually your CRM or backend (the system where money is real). Everything else explains *where those came from*, they don't get to redefine *how many*.
-2. **Never sum across platforms.** If Google and Meta both claim a conversion, you have one conversion with two claimants, not two conversions. De-dupe against the source-of-truth total.
-3. **Read directional agreement, not absolute match.** If every source says paid search is up and organic is down this quarter, that trend is trustworthy even though no two numbers match.
-4. **Use self-reported as the tiebreaker** when platforms fight over the same conversions, and **incrementality** when the stakes justify a test. Do **not** turn a platform-vs-GA gap into a multiplier rule (Meta claims 2× GA ≠ "double Meta") — investigate windows and view-through, then ground any override in incrementality.
-5. **Expect and budget for the gap.** Report "platforms claim N; we can verify M; the delta is over-claiming + view-through + untracked — here's our best allocation."
-6. **Operationalize triangulation as rules when you can** — once you have a holdout or a trusted survey band for a channel, apply a documented **channel-level override** on reporting (shift credit from Direct/branded into the under-credited channel for the test window) rather than pretending raw MTA is truth. Details in `references/measurement-paradigms.md`.
+**Como triangular:**
 
-The output is an honest allocation with confidence levels, not a false reconciliation to the decimal.
+1. **Escolha uma fonte de verdade para a contagem de conversão** —
+   geralmente seu CRM ou backend (o sistema onde o dinheiro é real). Tudo
+   o mais explica *de onde vieram*, não redefine *quantas*.
+2. **Nunca some entre plataformas.** Se o Google e o Meta reivindicam a
+   mesma conversão, você tem uma conversão com dois reivindicantes, não
+   duas conversões. Deduplique contra o total da fonte de verdade.
+3. **Leia concordância direcional, não bate exato.** Se toda fonte diz que
+   busca paga subiu e orgânico caiu esse trimestre, essa tendência é
+   confiável mesmo que nenhum número bata.
+4. **Use o autodeclarado como desempate** quando plataformas brigam pelas
+   mesmas conversões, e **incrementalidade** quando o risco justifica um
+   teste.
+5. **Espere e orce para a lacuna.** Reporte "plataformas reivindicam N;
+   podemos verificar M; a diferença é superclaim + view-through + não
+   rastreado — aqui está nossa melhor alocação."
 
-### 6. The blind spots
+O resultado é uma alocação honesta com níveis de confiança, não uma falsa
+reconciliação até a casa decimal.
 
-Where conversions hide, making real channels look weak:
+### 6. Os pontos cegos
 
-- **Direct** — the junk drawer. Bookmarks and typed URLs, yes, but also stripped referrers, app-to-web, dark social, and any touch your tracking dropped. A large direct share is a *measurement* problem, not a channel.
-- **Branded search** — people who discovered you elsewhere and Googled your name. Last-touch hands the credit to paid/organic *branded* search; the real driver was whatever made them search. Segment branded vs. non-branded or you'll defund the top of funnel.
-- **Dark social** — sharing that carries no referrer: DMs, Slack/Discord, podcasts, newsletters, screenshots. Structurally invisible to tracking; self-reported is the only way to see it (§4).
-- **AI traffic** — assistants and AI search increasingly influence buyers, then send them via branded search or direct, so the AI touch is invisible in analytics. Name it and hand deeper work to **ai-seo**.
+Onde as conversões se escondem, fazendo canais reais parecerem fracos:
 
-The through-line: **when "direct" and "branded search" dominate, your top of funnel is working and your attribution is hiding it.** Say that explicitly — it's the single most common misread in marketing.
+- **Direto** — a gaveta de bagunça. Favoritos e URLs digitadas, sim, mas
+  também referrers removidos, app-para-web, dark social, e qualquer toque
+  que seu tracking perdeu. Uma fatia grande de "direto" é um problema de
+  *mensuração*, não um canal.
+- **Busca de marca** — pessoas que te descobriram em outro lugar e
+  buscaram seu nome no Google. Last-touch entrega o crédito à busca de
+  marca paga/orgânica; o driver real foi o que fez a pessoa buscar.
+  Segmente busca de marca vs. não-marca ou você vai cortar o
+  financiamento do topo de funil.
+- **Dark social** — compartilhamento que não carrega referrer: DMs,
+  Slack/Discord, podcasts, newsletters, screenshots — no Brasil, muito
+  forte via WhatsApp. Estruturalmente invisível ao tracking; autodeclarado
+  é a única forma de ver isso (§4).
+- **Tráfego de IA** — assistentes e busca por IA cada vez mais influenciam
+  compradores, e então os enviam via busca de marca ou direto, então o
+  toque de IA é invisível no analytics. Nomeie isso e passe o trabalho
+  mais profundo para **ai-seo**.
 
-### 7. Business-type fork
+O fio condutor: **quando "direto" e "busca de marca" dominam, seu topo de
+funil está funcionando e sua atribuição está escondendo isso.** Diga isso
+explicitamente — é o erro de leitura mais comum no marketing.
 
-Defaults differ sharply. Summary here; full playbooks in `references/by-business-type.md`.
+### 7. Bifurcação por tipo de negócio
 
-- **B2B SaaS (long cycle, sales-assisted):** journeys span weeks–months and multiple people, so single-touch models mislead badly. Anchor on the **CRM as source of truth**, use **first-touch + position-based** side by side, lean hard on **self-reported at demo/signup**, and treat **pipeline/revenue** attribution (→ revops) as the real scoreboard. Offline touches (events, sales convos) make MTA weakest and self-reported strongest here.
-- **Ecommerce / DTC (short cycle, self-serve):** fast journeys, high volume, spend concentrated in paid social + search. Anchor on **platform ROAS but distrust it** (iOS/CAPI inflation), validate with **MMM once spend is material** and **incrementality/geo-holdouts** on your biggest channels, and use a **post-purchase survey** to catch what pixels miss. Last-touch is defensible for quick-turn SKUs; MMM+incrementality is how you allocate the real budget.
+Os padrões diferem bastante. Resumo aqui; playbooks completos em
+`references/by-business-type.md`.
+
+- **SaaS B2B (ciclo longo, assistido por vendas):** jornadas se estendem
+  por semanas-meses e várias pessoas, então modelos de único toque
+  enganam muito. Ancore no **CRM como fonte de verdade**, use
+  **first-touch + baseado em posição** lado a lado, apoie-se fortemente
+  no **autodeclarado na demo/cadastro**, e trate a atribuição de
+  **pipeline/receita** (→ revops) como o placar real. Toques offline
+  (eventos, conversas de venda) tornam o MTA mais fraco e o autodeclarado
+  mais forte aqui.
+- **E-commerce / DTC (ciclo curto, self-serve):** jornadas rápidas, alto
+  volume, gasto concentrado em social pago + busca. Ancore no **ROAS de
+  plataforma mas desconfie dele** (inflação de iOS/CAPI), valide com
+  **MMM assim que o gasto for material** e
+  **incrementalidade/geo-holdouts** nos seus maiores canais, e use uma
+  **pesquisa pós-compra** para capturar o que os pixels perdem.
+  Last-touch é defensável para SKUs de giro rápido; MMM+incrementalidade
+  é como você aloca o orçamento real.
 
 ---
 
-## Pillar B — Own your attribution (first-party)
+## Pilar B — Instrumente sua própria atribuição (first-party)
 
-Use this when the user **controls the site/app** and wants to instrument attribution themselves — especially for a conversion that happens on a **domain they don't own** (a SavvyCal/Calendly/Cal.com booking, a Stripe Checkout page). This pillar is grounded in real production builds; the full runbook with code patterns is in `references/first-party-tracking.md`. The essentials:
+Use isso quando o usuário **controla o site/app** e quer instrumentar a
+atribuição ele mesmo — especialmente para uma conversão que acontece em um
+**domínio que ele não é dono** (um agendamento SavvyCal/Calendly/Cal.com,
+uma página de Checkout do Stripe). Este pilar é fundamentado em builds de
+produção reais; o runbook completo com padrões de código está em
+`references/first-party-tracking.md`. O essencial:
 
-### The identity graph
+### O grafo de identidade
 
-First-party attribution is one idea: **join anonymous browsing to the eventual conversion.**
+Atribuição first-party é uma ideia: **junte a navegação anônima à
+conversão eventual.**
 
-1. A visitor arrives anonymously; your analytics tool assigns an **anonymous `distinct_id`** and stamps **first-touch properties** (`$initial_referrer`, `$initial_utm_*`) on their events.
-2. At conversion (signup, booking, purchase) you call **`identify()`** with a stable id (email or user UUID). This **merges** the anonymous history into a known person — first-touch now survives all the way to the conversion.
-3. Every conversion event can now be broken down by first-touch channel. That's the whole game.
+1. Um visitante chega anonimamente; sua ferramenta de analytics atribui um
+   **`distinct_id` anônimo** e carimba as **propriedades de first-touch**
+   (`$initial_referrer`, `$initial_utm_*`) nos eventos dele.
+2. Na conversão (cadastro, agendamento, compra) você chama **`identify()`**
+   com um id estável (e-mail ou UUID de usuário). Isso **mescla** o
+   histórico anônimo em uma pessoa conhecida — o first-touch agora
+   sobrevive até a conversão.
+3. Todo evento de conversão agora pode ser detalhado por canal de
+   first-touch. É o jogo inteiro.
 
-### Closing the `identify()` gap
+### Fechando a lacuna do `identify()`
 
-The most common first-party failure: **nothing ever calls `identify()`**, so conversions never join to browsing history and every customer looks like they appeared from nowhere. (Framing adapted from Tessa Kriesel's PostHog approach.) The fix is to call identify at each real conversion. **Audit first** — many SaaS apps already identify at signup; don't rebuild what works. Find the *specific* un-instrumented conversions and close only those.
+A falha first-party mais comum: **nada nunca chama `identify()`**, então
+as conversões nunca se juntam ao histórico de navegação e todo cliente
+parece ter aparecido do nada. (Enquadramento adaptado da abordagem PostHog
+de Tessa Kriesel.) A correção é chamar identify em cada conversão real.
+**Audite primeiro** — muitos apps SaaS já identificam no cadastro; não
+reconstrua o que já funciona. Ache as conversões *específicas* não
+instrumentadas e feche só essas.
 
-### Stitching conversions on a third-party domain
+### Costurando conversões em um domínio terceiro
 
-The one case that needs real machinery: a conversion that completes on a domain you don't control (a booking tool, a hosted checkout). You can't run your analytics there, so:
+O único caso que precisa de maquinário de verdade: uma conversão que se
+completa em um domínio que você não controla (uma ferramenta de
+agendamento, um checkout hospedado). Você não consegue rodar seu analytics
+lá, então:
 
-1. **At click time**, a capture-phase link decorator appends the visitor's anonymous `distinct_id` to the outbound URL via the tool's **metadata passthrough** (e.g. `?metadata[ph_distinct_id]=<id>`). One document-level listener covers every CTA — no per-link edits.
-2. The third-party tool stores that metadata and returns it in its **webhook**.
-3. Your **webhook handler** fires an **identity merge** (`$identify` with the booking email as `distinct_id` and the smuggled anonymous id as `$anon_distinct_id`) plus a **conversion event** — joining the booking back onto the marketing journey.
+1. **No momento do clique**, um decorador de link em capture-phase anexa o
+   `distinct_id` anônimo do visitante à URL de saída via o **passthrough
+   de metadado** da ferramenta (ex.: `?metadata[ph_distinct_id]=<id>`). Um
+   único listener no nível do documento cobre todo CTA — sem editar link
+   por link.
+2. A ferramenta terceira armazena esse metadado e o retorna no
+   **webhook** dela.
+3. Seu **handler de webhook** dispara uma **mesclagem de identidade**
+   (`$identify` com o e-mail do agendamento como `distinct_id` e o id
+   anônimo contrabandeado como `$anon_distinct_id`) mais um **evento de
+   conversão** — juntando o agendamento de volta à jornada de marketing.
 
-### Guardrails (do not skip)
+### Guardrails (não pule)
 
-- **Anonymity guard — fail closed.** Only ever smuggle the *anonymous* id. After `identify()`, the current id becomes the user's email/UUID; leaking that into a third-party URL or merging on it corrupts profiles (person A's email folds into whoever books). Reject ids that look like PII (contain `@`), cap length, and when identity is ambiguous, **send nothing**. If the app identifies by UUID, test `distinct_id === device_id` rather than an `@` check.
-- **First-touch data quality.** Redirects overwrite the true first touch. Exclude OAuth/checkout referrers (`accounts.google.com`, `checkout.stripe.com`, `login.*`), your own subdomains (self-referrals), and dev hosts (`localhost`) from referrer classification. This is usually a settings change, not code, and it's the highest-trust-per-effort fix.
-- **Cross-subdomain stitching.** Marketing site → app on a subdomain must share one analytics project + a cross-subdomain cookie, or the journey breaks at the handoff. Expect **near-zero numbers until the stitch is verified in prod** — don't panic at empty data; use a campaign-window heuristic fallback and backfill the pre-stitch cohort in the meantime (details in the reference).
+- **Guarda de anonimato — falhe fechado.** Só contrabandeie o id
+  *anônimo*. Depois do `identify()`, o id atual vira o e-mail/UUID do
+  usuário; vazar isso em uma URL terceira ou mesclar nele corrompe perfis
+  (o e-mail da pessoa A se funde em quem quer que agende). Rejeite ids
+  que parecem PII (contêm `@`), limite o tamanho, e quando a identidade
+  for ambígua, **não envie nada**. Se o app identifica por UUID, teste
+  `distinct_id === device_id` em vez de uma checagem de `@`.
+- **Qualidade do dado de first-touch.** Redirecionamentos sobrescrevem o
+  first-touch verdadeiro. Exclua referrers de OAuth/checkout
+  (`accounts.google.com`, `checkout.stripe.com`, `login.*`), seus próprios
+  subdomínios (autorreferência), e hosts de dev (`localhost`) da
+  classificação de referrer. Geralmente é uma mudança de configuração,
+  não código, e é a correção de maior confiança por esforço.
+- **Costura cross-subdomain.** Site de marketing → app em um subdomínio
+  precisa compartilhar um projeto de analytics + um cookie
+  cross-subdomain, ou a jornada quebra na transição. Espere **números
+  quase zero até a costura ser verificada em produção** — não entre em
+  pânico com dado vazio; use um fallback heurístico de janela de campanha
+  e faça backfill da coorte pré-costura enquanto isso (detalhes na
+  referência).
 
-### Reporting and the last mile
+### Relatório e a última milha
 
-The first payoff is one insight: your **conversion event broken down by first-touch channel** (`$initial_utm_source` / `$initial_referring_domain`), and — joined to revenue — **channel → conversion → revenue**. Confirm first-touch vs. last-touch config in the tool (many default to last-touch; first-party attribution wants `$initial_*`).
+O primeiro ganho é um insight: seu **evento de conversão detalhado por
+canal de first-touch** (`$initial_utm_source` / `$initial_referring_domain`),
+e — juntado à receita — **canal → conversão → receita**. Confirme a
+configuração de first-touch vs. last-touch na ferramenta (muitas usam
+last-touch por padrão; atribuição first-party quer `$initial_*`).
 
-But first-touch alone can't run the multi-touch models from §2. **Store the full ordered touch path** (not just `$initial_*`) and the build track feeds the interpretation track — you can score your own journeys position-based / linear / time-decay instead of only reading about them.
+Mas first-touch sozinho não consegue rodar os modelos multi-touch da §2.
+**Armazene o caminho de toque completo e ordenado** (não só `$initial_*`)
+e a trilha de construção alimenta a trilha de interpretação — você
+consegue pontuar suas próprias jornadas baseado em posição / linear /
+time-decay em vez de só ler sobre eles.
 
-**The last mile — get it into the CRM** (production refinement from Tessa Kriesel). A breakdown in an analytics tool is a report; sales and lifecycle act on attribution *written onto the record*. Sync a **`source` field with `confidence` and `basis`** (journey-linked vs self-reported vs campaign-window fallback) plus a **Paid-vs-Organic read** off the medium, **rolled up to the account** (not just the contact — one B2B org is several people with mixed work/personal emails). How pipeline/lifecycle then *use* it is **revops**' job.
+**A última milha — leve isso para o CRM** (refinamento de produção de
+Tessa Kriesel). Um detalhamento em uma ferramenta de analytics é um
+relatório; vendas e lifecycle agem sobre atribuição *escrita no registro*.
+Sincronize um **campo `source` com `confidence` e `basis`** (ligado à
+jornada vs. autodeclarado vs. fallback de janela de campanha) mais uma
+**leitura Pago-vs-Orgânico** a partir do meio, **consolidado na conta**
+(não só no contato — uma organização B2B é várias pessoas com e-mails
+mistos de trabalho/pessoal). Como pipeline/lifecycle então *usam* isso é
+trabalho de **revops**.
 
-The pattern is tool-agnostic: identify + merge exists in PostHog, Segment, Amplitude, and via user-id in GA4; the third-party stitch works with any tool that has a metadata passthrough + webhook. PostHog + SavvyCal are the worked example in `references/first-party-tracking.md`.
+O padrão é agnóstico de ferramenta: identify + merge existe no PostHog,
+Segment, Amplitude, e via user-id no GA4; a costura terceira funciona com
+qualquer ferramenta que tenha passthrough de metadado + webhook. PostHog +
+SavvyCal são o exemplo resolvido em
+`references/first-party-tracking.md`.
 
 ---
 
-## Output format
+## Formato de saída
 
-Deliver an **attribution readout**, not a data dump:
+Entregue uma **leitura de atribuição**, não um despejo de dado:
 
 ```markdown
-# Attribution Readout — [date]
+# Leitura de Atribuição — [data]
 
-## The question
-[What decision this informs — e.g. "where should next quarter's budget go?"]
+## A pergunta
+[Que decisão isso informa — ex.: "para onde deve ir o orçamento do próximo trimestre?"]
 
-## Source of truth
-[Which system defines the conversion count, and why]
+## Fonte de verdade
+[Qual sistema define a contagem de conversão, e por quê]
 
-## What each source says
-| Channel | Platform-reported | GA | CRM | Self-reported | Our read |
-|---------|------------------|----|----|--------------|----------|
-[De-duped against source of truth; not summed]
+## O que cada fonte diz
+| Canal | Reportado pela plataforma | GA | CRM | Autodeclarado | Nossa leitura |
+|---|---|---|---|---|---|
+[Deduplicado contra a fonte de verdade; não somado]
 
-## Model comparison (for long cycles)
-[First-touch vs last-touch side by side; the gap is the insight]
+## Comparação de modelo (para ciclos longos)
+[First-touch vs. last-touch lado a lado; a lacuna é o insight]
 
-## Confidence & gaps
-[The attribution gap, the blind spots, what we can't see]
+## Confiança e lacunas
+[A lacuna de atribuição, os pontos cegos, o que não conseguimos ver]
 
-## Recommendation
-[Allocation call with confidence levels; the tiebreaker test worth running]
+## Recomendação
+[Decisão de alocação com níveis de confiança; o teste de desempate que vale a pena rodar]
 ```
 
-## Tool Integrations
+## Integrações de ferramentas
 
-For implementation, see the [tools registry](https://github.com/coreyhaines31/marketingskills/blob/main/tools/REGISTRY.md). Key tools:
+Para implementação, veja o [registro de ferramentas](../../tools/REGISTRY.md).
+Principais ferramentas:
 
-| Tool | Best For | MCP | Guide |
-|------|----------|:---:|-------|
-| **PostHog** | First-party attribution, identify/merge, funnels | - | [posthog.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/posthog.md) |
-| **GA4** | Web analytics, model comparison, user-id stitching | ✓ | [ga4.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/ga4.md) |
-| **Dub** | Short-link + click attribution | ✓ | [dub-co.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/dub-co.md) |
-| **Segment** | CDP — route identify/track to every destination | - | [segment.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/segment.md) |
-| **HubSpot** | CRM lead-source + self-reported fields | ✓ | [hubspot.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/hubspot.md) |
-| **Salesforce** | CRM as revenue source of truth | - | [salesforce.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/salesforce.md) |
-| **Supermetrics** | Pull platform numbers into one place to reconcile | ✓ | [supermetrics.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/supermetrics.md) |
-| **RB2B** | De-anonymize B2B website visitors | - | [rb2b.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/rb2b.md) |
+| Ferramenta | Melhor para | MCP | Guia |
+|---|---|:---:|---|
+| **PostHog** | Atribuição first-party, identify/merge, funis | - | [posthog.md](../../tools/integrations/posthog.md) |
+| **GA4** | Web analytics, comparação de modelo, costura de user-id | ✓ | [ga4.md](../../tools/integrations/ga4.md) |
+| **Dub** | Link curto + atribuição de clique | ✓ | [dub-co.md](../../tools/integrations/dub-co.md) |
+| **Segment** | CDP — roteia identify/track para todo destino | - | [segment.md](../../tools/integrations/segment.md) |
+| **HubSpot** | Campos de fonte de lead + autodeclarado do CRM | ✓ | [hubspot.md](../../tools/integrations/hubspot.md) |
+| **Salesforce** | CRM como fonte de verdade de receita | - | [salesforce.md](../../tools/integrations/salesforce.md) |
+| **Supermetrics** | Puxa números de plataforma para um lugar só para reconciliar | ✓ | [supermetrics.md](../../tools/integrations/supermetrics.md) |
+| **RB2B** | Desanonimizar visitantes de site B2B | - | [rb2b.md](../../tools/integrations/rb2b.md) |
 
 ---
 
-## Related Skills
+## Skills relacionadas
 
-- **analytics** — event tracking, tracking plans, UTMs, GA4/GTM setup. Do this *before* attribution.
-- **ads** — ad-platform pixels, CAPI, server-side conversion tracking (`references/conversion-tracking.md`).
-- **revops** — pipeline stages, lead lifecycle, CRM revenue reporting. Attribution feeds it.
-- **ai-seo** — the AI-search attribution blind spot in depth.
-- **ab-testing** — controlled experiments; the incrementality mindset applied to on-site changes.
+- **analytics** — tracking de evento, planos de tracking, UTMs, setup de GA4/GTM. Faça isso *antes* da atribuição.
+- **ads** — pixels de plataforma de anúncio, CAPI, tracking de conversão server-side (`references/conversion-tracking.md`).
+- **revops** — estágios de pipeline, lifecycle de lead, relatório de receita do CRM. Atribuição alimenta isso.
+- **ai-seo** — o ponto cego de atribuição em busca por IA em profundidade.
+- **ab-testing** — experimentos controlados; a mentalidade de incrementalidade aplicada a mudanças no site.

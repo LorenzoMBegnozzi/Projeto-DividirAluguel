@@ -1,424 +1,495 @@
 ---
 name: churn-prevention
-description: "When the user wants to reduce churn, build cancellation flows, set up save offers, recover failed payments, or implement retention strategies. Also use when the user mentions 'churn,' 'cancel flow,' 'offboarding,' 'save offer,' 'dunning,' 'failed payment recovery,' 'win-back,' 'retention,' 'exit survey,' 'pause subscription,' 'involuntary churn,' 'people keep canceling,' 'churn rate is too high,' 'how do I keep users,' or 'customers are leaving.' Use this whenever someone is losing subscribers or wants to build systems to prevent it. For post-cancel win-back email sequences, see emails. For in-app upgrade paywalls, see paywalls."
+description: "Quando o usuário quiser reduzir churn, construir fluxos de cancelamento, configurar ofertas de retenção, recuperar pagamentos falhos, ou implementar estratégias de retenção. Use também quando o usuário mencionar 'churn,' 'fluxo de cancelamento,' 'offboarding,' 'oferta de retenção,' 'dunning,' 'recuperação de pagamento falho,' 'reconquista,' 'retenção,' 'pesquisa de saída,' 'pausar assinatura,' 'churn involuntário,' 'as pessoas não param de cancelar,' 'a taxa de churn está alta demais,' 'como eu mantenho os usuários,' ou 'os clientes estão saindo.' Use isso sempre que alguém estiver perdendo assinantes ou quiser construir sistemas para prevenir isso. Para sequências de e-mail de reconquista pós-cancelamento, veja emails. Para paywalls de upgrade dentro do produto, veja paywalls."
 metadata:
-  version: 2.0.1
+  version: 2.0.0
 ---
 
-# Churn Prevention
+# Prevenção de Churn
 
-You are an expert in SaaS retention and churn prevention. Your goal is to help reduce both voluntary churn (customers choosing to cancel) and involuntary churn (failed payments) through well-designed cancel flows, dynamic save offers, proactive retention, and dunning strategies.
+Você é um especialista em retenção e prevenção de churn de SaaS. Seu
+objetivo é ajudar a reduzir tanto o churn voluntário (cliente escolhe
+cancelar) quanto o involuntário (pagamento falho) através de fluxos de
+cancelamento bem desenhados, ofertas de retenção dinâmicas, retenção
+proativa, e estratégias de dunning.
 
-## Before Starting
+## Antes de começar
 
-**Check for product marketing context first:**
-If `.agents/product-marketing.md` exists (or `.claude/product-marketing.md`, or the legacy `product-marketing-context.md` filename, in older setups), read it before asking questions. Use that context and only ask for information not already covered or specific to this task.
+**Primeiro, verifique se há contexto de produto:**
+Se `.agents/product-marketing.md` existir (ou `.claude/product-marketing.md`,
+ou o nome de arquivo legado `product-marketing-context.md`, em setups mais
+antigos), leia-o antes de fazer perguntas. Use esse contexto e só pergunte o
+que não estiver coberto ou for específico desta tarefa.
 
-Gather this context (ask if not provided):
+Reúna este contexto (pergunte se não for fornecido):
 
-### 1. Current Churn Situation
-- What's your monthly churn rate? (Voluntary vs. involuntary if known)
-- How many active subscribers?
-- What's the average MRR per customer?
-- Do you have a cancel flow today, or does cancel happen instantly?
+### 1. Situação atual de churn
 
-### 2. Billing & Platform
-- What billing provider? (Stripe, Chargebee, Paddle, Recurly, Braintree)
-- Monthly, annual, or both billing intervals?
-- Do you support plan pausing or downgrades?
-- Any existing retention tooling? (Churnkey, ProsperStack, Raaft)
+- Qual é sua taxa de churn mensal? (voluntário vs. involuntário, se souber)
+- Quantos assinantes ativos?
+- Qual é o MRR médio por cliente?
+- Você tem um fluxo de cancelamento hoje, ou o cancelamento acontece
+  instantaneamente?
 
-### 3. Product & Usage Data
-- Do you track feature usage per user?
-- Can you identify engagement drop-offs?
-- Do you have cancellation reason data from past churns?
-- What's your activation metric? (What do retained users do that churned users don't?)
+### 2. Cobrança e plataforma
 
-### 4. Constraints
-- B2B or B2C? (Affects flow design)
-- Self-serve cancellation required? (Some regulations mandate easy cancel)
-- Brand tone for offboarding? (Empathetic, direct, playful)
+- Que provedor de cobrança? (Stripe, Chargebee, Paddle, Recurly, Braintree)
+- Intervalo de cobrança mensal, anual, ou ambos?
+- Você suporta pausa ou downgrade de plano?
+- Alguma ferramenta de retenção existente? (Churnkey, ProsperStack, Raaft)
 
----
+### 3. Dados de produto e uso
 
-## How This Skill Works
+- Você rastreia uso de feature por usuário?
+- Você consegue identificar quedas de engajamento?
+- Você tem dado de motivo de cancelamento de churns passados?
+- Qual é sua métrica de ativação? (o que usuários retidos fazem que os que
+  cancelaram não fazem?)
 
-Churn has two types requiring different strategies:
+### 4. Restrições
 
-| Type | Cause | Solution |
-|------|-------|----------|
-| **Voluntary** | Customer chooses to cancel | Cancel flows, save offers, exit surveys |
-| **Involuntary** | Payment fails | Dunning emails, smart retries, card updaters |
-
-Voluntary churn is typically 50-70% of total churn. Involuntary churn is 30-50% but is often easier to fix.
-
-This skill supports three modes:
-
-1. **Build a cancel flow** — Design from scratch with survey, save offers, and confirmation
-2. **Optimize an existing flow** — Analyze cancel data and improve save rates
-3. **Set up dunning** — Failed payment recovery with retries and email sequences
+- B2B ou B2C? (afeta o desenho do fluxo)
+- Cancelamento self-serve é obrigatório? (algumas regulações exigem
+  cancelamento fácil — no Brasil, o **Código de Defesa do Consumidor**
+  exige que o cancelamento seja tão fácil quanto a contratação)
+- Tom de marca para o offboarding? (empático, direto, descontraído)
 
 ---
 
-## Cancel Flow Design
+## Como esta skill funciona
 
-### The Cancel Flow Structure
+Churn tem dois tipos que exigem estratégias diferentes:
 
-Every cancel flow follows this sequence:
+| Tipo | Causa | Solução |
+|---|---|---|
+| **Voluntário** | O cliente escolhe cancelar | Fluxos de cancelamento, ofertas de retenção, pesquisa de saída |
+| **Involuntário** | O pagamento falha | E-mails de dunning, retries inteligentes, atualizadores de cartão |
 
+Churn voluntário é tipicamente 50-70% do churn total. Churn involuntário é
+30-50%, mas costuma ser mais fácil de consertar.
+
+Esta skill suporta três modos:
+
+1. **Construir um fluxo de cancelamento** — desenhar do zero com pesquisa,
+   ofertas de retenção, e confirmação
+2. **Otimizar um fluxo existente** — analisar dados de cancelamento e
+   melhorar a taxa de retenção
+3. **Configurar dunning** — recuperação de pagamento falho com retries e
+   sequências de e-mail
+
+---
+
+## Desenho do fluxo de cancelamento
+
+### A estrutura do fluxo de cancelamento
+
+Todo fluxo de cancelamento segue esta sequência:
+
+```text
+Gatilho → Pesquisa → Oferta dinâmica → Confirmação → Pós-cancelamento
 ```
-Trigger → Survey → Dynamic Offer → Confirmation → Post-Cancel
-```
 
-**Step 1: Trigger**
-Customer clicks "Cancel subscription" in account settings.
+**Passo 1: Gatilho**
+O cliente clica em "Cancelar assinatura" nas configurações da conta.
 
-**Step 2: Exit Survey**
-Ask why they're cancelling. This determines which save offer to show.
+**Passo 2: Pesquisa de saída**
+Pergunte por que está cancelando. Isso determina qual oferta de retenção
+mostrar.
 
-**Step 3: Dynamic Save Offer**
-Present a targeted offer based on their reason (discount, pause, downgrade, etc.)
+**Passo 3: Oferta de retenção dinâmica**
+Apresente uma oferta direcionada com base no motivo dele (desconto, pausa,
+downgrade, etc.)
 
-**Step 4: Confirmation**
-If they still want to cancel, confirm clearly with end-of-billing-period messaging.
+**Passo 4: Confirmação**
+Se ainda quiser cancelar, confirme claramente com a mensagem de fim do
+período de cobrança.
 
-**Step 5: Post-Cancel**
-Set expectations, offer easy reactivation path, trigger win-back sequence.
+**Passo 5: Pós-cancelamento**
+Estabeleça expectativas, ofereça um caminho fácil de reativação, dispare a
+sequência de reconquista.
 
-### Exit Survey Design
+### Desenho da pesquisa de saída
 
-The exit survey is the foundation. Good reason categories:
+A pesquisa de saída é a fundação. Boas categorias de motivo:
 
-| Reason | What It Tells You |
-|--------|-------------------|
-| Too expensive | Price sensitivity, may respond to discount or downgrade |
-| Not using it enough | Low engagement, may respond to pause or onboarding help |
-| Missing a feature | Product gap, show roadmap or workaround |
-| Switching to competitor | Competitive pressure, understand what they offer |
-| Technical issues / bugs | Product quality, escalate to support |
-| Temporary / seasonal need | Usage pattern, offer pause |
-| Business closed / changed | Unavoidable, learn and let go gracefully |
-| Other | Catch-all, include free text field |
+| Motivo | O que te diz |
+|---|---|
+| Caro demais | Sensibilidade a preço, pode responder a desconto ou downgrade |
+| Não estou usando o suficiente | Baixo engajamento, pode responder a pausa ou ajuda de onboarding |
+| Falta uma feature | Lacuna de produto, mostre o roadmap ou um workaround |
+| Trocando por um concorrente | Pressão competitiva, entenda o que eles oferecem |
+| Problemas técnicos / bugs | Qualidade do produto, escale para o suporte |
+| Necessidade temporária / sazonal | Padrão de uso, ofereça pausa |
+| Empresa fechou / mudou | Inevitável, aprenda e deixe ir com elegância |
+| Outro | Genérico, inclua um campo de texto livre |
 
-**Survey best practices:**
-- 1 question, single-select with optional free text
-- 5-8 reason options max (avoid decision fatigue)
-- Put most common reasons first (review data quarterly)
-- Don't make it feel like a guilt trip
-- "Help us improve" framing works better than "Why are you leaving?"
+**Boas práticas de pesquisa:**
 
-### Dynamic Save Offers
+- 1 pergunta, escolha única com texto livre opcional
+- No máximo 5-8 opções de motivo (evite fadiga de decisão)
+- Coloque os motivos mais comuns primeiro (revise o dado trimestralmente)
+- Não deixe parecer uma cobrança de culpa
+- Enquadramento "Ajude-nos a melhorar" funciona melhor que "Por que você
+  está saindo?"
 
-The key insight: **match the offer to the reason.** A discount won't save someone who isn't using the product. A feature roadmap won't save someone who can't afford it.
+### Ofertas de retenção dinâmicas
 
-**Offer-to-reason mapping:**
+O insight-chave: **combine a oferta com o motivo.** Um desconto não salva
+alguém que não está usando o produto. Um roadmap de feature não salva
+alguém que não pode pagar.
 
-| Cancel Reason | Primary Offer | Fallback Offer |
-|---------------|---------------|----------------|
-| Too expensive | Discount (20-30% for 2-3 months) | Downgrade to lower plan |
-| Not using it enough | Pause (1-3 months) | Free onboarding session |
-| Missing feature | Roadmap preview + timeline | Workaround guide |
-| Switching to competitor | Competitive comparison + discount | Feedback session |
-| Technical issues | Escalate to support immediately | Credit + priority fix |
-| Temporary / seasonal | Pause subscription | Downgrade temporarily |
-| Business closed | Skip offer (respect the situation) | — |
+**Mapeamento oferta-para-motivo:**
 
-### Save Offer Types
+| Motivo de cancelamento | Oferta primária | Oferta alternativa |
+|---|---|---|
+| Caro demais | Desconto (20-30% por 2-3 meses) | Downgrade para plano menor |
+| Não estou usando o suficiente | Pausa (1-3 meses) | Sessão gratuita de onboarding |
+| Falta feature | Preview do roadmap + prazo | Guia de workaround |
+| Trocando por concorrente | Comparação competitiva + desconto | Sessão de feedback |
+| Problemas técnicos | Escale para o suporte imediatamente | Crédito + correção prioritária |
+| Temporário / sazonal | Pausar assinatura | Downgrade temporário |
+| Empresa fechou | Pule a oferta (respeite a situação) | — |
 
-**Discount**
-- 20-30% off for 2-3 months is the sweet spot
-- Avoid 50%+ discounts (trains customers to cancel for deals)
-- Time-limit the offer ("This offer expires when you leave this page")
-- Show the dollar amount saved, not just the percentage
+### Tipos de oferta de retenção
 
-**Pause subscription**
-- 1-3 month pause maximum (longer pauses rarely reactivate)
-- 60-80% of pausers eventually return to active
-- Auto-reactivation with advance notice email
-- Keep their data and settings intact
+**Desconto**
 
-**Plan downgrade**
-- Offer a lower tier instead of full cancellation
-- Show what they keep vs. what they lose
-- Position as "right-size your plan" not "downgrade"
-- Easy path back up when ready
+- 20-30% de desconto por 2-3 meses é o ponto ideal
+- Evite descontos de 50%+ (treina o cliente a cancelar em busca de
+  promoção)
+- Coloque prazo na oferta ("Essa oferta expira quando você sair dessa
+  página")
+- Mostre o valor economizado em reais, não só a porcentagem
 
-**Feature unlock / extension**
-- Unlock a premium feature they haven't tried
-- Extend trial of a higher tier
-- Works best for "not getting enough value" reasons
+**Pausar assinatura**
 
-**Personal outreach**
-- For high-value accounts (top 10-20% by MRR)
-- Route to customer success for a call
-- Personal email from founder for smaller companies
+- Máximo de 1-3 meses de pausa (pausas mais longas raramente reativam)
+- 60-80% de quem pausa eventualmente volta a ficar ativo
+- Reativação automática com e-mail de aviso prévio
+- Mantenha os dados e configurações intactos
 
-### Cancel Flow UI Patterns
+**Downgrade de plano**
 
-```
+- Ofereça um tier menor em vez do cancelamento completo
+- Mostre o que ele mantém vs. o que perde
+- Posicione como "ajustar o tamanho do seu plano," não "downgrade"
+- Caminho fácil de volta quando estiver pronto
+
+**Desbloqueio/extensão de feature**
+
+- Desbloqueie uma feature premium que ele ainda não experimentou
+- Estenda o teste de um tier superior
+- Funciona melhor para motivos de "não estou recebendo valor suficiente"
+
+**Contato pessoal**
+
+- Para contas de alto valor (top 10-20% por MRR)
+- Encaminhe para customer success para uma call
+- E-mail pessoal do founder para empresas menores
+
+### Padrões de UI do fluxo de cancelamento
+
+```text
 ┌─────────────────────────────────────┐
-│  We're sorry to see you go          │
+│  Sentimos muito por você ir         │
 │                                     │
-│  What's the main reason you're      │
-│  cancelling?                        │
+│  Qual é o principal motivo do seu   │
+│  cancelamento?                      │
 │                                     │
-│  ○ Too expensive                    │
-│  ○ Not using it enough              │
-│  ○ Missing a feature I need         │
-│  ○ Switching to another tool        │
-│  ○ Technical issues                 │
-│  ○ Temporary / don't need right now │
-│  ○ Other: [____________]            │
+│  ○ Caro demais                      │
+│  ○ Não estou usando o suficiente    │
+│  ○ Falta uma feature que preciso    │
+│  ○ Trocando por outra ferramenta    │
+│  ○ Problemas técnicos               │
+│  ○ Temporário / não preciso agora   │
+│  ○ Outro: [____________]            │
 │                                     │
-│  [Continue]                         │
-│  [Never mind, keep my subscription] │
+│  [Continuar]                        │
+│  [Deixa pra lá, manter minha assinatura] │
 └─────────────────────────────────────┘
-         ↓ (selects "Too expensive")
+         ↓ (seleciona "Caro demais")
 ┌─────────────────────────────────────┐
-│  What if we could help?             │
+│  E se a gente pudesse ajudar?       │
 │                                     │
-│  We'd love to keep you. Here's a    │
-│  special offer:                     │
+│  Adoraríamos te manter. Aqui está   │
+│  uma oferta especial:               │
 │                                     │
 │  ┌───────────────────────────────┐  │
-│  │  25% off for the next 3 months│  │
-│  │  Save $XX/month               │  │
+│  │  25% off nos próximos 3 meses │  │
+│  │  Economize R$XX/mês           │  │
 │  │                               │  │
-│  │  [Accept Offer]               │  │
+│  │  [Aceitar oferta]             │  │
 │  └───────────────────────────────┘  │
 │                                     │
-│  Or switch to [Basic Plan] at       │
-│  $X/month →                         │
+│  Ou mude para o [Plano Básico] por  │
+│  R$X/mês →                          │
 │                                     │
-│  [No thanks, continue cancelling]   │
+│  [Não, obrigado, continuar cancelando] │
 └─────────────────────────────────────┘
 ```
 
-**UI principles:**
-- Keep the "continue cancelling" option visible (no dark patterns)
-- One primary offer + one fallback, not a wall of options
-- Show specific dollar savings, not abstract percentages
-- Use the customer's name and account data when possible
-- Mobile-friendly (many cancellations happen on mobile)
+**Princípios de UI:**
 
-For detailed cancel flow patterns by industry and billing provider, see [references/cancel-flow-patterns.md](references/cancel-flow-patterns.md).
+- Mantenha a opção "continuar cancelando" visível (sem dark patterns)
+- Uma oferta primária + uma alternativa, não um muro de opções
+- Mostre a economia em reais específica, não porcentagens abstratas
+- Use o nome e dados da conta do cliente quando possível
+- Amigável para mobile (muitos cancelamentos acontecem no celular)
+
+Para padrões detalhados de fluxo de cancelamento por setor e provedor de
+cobrança, veja
+[references/cancel-flow-patterns.md](references/cancel-flow-patterns.md).
 
 ---
 
-## Churn Prediction & Proactive Retention
+## Previsão de churn e retenção proativa
 
-The best save happens before the customer ever clicks "Cancel."
+A melhor retenção acontece antes de o cliente sequer clicar em "Cancelar."
 
-### Risk Signals
+### Sinais de risco
 
-Track these leading indicators of churn:
+Rastreie estes indicadores antecedentes de churn:
 
-| Signal | Risk Level | Timeframe |
-|--------|-----------|-----------|
-| Login frequency drops 50%+ | High | 2-4 weeks before cancel |
-| Key feature usage stops | High | 1-3 weeks before cancel |
-| Support tickets spike then stop | High | 1-2 weeks before cancel |
-| Email open rates decline | Medium | 2-6 weeks before cancel |
-| Billing page visits increase | High | Days before cancel |
-| Team seats removed | High | 1-2 weeks before cancel |
-| Data export initiated | Critical | Days before cancel |
-| NPS score drops below 6 | Medium | 1-3 months before cancel |
+| Sinal | Nível de risco | Janela de tempo |
+|---|---|---|
+| Frequência de login cai 50%+ | Alto | 2-4 semanas antes do cancelamento |
+| Uso de feature-chave para | Alto | 1-3 semanas antes do cancelamento |
+| Tickets de suporte disparam e param | Alto | 1-2 semanas antes do cancelamento |
+| Taxa de abertura de e-mail cai | Médio | 2-6 semanas antes do cancelamento |
+| Visitas à página de cobrança aumentam | Alto | Dias antes do cancelamento |
+| Assentos de time removidos | Alto | 1-2 semanas antes do cancelamento |
+| Export de dado iniciado | Crítico | Dias antes do cancelamento |
+| Nota NPS cai abaixo de 6 | Médio | 1-3 meses antes do cancelamento |
 
-### Health Score Model
+### Modelo de health score
 
-Build a simple health score (0-100) from weighted signals:
+Construa um health score simples (0-100) a partir de sinais ponderados:
 
-```
+```text
 Health Score = (
-  Login frequency score × 0.30 +
-  Feature usage score   × 0.25 +
-  Support sentiment     × 0.15 +
-  Billing health        × 0.15 +
-  Engagement score      × 0.15
+  Score de frequência de login × 0,30 +
+  Score de uso de feature       × 0,25 +
+  Sentimento de suporte         × 0,15 +
+  Saúde de cobrança             × 0,15 +
+  Score de engajamento          × 0,15
 )
 ```
 
-| Score | Status | Action |
-|-------|--------|--------|
-| 80-100 | Healthy | Upsell opportunities |
-| 60-79 | Needs attention | Proactive check-in |
-| 40-59 | At risk | Intervention campaign |
-| 0-39 | Critical | Personal outreach |
+| Score | Status | Ação |
+|---|---|---|
+| 80-100 | Saudável | Oportunidades de upsell |
+| 60-79 | Precisa de atenção | Check-in proativo |
+| 40-59 | Em risco | Campanha de intervenção |
+| 0-39 | Crítico | Contato pessoal |
 
-### Proactive Interventions
+### Intervenções proativas
 
-**Before they think about cancelling:**
+**Antes de o cliente pensar em cancelar:**
 
-| Trigger | Intervention |
-|---------|-------------|
-| Usage drop >50% for 2 weeks | "We noticed you haven't used [feature]. Need help?" email |
-| Approaching plan limit | Upgrade nudge (not a wall — paywalls handles this) |
-| No login for 14 days | Re-engagement email with recent product updates |
-| NPS detractor (0-6) | Personal follow-up within 24 hours |
-| Support ticket unresolved >48h | Escalation + proactive status update |
-| Annual renewal in 30 days | Value recap email + renewal confirmation |
+| Gatilho | Intervenção |
+|---|---|
+| Queda de uso >50% por 2 semanas | E-mail "Notamos que você não usou [feature]. Precisa de ajuda?" |
+| Aproximando-se do limite do plano | Empurrão de upgrade (não uma barreira — isso é o paywalls) |
+| Sem login há 14 dias | E-mail de reengajamento com novidades do produto |
+| Detrator de NPS (0-6) | Follow-up pessoal em até 24 horas |
+| Ticket de suporte não resolvido >48h | Escalação + atualização proativa de status |
+| Renovação anual em 30 dias | E-mail de recapitulação de valor + confirmação de renovação |
 
 ---
 
-## Involuntary Churn: Payment Recovery
+## Churn involuntário: recuperação de pagamento
 
-Failed payments cause 30-50% of all churn but are the most recoverable.
+Pagamentos falhos causam 30-50% de todo o churn, mas são os mais
+recuperáveis.
 
-### The Dunning Stack
+### A pilha de dunning
 
+```text
+Pré-dunning → Retry inteligente → E-mails de dunning → Período de carência → Cancelamento definitivo
 ```
-Pre-dunning → Smart retry → Dunning emails → Grace period → Hard cancel
-```
 
-### Pre-Dunning (Prevent Failures)
+### Pré-dunning (prevenir falhas)
 
-- **Card expiry alerts**: Email 30, 15, and 7 days before card expires
-- **Backup payment method**: Prompt for a second payment method at signup
-- **Card updater services**: Visa/Mastercard auto-update programs (reduces hard declines 30-50%)
-- **Pre-billing notification**: Email 3-5 days before charge for annual plans
+- **Alertas de vencimento de cartão**: e-mail 30, 15 e 7 dias antes do
+  cartão vencer
+- **Método de pagamento backup**: peça um segundo método de pagamento no
+  cadastro
+- **Serviços de atualização de cartão**: programas de auto-atualização
+  Visa/Mastercard (reduz recusas definitivas em 30-50%)
+- **Notificação pré-cobrança**: e-mail 3-5 dias antes da cobrança para
+  planos anuais
 
-### Smart Retry Logic
+### Lógica de retry inteligente
 
-Not all failures are the same. Retry strategy by decline type:
+Nem toda falha é igual. Estratégia de retry por tipo de recusa:
 
-| Decline Type | Examples | Retry Strategy |
-|-------------|----------|----------------|
-| Soft decline (temporary) | Insufficient funds, processor timeout | Retry 3-5 times over 7-10 days |
-| Hard decline (permanent) | Card stolen, account closed | Don't retry — ask for new card |
-| Authentication required | 3D Secure, SCA | Send customer to update payment |
+| Tipo de recusa | Exemplos | Estratégia de retry |
+|---|---|---|
+| Recusa leve (temporária) | Saldo insuficiente, timeout do processador | Retry 3-5 vezes ao longo de 7-10 dias |
+| Recusa definitiva (permanente) | Cartão roubado, conta fechada | Não repita — peça um cartão novo |
+| Autenticação necessária | 3D Secure, SCA | Envie o cliente para atualizar o pagamento |
 
-**Retry timing best practices:**
-- Retry 1: 24 hours after failure
-- Retry 2: 3 days after failure
-- Retry 3: 5 days after failure
-- Retry 4: 7 days after failure (with dunning email escalation)
-- After 4 retries: Hard cancel with reactivation path
+**Boas práticas de timing de retry:**
 
-**Smart retry tip:** Retry on the day of the month the payment originally succeeded (if Day 1 worked before, retry on Day 1). Stripe Smart Retries handles this automatically.
+- Retry 1: 24 horas depois da falha
+- Retry 2: 3 dias depois da falha
+- Retry 3: 5 dias depois da falha
+- Retry 4: 7 dias depois da falha (com escalação de e-mail de dunning)
+- Depois de 4 retries: cancelamento definitivo com caminho de reativação
 
-### Dunning Email Sequence
+**Dica de retry inteligente:** repita no dia do mês em que o pagamento
+originalmente teve sucesso (se o Dia 1 funcionou antes, repita no Dia 1). O
+Stripe Smart Retries faz isso automaticamente.
 
-| Email | Timing | Tone | Content |
-|-------|--------|------|---------|
-| 1 | Day 0 (failure) | Friendly alert | "Your payment didn't go through. Update your card." |
-| 2 | Day 3 | Helpful reminder | "Quick reminder — update your payment to keep access." |
-| 3 | Day 7 | Urgency | "Your account will be paused in 3 days. Update now." |
-| 4 | Day 10 | Final warning | "Last chance to keep your account active." |
+### Sequência de e-mail de dunning
 
-**Dunning email best practices:**
-- Direct link to payment update page (no login required if possible)
-- Show what they'll lose (their data, their team's access)
-- Don't blame ("your payment failed" not "you failed to pay")
-- Include support contact for help
-- Plain text performs better than designed emails for dunning
+| E-mail | Timing | Tom | Conteúdo |
+|---|---|---|---|
+| 1 | Dia 0 (falha) | Alerta amigável | "Seu pagamento não passou. Atualize seu cartão." |
+| 2 | Dia 3 | Lembrete útil | "Lembrete rápido — atualize seu pagamento para manter o acesso." |
+| 3 | Dia 7 | Urgência | "Sua conta vai ser pausada em 3 dias. Atualize agora." |
+| 4 | Dia 10 | Aviso final | "Última chance de manter sua conta ativa." |
 
-### Recovery Benchmarks
+**Boas práticas de e-mail de dunning:**
 
-| Metric | Poor | Average | Good |
-|--------|------|---------|------|
-| Soft decline recovery | <40% | 50-60% | 70%+ |
-| Hard decline recovery | <10% | 20-30% | 40%+ |
-| Overall payment recovery | <30% | 40-50% | 60%+ |
-| Pre-dunning prevention | None | 10-15% | 20-30% |
+- Link direto para a página de atualização de pagamento (sem exigir login,
+  se possível)
+- Mostre o que ele vai perder (os dados dele, o acesso do time dele)
+- Não culpe ("seu pagamento falhou," não "você não conseguiu pagar")
+- Inclua contato de suporte para ajuda
+- Texto simples performa melhor que e-mails desenhados para dunning
 
-For the complete dunning playbook with provider-specific setup, see [references/dunning-playbook.md](references/dunning-playbook.md).
+### Benchmarks de recuperação
 
----
+| Métrica | Ruim | Médio | Bom |
+|---|---|---|---|
+| Recuperação de recusa leve | <40% | 50-60% | 70%+ |
+| Recuperação de recusa definitiva | <10% | 20-30% | 40%+ |
+| Recuperação geral de pagamento | <30% | 40-50% | 60%+ |
+| Prevenção pré-dunning | Nenhuma | 10-15% | 20-30% |
 
-## Metrics & Measurement
-
-### Key Churn Metrics
-
-| Metric | Formula | Target |
-|--------|---------|--------|
-| Monthly churn rate | Churned customers / Start-of-month customers | <5% B2C, <2% B2B |
-| Revenue churn (net) | (Lost MRR - Expansion MRR) / Start MRR | Negative (net expansion) |
-| Cancel flow save rate | Saved / Total cancel sessions | 25-35% |
-| Offer acceptance rate | Accepted offers / Shown offers | 15-25% |
-| Pause reactivation rate | Reactivated / Total paused | 60-80% |
-| Dunning recovery rate | Recovered / Total failed payments | 50-60% |
-| Time to cancel | Days from first churn signal to cancel | Track trend |
-
-### Cohort Analysis
-
-Segment churn by:
-- **Acquisition channel** — Which channels bring stickier customers?
-- **Plan type** — Which plans churn most?
-- **Tenure** — When do most cancellations happen? (30, 60, 90 days?)
-- **Cancel reason** — Which reasons are growing?
-- **Save offer type** — Which offers work best for which segments?
-
-### Cancel Flow A/B Tests
-
-Test one variable at a time:
-
-| Test | Hypothesis | Metric |
-|------|-----------|--------|
-| Discount % (20% vs 30%) | Higher discount saves more | Save rate, LTV impact |
-| Pause duration (1 vs 3 months) | Longer pause increases return rate | Reactivation rate |
-| Survey placement (before vs after offer) | Survey-first personalizes offers | Save rate |
-| Offer presentation (modal vs full page) | Full page gets more attention | Save rate |
-| Copy tone (empathetic vs direct) | Empathetic reduces friction | Save rate |
-
-**How to run cancel flow experiments:** Use the **ab-testing** skill to design statistically rigorous tests. PostHog is a good fit for cancel flow experiments — its feature flags can split users into different flows server-side, and its funnel analytics track each step of the cancel flow (survey → offer → accept/decline → confirm). See the [PostHog integration guide](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/posthog.md) for setup.
+Para o playbook completo de dunning com setup específico por provedor,
+veja [references/dunning-playbook.md](references/dunning-playbook.md).
 
 ---
 
-## Common Mistakes
+## Métricas e mensuração
 
-- **No cancel flow at all** — Instant cancel leaves money on the table. Even a simple survey + one offer saves 10-15%
-- **Making cancellation hard to find** — Hidden cancel buttons breed resentment and bad reviews. Many jurisdictions require easy cancellation (FTC Click-to-Cancel rule)
-- **Same offer for every reason** — A blanket discount doesn't address "missing feature" or "not using it"
-- **Discounts too deep** — 50%+ discounts train customers to cancel-and-return for deals
-- **Ignoring involuntary churn** — Often 30-50% of total churn and the easiest to fix
-- **No dunning emails** — Letting payment failures silently cancel accounts
-- **Guilt-trip copy** — "Are you sure you want to abandon us?" damages brand trust
-- **Not tracking save offer LTV** — A "saved" customer who churns 30 days later wasn't really saved
-- **Pausing too long** — Pauses beyond 3 months rarely reactivate. Set limits.
-- **No post-cancel path** — Make reactivation easy and trigger win-back emails, because some churned users will want to come back
+### Métricas-chave de churn
+
+| Métrica | Fórmula | Meta |
+|---|---|---|
+| Taxa de churn mensal | Clientes que cancelaram / clientes no início do mês | <5% B2C, <2% B2B |
+| Churn de receita (líquido) | (MRR perdido - MRR de expansão) / MRR inicial | Negativo (expansão líquida) |
+| Taxa de retenção do fluxo de cancelamento | Retidos / total de sessões de cancelamento | 25-35% |
+| Taxa de aceitação de oferta | Ofertas aceitas / ofertas mostradas | 15-25% |
+| Taxa de reativação de pausa | Reativados / total pausados | 60-80% |
+| Taxa de recuperação de dunning | Recuperados / total de pagamentos falhos | 50-60% |
+| Tempo até o cancelamento | Dias do primeiro sinal de churn até o cancelamento | Acompanhe a tendência |
+
+### Análise de coorte
+
+Segmente o churn por:
+
+- **Canal de aquisição** — quais canais trazem clientes mais fiéis?
+- **Tipo de plano** — quais planos têm mais churn?
+- **Tempo de relacionamento** — quando a maioria dos cancelamentos
+  acontece? (30, 60, 90 dias?)
+- **Motivo de cancelamento** — quais motivos estão crescendo?
+- **Tipo de oferta de retenção** — quais ofertas funcionam melhor para
+  quais segmentos?
+
+### Testes A/B do fluxo de cancelamento
+
+Teste uma variável por vez:
+
+| Teste | Hipótese | Métrica |
+|---|---|---|
+| % de desconto (20% vs 30%) | Desconto maior retém mais | Taxa de retenção, impacto no LTV |
+| Duração da pausa (1 vs 3 meses) | Pausa mais longa aumenta a taxa de retorno | Taxa de reativação |
+| Posicionamento da pesquisa (antes vs depois da oferta) | Pesquisa primeiro personaliza a oferta | Taxa de retenção |
+| Apresentação da oferta (modal vs página inteira) | Página inteira gera mais atenção | Taxa de retenção |
+| Tom da copy (empático vs direto) | Empático reduz fricção | Taxa de retenção |
+
+**Como rodar experimentos de fluxo de cancelamento:** use a skill
+**ab-testing** para desenhar testes estatisticamente rigorosos. O PostHog
+é uma boa opção para experimentos de fluxo de cancelamento — seus feature
+flags conseguem dividir usuários em fluxos diferentes no server-side, e seu
+analytics de funil rastreia cada passo do fluxo de cancelamento (pesquisa →
+oferta → aceitar/recusar → confirmar). Veja o
+[guia de integração do PostHog](../../tools/integrations/posthog.md) para
+o setup.
 
 ---
 
-## Tool Integrations
+## Erros comuns
 
-For implementation, see the [tools registry](https://github.com/coreyhaines31/marketingskills/blob/main/tools/REGISTRY.md).
-
-### Retention Platforms
-
-| Tool | Best For | Key Feature |
-|------|----------|-------------|
-| **Churnkey** | Full cancel flow + dunning | AI-powered adaptive offers, 34% avg save rate |
-| **ProsperStack** | Cancel flows with analytics | Advanced rules engine, Stripe/Chargebee integration |
-| **Raaft** | Simple cancel flow builder | Easy setup, good for early-stage |
-| **Chargebee Retention** | Chargebee customers | Native integration, was Brightback |
-
-### Billing Providers (Dunning)
-
-| Provider | Smart Retries | Dunning Emails | Card Updater |
-|----------|:------------:|:--------------:|:------------:|
-| **Stripe** | Built-in (Smart Retries) | Built-in | Automatic |
-| **Chargebee** | Built-in | Built-in | Via gateway |
-| **Paddle** | Built-in | Built-in | Managed |
-| **Recurly** | Built-in | Built-in | Built-in |
-| **Braintree** | Manual config | Manual | Via gateway |
-
-### Related CLI Tools
-
-| Tool | Use For |
-|------|---------|
-| `stripe` | Subscription management, dunning config, payment retries |
-| `customer-io` | Dunning email sequences, retention campaigns |
-| `posthog` | Cancel flow A/B tests via feature flags, funnel analytics |
-| `mixpanel` / `ga4` | Usage tracking, churn signal analysis |
-| `segment` | Event routing for health scoring |
+- **Nenhum fluxo de cancelamento** — cancelamento instantâneo deixa
+  dinheiro na mesa. Até uma pesquisa simples + uma oferta retém 10-15%
+- **Dificultar achar o cancelamento** — botões de cancelamento escondidos
+  geram ressentimento e avaliações ruins. Muitas jurisdições exigem
+  cancelamento fácil (regra Click-to-Cancel da FTC nos EUA; no Brasil, o
+  CDC exige que o cancelamento seja tão fácil quanto a contratação)
+- **A mesma oferta para todo motivo** — um desconto genérico não resolve
+  "falta feature" ou "não estou usando"
+- **Descontos profundos demais** — descontos de 50%+ treinam o cliente a
+  cancelar-e-voltar em busca de promoção
+- **Ignorar o churn involuntário** — frequentemente 30-50% do churn total
+  e o mais fácil de consertar
+- **Sem e-mails de dunning** — deixar pagamentos falhos cancelarem contas
+  silenciosamente
+- **Copy de cobrança de culpa** — "Tem certeza que quer nos abandonar?"
+  prejudica a confiança na marca
+- **Não rastrear o LTV da oferta de retenção** — um cliente "retido" que
+  cancela 30 dias depois não foi realmente retido
+- **Pausar por tempo demais** — pausas além de 3 meses raramente reativam.
+  Estabeleça limites.
+- **Sem caminho pós-cancelamento** — deixe a reativação fácil e dispare
+  e-mails de reconquista, porque alguns usuários que cancelaram vão querer
+  voltar
 
 ---
 
-## Related Skills
+## Integrações de ferramentas
 
-- **emails**: For win-back email sequences after cancellation
-- **paywalls**: For in-app upgrade moments and trial expiration
-- **pricing**: For plan structure and annual discount strategy
-- **onboarding**: For activation to prevent early churn
-- **analytics**: For setting up churn signal events
-- **ab-testing**: For testing cancel flow variations with statistical rigor
+Para implementação, veja o [registro de ferramentas](../../tools/REGISTRY.md).
+
+### Plataformas de retenção
+
+| Ferramenta | Melhor para | Feature-chave |
+|---|---|---|
+| **Churnkey** | Fluxo de cancelamento completo + dunning | Ofertas adaptativas com IA, 34% de taxa média de retenção |
+| **ProsperStack** | Fluxos de cancelamento com analytics | Motor de regras avançado, integração Stripe/Chargebee |
+| **Raaft** | Construtor simples de fluxo de cancelamento | Setup fácil, bom para estágio inicial |
+| **Chargebee Retention** | Clientes Chargebee | Integração nativa, era o Brightback |
+
+### Provedores de cobrança (Dunning)
+
+| Provedor | Retries inteligentes | E-mails de dunning | Atualizador de cartão |
+|---|:---:|:---:|:---:|
+| **Stripe** | Nativo (Smart Retries) | Nativo | Automático |
+| **Chargebee** | Nativo | Nativo | Via gateway |
+| **Paddle** | Nativo | Nativo | Gerenciado |
+| **Recurly** | Nativo | Nativo | Nativo |
+| **Braintree** | Configuração manual | Manual | Via gateway |
+
+### Ferramentas CLI relacionadas
+
+| Ferramenta | Use para |
+|---|---|
+| `stripe` | Gestão de assinatura, config de dunning, retries de pagamento |
+| `customer-io` | Sequências de e-mail de dunning, campanhas de retenção |
+| `posthog` | Testes A/B de fluxo de cancelamento via feature flags, analytics de funil |
+| `mixpanel` / `ga4` | Tracking de uso, análise de sinal de churn |
+| `segment` | Roteamento de evento para health scoring |
+
+---
+
+## Skills relacionadas
+
+- **emails**: para sequências de e-mail de reconquista após o cancelamento
+- **paywalls**: para momentos de upgrade dentro do produto e expiração de teste
+- **pricing**: para estrutura de plano e estratégia de desconto anual
+- **onboarding**: para ativação, para prevenir churn precoce
+- **analytics**: para configurar eventos de sinal de churn
+- **ab-testing**: para testar variações do fluxo de cancelamento com rigor estatístico

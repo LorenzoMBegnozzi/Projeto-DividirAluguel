@@ -1,190 +1,240 @@
 ---
 name: free-tools
-description: When the user wants to plan, evaluate, or build a free tool for marketing purposes — lead generation, SEO value, or brand awareness. Also use when the user mentions "engineering as marketing," "free tool," "marketing tool," "calculator," "generator," "interactive tool," "lead gen tool," "build a tool for leads," "free resource," "ROI calculator," "grader tool," "audit tool," "should I build a free tool," or "tools for lead gen." Use this whenever someone wants to build something useful and give it away to attract leads or earn links. For downloadable content lead magnets (ebooks, checklists, templates), see lead-magnets.
+description: Quando o usuário quiser planejar, avaliar, ou construir uma ferramenta gratuita para fins de marketing — geração de lead, valor de SEO, ou reconhecimento de marca. Use também quando o usuário mencionar "engenharia como marketing," "ferramenta gratuita," "ferramenta de marketing," "calculadora," "gerador," "ferramenta interativa," "ferramenta de geração de lead," "construir uma ferramenta para leads," "recurso gratuito," "calculadora de ROI," "ferramenta de nota/grader," "ferramenta de auditoria," "devo construir uma ferramenta gratuita," ou "ferramentas para geração de lead." Use isso sempre que alguém quiser construir algo útil e distribuí-lo de graça para atrair leads ou ganhar links. Para iscas digitais de conteúdo baixável (ebooks, checklists, templates), veja lead-magnets.
 metadata:
   version: 2.0.1
 ---
 
-# Free Tool Strategy (Engineering as Marketing)
+# Estratégia de Ferramenta Gratuita (Engenharia como Marketing)
 
-You are an expert in engineering-as-marketing strategy. Your goal is to help plan and evaluate free tools that generate leads, attract organic traffic, and build brand awareness.
+Você é um especialista em estratégia de engenharia-como-marketing. Seu
+objetivo é ajudar a planejar e avaliar ferramentas gratuitas que geram
+leads, atraem tráfego orgânico, e constroem reconhecimento de marca.
 
-## Initial Assessment
+## Avaliação inicial
 
-**Check for product marketing context first:**
-If `.agents/product-marketing.md` exists (or `.claude/product-marketing.md`, or the legacy `product-marketing-context.md` filename, in older setups), read it before asking questions. Use that context and only ask for information not already covered or specific to this task.
+**Primeiro, verifique se há contexto de produto:**
+Se `.agents/product-marketing.md` existir (ou `.claude/product-marketing.md`,
+ou o nome de arquivo legado `product-marketing-context.md`, em setups mais
+antigos), leia-o antes de fazer perguntas. Use esse contexto e só pergunte o
+que não estiver coberto ou for específico desta tarefa.
 
-Before designing a tool strategy, understand:
+Antes de desenhar uma estratégia de ferramenta, entenda:
 
-1. **Business Context** - What's the core product? Who is the target audience? What problems do they have?
+1. **Contexto de negócio** - qual é o produto central? Quem é a audiência-
+   alvo? Que problemas eles têm?
 
-2. **Goals** - Lead generation? SEO/traffic? Brand awareness? Product education?
+2. **Objetivos** - geração de lead? SEO/tráfego? Reconhecimento de marca?
+   Educação de produto?
 
-3. **Resources** - Technical capacity to build? Ongoing maintenance bandwidth? Budget for promotion?
-
----
-
-## Core Principles
-
-**"Your product is my marketing opportunity."** Bezos said "your margin is my opportunity." The engineering-as-marketing version: take a capability others monetize and build a free version as an acquisition channel. Unsplash gave away the stock photos Getty sold — and Getty acquired it. See [references/tool-benchmarks.md](references/tool-benchmarks.md) for named cases and conversion numbers.
-
-### 1. Solve a Real Problem
-- Tool must provide genuine value
-- Solves a problem your audience actually has
-- Useful even without your main product
-
-### 2. Adjacent to Core Product
-- Related to what you sell
-- Natural path from tool to product
-- Educates on problem you solve
-
-### 3. Simple and Focused
-- Does one thing well
-- Low friction to use
-- Immediate value
-
-### 4. Worth the Investment
-- Lead value × expected leads > build cost + maintenance
+3. **Recursos** - capacidade técnica para construir? Capacidade de
+   manutenção contínua? Orçamento para promoção?
 
 ---
 
-## Tool Types Overview
+## Princípios centrais
 
-| Type | Examples | Best For |
-|------|----------|----------|
-| Calculators | ROI, savings, pricing estimators | Decisions involving numbers |
-| Generators | Templates, policies, names | Creating something quickly |
-| Analyzers | Website graders, SEO auditors | Evaluating existing work |
-| Testers | Meta tag preview, speed tests | Checking if something works |
-| Libraries | Icon sets, templates, snippets | Reference material |
-| Interactive | Tutorials, playgrounds, quizzes | Learning/understanding |
+**"Seu produto é minha oportunidade de marketing."** Bezos disse "sua
+margem é minha oportunidade." A versão de engenharia-como-marketing:
+pegue uma capacidade que outros monetizam e construa uma versão grátis
+como canal de aquisição. O Unsplash distribuiu de graça as fotos de banco
+que a Getty vendia — e a Getty o adquiriu. Veja
+[references/tool-benchmarks.md](references/tool-benchmarks.md) para casos
+nomeados e números de conversão.
 
-**For detailed tool types and examples**: See [references/tool-types.md](references/tool-types.md)
+### 1. Resolva um problema real
 
-**For named case benchmarks (Unsplash, HubSpot Website Grader, Moz, Buffer, Shopify) with real conversion numbers**: See [references/tool-benchmarks.md](references/tool-benchmarks.md)
+- A ferramenta precisa entregar valor genuíno
+- Resolve um problema que sua audiência de fato tem
+- Útil mesmo sem seu produto principal
 
----
+### 2. Adjacente ao produto central
 
-## Ideation Framework
+- Relacionada ao que você vende
+- Caminho natural da ferramenta ao produto
+- Educa sobre o problema que você resolve
 
-### Start with Pain Points
+### 3. Simples e focada
 
-1. **What problems does your audience Google?** - Search query research, common questions
+- Faz uma coisa bem
+- Baixa fricção de uso
+- Valor imediato
 
-2. **What manual processes are tedious?** - Spreadsheet tasks, repetitive calculations
+### 4. Vale o investimento
 
-3. **What do they need before buying your product?** - Assessments, planning, comparisons
-
-4. **What information do they wish they had?** - Data they can't easily access, benchmarks
-
-### Validate the Idea
-
-- **Search demand**: Is there search volume? How competitive?
-- **Uniqueness**: What exists? How can you be 10x better?
-- **Lead quality**: Does this audience match buyers?
-- **Build feasibility**: How complex? Can you scope an MVP?
+- Valor do lead × leads esperados > custo de construção + manutenção
 
 ---
 
-## Lead Capture Strategy
+## Visão geral dos tipos de ferramenta
 
-### Gating Options
+| Tipo | Exemplos | Melhor para |
+|---|---|---|
+| Calculadoras | ROI, economia, estimadores de preço | Decisões que envolvem números |
+| Geradores | Templates, políticas, nomes | Criar algo rapidamente |
+| Analisadores | Avaliadores de site, auditores de SEO | Avaliar trabalho existente |
+| Testadores | Preview de meta tag, teste de velocidade | Checar se algo funciona |
+| Bibliotecas | Conjuntos de ícone, templates, snippets | Material de referência |
+| Interativos | Tutoriais, playgrounds, quizzes | Aprender/entender |
 
-| Approach | Pros | Cons |
-|----------|------|------|
-| Fully gated | Maximum capture | Lower usage |
-| Partially gated | Balance of both | Common pattern |
-| Ungated + optional | Maximum reach | Lower capture |
-| Ungated entirely | Pure SEO/brand | No direct leads |
+**Para tipos de ferramenta detalhados e exemplos**: veja
+[references/tool-types.md](references/tool-types.md)
 
-### Lead Capture Best Practices
-- Value exchange clear: "Get your full report"
-- Minimal friction: Email only
-- Show preview of what they'll get
-- Optional: Segment by asking one qualifying question
-
----
-
-## SEO Considerations
-
-### Keyword Strategy
-**Tool landing page**: "[thing] calculator", "[thing] generator", "free [tool type]"
-
-**Supporting content**: "How to [use case]", "What is [concept]"
-
-### Link Building
-Free tools attract links because:
-- Genuinely useful (people reference them)
-- Unique (can't link to just any page)
-- Shareable (social amplification)
+**Para benchmarks de casos nomeados (Unsplash, HubSpot Website Grader,
+Moz, Buffer, Shopify) com números reais de conversão**: veja
+[references/tool-benchmarks.md](references/tool-benchmarks.md)
 
 ---
 
-## Build vs. Buy
+## Framework de ideação
 
-### Build Custom
-When: Unique concept, core to brand, high strategic value, have dev capacity
+### Comece pelos pontos de dor
 
-### Use No-Code Tools
-Options: Outgrow, Involve.me, Typeform, Tally, Bubble, Webflow
-When: Speed to market, limited dev resources, testing concept
+1. **Que problemas sua audiência busca no Google?** - pesquisa de query de
+   busca, perguntas comuns
 
-### Embed Existing
-When: Something good exists, white-label available, not core differentiator
+2. **Que processos manuais são tediosos?** - tarefas de planilha, cálculos
+   repetitivos
 
----
+3. **Do que eles precisam antes de comprar seu produto?** - avaliações,
+   planejamento, comparações
 
-## MVP Scope
+4. **Que informação eles gostariam de ter?** - dado que não conseguem
+   acessar facilmente, benchmarks
 
-### Minimum Viable Tool
-1. Core functionality only—does the one thing, works reliably
-2. Essential UX—clear input, obvious output, mobile works
-3. Basic lead capture—email collection, leads go somewhere useful
+### Valide a ideia
 
-### What to Skip Initially
-Account creation, saving results, advanced features, perfect design, every edge case
-
----
-
-## Evaluation Scorecard
-
-Rate each factor 1-5:
-
-| Factor | Score |
-|--------|-------|
-| Search demand exists | ___ |
-| Audience match to buyers | ___ |
-| Uniqueness vs. existing | ___ |
-| Natural path to product | ___ |
-| Build feasibility | ___ |
-| Maintenance burden (inverse) | ___ |
-| Link-building potential | ___ |
-| Share-worthiness | ___ |
-
-**25+**: Strong candidate | **15-24**: Promising | **<15**: Reconsider
+- **Demanda de busca**: existe volume de busca? Quão competitivo?
+- **Singularidade**: o que já existe? Como você pode ser 10x melhor?
+- **Qualidade do lead**: essa audiência combina com os compradores?
+- **Viabilidade de construção**: quão complexo? Dá para escopar um MVP?
 
 ---
 
-## Task-Specific Questions
+## Estratégia de captura de lead
 
-1. What existing tools does your audience use for workarounds?
-2. How do you currently generate leads?
-3. What technical resources are available?
-4. What's the timeline and budget?
+### Opções de fechamento (gating)
+
+| Abordagem | Prós | Contras |
+|---|---|---|
+| Totalmente fechado | Captura máxima | Uso menor |
+| Parcialmente fechado | Equilíbrio dos dois | Padrão comum |
+| Aberto + opcional | Alcance máximo | Captura menor |
+| Totalmente aberto | SEO/marca puro | Sem lead direto |
+
+### Boas práticas de captura de lead
+
+- Troca de valor clara: "Receba seu relatório completo"
+- Fricção mínima: só e-mail
+- Mostre um preview do que a pessoa vai receber
+- Opcional: segmente perguntando uma pergunta de qualificação
 
 ---
 
-## Common Pitfalls
+## Considerações de SEO
 
-- **Over-engineering** — Shipping a bloated tool when the winning cases were tiny (Unsplash: 3 hrs; Website Grader: 2 engineers, 2 weeks). Scope to the one job.
-- **Poor product integration** — A tool with no natural path to your product earns traffic but not pipeline. The best cases surface the product's value (Moz Keyword Explorer = the paid product's demo).
-- **Maintenance / security debt** — Tools that scrape, call APIs, or take user input rot and become attack surfaces. Budget for upkeep before you build.
-- **Vanity metrics** — Visitors and usage feel good but don't pay. Track leads, qualification rate, and trial/signup conversion — the numbers the case library reports.
+### Estratégia de palavra-chave
 
-## Related Skills
+**Landing page da ferramenta**: "calculadora de [coisa]", "gerador de
+[coisa]", "[tipo de ferramenta] grátis"
 
-- **lead-magnets**: For downloadable content lead magnets (ebooks, checklists, templates)
-- **cro**: For optimizing the tool's landing page
-- **seo-audit**: For SEO-optimizing the tool
-- **analytics**: For measuring tool usage
-- **emails**: For nurturing leads from the tool
+**Conteúdo de apoio**: "Como [caso de uso]", "O que é [conceito]"
+
+### Construção de link
+
+Ferramentas gratuitas atraem links porque:
+
+- Genuinamente úteis (as pessoas as referenciam)
+- Únicas (não dá para linkar para qualquer página)
+- Compartilháveis (amplificação social)
+
+---
+
+## Construir vs. comprar
+
+### Construir customizado
+
+Quando: conceito único, central à marca, alto valor estratégico, tem
+capacidade de dev
+
+### Usar ferramentas no-code
+
+Opções: Outgrow, Involve.me, Typeform, Tally, Bubble, Webflow
+
+Quando: velocidade de lançamento, recursos de dev limitados, testando o
+conceito
+
+### Embutir algo existente
+
+Quando: algo bom já existe, white-label disponível, não é o diferencial
+central
+
+---
+
+## Escopo do MVP
+
+### Ferramenta mínima viável
+
+1. Só a funcionalidade central — faz a uma coisa, funciona de forma
+   confiável
+2. UX essencial — input claro, output óbvio, funciona no mobile
+3. Captura de lead básica — coleta de e-mail, leads vão para algum lugar
+   útil
+
+### O que pular inicialmente
+
+Criação de conta, salvar resultados, features avançadas, design perfeito,
+todo edge case
+
+---
+
+## Placar de avaliação
+
+Pontue cada fator de 1 a 5:
+
+| Fator | Pontuação |
+|---|---|
+| Demanda de busca existe | ___ |
+| Audiência combina com compradores | ___ |
+| Singularidade vs. existente | ___ |
+| Caminho natural ao produto | ___ |
+| Viabilidade de construção | ___ |
+| Peso de manutenção (inverso) | ___ |
+| Potencial de construção de link | ___ |
+| Vale a pena compartilhar | ___ |
+
+**25+**: candidato forte | **15-24**: promissor | **<15**: reconsidere
+
+---
+
+## Perguntas específicas da tarefa
+
+1. Que ferramentas existentes sua audiência usa como workaround?
+2. Como você gera leads atualmente?
+3. Que recursos técnicos estão disponíveis?
+4. Qual é o cronograma e orçamento?
+
+---
+
+## Armadilhas comuns
+
+- **Superengenharia** — lançar uma ferramenta inchada quando os casos
+  vencedores eram minúsculos (Unsplash: 3 horas; Website Grader: 2
+  engenheiros, 2 semanas). Escope para a uma tarefa.
+- **Integração de produto fraca** — uma ferramenta sem caminho natural ao
+  seu produto ganha tráfego mas não pipeline. Os melhores casos mostram o
+  valor do produto (Moz Keyword Explorer = a demo do produto pago).
+- **Dívida de manutenção/segurança** — ferramentas que raspam, chamam
+  APIs, ou recebem input de usuário apodrecem e viram superfície de
+  ataque. Orce para a manutenção antes de construir.
+- **Métricas de vaidade** — visitantes e uso parecem bons mas não pagam
+  conta. Rastreie leads, taxa de qualificação, e conversão de teste/
+  cadastro — os números que a biblioteca de casos reporta.
+
+## Skills relacionadas
+
+- **lead-magnets**: para iscas digitais de conteúdo baixável (ebooks, checklists, templates)
+- **cro**: para otimizar a landing page da ferramenta
+- **seo-audit**: para otimizar a ferramenta para SEO
+- **analytics**: para medir o uso da ferramenta
+- **emails**: para nutrir leads vindos da ferramenta

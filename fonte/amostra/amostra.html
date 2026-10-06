@@ -1,0 +1,39 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;800&display=block">
+<style>
+@font-face { font-family: 'Sutil'; src: url(../dist/RachaAmostraSutil-Regular.woff2); font-weight: 400; }
+@font-face { font-family: 'Sutil'; src: url(../dist/RachaAmostraSutil-ExtraBold.woff2); font-weight: 800; }
+@font-face { font-family: 'Marcado'; src: url(../dist/RachaAmostraMarcado-Regular.woff2); font-weight: 400; }
+@font-face { font-family: 'Marcado'; src: url(../dist/RachaAmostraMarcado-ExtraBold.woff2); font-weight: 800; }
+* { margin: 0; box-sizing: border-box; }
+body { width: 1600px; background: #faf7f2; color: #1b2b33; font-family: 'Schibsted Grotesk'; padding: 72px 80px; }
+.variant { padding: 56px 0 64px; border-top: 2px solid #e3dccf; }
+.label { font-size: 22px; font-weight: 700; color: #5e6d75; margin-bottom: 28px; }
+.label b { color: #1b2b33; }
+.glyphs { font-size: 300px; font-weight: 800; line-height: 1; letter-spacing: 0.02em; margin-bottom: 30px; }
+.big { font-size: 150px; font-weight: 800; line-height: 1.05; letter-spacing: -0.01em; }
+.mid { font-size: 96px; line-height: 1.15; margin-top: 18px; }
+.mid.w800 { font-weight: 800; } .mid.w400 { font-weight: 400; }
+.texts { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; margin-top: 44px; }
+.texts h4 { font: 700 15px 'Schibsted Grotesk'; color: #5e6d75; margin-bottom: 10px; }
+.t16 { font-size: 16px; line-height: 1.5; } .t14 { font-size: 14px; line-height: 1.45; margin-top: 10px; }
+.cmp { font-family: 'Schibsted Grotesk' !important; }
+.Sutil { font-family: 'Sutil'; } .Marcado { font-family: 'Marcado'; }
+</style></head><body>
+<script>
+const t1 = 'Achar com quem dividir o apê perto da faculdade, sem perder tempo no grupo.';
+const t2 = 'As vagas ficam entre R$ 500 e R$ 690, e cada perfil mostra a compatibilidade.';
+for (const v of ['Sutil', 'Marcado']) {
+  document.write(`<section class="variant ${v}">
+    <p class="label cmp"><b>${v === 'Sutil' ? 'A · detalhes sutis' : 'B · detalhes marcados'}</b></p>
+    <p class="glyphs">hnêAi</p>
+    <p class="big">RachaAi apê 92% R$ 650</p>
+    <p class="mid w800">hamburgefontsiv ção</p>
+    <p class="mid w400">hamburgefontsiv ção</p>
+    <div class="texts">
+      <div><h4>Racha ${v}, 16 e 14 px</h4><p class="t16">${t1} ${t2}</p><p class="t14">${t1} ${t2}</p></div>
+      <div class="cmp"><h4>Schibsted Grotesk (atual), 16 e 14 px</h4><p class="t16">${t1} ${t2}</p><p class="t14">${t1} ${t2}</p></div>
+    </div></section>`);
+}
+</script>
+</body></html>

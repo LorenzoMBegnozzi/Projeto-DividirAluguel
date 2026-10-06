@@ -1,0 +1,288 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="size" content="1080x1920">
+<meta name="video" content="15">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400..800&family=Instrument+Serif:ital@1&display=block">
+<link rel="stylesheet" href="base.css">
+<style>
+/*
+  Reel 15 s, 1080x1920. Nada acontece sozinho: window.render(t) desenha o quadro do segundo t.
+  record_reel.py chama render(i / 30) para cada quadro e tira um print.
+  Zonas seguras do reel: nada nos 20% de baixo (y > 1536) nem nos 140 px da direita (x > 940).
+  Por isso o conteúdo usa margens de 152 px dos dois lados e as legendas terminam em y 1490.
+  ?acento=serif  liga a palavra-chave em serifada itálica coral (desligado: segue a frontend-design)
+  ?capa          frame de 9 s com o título da capa e sem legenda
+*/
+:root { --w: 1080px; --h: 1920px; --side: 152px; }
+body { background: var(--ink); }
+.canvas { display: block; overflow: hidden; }
+#stage { position: absolute; inset: 0; transform-origin: 50% 45%; }
+.scene { position: absolute; inset: 0; display: none; }
+
+.bg-light { background: radial-gradient(ellipse 120% 60% at 50% 108%, var(--brand-tint), rgba(220,235,241,0) 70%), var(--paper); }
+.shelf { position: absolute; left: 0; right: 0; top: 1220px; bottom: 0; z-index: 2; background: radial-gradient(ellipse 120% 60% at 50% 108%, var(--brand-tint), rgba(220,235,241,0) 70%) 0 -1220px / 1080px 1920px no-repeat, var(--paper); -webkit-mask-image: linear-gradient(transparent, #000 90px); mask-image: linear-gradient(transparent, #000 90px); }
+.bg-dark { background: var(--brand-strong); overflow: hidden; }
+.blob { position: absolute; border-radius: 50%; filter: blur(120px); }
+
+/* legendas queimadas */
+.cap {
+  position: absolute; left: var(--side); right: var(--side); bottom: 430px;
+  text-align: center; font-size: 64px; font-weight: 800; line-height: 1.12; letter-spacing: -0.03em;
+  text-wrap: balance; z-index: 3;
+}
+.cap.mid { bottom: auto; top: 640px; font-size: 76px; }
+.on-light { color: var(--ink); } .on-dark { color: var(--on-dark); }
+.w { display: inline-block; opacity: 0; }
+.acento-serif .k { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; font-size: 1.2em; letter-spacing: -0.01em; }
+.acento-serif .on-light .k { color: var(--coral); }
+.acento-serif .on-dark .k { color: var(--accent-dark-coral); }
+
+/* grupo */
+.counter {
+  position: absolute; left: 50%; top: 250px; transform: translateX(-50%);
+  padding: 18px 34px; border-radius: 999px; background: var(--coral); color: var(--paper);
+  font-size: 36px; font-weight: 800; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.bubble {
+  position: absolute; z-index: 1; max-width: 600px; padding: 16px 24px 14px; border-radius: 6px 28px 28px 28px;
+  background: var(--surface); box-shadow: 0 1px 2px rgba(27,43,51,.08), 0 14px 30px -18px rgba(27,43,51,.45);
+  font-size: 32px; color: var(--ink); line-height: 1.25; white-space: nowrap;
+}
+.bubble b { display: block; font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+.bubble time { float: right; margin: 12px 0 0 22px; font-size: 20px; color: var(--ink-3); }
+
+/* anúncio */
+.card {
+  position: absolute; left: var(--side); right: var(--side); top: 560px;
+  background: var(--surface); border-radius: 44px; padding: 44px 40px 40px;
+  box-shadow: 0 40px 80px -40px rgba(0,0,0,.55);
+}
+.card .row { display: grid; grid-template-columns: 112px minmax(0, 1fr) auto; gap: 24px; align-items: center; }
+.avatar { width: 112px; height: 112px; border-radius: 50%; display: grid; place-items: center; background: var(--brand-tint); color: var(--brand); font-size: 42px; font-weight: 800; }
+.name { font-size: 44px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); line-height: 1.15; }
+.meta { margin-top: 6px; display: flex; gap: 20px; font-size: 28px; color: var(--ink-3); }
+.score { display: grid; gap: 10px; text-align: right; min-width: 170px; }
+.score .num { font-size: 104px; font-weight: 800; letter-spacing: -0.04em; line-height: .9; font-variant-numeric: tabular-nums; }
+.score .num small { font-size: 44px; font-weight: 700; }
+.score .bar { height: 12px; border-radius: 6px; background: var(--surface-sunk); overflow: hidden; }
+.score .bar i { display: block; height: 100%; border-radius: 6px; transform-origin: left; }
+.score .lbl { font-size: 24px; color: var(--ink-3); }
+.chips { margin-top: 36px; padding-top: 32px; border-top: 2px solid var(--line); display: flex; flex-wrap: wrap; gap: 16px; }
+.chip { padding: 14px 26px; border-radius: 999px; background: var(--brand-tint); color: var(--brand); font-size: 30px; font-weight: 700; opacity: 0; }
+
+/* fim */
+.end { position: absolute; left: var(--side); right: var(--side); top: 560px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.end svg { width: 200px; height: 200px; }
+.end h2 { margin-top: 40px; font-size: 128px; font-weight: 800; letter-spacing: -0.045em; line-height: 1; color: var(--on-dark); }
+.end p { margin-top: 36px; font-size: 52px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; color: var(--on-dark); }
+.end p span { display: inline-block; opacity: 0; }
+
+/* capa */
+.cover-title { display: none; }
+.capa .cover-title {
+  display: block; position: absolute; left: 0; right: 0; top: 0; height: 600px; padding: 300px var(--side) 0;
+  background: linear-gradient(var(--brand-strong) 60%, rgba(23,76,98,0));
+  text-align: center; font-size: 112px; font-weight: 800; letter-spacing: -0.045em; line-height: 1; color: var(--on-dark);
+}
+.capa .cap { display: none; }
+</style>
+</head><body><div class="canvas"><div id="stage">
+
+  <!-- 0 a 8 s: fundo claro -->
+  <section class="scene bg-light" id="s-light">
+    <p class="cap mid on-light" id="cap1">Mudou pra Maringá e não conhece ninguém?</p>
+    <div id="pile"></div>
+    <div class="shelf"></div>
+    <div class="counter" id="counter">+12 mensagens</div>
+    <p class="cap on-light" id="cap2">Aí vai pro grupo de <span class="k">800 pessoas</span>…</p>
+    <p class="cap on-light" id="cap3">…e descobre que a pessoa fuma <span class="k">depois</span> da mudança.</p>
+  </section>
+
+  <!-- 8 a 12 s: anúncio -->
+  <section class="scene bg-dark" id="s-card">
+    <div class="blob" style="width:760px;height:760px;left:-280px;top:80px;background:var(--brand);opacity:.9"></div>
+    <div class="blob" style="width:620px;height:620px;right:-260px;top:1000px;background:var(--accent-dark-coral);opacity:.2"></div>
+    <div class="card" id="card">
+      <div class="row">
+        <div class="avatar">JA</div>
+        <div><p class="name">Júlia Andrade</p><p class="meta"><span>Zona 7</span><span>R$ 650</span></p></div>
+        <div class="score"><span class="num" id="num">0<small>%</small></span><span class="bar"><i id="bar"></i></span><span class="lbl">compatível</span></div>
+      </div>
+      <div class="chips"><span class="chip">Não fuma</span><span class="chip">Tem gato</span><span class="chip">Dorme cedo</span></div>
+    </div>
+    <p class="cap on-dark" id="cap4">No RachaAi você vê <span class="k">quanto combina</span> antes de chamar.</p>
+    <h1 class="cover-title">Dividir apê é loteria?</h1>
+  </section>
+
+  <!-- 12 a 15 s: marca -->
+  <section class="scene bg-dark" id="s-end">
+    <div class="blob" style="width:760px;height:760px;left:-280px;top:80px;background:var(--brand);opacity:.9"></div>
+    <div class="blob" style="width:520px;height:520px;left:180px;bottom:-200px;background:var(--accent-dark-blue);opacity:.16"></div>
+    <div class="end">
+      <svg viewBox="3 3 20 20" id="mark" aria-hidden="true"><path d="M12.2 3 3 10.4V23h9.2z" fill="#faf7f2"/><path d="M13.8 3 23 10.4V23h-9.2z" fill="#f08c6a"/></svg>
+      <h2 id="brand">RachaAi</h2>
+      <p><span id="end1">Procurar é grátis.</span> <span id="end2">Link na bio.</span></p>
+    </div>
+  </section>
+
+</div></div>
+<script>
+const q = new URLSearchParams(location.search);
+if (q.get('acento') === 'serif') document.body.classList.add('acento-serif');
+if (q.has('capa')) document.body.classList.add('capa');
+
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const easeOut = (x) => 1 - Math.pow(1 - clamp(x), 3);
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const $ = (id) => document.getElementById(id);
+
+// sorteio com semente fixa: o vídeo sai igual toda vez
+let seed = 7;
+const rnd = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
+
+/* legendas: cada palavra vira um <span class="w">, com a hora em que entra */
+function splitWords(el, start, step) {
+  const words = [];
+  const walk = (node, keyword) => {
+    for (const child of [...node.childNodes]) {
+      if (child.nodeType === 3) {
+        const parts = child.textContent.split(/(\s+)/);
+        const frag = document.createDocumentFragment();
+        for (const p of parts) {
+          if (!p) continue;
+          if (/^\s+$/.test(p)) { frag.append(' '); continue; }
+          const s = document.createElement('span'); s.className = 'w' + (keyword ? ' k' : ''); s.textContent = p;
+          frag.append(s); words.push(s);
+        }
+        child.replaceWith(frag);
+      } else { walk(child, child.classList.contains('k')); if (child.classList.contains('k')) child.replaceWith(...child.childNodes); }
+    }
+  };
+  walk(el, false);
+  return words.map((s, i) => ({ s, at: start + i * step }));
+}
+const caps = [
+  { el: $('cap1'), from: 0, to: 2.5, words: splitWords($('cap1'), 0.25, 0.24) },
+  { el: $('cap2'), from: 2.5, to: 5.5, words: splitWords($('cap2'), 2.7, 0.26) },
+  { el: $('cap3'), from: 5.5, to: 8.0, words: splitWords($('cap3'), 5.65, 0.2) },
+  { el: $('cap4'), from: 8.0, to: 12.0, words: splitWords($('cap4'), 8.3, 0.26) },
+];
+function drawCaption(c, t) {
+  c.el.style.display = t >= c.from && t < c.to ? '' : 'none';
+  for (const { s, at } of c.words) {
+    const k = easeOut(prog(t, at, at + 0.16));
+    s.style.opacity = k;
+    s.style.transform = `translateY(${(1 - k) * 14}px)`;
+  }
+}
+
+/* grupo: mensagens que sobem e se amontoam */
+const msgs = [
+  ['Lucas M.', 'Alguém com vaga perto da UEM?'], ['Ana Paula', 'Procuro quarto até R$ 600'], ['Thiago', 'up'],
+  ['Fernanda R.', 'Vaga na Zona 7, chama no pv'], ['Gui', 'Ainda tem?'], ['Carol', 'Aceita pet??'],
+  ['Pedro H.', 'Tenho vaga no Jd. Universitário'], ['Mari', 'alguém???'], ['Bruno', 'up'],
+  ['Letícia', 'Vaga feminina Zona 1, R$ 550'], ['Rafa', 'me chama'], ['João V.', 'Quem fuma pode?'],
+  ['Bia', 'Já foi'], ['Duda', 'Vila Esperança, R$ 480'], ['Igor', 'up up'], ['Nath', 'Alguém de Medicina?'],
+  ['Vini', 'Ainda disponível?'], ['Sofia', 'chama no pv'], ['Caio', 'up'], ['Lari', 'Quanto fica a luz?'],
+];
+const nameColors = ['var(--brand)', 'var(--coral)', 'var(--leaf)', 'var(--star)', 'var(--ink-2)'];
+const pile = $('pile');
+const bubbles = msgs.map(([who, text], i) => {
+  const el = document.createElement('div');
+  el.className = 'bubble';
+  el.innerHTML = `<b style="color:${nameColors[i % nameColors.length]}">${who}</b>${text}<time>21:${String(10 + i).padStart(2, '0')}</time>`;
+  pile.append(el);
+  // cada vez mais rápido: espaço entre mensagens cai de 0,28 s para 0,08 s
+  const u = i / (msgs.length - 1);
+  const at = 2.6 + 2.6 * (1 - Math.pow(1 - u, 1.8));
+  return { el, at, x: 0, y: 0, rot: (rnd() - 0.5) * 10, fallDelay: rnd() * 0.35, spin: (rnd() - 0.5) * 120, drift: (rnd() - 0.5) * 160 };
+});
+// posições finais: espalhadas entre y 380 e 1180, x de 40 até 940 menos a largura
+function layoutPile() {
+  for (const b of bubbles) {
+    const w = b.el.offsetWidth, h = b.el.offsetHeight;
+    b.x = 40 + rnd() * Math.max(0, 900 - w - 40);
+    b.y = 380 + rnd() * (800 - h);
+  }
+}
+
+function drawGroup(t) {
+  const fall0 = 6.0;
+  for (const b of bubbles) {
+    const k = easeOut(prog(t, b.at, b.at + 0.32));
+    let y = b.y + (1 - k) * 900, x = b.x, rot = b.rot * k, op = t < b.at ? 0 : 1;
+    const ft = t - fall0 - b.fallDelay;
+    if (ft > 0) { y += 0.5 * 5200 * ft * ft; x += b.drift * ft; rot += b.spin * ft; }
+    b.el.style.opacity = op;
+    b.el.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg)`;
+  }
+  const c = $('counter');
+  const n = Math.round(12 + (847 - 12) * easeOut(prog(t, 2.6, 5.3)));
+  c.textContent = `+${n} mensagens`;
+  const cin = easeOut(prog(t, 2.55, 2.8));
+  const cft = Math.max(0, t - fall0 - 0.1);
+  c.style.display = t >= 2.5 ? '' : 'none';
+  c.style.opacity = cin;
+  c.style.transform = `translate(-50%, ${(1 - cin) * -20 + 0.5 * 5200 * cft * cft}px) rotate(${cft * 40}deg)`;
+}
+
+/* anúncio: a % conta do 0 ao 92, a cor segue as faixas do app */
+function tierColor(v) { return v >= 75 ? 'var(--leaf)' : v >= 50 ? 'var(--star)' : 'var(--ink-2)'; }
+function drawCard(t) {
+  const kin = easeOut(prog(t, 8.0, 8.45));
+  const card = $('card');
+  card.style.opacity = kin;
+  card.style.transform = `translateY(${(1 - kin) * 80}px)`;
+  const v = Math.round(92 * easeOut(prog(t, 8.35, 9.0)));
+  const num = $('num');
+  num.firstChild.textContent = v;
+  num.style.color = tierColor(v);
+  const bar = $('bar');
+  bar.style.width = '92%';
+  bar.style.transform = `scaleX(${v / 92})`;
+  bar.style.background = tierColor(v);
+  [...document.querySelectorAll('.chip')].forEach((ch, i) => {
+    const k = document.body.classList.contains('capa') ? 1 : easeOut(prog(t, 9.3 + i * 0.5, 9.3 + i * 0.5 + 0.25));
+    ch.style.opacity = k;
+    ch.style.transform = `scale(${0.9 + 0.1 * k})`;
+  });
+}
+
+function drawEnd(t) {
+  const a = easeOut(prog(t, 12.1, 12.5)), b = easeOut(prog(t, 12.4, 12.8));
+  $('mark').style.opacity = a; $('mark').style.transform = `translateY(${(1 - a) * 24}px)`;
+  $('brand').style.opacity = b; $('brand').style.transform = `translateY(${(1 - b) * 24}px)`;
+  const c = easeOut(prog(t, 13.0, 13.25)), d = easeOut(prog(t, 13.45, 13.7));
+  $('end1').style.opacity = c; $('end1').style.transform = `translateY(${(1 - c) * 14}px)`;
+  $('end2').style.opacity = d; $('end2').style.transform = `translateY(${(1 - d) * 14}px)`;
+}
+
+/* cortes secos com leve escala 0,96 -> 1 e tremida entre 5,5 e 6,0 s */
+const cuts = [0, 2.5, 8.0, 12.0];
+function drawStage(t) {
+  const cut = cuts.filter((c) => c <= t).pop();
+  const s = 0.96 + 0.04 * easeOut(prog(t, cut, cut + 0.35));
+  let dx = 0, dy = 0;
+  if (t >= 5.5 && t < 6.0) {
+    const k = 1 - prog(t, 5.5, 6.0);
+    dx = Math.sin(t * 95) * 20 * k; dy = Math.cos(t * 77) * 12 * k;
+  }
+  $('stage').style.transform = `translate(${dx}px, ${dy}px) scale(${s})`;
+}
+
+window.render = (t) => {
+  $('s-light').style.display = t < 8 ? 'block' : 'none';
+  $('s-card').style.display = t >= 8 && t < 12 ? 'block' : 'none';
+  $('s-end').style.display = t >= 12 ? 'block' : 'none';
+  caps.forEach((c) => drawCaption(c, t));
+  drawGroup(t); drawCard(t); drawEnd(t); drawStage(t);
+};
+
+document.fonts.ready.then(() => {
+  $('s-light').style.display = 'block';
+  layoutPile();
+  window.render(q.has('capa') ? 9 : Number(q.get('t') || 0));
+  window.pronto = true;
+});
+</script>
+</body></html>

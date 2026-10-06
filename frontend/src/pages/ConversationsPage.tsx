@@ -8,6 +8,7 @@ import { apiErrorMessage } from '../api/client'
 import Avatar from '../components/Avatar'
 import { Alert, Button, ButtonLink, Card, EmptyState, pageTitleClass } from '../components/ui'
 import type { ConversationSummary } from '../types'
+import { confirmDialog } from '../components/ConfirmDialog'
 
 export default function ConversationsPage() {
   const [conversations, setConversations] = useState<ConversationSummary[]>([])
@@ -24,7 +25,12 @@ export default function ConversationsPage() {
   }, [])
 
   async function handleBlock(userId: number) {
-    if (!window.confirm('Bloquear essa pessoa? Vocês não vão mais aparecer um para o outro e não poderão trocar novas mensagens.')) {
+    if (!(await confirmDialog({
+      title: 'Bloquear essa pessoa?',
+      description: 'Vocês não vão mais aparecer um para o outro e não poderão trocar novas mensagens.',
+      confirmLabel: 'Bloquear',
+      danger: true,
+    }))) {
       return
     }
     try {

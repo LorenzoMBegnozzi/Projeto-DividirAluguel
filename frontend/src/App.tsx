@@ -9,6 +9,7 @@ import HomeRedirect from './components/HomeRedirect'
 import NavBar from './components/NavBar'
 import BottomNav from './components/BottomNav'
 import SafetyTermsModal from './components/SafetyTermsModal'
+import { ConfirmHost } from './components/ConfirmDialog'
 import LegalTermsModal from './components/LegalTermsModal'
 import EmailConfirmationBanner from './components/EmailConfirmationBanner'
 import IosInstallHint from './components/IosInstallHint'
@@ -55,6 +56,7 @@ function AppContent() {
 
   return (
     <>
+      <ConfirmHost />
       {!isOnboarding && <NavBar />}
       <EmailConfirmationBanner />
       {!isOnboarding && <IosInstallHint />}

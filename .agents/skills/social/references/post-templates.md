@@ -33,7 +33,7 @@ Ready-to-use templates for different platforms and content types.
 ```
 [Unpopular opinion stated boldly]
 
-[What you saw that changed your mind, with a number]
+Here's why:
 
 [Reason 1]
 [Reason 2]
@@ -48,11 +48,11 @@ Ready-to-use templates for different platforms and content types.
 ```
 [X things I learned about [topic] after [credibility builder]:
 
-1. [Point]: [Brief explanation]
+1. [Point] — [Brief explanation]
 
-2. [Point]: [Brief explanation]
+2. [Point] — [Brief explanation]
 
-3. [Point]: [Brief explanation]
+3. [Point] — [Brief explanation]
 
 [Wrap-up insight]
 
@@ -111,7 +111,7 @@ Final tweet: [Takeaway + engagement ask]
 ```
 Tweet 1: [Company/person] just [did thing].
 
-[One-line takeaway: what they did and the result, with a number]
+Here's why it's genius (and what you can learn):
 
 Tweet 2-6: [Analysis points]
 
@@ -151,8 +151,8 @@ The first line determines whether anyone reads the rest.
 
 ### Curiosity Hooks
 - "I was wrong about [common belief]."
-- "[Outcome] usually comes down to [specific, surprising cause]."
-- "[Impressive result] in [surprisingly short time]."
+- "The real reason [outcome] happens isn't what you think."
+- "[Impressive result] — and it only took [surprisingly short time]."
 - "Nobody talks about [insider knowledge]."
 
 ### Story Hooks
@@ -169,9 +169,9 @@ The first line determines whether anyone reads the rest.
 
 ### Contrarian Hooks
 - "Unpopular opinion: [bold statement]"
-- "[Common advice] cost us [specific result]."
+- "[Common advice] is wrong. Here's why:"
 - "I stopped [common practice] and [positive result]."
-- "Everyone says [X]. In our [N] [accounts/clients/tests], [Y]."
+- "Everyone says [X]. The truth is [Y]."
 
 ### Social Proof Hooks
 - "We [achieved result] in [timeframe]. Here's the full story:"

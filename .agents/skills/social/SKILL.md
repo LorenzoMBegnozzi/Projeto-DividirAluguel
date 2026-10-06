@@ -1,456 +1,473 @@
 ---
 name: social
-description: "When the user wants help creating, scheduling, or optimizing social media content for LinkedIn, Twitter/X, Instagram, TikTok, or Facebook, or wants to do social listening and engagement triage. Also use when the user mentions 'LinkedIn post,' 'Twitter thread,' 'social media,' 'content calendar,' 'social scheduling,' 'engagement,' 'viral content,' 'what should I post,' 'repurpose this content,' 'tweet ideas,' 'LinkedIn carousel,' 'social media strategy,' 'grow my following,' 'TikTok video,' 'Reels,' 'Shorts,' 'video script,' 'video hook,' 'short-form video,' 'create a reel,' 'social listening,' 'brand mentions,' 'competitor monitoring,' 'top posts to comment on,' 'find people asking for,' 'carousel,' 'slide-by-slide,' or 'document post.' Use this for social content, repurposing, scheduling, video scripts, and listening. Posts avoid AI tells like 'it's not X, it's Y' reveals and broetry. For broader content strategy, see content-strategy. For paid ads, see ad-creative. For earned media, see public-relations."
+description: "Quando o usuário quiser criar, agendar ou otimizar conteúdo de redes sociais para LinkedIn, Twitter/X, Instagram, TikTok, Facebook ou outras plataformas, ou fazer social listening e triagem de engajamento. Use também quando o usuário mencionar 'post no LinkedIn,' 'thread no Twitter,' 'redes sociais,' 'calendário de conteúdo,' 'agendamento de post,' 'engajamento,' 'conteúdo viral,' 'o que eu posto,' 'reaproveitar conteúdo,' 'ideias de tweet,' 'carrossel do LinkedIn,' 'estratégia de redes sociais,' 'crescer seguidores,' 'vídeo do TikTok,' 'Reels,' 'Shorts,' 'roteiro de vídeo,' 'gancho de vídeo,' 'social listening,' 'menções à marca,' 'monitoramento de concorrente,' 'slide a slide,' ou 'post em formato documento.' Use isso para criação de conteúdo, reaproveitamento, agendamento, roteiro de vídeo curto e social listening. Para estratégia de conteúdo, veja content-strategy. Para anúncios pagos, veja ad-creative. Para mídia espontânea, veja public-relations."
 metadata:
-  version: 2.3.2
+  version: 2.2.0
 ---
 
-# Social Content
+# Conteúdo para Redes Sociais
 
-You are an expert social media strategist. Your goal is to help create engaging content that builds audience, drives engagement, and supports business goals.
+Você é um estrategista especialista em redes sociais. Seu objetivo é ajudar a
+criar conteúdo envolvente que constrói audiência, gera engajamento e apoia os
+objetivos de negócio.
 
-Whatever the platform, storytelling and connecting with your audience come first. The better the user can share their story, the better their posts will perform — platform tactics and algorithm mechanics amplify a good story; they never replace one. Keep this at the center of every recommendation below.
+## Antes de criar conteúdo
 
-## Before Creating Content
+**Primeiro, verifique se há contexto de produto:**
+Se `.agents/product-marketing.md` existir (ou `.claude/product-marketing.md`,
+ou o nome de arquivo legado `product-marketing-context.md`, em setups mais
+antigos), leia-o antes de fazer perguntas. Use esse contexto e só pergunte o
+que não estiver coberto ou for específico desta tarefa.
 
-**Check for product marketing context first:**
-If `.agents/product-marketing.md` exists (or `.claude/product-marketing.md`, or the legacy `product-marketing-context.md` filename, in older setups), read it before asking questions. Use that context and only ask for information not already covered or specific to this task.
+Reúna este contexto (pergunte se não for fornecido):
 
-Gather this context (ask if not provided):
+### 1. Objetivos
 
-### 1. Goals
-- What's the primary objective? (Brand awareness, leads, traffic, community)
-- What action do you want people to take?
-- Are you building personal brand, company brand, or both?
+- Qual é o objetivo principal? (reconhecimento de marca, leads, tráfego,
+  comunidade)
+- Que ação você quer que as pessoas realizem?
+- Você está construindo marca pessoal, marca da empresa, ou ambas?
 
-### 2. Audience
-- Who are you trying to reach?
-- What platforms are they most active on?
-- What content do they engage with?
+### 2. Audiência
 
-### 3. Brand Voice
-- What's your tone? (Professional, casual, witty, authoritative)
-- Any topics to avoid?
-- Any specific terminology or style guidelines?
+- Quem você está tentando alcançar?
+- Em que plataformas essas pessoas estão mais ativas?
+- Que conteúdo elas engajam?
 
-### 4. Resources
-- How much time can you dedicate to social?
-- Do you have existing content to repurpose?
-- Can you create video content?
+### 3. Voz da marca
 
----
+- Qual é o tom? (profissional, casual, espirituoso, autoritativo)
+- Algum tema a evitar?
+- Alguma terminologia ou guia de estilo específico?
 
-## Platform Quick Reference
+### 4. Recursos
 
-| Platform | Best For | Frequency | Key Format |
-|----------|----------|-----------|------------|
-| LinkedIn | B2B, thought leadership | 3-5x/week | Carousels, stories |
-| Twitter/X | Tech, real-time, community | 3-10x/day | Threads, hot takes |
-| Instagram | Visual brands, lifestyle | 1-2 posts + Stories daily | Reels, carousels |
-| TikTok | Brand awareness, younger audiences | 1-4x/day | Short-form video |
-| Facebook | Communities, local businesses | 1-2x/day | Groups, native video |
-
-**For detailed platform strategies**: See [references/platforms.md](references/platforms.md)
-
-**For hashtag limits and character counts**: See [references/platform-limits.md](references/platform-limits.md)
-
-**For X (Twitter) ranking mechanics** — the For You feed signals from xAI's open-sourced algorithm, and the 10 posting rules they imply: See [references/x-algorithm.md](references/x-algorithm.md). Use it whenever the task involves posting on X.
+- Quanto tempo você pode dedicar às redes sociais?
+- Você tem conteúdo existente para reaproveitar?
+- Você consegue criar conteúdo em vídeo?
 
 ---
 
-## Content Pillars Framework
+## Referência rápida por plataforma
 
-Build your content around 3-5 pillars that align with your expertise and audience interests.
+| Plataforma | Melhor para | Frequência | Formato-chave |
+|---|---|---|---|
+| LinkedIn | B2B, autoridade/thought leadership | 3-5x/semana | Carrosséis, stories |
+| Twitter/X | Tech, tempo real, comunidade | 3-10x/dia | Threads, opiniões quentes |
+| Instagram | Marcas visuais, lifestyle | 1-2 posts + Stories por dia | Reels, carrosséis |
+| TikTok | Reconhecimento de marca, público mais jovem | 1-4x/dia | Vídeo curto |
+| Facebook | Comunidades, negócios locais | 1-2x/dia | Grupos, vídeo nativo |
+| WhatsApp (Canais/Status) | Relacionamento direto com base já engajada, muito forte no Brasil | Conforme a cadência da base | Texto curto, imagem, áudio |
 
-### Example for a SaaS Founder
+**Para estratégias detalhadas por plataforma**: veja
+[references/platforms.md](references/platforms.md)
 
-| Pillar | % of Content | Topics |
-|--------|--------------|--------|
-| Industry insights | 30% | Trends, data, predictions |
-| Behind-the-scenes | 25% | Building the company, lessons learned |
-| Educational | 25% | How-tos, frameworks, tips |
-| Personal | 15% | Stories, values, hot takes |
-| Promotional | 5% | Product updates, offers |
-
-### Pillar Development Questions
-
-For each pillar, ask:
-1. What unique perspective do you have?
-2. What questions does your audience ask?
-3. What content has performed well before?
-4. What can you create consistently?
-5. What aligns with business goals?
+**Para limites de hashtag e contagem de caracteres**: veja
+[references/platform-limits.md](references/platform-limits.md)
 
 ---
 
-## Hook Formulas
+## Framework de pilares de conteúdo
 
-The first line determines whether anyone reads the rest.
+Construa seu conteúdo em torno de 3-5 pilares alinhados à sua expertise e aos
+interesses da audiência.
 
-### Curiosity Hooks
-- "I was wrong about [common belief]."
-- "[Outcome] usually comes down to [specific, surprising cause]."
-- "[Impressive result] in [surprisingly short time]."
+### Exemplo para um founder de SaaS
 
-### Story Hooks
-- "Last week, [unexpected thing] happened."
-- "I almost [big mistake/failure]."
-- "3 years ago, I [past state]. Today, [current state]."
+| Pilar | % do conteúdo | Temas |
+|---|---|---|
+| Insights do setor | 30% | Tendências, dados, previsões |
+| Bastidores | 25% | Construindo a empresa, lições aprendidas |
+| Educacional | 25% | Tutoriais, frameworks, dicas |
+| Pessoal | 15% | Histórias, valores, opiniões quentes |
+| Promocional | 5% | Atualizações de produto, ofertas |
 
-### Value Hooks
-- "How to [desirable outcome] (without [common pain]):"
-- "[Number] [things] that [outcome]:"
-- "Stop [common mistake]. Do this instead:"
+### Perguntas para desenvolver pilares
 
-### Contrarian Hooks
-- "Unpopular opinion: [bold statement]"
-- "[Common advice] cost us [specific result]."
-- "I stopped [common practice] and [positive result]."
+Para cada pilar, pergunte:
 
-**For post templates and more hooks**: See [references/post-templates.md](references/post-templates.md)
-
-### No AI Tells
-
-Readers scroll past posts that read as generated, and on LinkedIn they say so in the comments. A hook formula is a starting shape. Fill it with a specific fact, number, or story.
-
-Never write these:
-- **Contrast reveals**: "It's not X, it's Y." "Not because X. Because Y." State Y directly, with the reason.
-- **Negation lists**: "No X, no Y, no Z." Say what does happen. One plain absence ("No card required") is fine.
-- **Trailing pile-ons**: a full claim, then a comma and more restating clauses. End the sentence at the claim.
-- **Self-answered questions and colon reveals**: "The result? 3x faster." "The best part: it learns." FAQ questions and a question in the reader's own voice are fine.
-- **Stock phrases**: "Say goodbye to," "X, reimagined," "Unlock the power of," "Take it to the next level," "Here's the thing."
-- **Em dashes** in posts. Use a period or a line break.
-
-Social-specific tells:
-- **Broetry**: one short sentence per line, every line, for the whole post. Write paragraphs and break lines where a person would pause.
-- **Engagement bait**: "Agree?" "Thoughts?" "Let that sink in." "Read that again." End on the point, or a real question you want answered.
-- **Manufactured vulnerability**: "I'll be honest, I was terrified..." with no real story behind it.
-- **Emoji as bullets**: 🚀 ✅ 💡 leading every line.
-
-Keep fragments and lists of three to one per post. For the full blacklist, use the **copywriting** skill's AI-tells reference.
-
-**For carousels** (Instagram carousels, LinkedIn document posts): See [references/carousel-frameworks.md](references/carousel-frameworks.md) — five slide-by-slide narrative architectures (Value-Stack, Problem-Proof, Hack List, Rant Callout, Demo Walkthrough) with framework selection guidance, per-slide copy slots, platform notes, and a production checklist. Pick the framework before writing slides.
+1. Que perspectiva única você tem?
+2. Que perguntas sua audiência faz?
+3. Que conteúdo já performou bem antes?
+4. O que você consegue criar de forma consistente?
+5. O que está alinhado aos objetivos de negócio?
 
 ---
 
-## Content Repurposing System
+## Fórmulas de gancho (hook)
 
-Turn one piece of content into many. The best social content isn't created from scratch — it's extracted from longer-form pillar content and adapted to each platform.
+A primeira linha decide se alguém vai ler o resto.
 
-### Blog Post → Social Content
+### Ganchos de curiosidade
 
-| Platform | Format |
-|----------|--------|
-| LinkedIn | Key insight + link in comments |
-| LinkedIn | Carousel of main points |
-| Twitter/X | Thread of key takeaways |
-| Instagram | Carousel with visuals |
-| Instagram | Reel summarizing the post |
+- "Eu estava errado sobre [crença comum]."
+- "O motivo real de [resultado] acontecer não é o que você pensa."
+- "[Resultado impressionante] — e levou só [tempo surpreendentemente curto]."
 
-### Podcast / Video → Social Content
+### Ganchos de história
 
-Extract "content atoms" — self-contained moments from any long-form content that work on their own:
+- "Semana passada, [algo inesperado] aconteceu."
+- "Eu quase [grande erro/fracasso]."
+- "3 anos atrás, eu [estado passado]. Hoje, [estado atual]."
 
-| Atom Type | What to Look For | Best Platform |
-|-----------|-----------------|---------------|
-| Quotable moment | A bold claim, hot take, or memorable line (15-60 sec) | Twitter/X, LinkedIn, TikTok |
-| Story arc | A complete mini-story with setup, conflict, resolution (60-90 sec) | Instagram Reels, TikTok, YouTube Shorts |
-| Tactical tip | A specific how-to or framework explained clearly (30-60 sec) | LinkedIn, YouTube Shorts |
-| Controversial take | A contrarian opinion that sparks debate | Twitter/X, LinkedIn |
-| Data/stat callout | A surprising number or research finding | LinkedIn carousel, Twitter/X |
-| Behind-the-scenes | Authentic, unpolished moments | Instagram Stories, TikTok |
+### Ganchos de valor
 
-**Podcast repurposing workflow:**
-1. **Get transcript** — use Whisper, Descript, or your podcast host's transcription
-2. **Mark timestamps** — flag the 5-10 best moments while listening or scanning transcript
-3. **Extract clips** — pull video/audio clips for each moment (Descript, Opus Clip, or manual)
-4. **Write standalone captions** — each clip needs context; don't assume the viewer heard the rest
-5. **Add subtitles** — most social video is watched without sound
-6. **Schedule across 1-2 weeks** — spread a single episode across multiple posts
+- "Como [resultado desejado] (sem [dor comum]):"
+- "[Número] [coisas] que [resultado]:"
+- "Pare de [erro comum]. Faça isto em vez disso:"
 
-**Per episode, aim for:**
-- 3-5 short video clips or audiograms (15-60 sec) for Reels/TikTok/Shorts
-- 1-2 LinkedIn text posts from key insights
-- 1 Twitter/X thread of takeaways
-- 1 carousel summarizing the main framework or list
-- 1 newsletter section or blog post from the best segment
+### Ganchos contrários
 
-### Webinar / Live Event → Social Content
+- "Opinião impopular: [afirmação ousada]"
+- "[Conselho comum] está errado. Veja por quê:"
+- "Eu parei de [prática comum] e [resultado positivo]."
 
-| Extract | Format |
-|---------|--------|
-| Key slides with commentary | LinkedIn carousel |
-| Q&A highlights | Twitter/X thread |
-| Speaker quotes | Quote graphics for Instagram/LinkedIn |
-| Audience reactions/poll results | Engagement posts |
-| Full recording → short clips | Reels, TikTok, Shorts |
+**Para templates de post e mais ganchos**: veja
+[references/post-templates.md](references/post-templates.md)
 
-### Newsletter → Social Content
-
-| Extract | Format |
-|---------|--------|
-| Main insight | LinkedIn post |
-| Curated links with commentary | Twitter/X thread |
-| Data or stat | Quote graphic |
-| Hot take or opinion | Twitter/X post, LinkedIn |
-
-### Repurposing Workflow
-
-1. **Create pillar content** (blog, video, podcast, webinar, newsletter)
-2. **Extract content atoms** (5-10 per piece — quotes, stories, tips, data)
-3. **Adapt to each platform** (format, length, and tone)
-4. **Write standalone captions** (each post must work without context)
-5. **Schedule across the week** (spread distribution, don't dump all at once)
-6. **Update and reshare** (evergreen content can repeat every 3-6 months)
+**Para carrosséis** (carrosséis do Instagram, posts em documento do
+LinkedIn): veja
+[references/carousel-frameworks.md](references/carousel-frameworks.md) —
+cinco arquiteturas narrativas slide a slide (Value-Stack, Problem-Proof, Hack
+List, Rant Callout, Demo Walkthrough) com orientação de escolha de
+framework, slots de copy por slide, notas por plataforma e um checklist de
+produção. Escolha o framework antes de escrever os slides.
 
 ---
 
-## Content Calendar Structure
+## Sistema de reaproveitamento de conteúdo
 
-### Weekly Planning Template
+Transforme um conteúdo em muitos. O melhor conteúdo de redes sociais não é
+criado do zero — é extraído de conteúdo pilar mais longo e adaptado para
+cada plataforma.
 
-| Day | LinkedIn | Twitter/X | Instagram |
-|-----|----------|-----------|-----------|
-| Mon | Industry insight | Thread | Carousel |
-| Tue | Behind-scenes | Engagement | Story |
-| Wed | Educational | Tips tweet | Reel |
-| Thu | Story post | Thread | Educational |
-| Fri | Hot take | Engagement | Story |
+### Post de blog → Conteúdo social
 
-### Batching Strategy (2-3 hours weekly)
+| Plataforma | Formato |
+|---|---|
+| LinkedIn | Insight principal + link nos comentários |
+| LinkedIn | Carrossel com os pontos principais |
+| Twitter/X | Thread com os principais aprendizados |
+| Instagram | Carrossel com visuais |
+| Instagram | Reels resumindo o post |
 
-1. Review content pillar topics
-2. Write 5 LinkedIn posts
-3. Write 3 Twitter threads + daily tweets
-4. Create Instagram carousel + Reel ideas
-5. Schedule everything
-6. Leave room for real-time engagement
+### Podcast / Vídeo → Conteúdo social
 
----
+Extraia "átomos de conteúdo" — momentos autocontidos de qualquer conteúdo
+longo que funcionam sozinhos:
 
-## Engagement Strategy
+| Tipo de átomo | O que procurar | Melhor plataforma |
+|---|---|---|
+| Momento citável | Uma afirmação ousada, opinião forte ou frase memorável (15-60 seg) | Twitter/X, LinkedIn, TikTok |
+| Arco de história | Uma miniistória completa com início, conflito, resolução (60-90 seg) | Instagram Reels, TikTok, YouTube Shorts |
+| Dica tática | Um passo a passo ou framework explicado com clareza (30-60 seg) | LinkedIn, YouTube Shorts |
+| Opinião controversa | Uma opinião contrária que gera debate | Twitter/X, LinkedIn |
+| Dado/estatística | Um número surpreendente ou achado de pesquisa | Carrossel LinkedIn, Twitter/X |
+| Bastidores | Momentos autênticos, sem polimento | Instagram Stories, TikTok |
 
-### Daily Engagement Routine (30 min)
+**Fluxo de reaproveitamento de podcast:**
 
-1. Respond to all comments on your posts (5 min)
-2. Comment on 5-10 posts from target accounts (15 min)
-3. Share/repost with added insight (5 min)
-4. Send 2-3 DMs to new connections (5 min)
+1. **Consiga a transcrição** — use Whisper, Descript ou a transcrição da sua
+   plataforma de podcast
+2. **Marque timestamps** — sinalize os 5-10 melhores momentos ouvindo ou
+   escaneando a transcrição
+3. **Extraia clipes** — pegue clipes de vídeo/áudio para cada momento
+   (Descript, Opus Clip, ou manual)
+4. **Escreva legendas autocontidas** — cada clipe precisa de contexto; não
+   assuma que o espectador ouviu o resto
+5. **Adicione legendas na tela** — a maioria dos vídeos sociais é assistida
+   sem som
+6. **Agende ao longo de 1-2 semanas** — distribua um único episódio em
+   vários posts
 
-**For surfacing *which* posts to comment on** (top-10 daily lists, brand/competitor monitoring, intent-signal triage), see [references/listening.md](references/listening.md). Includes a scoring rubric and curl recipes for Reddit, Hacker News, and Bluesky.
+**Por episódio, mire em:**
 
-### Quality Comments
+- 3-5 clipes curtos de vídeo ou audiogramas (15-60 seg) para Reels/TikTok/Shorts
+- 1-2 posts de texto no LinkedIn com os principais insights
+- 1 thread no Twitter/X com os aprendizados
+- 1 carrossel resumindo o framework ou lista principal
+- 1 seção de newsletter ou post de blog com o melhor trecho
 
-- Add new insight, not just "Great post!"
-- Share a related experience
-- Ask a thoughtful follow-up question
-- Respectfully disagree with nuance
+### Webinar / Evento ao vivo → Conteúdo social
 
-### Building Relationships
+| Extrair | Formato |
+|---|---|
+| Slides-chave com comentário | Carrossel LinkedIn |
+| Destaques do Q&A | Thread no Twitter/X |
+| Citações dos palestrantes | Cards de citação para Instagram/LinkedIn |
+| Reações da audiência/resultado de enquete | Posts de engajamento |
+| Gravação completa → clipes curtos | Reels, TikTok, Shorts |
 
-- Identify 20-50 accounts in your space
-- Consistently engage with their content
-- Share their content with credit
-- Eventually collaborate (podcasts, co-created content)
+### Newsletter → Conteúdo social
 
----
+| Extrair | Formato |
+|---|---|
+| Insight principal | Post no LinkedIn |
+| Links curados com comentário | Thread no Twitter/X |
+| Dado ou estatística | Card de citação |
+| Opinião forte | Post no Twitter/X, LinkedIn |
 
-## Analytics & Optimization
+### Fluxo de reaproveitamento
 
-### Metrics That Matter
-
-**Awareness:** Impressions, Reach, Follower growth rate
-
-**Engagement:** Engagement rate, Comments (higher value than likes), Shares/reposts, Saves
-
-**Conversion:** Link clicks, Profile visits, DMs received, Leads attributed
-
-### Weekly Review
-
-- Top 3 performing posts (why did they work?)
-- Bottom 3 posts (what can you learn?)
-- Follower growth trend
-- Engagement rate trend
-- Best posting times (from data)
-
-### Optimization Actions
-
-**If engagement is low:**
-- Test new hooks
-- Post at different times
-- Try different formats
-- Increase engagement with others
-
-**If reach is declining:**
-- Avoid external links in post body
-- Increase posting frequency
-- Engage more in comments
-- Test video/visual content
-
----
-
-## Content Ideas by Situation
-
-### When You're Starting Out
-- Document your journey
-- Share what you're learning
-- Curate and comment on industry content
-- Engage heavily with established accounts
-
-### When You're Stuck
-- Repurpose old high-performing content
-- Ask your audience what they want
-- Comment on industry news
-- Share a failure or lesson learned
+1. **Crie o conteúdo pilar** (blog, vídeo, podcast, webinar, newsletter)
+2. **Extraia átomos de conteúdo** (5-10 por peça — citações, histórias,
+   dicas, dados)
+3. **Adapte para cada plataforma** (formato, extensão e tom)
+4. **Escreva legendas autocontidas** (cada post precisa funcionar sem
+   contexto)
+5. **Agende ao longo da semana** (distribua, não jogue tudo de uma vez)
+6. **Atualize e republique** (conteúdo evergreen pode repetir a cada 3-6
+   meses)
 
 ---
 
-## Scheduling Best Practices
+## Estrutura do calendário de conteúdo
 
-### When to Schedule vs. Post Live
+### Template de planejamento semanal
 
-**Schedule:** Core content posts, Threads, Carousels, Evergreen content
+| Dia | LinkedIn | Twitter/X | Instagram |
+|---|---|---|---|
+| Seg | Insight do setor | Thread | Carrossel |
+| Ter | Bastidores | Engajamento | Story |
+| Qua | Educacional | Tweet de dicas | Reels |
+| Qui | Post de história | Thread | Educacional |
+| Sex | Opinião forte | Engajamento | Story |
 
-**Post live:** Real-time commentary, Responses to news/trends, Engagement with others
+### Estratégia de batching (2-3 horas por semana)
 
-### Queue Management
-
-- Maintain 1-2 weeks of scheduled content
-- Review queue weekly for relevance
-- Leave gaps for spontaneous posts
-- Adjust timing based on performance data
-
-### Publishing From Your Agent
-
-Everything above produces drafts and a calendar — actually getting posts onto
-accounts still needs a scheduling tool. If the user has one with an MCP server
-or API, you can execute the plan directly instead of handing them copy-paste
-work:
-
-1. **Check what's connected.** Ask the user what they schedule with. Many
-   scheduling tools (Typefully, Buffer, Marky, and others) expose drafting and
-   scheduling through an MCP server or an API, so you can create and schedule
-   posts directly. Check the [tools registry](https://github.com/coreyhaines31/marketingskills/blob/main/tools/REGISTRY.md) for guides.
-2. **Create posts as drafts first** — the user approves before anything is
-   scheduled. Never auto-publish without an explicit go-ahead.
-3. **Schedule per the calendar you built** (spacing and platform rules from
-   this skill still apply), then report back the queue with review links.
-4. **Close the loop.** If the tool exposes post-level stats, pull them next
-   session and feed real engagement data back into the "adjust timing based on
-   performance" step instead of guessing.
+1. Revise os temas dos pilares de conteúdo
+2. Escreva 5 posts para o LinkedIn
+3. Escreva 3 threads no Twitter + tweets diários
+4. Crie ideias de carrossel + Reels para o Instagram
+5. Agende tudo
+6. Deixe espaço para engajamento em tempo real
 
 ---
 
-## Reverse Engineering Viral Content
+## Estratégia de engajamento
 
-Instead of guessing, analyze what's working for top creators in your niche:
+### Rotina diária de engajamento (30 min)
 
-1. **Find creators** — 10-20 accounts with high engagement
-2. **Collect data** — 500+ posts for analysis
-3. **Analyze patterns** — Hooks, formats, CTAs that work
-4. **Codify playbook** — Document repeatable patterns
-5. **Layer your voice** — Apply patterns with authenticity
-6. **Convert** — Bridge attention to business results
+1. Responda todos os comentários nos seus posts (5 min)
+2. Comente em 5-10 posts de contas-alvo (15 min)
+3. Compartilhe/reposte com um insight adicional (5 min)
+4. Mande 2-3 DMs para novas conexões (5 min)
 
-**For the complete framework**: See [references/reverse-engineering.md](references/reverse-engineering.md)
+**Para descobrir *quais* posts comentar** (listas diárias dos top 10,
+monitoramento de marca/concorrente, triagem de sinais de intenção), veja
+[references/listening.md](references/listening.md). Inclui uma rubrica de
+pontuação e receitas curl para Reddit, Hacker News e Bluesky.
+
+### Comentários de qualidade
+
+- Adicione um insight novo, não só "Ótimo post!"
+- Compartilhe uma experiência relacionada
+- Faça uma pergunta de follow-up bem pensada
+- Discorde com respeito e nuance
+
+### Construindo relacionamentos
+
+- Identifique 20-50 contas na sua área
+- Engaje consistentemente com o conteúdo delas
+- Compartilhe o conteúdo delas dando crédito
+- Eventualmente colabore (podcasts, conteúdo cocriado)
 
 ---
 
-## Short-Form Video (TikTok, Reels, Shorts)
+## Analytics e otimização
 
-Short-form video is the highest-reach format on every major platform. These frameworks apply whether you're creating for TikTok, Instagram Reels, or YouTube Shorts.
+### Métricas que importam
 
-### Platform Specs
+**Reconhecimento:** impressões, alcance, taxa de crescimento de seguidores
 
-| Platform | Optimal Length | Aspect Ratio | Key Difference |
-|----------|---------------|--------------|----------------|
-| TikTok | 15-60 sec | 9:16 | Trending sounds, raw/authentic feel |
-| Reels | 15-30 sec | 9:16 | Polished content, rewards saves/shares |
-| Shorts | 30-60 sec | 9:16 | YouTube SEO applies, searchable titles |
+**Engajamento:** taxa de engajamento, comentários (valem mais que curtidas),
+compartilhamentos/reposts, salvamentos
 
-### The 3-Second Rule
+**Conversão:** cliques em link, visitas ao perfil, DMs recebidas, leads
+atribuídos
 
-You have 3 seconds to stop the scroll. Every video needs three simultaneous hooks:
+### Revisão semanal
 
+- Top 3 posts com melhor performance (por que funcionaram?)
+- 3 posts com pior performance (o que dá para aprender?)
+- Tendência de crescimento de seguidores
+- Tendência de taxa de engajamento
+- Melhores horários de postagem (a partir dos dados)
+
+### Ações de otimização
+
+**Se o engajamento está baixo:**
+
+- Teste novos ganchos
+- Poste em horários diferentes
+- Experimente formatos diferentes
+- Aumente o engajamento com outras contas
+
+**Se o alcance está caindo:**
+
+- Evite links externos no corpo do post
+- Aumente a frequência de postagem
+- Engaje mais nos comentários
+- Teste conteúdo em vídeo/visual
+
+---
+
+## Ideias de conteúdo por situação
+
+### Quando você está começando
+
+- Documente sua jornada
+- Compartilhe o que está aprendendo
+- Cure e comente conteúdo do setor
+- Engaje intensamente com contas estabelecidas
+
+### Quando você está travado
+
+- Reaproveite conteúdo antigo de alta performance
+- Pergunte à sua audiência o que ela quer
+- Comente notícias do setor
+- Compartilhe um fracasso ou lição aprendida
+
+---
+
+## Boas práticas de agendamento
+
+### Quando agendar vs. postar ao vivo
+
+**Agende:** posts de conteúdo central, threads, carrosséis, conteúdo evergreen
+
+**Poste ao vivo:** comentário em tempo real, respostas a notícias/tendências,
+engajamento com outras pessoas
+
+### Gestão de fila
+
+- Mantenha 1-2 semanas de conteúdo agendado
+- Revise a fila semanalmente quanto à relevância
+- Deixe espaços para posts espontâneos
+- Ajuste o timing com base em dados de performance
+
+---
+
+## Engenharia reversa de conteúdo viral
+
+Em vez de chutar, analise o que está funcionando para os principais criadores
+do seu nicho:
+
+1. **Encontre criadores** — 10-20 contas com alto engajamento
+2. **Colete dados** — 500+ posts para análise
+3. **Analise padrões** — ganchos, formatos, CTAs que funcionam
+4. **Codifique um playbook** — documente padrões repetíveis
+5. **Aplique sua voz** — use os padrões com autenticidade
+6. **Converta** — leve a atenção a resultados de negócio
+
+**Para o framework completo**: veja
+[references/reverse-engineering.md](references/reverse-engineering.md)
+
+---
+
+## Vídeo curto (TikTok, Reels, Shorts)
+
+Vídeo curto é o formato de maior alcance em toda plataforma relevante. Esses
+frameworks se aplicam tanto para TikTok quanto Instagram Reels ou YouTube
+Shorts.
+
+### Specs por plataforma
+
+| Plataforma | Duração ideal | Proporção | Diferença-chave |
+|---|---|---|---|
+| TikTok | 15-60 seg | 9:16 | Sons em alta, sensação crua/autêntica |
+| Reels | 15-30 seg | 9:16 | Conteúdo mais polido, premia salvamentos/compartilhamentos |
+| Shorts | 30-60 seg | 9:16 | SEO do YouTube se aplica, títulos pesquisáveis |
+
+### A regra dos 3 segundos
+
+Você tem 3 segundos para travar o scroll. Todo vídeo precisa de três ganchos
+simultâneos:
+
+```text
+[GANCHO VISUAL] + [GANCHO VERBAL] + [TEXTO NA TELA]
 ```
-[VISUAL HOOK] + [VERBAL HOOK] + [TEXT OVERLAY]
+
+Os três devem aparecer no primeiro segundo.
+
+### Estruturas de vídeo
+
+**Problema-Solução (15-30 seg):**
+
+```text
+[0-3s]   Gancho: declare o problema
+[3-10s]  Agite: por que isso importa
+[10-25s] Solução: seu método/produto/dica
+[25-30s] CTA: o que fazer a seguir
 ```
 
-All three should hit in the first second.
+**Formato lista (30-60 seg):**
 
-### Video Structures
-
-**Problem-Solution (15-30 sec):**
-```
-[0-3s]  Hook: State the problem
-[3-10s] Agitate: Why it matters
-[10-25s] Solution: Your method/product/tip
-[25-30s] CTA: What to do next
-```
-
-**List Format (30-60 sec):**
-```
-[0-3s]  Hook: "X things that [outcome]"
-[3-50s] Items: One every 5-8 seconds
+```text
+[0-3s]   Gancho: "X coisas que [resultado]"
+[3-50s]  Itens: um a cada 5-8 segundos
 [50-60s] CTA
 ```
 
-**Tutorial (30-60 sec):**
+**Tutorial (30-60 seg):**
+
+```text
+[0-3s]   Gancho: mostre o resultado final primeiro
+[3-8s]   Visão geral: "veja como..."
+[8-50s]  Passos: instruções rápidas e claras
+[50-60s] Resultado + CTA
 ```
-[0-3s]  Hook: Show the end result first
-[3-8s]  Overview: "Here's how..."
-[8-50s] Steps: Quick, clear instructions
-[50-60s] Result + CTA
-```
 
-### Caption & Subtitle Best Practices
+### Boas práticas de legenda/subtítulo
 
-Captions increase watch time by 25-40%. Most social video is watched without sound.
+Legendas aumentam o tempo de exibição em 25-40%. A maioria dos vídeos sociais
+é assistida sem som.
 
-- **MAX 2 lines** on screen at once
-- **3-5 words per line**
-- Bold, sans-serif font with black outline
-- **Highlight key words** in a different color
-- Match timing to speech exactly
+- **MÁXIMO 2 linhas** na tela por vez
+- **3-5 palavras por linha**
+- Fonte em negrito, sem serifa, com contorno preto
+- **Destaque palavras-chave** em cor diferente
+- Sincronize o tempo exatamente com a fala
 
-Tools: CapCut (free), Descript, Captions.ai, Premiere Pro
+Ferramentas: CapCut (grátis), Descript, Captions.ai, Premiere Pro
 
-### Content Ideas by Type
+### Ideias de conteúdo por tipo
 
-| Business Type | Video Ideas |
-|---------------|-------------|
-| SaaS | Feature demos (show outcome first), before/after, "Watch me do X in Y seconds" |
-| E-commerce | Unboxing, comparisons, how it's made, customer reviews |
-| Services | Process reveals, client transformations, myth-busting |
-| Personal brand | Lessons learned, controversial takes, day-in-the-life |
+| Tipo de negócio | Ideias de vídeo |
+|---|---|
+| SaaS | Demo de feature (mostre o resultado primeiro), antes/depois, "Veja eu fazer X em Y segundos" |
+| E-commerce | Unboxing, comparações, como é feito, avaliações de cliente |
+| Serviços | Bastidores do processo, transformações de cliente, desmistificação de mitos |
+| Marca pessoal | Lições aprendidas, opiniões controversas, um dia na vida |
 
-### Common Mistakes
+### Erros comuns
 
-1. **Slow hooks** — don't build up to the point
-2. **No text overlay** — many watch without sound
-3. **Poor audio** — bad audio kills retention instantly
-4. **Too long** — if it can be shorter, make it shorter
-5. **No CTA** — tell viewers what to do
-6. **Ignoring comments** — engagement in first hour matters
+1. **Ganchos lentos** — não fique enrolando até o ponto principal
+2. **Sem texto na tela** — muita gente assiste sem som
+3. **Áudio ruim** — áudio ruim mata a retenção na hora
+4. **Longo demais** — se dá pra encurtar, encurte
+5. **Sem CTA** — diga ao espectador o que fazer
+6. **Ignorar comentários** — o engajamento na primeira hora importa
 
-**For video hook formulas and scripting templates**: See [references/short-form-video.md](references/short-form-video.md)
+**Para fórmulas de gancho de vídeo e templates de roteiro**: veja
+[references/short-form-video.md](references/short-form-video.md)
 
 ---
 
-## Task-Specific Questions
+## Perguntas específicas da tarefa
 
-1. What platform(s) are you focusing on?
-2. What's your current posting frequency?
-3. Do you have existing content to repurpose?
-4. What content has performed well in the past?
-5. How much time can you dedicate weekly?
-6. Are you building personal brand, company brand, or both?
+1. Em qual(is) plataforma(s) você está focando?
+2. Qual é sua frequência de postagem atual?
+3. Você tem conteúdo existente para reaproveitar?
+4. Que conteúdo já performou bem no passado?
+5. Quanto tempo você pode dedicar por semana?
+6. Você está construindo marca pessoal, marca da empresa, ou ambas?
 
 ---
 
-## Related Skills
+## Skills relacionadas
 
-- **copywriting**: For longer-form content that feeds social
-- **launch**: For coordinating social with launches
-- **emails**: For nurturing social audience via email
-- **marketing-psychology**: For understanding what drives engagement
+- **copywriting**: para conteúdo mais longo que alimenta as redes sociais
+- **launch**: para coordenar redes sociais com lançamentos
+- **emails**: para nutrir a audiência das redes sociais via e-mail
+- **marketing-psychology**: para entender o que impulsiona o engajamento

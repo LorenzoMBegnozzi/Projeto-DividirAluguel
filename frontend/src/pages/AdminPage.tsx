@@ -45,6 +45,7 @@ import { apiErrorMessage } from '../api/client'
 import { formatDateTime, formatMoney } from '../utils/format'
 import { Alert, Badge, Button, Card, EmptyState, chipClass, cx, fieldClass, pageTitleClass } from '../components/ui'
 import type { BadgeTone } from '../components/ui'
+import { confirmDialog } from '../components/ConfirmDialog'
 
 type Tab = 'RESUMO' | 'DENUNCIAS' | 'USUARIOS' | 'ANUNCIOS' | 'PAGAMENTOS'
 
@@ -461,7 +462,12 @@ function ReportCard({ report, onChange }: { report: AdminReport; onChange: (r: A
   const [error, setError] = useState<string | null>(null)
 
   async function close(status: 'RESOLVIDA' | 'DESCARTADA', blockReported: boolean) {
-    if (blockReported && !window.confirm(`Bloquear a conta de ${report.reported.name}? Ela não vai conseguir entrar e os anúncios saem da busca.`)) {
+    if (blockReported && !(await confirmDialog({
+      title: `Bloquear a conta de ${report.reported.name}?`,
+      description: 'Ela não vai conseguir entrar e os anúncios saem da busca.',
+      confirmLabel: 'Bloquear conta',
+      danger: true,
+    }))) {
       return
     }
     setBusy(true)
@@ -688,7 +694,12 @@ function ListingsTab() {
   }, [search])
 
   async function deactivate(listing: AdminListing) {
-    if (!window.confirm(`Tirar do ar o anúncio "${listing.title}"? O dono deixa de vê-lo em "Meus anúncios".`)) return
+    if (!(await confirmDialog({
+      title: `Tirar do ar o anúncio "${listing.title}"?`,
+      description: 'O dono deixa de vê-lo em "Meus anúncios".',
+      confirmLabel: 'Tirar do ar',
+      danger: true,
+    }))) return
     setBusyId(listing.id)
     setError(null)
     try {
@@ -817,7 +828,12 @@ function PaymentRow({ payment, onChange }: { payment: AdminPayment; onChange: (p
 
   async function refund() {
     const money = payment.gateway ? ` Os ${formatMoney(payment.amount)} voltam para ${payment.userName} pelo Mercado Pago.` : ''
-    if (!window.confirm(`Reembolsar o pagamento #${payment.id}?${money} A compra é desfeita e não dá para voltar atrás.`)) return
+    if (!(await confirmDialog({
+      title: `Reembolsar o pagamento #${payment.id}?`,
+      description: `${money.trim()} A compra é desfeita e não dá para voltar atrás.`.trim(),
+      confirmLabel: 'Reembolsar',
+      danger: true,
+    }))) return
     setBusy(true)
     setError(null)
     try {

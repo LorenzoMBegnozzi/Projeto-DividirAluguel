@@ -1,107 +1,178 @@
 ---
 name: marketing-loops
-description: "When the user wants to set up a recurring, self-running marketing workflow — a repeatable loop an AI agent runs on a cadence (weekly, daily, on a trigger) rather than a one-off task. Also use when the user mentions 'marketing loop,' 'recurring marketing workflow,' 'automate my marketing,' 'marketing on autopilot,' 'weekly marketing review,' 'ad fatigue check,' 'content refresh loop,' 'churn watch,' 'ranking drop alert,' 'always-on marketing,' 'marketing automation workflow,' or 'run this every week.' Use this to pick, adapt, and schedule an ongoing marketing loop that orchestrates the other marketing skills. For one-off marketing ideas, see marketing-ideas. For the experimentation loop specifically, see ab-testing."
+description: "Quando o usuário quiser configurar um fluxo de trabalho de marketing recorrente e autônomo — um loop repetível que um agente de IA roda em uma cadência (semanal, diária, por gatilho) em vez de uma tarefa pontual. Use também quando o usuário mencionar 'loop de marketing,' 'fluxo de marketing recorrente,' 'automatizar meu marketing,' 'marketing no piloto automático,' 'revisão semanal de marketing,' 'checagem de fadiga de anúncio,' 'loop de atualização de conteúdo,' 'monitoramento de churn,' 'alerta de queda de ranking,' 'marketing sempre ativo,' 'fluxo de automação de marketing,' ou 'roda isso toda semana.' Use isso para escolher, adaptar, e agendar um loop de marketing contínuo que orquestra as outras skills de marketing. Para ideias de marketing pontuais, veja marketing-ideas. Para o loop de experimentação especificamente, veja ab-testing."
 metadata:
-  version: 1.2.1
+  version: 1.2.0
 ---
 
-# Marketing Loops
+# Loops de Marketing
 
-You help set up **marketing loops** — repeatable marketing workflows an AI agent runs on a cadence, each with a defined trigger, a bounded set of steps, a self-check, and an explicit stopping condition. A loop turns a marketing task you'd otherwise do manually (and forget) into an always-on system: the weekly SEO opportunity scan, the ad-fatigue refresh, the churn-signal watch.
+Você ajuda a configurar **loops de marketing** — fluxos de trabalho de
+marketing repetíveis que um agente de IA roda em uma cadência, cada um com
+um gatilho definido, um conjunto delimitado de passos, uma autoverificação,
+e uma condição de parada explícita. Um loop transforma uma tarefa de
+marketing que você faria manualmente de outra forma (e esqueceria) em um
+sistema sempre ativo: a varredura semanal de oportunidade de SEO, a
+atualização de fadiga de anúncio, o monitoramento de sinal de churn.
 
-This is the operational cousin of `marketing-ideas`. Ideas tell you *what to try once*. Loops tell you *what to keep doing on a schedule* — and wire the other marketing skills together to do it.
+Esse é o primo operacional do `marketing-ideas`. Ideias dizem *o que
+tentar uma vez*. Loops dizem *o que continuar fazendo em uma agenda* — e
+conectam as outras skills de marketing para fazer isso.
 
-## How to Use This Skill
+## Como usar esta skill
 
-**Check for product marketing context first:** if `.agents/product-marketing.md` exists (or `.claude/product-marketing.md`, or the legacy `product-marketing-context.md`), read it before asking questions. Use that context and only ask for what's missing.
+**Primeiro, verifique se há contexto de produto:** se
+`.agents/product-marketing.md` existir (ou `.claude/product-marketing.md`,
+ou o legado `product-marketing-context.md`), leia-o antes de fazer
+perguntas. Use esse contexto e só pergunte o que estiver faltando.
 
-Then:
-1. **Clarify the job.** What outcome should this loop protect or grow? (rankings, ad efficiency, activation, retention, revenue, referrals)
-2. **Pick a loop** from the catalog in `references/loop-catalog.md` — or adapt the closest one.
-3. **Tune the cadence** to how fast the underlying signal actually changes (see the cadence rule below).
-4. **Confirm the human checkpoint.** Decide what the loop does autonomously vs. what it stages for human approval before publishing or spending — see `references/loop-guardrails.md`.
-5. **Schedule it** (see "Scheduling a loop" below).
+Depois:
 
-Building more than one loop, or a whole marketing operating system? See `references/loop-orchestration.md` for how loops compose and the order to adopt them (start with tracking + a weekly review; don't build 43 at once).
+1. **Esclareça o trabalho.** Que resultado esse loop deve proteger ou
+   crescer? (rankings, eficiência de anúncio, ativação, retenção, receita,
+   indicação)
+2. **Escolha um loop** do catálogo em `references/loop-catalog.md` — ou
+   adapte o mais próximo.
+3. **Ajuste a cadência** à velocidade real de mudança do sinal subjacente
+   (veja a regra de cadência abaixo).
+4. **Confirme o checkpoint humano.** Decida o que o loop faz autonomamente
+   vs. o que ele deixa pronto para aprovação humana antes de publicar ou
+   gastar — veja `references/loop-guardrails.md`.
+5. **Agende-o** (veja "Agendando um loop" abaixo).
 
-## Anatomy of a Marketing Loop
+Construindo mais de um loop, ou um sistema operacional de marketing
+inteiro? Veja `references/loop-orchestration.md` para como os loops se
+compõem e a ordem para adotá-los (comece com tracking + uma revisão
+semanal; não construa 43 de uma vez).
 
-Every loop in the catalog has these nine parts. When you author or adapt one, fill all of them — a loop missing a stop condition, a self-check, or its state handling is a liability, not an asset.
+## Anatomia de um loop de marketing
 
-| Part | What it defines |
-|------|-----------------|
-| **Check cadence** | How often the loop *looks* (weekly / daily / on-trigger). Match it to signal speed. |
-| **Acts when** | The action condition — what must be true to actually *do* something, vs. just check and skip. Most runs of a good loop are "checked, nothing to do." |
-| **Purpose** | The one outcome this loop exists to move. |
-| **Skills used** | Which marketing skills the loop orchestrates each iteration. |
-| **Loop body** | The ordered steps run each iteration. |
-| **Self-check** | The verification done *before* acting — so the loop doesn't act on noise, seasonality, or a tracking bug. |
-| **State / idempotency** | What the loop remembers between runs: last-run marker, dedupe key, cooldown window, "already handled" set. Without this, loops double-act, re-nag the same people, or re-alert the same thing. Non-negotiable for anything scheduled — see `references/loop-state.md` for where state lives and the idempotency patterns. |
-| **Stop / bail-out** | When the loop skips, halts, escalates to a human, or disables itself — plus what it does on error. Every loop needs one, including heartbeat loops (their stop is "manual disable + error-halt," never "n/a"). |
-| **Output** | Where results go: a file, a PR, a staged draft, a notification, a report. |
+Todo loop no catálogo tem essas nove partes. Ao autorar ou adaptar um,
+preencha todas — um loop sem condição de parada, autoverificação, ou
+tratamento de estado é um passivo, não um ativo.
 
-The **Check cadence / Acts when** split matters: a churn-signal loop might *check* daily but only *act* when an account crosses a risk threshold it hasn't been contacted about inside the cooldown window. Conflating the two produces loops that either miss the window or spam.
+| Parte | O que define |
+|---|---|
+| **Cadência de checagem** | Com que frequência o loop *olha* (semanal/diária/por gatilho). Combine com a velocidade do sinal. |
+| **Age quando** | A condição de ação — o que precisa ser verdade para de fato *fazer* algo, vs. só checar e pular. A maioria das execuções de um bom loop é "checado, nada a fazer." |
+| **Propósito** | O único resultado que esse loop existe para mover. |
+| **Skills usadas** | Quais skills de marketing o loop orquestra a cada iteração. |
+| **Corpo do loop** | Os passos ordenados executados a cada iteração. |
+| **Autoverificação** | A verificação feita *antes* de agir — para que o loop não aja sobre ruído, sazonalidade, ou um bug de tracking. |
+| **Estado/idempotência** | O que o loop lembra entre execuções: marcador de última execução, chave de dedupe, janela de cooldown, conjunto "já tratado." Sem isso, loops agem em dobro, incomodam de novo as mesmas pessoas, ou alertam de novo a mesma coisa. Não-negociável para qualquer coisa agendada — veja `references/loop-state.md` para onde o estado vive e os padrões de idempotência. |
+| **Parada/saída de emergência** | Quando o loop pula, para, escala para um humano, ou se desativa — mais o que faz em caso de erro. Todo loop precisa de um, incluindo loops de heartbeat (a parada deles é "desativação manual + parada em erro," nunca "n/a"). |
+| **Saída** | Para onde os resultados vão: um arquivo, um PR, um rascunho preparado, uma notificação, um relatório. |
 
-## The cadence rule
+A divisão **Cadência de checagem / Age quando** importa: um loop de sinal
+de churn pode *checar* diariamente mas só *agir* quando uma conta cruza um
+limiar de risco com o qual ainda não foi contatada dentro da janela de
+cooldown. Confundir os dois produz loops que ou perdem a janela ou
+incomodam demais.
 
-Match cadence to how fast the signal actually changes — not to how often you'd *like* an update.
+## A regra de cadência
 
-| Signal | Realistic cadence | Why |
-|--------|-------------------|-----|
-| Rankings, backlinks, domain authority | Weekly | Move slowly; daily checks are noise |
-| Ad creative fatigue, CPA drift | Every 2–3 days | Meta/Google feedback loops are days, not hours |
-| Activation / onboarding funnel | Weekly | Needs enough signups to be significant |
-| Churn signals | Daily or on-trigger | Early intervention window is short |
-| Content / copy decay | Monthly | Traffic erosion is gradual |
-| Competitor changes | Weekly | Pricing/positioning shifts are infrequent but matter |
-| Social listening / mentions | Daily | Engagement windows close fast |
+Combine a cadência com a velocidade real de mudança do sinal — não com a
+frequência que você *gostaria* de uma atualização.
 
-Over-frequent loops are the most common failure mode: they generate busywork, burn budget, and train you to ignore the output.
+| Sinal | Cadência realista | Por quê |
+|---|---|---|
+| Rankings, backlinks, autoridade de domínio | Semanal | Mudam devagar; checagens diárias são ruído |
+| Fadiga de criativo de anúncio, deriva de CPA | A cada 2-3 dias | Os loops de feedback de Meta/Google são de dias, não horas |
+| Funil de ativação/onboarding | Semanal | Precisa de cadastros suficientes para ser significativo |
+| Sinais de churn | Diário ou por gatilho | A janela de intervenção precoce é curta |
+| Decaimento de conteúdo/copy | Mensal | A erosão de tráfego é gradual |
+| Mudanças de concorrente | Semanal | Mudanças de preço/posicionamento são infrequentes mas importam |
+| Escuta social/menções | Diário | Janelas de engajamento fecham rápido |
 
-## When NOT to loop
+Loops frequentes demais são o modo de falha mais comum: geram trabalho
+inútil, queimam orçamento, e te treinam a ignorar a saída.
 
-Not everything should be automated on a cadence. Skip a loop — or add a mandatory human checkpoint — when:
+## Quando NÃO fazer um loop
 
-- **Strategy or creative direction is the real work.** Loops maintain and optimize; they don't set positioning, invent campaigns, or make brand calls.
-- **The action publishes or spends without review.** Auto-*drafting* an ad, email, or post is fine. Auto-*publishing* or auto-*shifting budget* needs a human checkpoint unless the user has explicitly authorized autonomous action and set guardrails (caps, allowlists).
-- **The signal is too sparse to be significant.** A weekly conversion-rate loop on 40 visitors/week is measuring noise.
-- **It's a vanity loop.** If nobody acts on the output, delete the loop. A loop that emails a dashboard nobody reads is worse than nothing.
+Nem tudo deveria ser automatizado em cadência. Pule um loop — ou adicione
+um checkpoint humano obrigatório — quando:
 
-For any loop that sends, spends, publishes, or touches personal data, apply `references/loop-guardrails.md` — the two-tier action model (autonomous-safe vs. gated), spend/send caps, CAN-SPAM/GDPR/FTC/ToS rules, the always-escalate list, and a required kill switch.
+- **Estratégia ou direção criativa é o trabalho de verdade.** Loops
+  mantêm e otimizam; não definem posicionamento, não inventam campanha,
+  nem tomam decisão de marca.
+- **A ação publica ou gasta sem revisão.** Auto-*rascunhar* um anúncio,
+  e-mail, ou post é ok. Auto-*publicar* ou auto-*mudar orçamento* precisa
+  de um checkpoint humano, a menos que o usuário tenha autorizado
+  explicitamente ação autônoma e definido guardrails (tetos, listas
+  permitidas).
+- **O sinal é ralo demais para ser significativo.** Um loop semanal de
+  taxa de conversão com 40 visitantes/semana está medindo ruído.
+- **É um loop de vaidade.** Se ninguém age sobre a saída, apague o loop.
+  Um loop que manda por e-mail um dashboard que ninguém lê é pior que
+  nada.
 
-## Scheduling a loop
+Para qualquer loop que envia, gasta, publica, ou toca dado pessoal,
+aplique `references/loop-guardrails.md` — o modelo de ação em duas
+camadas (seguro-autônomo vs. travado), tetos de gasto/envio, regras de
+CAN-SPAM/LGPD/FTC/ToS, a lista sempre-escale, e um kill switch
+obrigatório.
 
-These loops are agent-agnostic — the *body* works in any agent. The *scheduling* depends on your environment:
+## Agendando um loop
 
-- **Claude Code** — native options: `/loop` (self-paced, until a condition), `ScheduleWakeup` (dynamic pacing that reacts to state), and `CronCreate` (fixed cron schedule). If you have a loop-mechanics skill such as `loopify` installed, use it to choose between them and tune delays; otherwise the guidance below is enough.
-- **Any agent + cron** — wrap the loop body as a scheduled prompt/script (`0 9 * * 1` for Mondays 9am, etc.).
-- **Manual cadence** — for high-judgment loops, "run this skill every Monday" is a perfectly good loop. The value is the repeatable *body*, not the automation.
+Esses loops são agnósticos de agente: o *corpo* funciona em qualquer
+agente. O *agendamento* depende do seu ambiente:
 
-Default to time-of-day cron for review-style loops (weekly review, ranking watch) and dynamic pacing for monitor-until-threshold loops (churn watch, launch-day tracking).
+- **Claude Code** — opções nativas: `/loop` (ritmo próprio, até uma
+  condição), `ScheduleWakeup` (ritmo dinâmico que reage ao estado), e
+  `CronCreate` (agenda cron fixa). Se você tem uma skill de mecânica de
+  loop como `loopify` instalada, use-a para escolher entre elas e ajustar
+  os atrasos; senão a orientação abaixo já basta.
+- **Qualquer agente + cron** — embrulhe o corpo do loop como um
+  prompt/script agendado (`0 9 * * 1` para segundas 9h, etc.).
+- **Cadência manual** — para loops de alto julgamento, "roda essa skill
+  toda segunda" é um loop perfeitamente bom. O valor está no *corpo*
+  repetível, não na automação.
 
-## The Catalog
+Padrão para cron de horário fixo para loops de estilo revisão (revisão
+semanal, monitoramento de ranking) e ritmo dinâmico para loops de
+monitorar-até-limiar (monitoramento de churn, tracking de dia de
+lançamento).
 
-`references/loop-catalog.md` holds the full library — 43 marketing loops with thorough funnel coverage: SEO & Content, Paid, Earned/Social/Partnerships, Activation, Retention, Revenue, Referral & Advocacy, and Ongoing Ops. Each is a complete, adaptable spec. Start there, pick the closest match, and tune it to the user's product, stage, and tooling.
+## O catálogo
 
-## Authoring a new loop
+`references/loop-catalog.md` guarda a biblioteca completa — 43 loops de
+marketing com cobertura completa de funil: SEO & Conteúdo, Pago, Ganho/
+Social/Parceria, Ativação, Retenção, Receita, Indicação & Defesa, e
+Operações Contínuas. Cada um é uma especificação completa e adaptável.
+Comece por lá, escolha o mais próximo, e ajuste ao produto, estágio, e
+ferramental do usuário.
 
-When nothing in the catalog fits, author a new loop from `references/loop-template.md` — a copy-paste template with fill-in prompts, a worked before/after example, and a ship checklist. Fill all nine anatomy parts; if you can't answer the self-check, state/idempotency, and stop/bail-out concretely, the loop isn't ready to run.
+## Autorando um loop novo
 
-## Anti-patterns
+Quando nada no catálogo encaixa, autore um loop novo a partir de
+`references/loop-template.md` — um template de copiar-colar com prompts
+de preenchimento, um exemplo resolvido de antes/depois, e um checklist de
+lançamento. Preencha as nove partes da anatomia; se você não conseguir
+responder a autoverificação, o estado/idempotência, e a parada/saída de
+emergência concretamente, o loop não está pronto para rodar.
 
-- Looping without a stop condition → runaway spend or infinite churn.
-- Same cadence for every loop → most run too often and get ignored.
-- No self-check → the loop acts on noise, seasonality, or a tracking bug.
-- No human checkpoint on spend/publish actions.
-- Building 10 loops at once → start with one, prove it earns its keep, then add the next.
+## Antipadrões
 
-## Banned vocabulary
+- Fazer loop sem condição de parada → gasto descontrolado ou churn
+  infinito.
+- Mesma cadência para todo loop → a maioria roda com frequência demais e
+  é ignorada.
+- Sem autoverificação → o loop age sobre ruído, sazonalidade, ou um bug de
+  tracking.
+- Sem checkpoint humano em ações de gasto/publicação.
+- Construir 10 loops de uma vez → comece com um, prove que ele vale a
+  pena, depois adicione o próximo.
 
-Avoid: "set it and forget it," "fully autonomous marketing," "AI does everything," "10x on autopilot," "growth hacking machine." Loops are disciplined systems with checkpoints, not magic. Describe them honestly.
+## Vocabulário banido
 
-## Related Skills
+Evite: "configure e esqueça," "marketing totalmente autônomo," "a IA faz
+tudo," "10x no piloto automático," "máquina de growth hacking." Loops são
+sistemas disciplinados com checkpoints, não mágica. Descreva-os
+honestamente.
 
-- **marketing-ideas** — one-off tactics and inspiration (what to try). Loops operationalize the ones worth repeating.
-- **ab-testing** — the experimentation loop specifically (hypothesis → test → promote winner → repeat).
-- **analytics** — most loops read from analytics to decide whether to act.
-- Individual channel skills (`ads`, `seo-audit`, `emails`, `social`, `churn-prevention`, `pricing`, `referrals`) — the loop bodies orchestrate these.
+## Skills relacionadas
+
+- **marketing-ideas** — táticas e inspiração pontuais (o que tentar). Loops operacionalizam as que valem a pena repetir.
+- **ab-testing** — o loop de experimentação especificamente (hipótese → teste → promover o vencedor → repetir).
+- **analytics** — a maioria dos loops lê do analytics para decidir se age.
+- Skills de canal individuais (`ads`, `seo-audit`, `emails`, `social`, `churn-prevention`, `pricing`, `referrals`) — os corpos de loop orquestram essas.

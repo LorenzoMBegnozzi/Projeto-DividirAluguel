@@ -199,7 +199,13 @@ public class MercadoPagoGateway implements PaymentGateway {
         try {
             return request.get();
         } catch (RestClientResponseException e) {
-            log.error("Mercado Pago respondeu {}: {}", e.getStatusCode().value(), e.getResponseBodyAsString());
+            int status = e.getStatusCode().value();
+            log.error("Mercado Pago respondeu {}: {}", status, e.getResponseBodyAsString());
+            if (status == 401 || status == 403) {
+                throw new ApiException(org.springframework.http.HttpStatus.BAD_GATEWAY,
+                        "O Mercado Pago recusou a credencial do RachaAi para esta operação (erro " + status
+                                + "). Confira o Access Token e se a aplicação tem permissão para essa ação, como reembolsar.");
+            }
             throw unavailable(e);
         } catch (RestClientException e) {
             throw unavailable(e);

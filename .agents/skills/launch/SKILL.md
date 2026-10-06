@@ -1,381 +1,495 @@
 ---
 name: launch
-description: "When the user wants to plan a product launch, feature announcement, or release strategy. Also use when the user mentions 'launch,' 'Product Hunt,' 'feature release,' 'announcement,' 'go-to-market,' 'beta launch,' 'early access,' 'waitlist,' 'product update,' 'how do I launch this,' 'launch checklist,' 'GTM plan,' or 'we're about to ship.' Use this whenever someone is preparing to release something publicly. For ongoing marketing after launch, see marketing-ideas. For the offer being launched (bonuses, guarantees, scarcity, naming), see offers."
+description: "Quando o usuário quiser planejar o lançamento de um produto, anúncio de feature, ou estratégia de release. Use também quando o usuário mencionar 'lançamento,' 'Product Hunt,' 'lançamento de feature,' 'anúncio,' 'go-to-market,' 'lançamento em beta,' 'acesso antecipado,' 'lista de espera,' 'atualização de produto,' 'como eu lanço isso,' 'checklist de lançamento,' 'plano de GTM,' ou 'estamos prestes a lançar.' Use isso sempre que alguém estiver se preparando para lançar algo publicamente. Para marketing contínuo pós-lançamento, veja marketing-ideas. Para a oferta sendo lançada (bônus, garantias, escassez, nomenclatura), veja offers."
 metadata:
-  version: 2.0.3
+  version: 2.0.2
 ---
 
-# Launch Strategy
+# Estratégia de Lançamento
 
-You are an expert in SaaS product launches and feature announcements. Your goal is to help users plan launches that build momentum, capture attention, and convert interest into users.
+Você é um especialista em lançamentos de produto SaaS e anúncios de feature.
+Seu objetivo é ajudar os usuários a planejar lançamentos que constroem
+momentum, capturam atenção e convertem interesse em usuários.
 
-## Before Starting
+## Antes de começar
 
-**Check for product marketing context first:**
-If `.agents/product-marketing.md` exists (or `.claude/product-marketing.md`, or the legacy `product-marketing-context.md` filename, in older setups), read it before asking questions. Use that context and only ask for information not already covered or specific to this task.
-
----
-
-## Core Philosophy
-
-The best companies don't just launch once—they launch again and again. Every new feature, improvement, and update is an opportunity to capture attention and engage your audience.
-
-A strong launch isn't about a single moment. It's about:
-- Getting your product into users' hands early
-- Learning from real feedback
-- Making a splash at every stage
-- Building momentum that compounds over time
+**Primeiro, verifique se há contexto de produto:**
+Se `.agents/product-marketing.md` existir (ou `.claude/product-marketing.md`,
+ou o nome de arquivo legado `product-marketing-context.md`, em setups mais
+antigos), leia-o antes de fazer perguntas. Use esse contexto e só pergunte o
+que não estiver coberto ou for específico desta tarefa.
 
 ---
 
-## The ORB Framework
+## Filosofia central
 
-Structure your launch marketing across three channel types. Everything should ultimately lead back to owned channels.
+As melhores empresas não lançam só uma vez — elas lançam de novo e de novo.
+Toda nova feature, melhoria e atualização é uma oportunidade de capturar
+atenção e engajar sua audiência.
 
-### Owned Channels
-You own the channel (though not the audience). Direct access without algorithms or platform rules.
+Um lançamento forte não é sobre um único momento. É sobre:
 
-**Examples:**
-- Email list
+- Colocar seu produto nas mãos dos usuários cedo
+- Aprender com feedback real
+- Fazer barulho em cada estágio
+- Construir momentum que se acumula ao longo do tempo
+
+---
+
+## O Framework ORB
+
+Estruture seu marketing de lançamento em três tipos de canal. Tudo deve, no
+fim, levar de volta aos canais próprios.
+
+### Canais próprios (Owned)
+
+Você é dono do canal (embora não da audiência). Acesso direto, sem
+algoritmo ou regras de plataforma.
+
+**Exemplos:**
+
+- Lista de e-mail
 - Blog
 - Podcast
-- Branded community (Slack, Discord)
-- Website/product
+- Comunidade de marca (Slack, Discord, WhatsApp)
+- Site/produto
 
-**Why they matter:**
-- Get more effective over time
-- No algorithm changes or pay-to-play
-- Direct relationship with audience
-- Compound value from content
+**Por que importam:**
 
-**Start with 1-2 based on audience:**
-- Industry lacks quality content → Start a blog
-- People want direct updates → Focus on email
-- Engagement matters → Build a community
+- Ficam mais eficazes com o tempo
+- Sem mudança de algoritmo ou pay-to-play
+- Relacionamento direto com a audiência
+- Valor composto a partir do conteúdo
 
-**Example - Superhuman:**
-Built demand through an invite-only waitlist and one-on-one onboarding sessions. Every new user got a 30-minute live demo. This created exclusivity, FOMO, and word-of-mouth—all through owned relationships. Years later, their original onboarding materials still drive engagement.
+**Comece com 1-2, com base na audiência:**
 
-### Rented Channels
-Platforms that provide visibility but you don't control. Algorithms shift, rules change, pay-to-play increases.
+- Setor carece de conteúdo de qualidade → comece um blog
+- Pessoas querem atualizações diretas → foque em e-mail
+- Engajamento importa → construa uma comunidade
 
-**Examples:**
-- Social media (Twitter/X, LinkedIn, Instagram)
-- App stores and marketplaces
+**Exemplo — Superhuman:**
+Construiu demanda através de uma lista de espera só com convite e sessões
+de onboarding individuais. Todo novo usuário ganhava uma demo ao vivo de 30
+minutos. Isso criou exclusividade, FOMO e boca a boca — tudo através de
+relacionamentos próprios. Anos depois, os materiais originais de onboarding
+ainda geram engajamento.
+
+### Canais alugados (Rented)
+
+Plataformas que dão visibilidade, mas você não controla. Algoritmos mudam,
+regras mudam, pay-to-play aumenta.
+
+**Exemplos:**
+
+- Redes sociais (Twitter/X, LinkedIn, Instagram)
+- App stores e marketplaces
 - YouTube
 - Reddit
 
-**How to use correctly:**
-- Pick 1-2 platforms where your audience is active
-- Use them to drive traffic to owned channels
-- Don't rely on them as your only strategy
+**Como usar corretamente:**
 
-**Example - Notion:**
-Hacked virality through Twitter, YouTube, and Reddit where productivity enthusiasts were active. Encouraged community to share templates and workflows. But they funneled all visibility into owned assets—every viral post led to signups, then targeted email onboarding.
+- Escolha 1-2 plataformas onde sua audiência está ativa
+- Use-as para levar tráfego aos canais próprios
+- Não dependa delas como única estratégia
 
-**Platform-specific tactics:**
-- Twitter/X: Threads that spark conversation → link to newsletter
-- LinkedIn: High-value posts → lead to gated content or email signup
-- Marketplaces (Shopify, Slack): Optimize listing → drive to site for more
+**Exemplo — Notion:**
+Hackeou a viralização via Twitter, YouTube e Reddit, onde entusiastas de
+produtividade estavam ativos. Incentivou a comunidade a compartilhar
+templates e fluxos de trabalho. Mas canalizou toda a visibilidade para
+ativos próprios — todo post viral levava a cadastros, depois a onboarding
+por e-mail segmentado.
 
-Rented channels give speed, not stability. Capture momentum by bringing users into your owned ecosystem.
+**Táticas específicas por plataforma:**
 
-### Borrowed Channels
-Tap into someone else's audience to shortcut the hardest part—getting noticed.
+- Twitter/X: threads que geram conversa → link para a newsletter
+- LinkedIn: posts de alto valor → levam a conteúdo fechado ou cadastro de e-mail
+- Marketplaces (Shopify, Slack): otimize o anúncio → leve ao site para mais
 
-**Examples:**
-- Guest content (blog posts, podcast interviews, newsletter features)
-- Collaborations (webinars, co-marketing, social takeovers)
-- Speaking engagements (conferences, panels, virtual summits)
-- Influencer partnerships
+Canais alugados dão velocidade, não estabilidade. Capture o momentum
+trazendo os usuários para o seu ecossistema próprio.
 
-**Be proactive, not passive:**
-1. List industry leaders your audience follows
-2. Pitch win-win collaborations
-3. Use tools like SparkToro or Listen Notes to find audience overlap
-4. Set up affiliate/referral incentives (for channel partner launches, use [Introw](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/introw.md) to manage deal registration and commissions)
+### Canais emprestados (Borrowed)
 
-**Example - TRMNL:**
-Sent a free e-ink display to YouTuber Snazzy Labs—not a paid sponsorship, just hoping he'd like it. He created an in-depth review that racked up 500K+ views and drove $500K+ in sales. They also set up an affiliate program for ongoing promotion.
+Acesse a audiência de outra pessoa para atalhar a parte mais difícil —
+chamar atenção.
 
-Borrowed channels give instant credibility, but only work if you convert borrowed attention into owned relationships.
+**Exemplos:**
 
----
+- Conteúdo como convidado (posts de blog, entrevistas em podcast, menções
+  em newsletter)
+- Colaborações (webinars, co-marketing, takeover de rede social)
+- Palestras (conferências, painéis, summits virtuais)
+- Parcerias com influenciadores/criadores
 
-## Readiness Gate: Are You Ready to Launch?
+**Seja proativo, não passivo:**
 
-Run this **before** the phased mechanics. Products don't market themselves—but a product that isn't ready won't market either. The launch mechanics only pay off if what you're launching is worth launching.
+1. Liste líderes do setor que sua audiência segue
+2. Proponha colaborações ganha-ganha
+3. Use ferramentas como SparkToro ou Listen Notes para achar sobreposição
+   de audiência
+4. Monte incentivos de afiliado/indicação (para lançamentos com parceiros de
+   canal, use o [Introw](../../tools/integrations/introw.md) para gerenciar
+   registro de deal e comissões)
 
-Two failure modes kill launches from opposite ends:
+**Exemplo — TRMNL:**
+Enviou um display e-ink grátis para o YouTuber Snazzy Labs — não um
+patrocínio pago, só na esperança de que ele gostasse. Ele fez uma review
+aprofundada que acumulou mais de 500 mil visualizações e gerou mais de
+US$ 500 mil em vendas. Também montaram um programa de afiliados para
+promoção contínua.
 
-- **Stealth Mode** — launching too late. "Procrastination in a fancy suit." You keep polishing in private, waiting for the product to be perfect. It never ships, and nobody learns you exist.
-- **"Just One More Feature"** — never launching. Every proposed launch date gets pushed for one more thing. The scope creeps forever; the launch never comes.
-
-The middle path is **SLC — Simple, Lovable, Complete** (Jason Cohen), the antidote to shipping a bare MVP that's minimal but unlovable. Don't launch a stub nobody wants; don't wait for a bloated everything-app. A launchable v1 is:
-
-- **Simple** — it does *one* thing. Not many things poorly. One clear job, done well.
-- **Lovable** — people *want* to use it, not just tolerate it. An MVP asks users to suffer through a stripped-down experience "to give feedback." SLC gives them something they'd choose. If nobody would be sad to lose it, it isn't lovable yet.
-- **Complete** — it's a *whole* experience for that one thing, not a stub with obvious holes. Complete at its chosen scope, not a teaser of a bigger promise.
-
-**The gate:** If it's not yet Simple, Lovable, and Complete, you're in "Just One More Feature" territory only when adding scope is what's missing—otherwise you're in Stealth Mode and should ship. Cut scope until one thing is lovable and complete, then launch that. SLC gives you a real launch now instead of a perfect launch never.
-
-**Quick check before running the phases:**
-- [ ] Does it do one clearly-defined thing? (Simple)
-- [ ] Would a target user *choose* to use it, not just endure it? (Lovable)
-- [ ] Is that one thing a whole experience, with no glaring stubs? (Complete)
-- [ ] Are you polishing past this bar? → Stop. You're in Stealth Mode. Ship.
-- [ ] Are you still adding new things to the scope? → Stop. You're in "Just One More Feature." Cut back to SLC.
-
-Pass the gate, then run the phases below.
+Canais emprestados dão credibilidade instantânea, mas só funcionam se você
+converter a atenção emprestada em relacionamentos próprios.
 
 ---
 
-## Five-Phase Launch Approach
+## Portão de prontidão: você está pronto para lançar?
 
-Launching isn't a one-day event. It's a phased process that builds momentum.
+Rode isso **antes** da mecânica em fases. Produtos não se vendem sozinhos —
+mas um produto que não está pronto também não vai vender. A mecânica de
+lançamento só compensa se o que você está lançando vale a pena lançar.
 
-### Phase 1: Internal Launch
-Gather initial feedback and iron out major issues before going public.
+Dois modos de falha matam lançamentos, de lados opostos:
 
-**Actions:**
-- Recruit early users one-on-one to test for free
-- Collect feedback on usability gaps and missing features
-- Ensure prototype is functional enough to demo (doesn't need to be production-ready)
+- **Modo Furtivo (Stealth)** — lançar tarde demais. "Procrastinação de
+  terno." Você fica polindo em privado, esperando o produto ficar perfeito.
+  Nunca sai do papel, e ninguém descobre que você existe.
+- **"Só Mais Uma Feature"** — nunca lançar. Toda data de lançamento
+  proposta é adiada por mais uma coisa. O escopo cresce para sempre; o
+  lançamento nunca chega.
 
-**Goal:** Validate core functionality with friendly users.
+O caminho do meio é **SLC — Simples, Amável, Completo** (Jason Cohen), o
+antídoto para lançar um MVP nu que é mínimo mas não amável. Não lance um
+esboço que ninguém quer; não espere por um app-de-tudo inchado. Um v1
+lançável é:
 
-### Phase 2: Alpha Launch
-Put the product in front of external users in a controlled way.
+- **Simples** — faz *uma* coisa. Não muitas coisas mal feitas. Um trabalho
+  claro, bem feito.
+- **Amável** — as pessoas *querem* usar, não apenas toleram. Um MVP pede
+  para o usuário sofrer com uma experiência enxuta "para dar feedback".
+  SLC dá algo que a pessoa escolheria. Se ninguém ficaria triste em perder,
+  ainda não é amável.
+- **Completo** — é uma experiência *inteira* para aquela uma coisa, não um
+  esboço com buracos óbvios. Completo no escopo escolhido, não um teaser de
+  uma promessa maior.
 
-**Actions:**
-- Create landing page with early access signup form
-- Announce the product exists
-- Invite users individually to start testing
-- MVP should be working in production (even if still evolving)
+**O portão:** se ainda não está Simples, Amável e Completo, você só está no
+território "Só Mais Uma Feature" quando o que falta é escopo — senão você
+está no Modo Furtivo e deveria lançar. Corte escopo até que uma coisa fique
+amável e completa, depois lance isso. SLC te dá um lançamento real agora em
+vez de um lançamento perfeito nunca.
 
-**Goal:** First external validation and initial waitlist building.
+**Checagem rápida antes de rodar as fases:**
 
-### Phase 3: Beta Launch
-Scale up early access while generating external buzz.
+- [ ] Faz uma coisa claramente definida? (Simples)
+- [ ] Um usuário-alvo *escolheria* usar, não apenas suportaria? (Amável)
+- [ ] Essa uma coisa é uma experiência inteira, sem lacunas óbvias?
+  (Completo)
+- [ ] Você está polindo além desse ponto? → Pare. Você está no Modo
+  Furtivo. Lance.
+- [ ] Você ainda está adicionando coisas novas ao escopo? → Pare. Você está
+  em "Só Mais Uma Feature". Corte de volta para SLC.
 
-**Actions:**
-- Work through early access list (some free, some paid)
-- Start marketing with teasers about problems you solve
-- Recruit friends, investors, and influencers to test and share
+Passe pelo portão, depois rode as fases abaixo.
 
-**Consider adding:**
-- Coming soon landing page or waitlist
-- "Beta" sticker in dashboard navigation
-- Email invites to early access list
-- Early access toggle in settings for experimental features
+---
 
-**Goal:** Build buzz and refine product with broader feedback.
+## Abordagem de lançamento em cinco fases
 
-### Phase 4: Early Access Launch
-Shift from small-scale testing to controlled expansion.
+Lançar não é um evento de um dia. É um processo em fases que constrói
+momentum.
 
-**Actions:**
-- Leak product details: screenshots, feature GIFs, demos
-- Gather quantitative usage data and qualitative feedback
-- Run user research with engaged users (incentivize with credits)
-- Optionally run product/market fit survey to refine messaging
+### Fase 1: Lançamento interno
 
-**Expansion options:**
-- Option A: Throttle invites in batches (5-10% at a time)
-- Option B: Invite all users at once under "early access" framing
+Reúna feedback inicial e resolva os problemas maiores antes de ir a público.
 
-**Goal:** Validate at scale and prepare for full launch.
+**Ações:**
 
-### Phase 5: Full Launch
-Open the floodgates.
+- Recrute usuários iniciais individualmente para testar de graça
+- Colete feedback sobre lacunas de usabilidade e features faltando
+- Garanta que o protótipo esteja funcional o suficiente para demonstrar
+  (não precisa estar pronto para produção)
 
-**Actions:**
-- Open self-serve signups
-- Start charging (if not already)
-- Announce general availability across all channels
+**Objetivo:** validar a funcionalidade central com usuários amigáveis.
 
-**Launch touchpoints:**
-- Customer emails
-- In-app popups and product tours
-- Website banner linking to launch assets
-- "New" sticker in dashboard navigation
-- Blog post announcement
-- Social posts across platforms
+### Fase 2: Lançamento alfa
+
+Coloque o produto na frente de usuários externos de forma controlada.
+
+**Ações:**
+
+- Crie a landing page com formulário de cadastro para acesso antecipado
+- Anuncie que o produto existe
+- Convide usuários individualmente para começar a testar
+- O MVP deve estar funcionando em produção (mesmo que ainda evoluindo)
+
+**Objetivo:** primeira validação externa e início da construção da lista de
+espera.
+
+### Fase 3: Lançamento beta
+
+Escale o acesso antecipado enquanto gera buzz externo.
+
+**Ações:**
+
+- Trabalhe a lista de acesso antecipado (alguns grátis, alguns pagos)
+- Comece o marketing com teasers sobre os problemas que você resolve
+- Recrute amigos, investidores e influenciadores para testar e compartilhar
+
+**Considere adicionar:**
+
+- Landing page de "em breve" ou lista de espera
+- Etiqueta "Beta" na navegação do dashboard
+- Convites por e-mail para a lista de acesso antecipado
+- Toggle de acesso antecipado nas configurações para features experimentais
+
+**Objetivo:** gerar buzz e refinar o produto com feedback mais amplo.
+
+### Fase 4: Lançamento de acesso antecipado
+
+Passe de teste em pequena escala para expansão controlada.
+
+**Ações:**
+
+- Vaze detalhes do produto: screenshots, GIFs de feature, demos
+- Reúna dados de uso quantitativos e feedback qualitativo
+- Rode pesquisa de usuário com usuários engajados (incentive com créditos)
+- Opcionalmente rode uma pesquisa de product/market fit para refinar a
+  mensagem
+
+**Opções de expansão:**
+
+- Opção A: libere convites em lotes (5-10% por vez)
+- Opção B: convide todos os usuários de uma vez sob o enquadramento
+  "acesso antecipado"
+
+**Objetivo:** validar em escala e preparar para o lançamento completo.
+
+### Fase 5: Lançamento completo
+
+Abra as comportas.
+
+**Ações:**
+
+- Abra os cadastros self-serve
+- Comece a cobrar (se ainda não cobra)
+- Anuncie disponibilidade geral em todos os canais
+
+**Pontos de contato do lançamento:**
+
+- E-mails para clientes
+- Popups e tours guiados dentro do produto
+- Banner no site linkando para os materiais de lançamento
+- Etiqueta "Novo" na navegação do dashboard
+- Post de blog de anúncio
+- Posts sociais em todas as plataformas
 - Product Hunt, BetaList, Hacker News, etc.
 
-**Goal:** Maximum visibility and conversion to paying users.
+**Objetivo:** máxima visibilidade e conversão em usuários pagantes.
 
 ---
 
-## Product Hunt Launch Strategy
+## Estratégia de lançamento no Product Hunt
 
-Product Hunt can be powerful for reaching early adopters, but it's not magic—it requires preparation.
+O Product Hunt pode ser poderoso para alcançar early adopters, mas não é
+mágica — exige preparação.
 
-### Pros
-- Exposure to tech-savvy early adopter audience
-- Credibility bump (especially if Product of the Day)
-- Potential PR coverage and backlinks
+### Prós
 
-### Cons
-- Very competitive to rank well
-- Short-lived traffic spikes
-- Requires significant pre-launch planning
+- Exposição a uma audiência tech-savvy de early adopters
+- Ganho de credibilidade (especialmente se for Product of the Day)
+- Potencial cobertura de imprensa e backlinks
 
-### How to Launch Successfully
+### Contras
 
-**Before launch day:**
-1. Build relationships with influential supporters, content hubs, and communities
-2. Optimize your listing: compelling tagline, polished visuals, short demo video
-3. Study successful launches to identify what worked
-4. Engage in relevant communities—provide value before pitching
-5. Prepare your team for all-day engagement
+- Muito competitivo para rankear bem
+- Picos de tráfego de curta duração
+- Exige planejamento significativo pré-lançamento
 
-**On launch day:**
-1. Treat it as an all-day event
-2. Respond to every comment in real-time
-3. Answer questions and spark discussions
-4. Encourage your existing audience to engage
-5. Direct traffic back to your site to capture signups
+### Como lançar com sucesso
 
-**After launch day:**
-1. Follow up with everyone who engaged
-2. Convert Product Hunt traffic into owned relationships (email signups)
-3. Continue momentum with post-launch content
+**Antes do dia do lançamento:**
 
-### Case Studies
+1. Construa relacionamentos com apoiadores influentes, hubs de conteúdo e
+   comunidades
+2. Otimize seu anúncio: tagline persuasiva, visuais polidos, vídeo de demo
+   curto
+3. Estude lançamentos de sucesso para identificar o que funcionou
+4. Engaje em comunidades relevantes — entregue valor antes de vender
+5. Prepare seu time para engajamento o dia inteiro
 
-**SavvyCal** (Scheduling tool):
-- Optimized landing page and onboarding before launch
-- Built relationships with productivity/SaaS influencers in advance
-- Responded to every comment on launch day
-- Result: #2 Product of the Month
+**No dia do lançamento:**
 
-**Reform** (Form builder):
-- Studied successful launches and applied insights
-- Crafted clear tagline, polished visuals, demo video
-- Engaged in communities before launch (provided value first)
-- Treated launch as all-day engagement event
-- Directed traffic to capture signups
-- Result: #1 Product of the Day
+1. Trate como um evento de dia inteiro
+2. Responda todo comentário em tempo real
+3. Responda perguntas e gere discussões
+4. Incentive sua audiência existente a engajar
+5. Direcione o tráfego de volta ao seu site para capturar cadastros
 
----
+**Depois do dia do lançamento:**
 
-## Post-Launch Product Marketing
+1. Faça follow-up com todo mundo que engajou
+2. Converta o tráfego do Product Hunt em relacionamentos próprios (cadastro
+   de e-mail)
+3. Continue o momentum com conteúdo pós-lançamento
 
-Your launch isn't over when the announcement goes live. Now comes adoption and retention work.
+### Cases
 
-### Immediate Post-Launch Actions
+**SavvyCal** (ferramenta de agendamento):
 
-**Educate new users:**
-Set up automated onboarding email sequence introducing key features and use cases.
+- Otimizou a landing page e o onboarding antes do lançamento
+- Construiu relacionamentos com influenciadores de produtividade/SaaS com
+  antecedência
+- Respondeu a todo comentário no dia do lançamento
+- Resultado: #2 Product of the Month
 
-**Reinforce the launch:**
-Include announcement in your weekly/biweekly/monthly roundup email to catch people who missed it.
+**Reform** (form builder):
 
-**Differentiate against competitors:**
-Publish comparison pages highlighting why you're the obvious choice.
-
-**Update web pages:**
-Add dedicated sections about the new feature/product across your site.
-
-**Offer hands-on preview:**
-Create no-code interactive demo (using tools like Navattic) so visitors can explore before signing up.
-
-### Keep Momentum Going
-It's easier to build on existing momentum than start from scratch. Every touchpoint reinforces the launch.
+- Estudou lançamentos de sucesso e aplicou os aprendizados
+- Criou tagline clara, visuais polidos, vídeo de demo
+- Engajou em comunidades antes do lançamento (entregou valor primeiro)
+- Tratou o lançamento como um evento de engajamento de dia inteiro
+- Direcionou o tráfego para capturar cadastros
+- Resultado: #1 Product of the Day
 
 ---
 
-## Ongoing Launch Strategy
+## Marketing de produto pós-lançamento
 
-Don't rely on a single launch event. Regular updates and feature rollouts sustain engagement.
+Seu lançamento não acaba quando o anúncio vai ao ar. Agora vem o trabalho
+de adoção e retenção.
 
-### How to Prioritize What to Announce
+### Ações imediatas pós-lançamento
 
-Use this matrix to decide how much marketing each update deserves:
+**Eduque novos usuários:**
+Configure uma sequência automatizada de onboarding por e-mail apresentando
+as features e casos de uso principais.
 
-**Major updates** (new features, product overhauls):
-- Full campaign across multiple channels
-- Blog post, email campaign, in-app messages, social media
-- Maximize exposure
+**Reforce o lançamento:**
+Inclua o anúncio no seu e-mail de resumo semanal/quinzenal/mensal para
+pegar quem perdeu.
 
-**Medium updates** (new integrations, UI enhancements):
-- Targeted announcement
-- Email to relevant segments, in-app banner
-- Don't need full fanfare
+**Diferencie-se dos concorrentes:**
+Publique páginas de comparação destacando por que você é a escolha óbvia.
 
-**Minor updates** (bug fixes, small tweaks):
-- Changelog and release notes
-- Signal that product is improving
-- Don't dominate marketing
+**Atualize as páginas do site:**
+Adicione seções dedicadas sobre a nova feature/produto pelo site.
 
-### Announcement Tactics
+**Ofereça um preview prático:**
+Crie uma demo interativa sem código (usando ferramentas como Navattic) para
+que os visitantes explorem antes de se cadastrar.
 
-**Space out releases:**
-Instead of shipping everything at once, stagger announcements to maintain momentum.
+### Mantenha o momentum
 
-**Reuse high-performing tactics:**
-If a previous announcement resonated, apply those insights to future updates.
-
-**Keep engaging:**
-Continue using email, social, and in-app messaging to highlight improvements.
-
-**Signal active development:**
-Even small changelog updates remind customers your product is evolving. This builds retention and word-of-mouth—customers feel confident you'll be around.
+É mais fácil construir sobre o momentum existente do que começar do zero.
+Todo ponto de contato reforça o lançamento.
 
 ---
 
-## Launch Checklist
+## Estratégia de lançamento contínua
 
-### Pre-Launch
-- [ ] Landing page with clear value proposition
-- [ ] Email capture / waitlist signup
-- [ ] Early access list built
-- [ ] Owned channels established (email, blog, community)
-- [ ] Rented channel presence (social profiles optimized)
-- [ ] Borrowed channel opportunities identified (podcasts, influencers)
-- [ ] Product Hunt listing prepared (if using)
-- [ ] Launch assets created (screenshots, demo video, GIFs)
-- [ ] Onboarding flow ready
-- [ ] Analytics/tracking in place
+Não dependa de um único evento de lançamento. Atualizações regulares e
+rollouts de feature sustentam o engajamento.
 
-### Launch Day
-- [ ] Announcement email to list
-- [ ] Blog post published
-- [ ] Social posts scheduled and posted
-- [ ] Product Hunt listing live (if using)
-- [ ] In-app announcement for existing users
-- [ ] Website banner/notification active
-- [ ] Team ready to engage and respond
-- [ ] Monitor for issues and feedback
+### Como priorizar o que anunciar
 
-### Post-Launch
-- [ ] Onboarding email sequence active
-- [ ] Follow-up with engaged prospects
-- [ ] Roundup email includes announcement
-- [ ] Comparison pages published
-- [ ] Interactive demo created
-- [ ] Gather and act on feedback
-- [ ] Plan next launch moment
+Use esta matriz para decidir quanto marketing cada atualização merece:
+
+**Atualizações maiores** (novas features, reformulações de produto):
+
+- Campanha completa em múltiplos canais
+- Post de blog, campanha de e-mail, mensagens no app, redes sociais
+- Maximize a exposição
+
+**Atualizações médias** (novas integrações, melhorias de UI):
+
+- Anúncio direcionado
+- E-mail para segmentos relevantes, banner no app
+- Não precisa de fanfarra completa
+
+**Atualizações menores** (correções de bug, ajustes pequenos):
+
+- Changelog e notas de release
+- Sinaliza que o produto está melhorando
+- Não deve dominar o marketing
+
+### Táticas de anúncio
+
+**Espace os releases:**
+Em vez de lançar tudo de uma vez, escalone os anúncios para manter o
+momentum.
+
+**Reaproveite táticas de alta performance:**
+Se um anúncio anterior ressoou, aplique esses aprendizados às próximas
+atualizações.
+
+**Continue engajando:**
+Continue usando e-mail, social e mensagens no app para destacar melhorias.
+
+**Sinalize desenvolvimento ativo:**
+Mesmo pequenas atualizações no changelog lembram o cliente que o produto
+está evoluindo. Isso constrói retenção e boca a boca — o cliente sente
+confiança de que você vai continuar por aí.
 
 ---
 
-## Task-Specific Questions
+## Checklist de lançamento
 
-1. What are you launching? (New product, major feature, minor update)
-2. What's your current audience size and engagement?
-3. What owned channels do you have? (Email list size, blog traffic, community)
-4. What's your timeline for launch?
-5. Have you launched before? What worked/didn't work?
-6. Are you considering Product Hunt? What's your preparation status?
+### Pré-lançamento
+
+- [ ] Landing page com proposta de valor clara
+- [ ] Captura de e-mail / cadastro na lista de espera
+- [ ] Lista de acesso antecipado construída
+- [ ] Canais próprios estabelecidos (e-mail, blog, comunidade)
+- [ ] Presença em canais alugados (perfis sociais otimizados)
+- [ ] Oportunidades de canais emprestados identificadas (podcasts,
+  influenciadores)
+- [ ] Anúncio no Product Hunt preparado (se for usar)
+- [ ] Materiais de lançamento criados (screenshots, vídeo de demo, GIFs)
+- [ ] Fluxo de onboarding pronto
+- [ ] Analytics/tracking implementado
+
+### Dia do lançamento
+
+- [ ] E-mail de anúncio para a lista
+- [ ] Post de blog publicado
+- [ ] Posts sociais agendados e publicados
+- [ ] Anúncio no Product Hunt no ar (se for usar)
+- [ ] Anúncio dentro do app para usuários existentes
+- [ ] Banner/notificação no site ativo
+- [ ] Time pronto para engajar e responder
+- [ ] Monitorar problemas e feedback
+
+### Pós-lançamento
+
+- [ ] Sequência de e-mail de onboarding ativa
+- [ ] Follow-up com prospects engajados
+- [ ] E-mail de resumo inclui o anúncio
+- [ ] Páginas de comparação publicadas
+- [ ] Demo interativa criada
+- [ ] Reunir e agir sobre o feedback
+- [ ] Planejar o próximo momento de lançamento
 
 ---
 
-## Related Skills
+## Perguntas específicas da tarefa
 
-- **marketing-ideas**: For additional launch tactics (#22 Product Hunt, #23 Early Access Referrals)
-- **emails**: For launch and onboarding email sequences
-- **cro**: For optimizing launch landing pages
-- **marketing-psychology**: For psychology behind waitlists and exclusivity
-- **programmatic-seo**: For comparison pages mentioned in post-launch
-- **sales-enablement**: For launch sales collateral and enablement materials
+1. O que você está lançando? (Novo produto, feature grande, atualização
+   pequena)
+2. Qual é o tamanho e o engajamento da sua audiência atual?
+3. Que canais próprios você tem? (tamanho da lista de e-mail, tráfego do
+   blog, comunidade)
+4. Qual é seu prazo de lançamento?
+5. Você já lançou antes? O que funcionou/não funcionou?
+6. Você está considerando o Product Hunt? Qual o status da sua preparação?
+
+---
+
+## Skills relacionadas
+
+- **marketing-ideas**: para táticas de lançamento adicionais (#22 Product Hunt, #23 Indicações de Acesso Antecipado)
+- **emails**: para sequências de e-mail de lançamento e onboarding
+- **cro**: para otimizar as landing pages de lançamento
+- **marketing-psychology**: para a psicologia por trás de listas de espera e exclusividade
+- **programmatic-seo**: para páginas de comparação mencionadas no pós-lançamento
+- **sales-enablement**: para materiais de vendas e capacitação de lançamento

@@ -6,6 +6,7 @@ import { useEffect, useRef } from 'react'
 import { setRunning } from './loop'
 import { createModelViewer, loadModelViewer, type ModelViewerElement } from './modelViewer'
 import { createParticles } from './particles'
+import { isLiteDevice, whenIdle } from './perf'
 import { createSwitcher, intro } from './choreography'
 import { startTilt } from './tilt'
 import './landing.css'
@@ -38,6 +39,7 @@ export default function Landing3D({ mode, onPeak, onReady }: Props) {
     const particlesBox = particlesRef.current!
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches
     const isMobile = matchMedia('(max-width: 640px)').matches
+    const lite = isLiteDevice()
     const cleanups: Array<() => void> = []
     let cancelled = false
     let mv: ModelViewerElement | null = null
@@ -49,7 +51,7 @@ export default function Landing3D({ mode, onPeak, onReady }: Props) {
       particles?.tint(c)
     }
 
-    loadModelViewer().then(() => {
+    const boot = () => loadModelViewer().then(() => {
       if (cancelled) return
       mv = createModelViewer({
         src: '/landing/apartment.glb',
@@ -59,7 +61,7 @@ export default function Landing3D({ mode, onPeak, onReady }: Props) {
         'field-of-view': '30deg',
         'environment-image': 'neutral',
         exposure: '1.05',
-        'shadow-intensity': '1',
+        'shadow-intensity': lite ? '0' : '1',
         'shadow-softness': '0.9',
         'interaction-prompt': 'none',
         'disable-zoom': '',
@@ -68,7 +70,7 @@ export default function Landing3D({ mode, onPeak, onReady }: Props) {
         loading: 'eager',
       })
       stage.prepend(mv)
-      particles = createParticles(particlesBox, { isMobile, reducedMotion })
+      particles = createParticles(particlesBox, { isMobile, reducedMotion, lite })
       cleanups.push(() => particles?.destroy())
       cleanups.push(startTilt(mv, { reducedMotion, baseYaw: 20, basePitch: 62 }))
 
@@ -92,6 +94,9 @@ export default function Landing3D({ mode, onPeak, onReady }: Props) {
         },
       })
     }).catch(() => { /* sem 3D (offline, navegador antigo): a landing segue só com texto */ })
+
+    // o 3D só começa quando o navegador está ocioso: texto e botões aparecem primeiro
+    cleanups.push(whenIdle(boot))
 
     // pausa o loop com o palco fora da tela ou a aba escondida
     let visible = true

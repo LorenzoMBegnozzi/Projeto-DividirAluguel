@@ -1,0 +1,127 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="size" content="1080x1920">
+<meta name="guia" content="story-01-guia">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400..800&family=Instrument+Serif:ital@1&display=block">
+<link rel="stylesheet" href="base.css">
+<style>
+:root { --w: 1080px; --h: 1920px; }
+body { background: var(--brand-strong); }
+.canvas { display: block; overflow: hidden; }
+
+/* formas desfocadas do fundo escuro */
+.blob { position: absolute; border-radius: 50%; filter: blur(120px); }
+.blob.a { width: 760px; height: 760px; left: -260px; top: 120px; background: var(--brand); opacity: .9; }
+.blob.b { width: 620px; height: 620px; right: -240px; top: 980px; background: var(--accent-dark-coral); opacity: .22; }
+.blob.c { width: 520px; height: 520px; left: 120px; bottom: -260px; background: var(--accent-dark-blue); opacity: .18; }
+
+.kicker {
+  position: absolute; left: 80px; right: 80px; top: 262px; text-align: center;
+  font-size: 30px; font-weight: 700; letter-spacing: -0.01em; color: var(--accent-dark-blue);
+}
+
+h1 {
+  position: absolute; left: 80px; right: 80px; top: 316px;
+  text-align: center; color: var(--on-dark);
+  font-size: 82px; font-weight: 800; line-height: 1.04; letter-spacing: -0.035em; text-wrap: balance;
+}
+
+/* celular: só a parte de cima aparece, o resto some no fundo */
+.phone-wrap {
+  position: absolute; left: 50%; top: 664px; width: 600px; height: 676px; transform: translateX(-50%);
+  -webkit-mask-image: linear-gradient(#000 93%, transparent 100%); mask-image: linear-gradient(#000 93%, transparent 100%);
+}
+.phone {
+  width: 600px; height: 1200px; border-radius: 88px; padding: 16px;
+  background: #0f161b; box-shadow: inset 0 0 0 2px rgba(255,255,255,.12);
+}
+.screen { position: relative; height: 100%; border-radius: 72px; background: var(--paper); overflow: hidden; padding: 0 30px; }
+.island { position: absolute; left: 50%; top: 22px; width: 150px; height: 42px; border-radius: 21px; background: #0f161b; transform: translateX(-50%); }
+.status { display: flex; justify-content: space-between; align-items: center; padding: 30px 30px 0; font-size: 24px; font-weight: 700; color: var(--ink); }
+.status .bat { width: 40px; height: 20px; border-radius: 6px; border: 2.5px solid var(--ink); position: relative; }
+.status .bat::after { content: ''; position: absolute; inset: 2.5px 8px 2.5px 2.5px; background: var(--ink); border-radius: 2px; }
+.page-title { margin-top: 36px; font-size: 44px; font-weight: 800; letter-spacing: -0.03em; color: var(--ink); line-height: 1; }
+.page-sub { margin-top: 10px; font-size: 22px; color: var(--ink-3); }
+
+.list { margin-top: 26px; display: flex; flex-direction: column; gap: 18px; }
+.card {
+  background: var(--surface); border: 1.5px solid var(--line); border-radius: 30px; padding: 26px 22px;
+  display: grid; grid-template-columns: 70px minmax(0, 1fr) auto; column-gap: 16px; align-items: center;
+  box-shadow: 0 1px 2px rgba(27,43,51,.05), 0 18px 40px -30px rgba(27,43,51,.4);
+}
+.avatar { width: 70px; height: 70px; border-radius: 50%; display: grid; place-items: center; font-size: 27px; font-weight: 800; }
+.name { font-size: 30px; font-weight: 700; letter-spacing: -0.015em; color: var(--ink); line-height: 1.2; }
+.meta { display: flex; align-items: center; gap: 14px; font-size: 20px; overflow: hidden; color: var(--ink-3); margin-top: 6px; white-space: nowrap; }
+.meta svg { flex-shrink: 0; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.meta .place { display: inline-flex; align-items: center; gap: 4px; }
+.score { text-align: right; display: grid; gap: 8px; min-width: 92px; }
+.score b { font-size: 54px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+.score b small { font-size: 26px; font-weight: 700; }
+.score .bar { height: 9px; border-radius: 5px; background: var(--surface-sunk); overflow: hidden; }
+.score .bar i { display: block; height: 100%; border-radius: 5px; }
+.facts { grid-column: 2 / 4; display: flex; gap: 22px; font-size: 21px; color: var(--ink-3); }
+.facts span { display: inline-flex; align-items: center; gap: 8px; }
+.facts svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.hi { color: var(--leaf); } .hi-bar { background: var(--leaf); }
+.mid { color: var(--star); } .mid-bar { background: var(--star); }
+
+/* área do sticker de link: fica vazia no arquivo final */
+.sticker-zone { position: absolute; left: 240px; top: 1366px; width: 600px; height: 160px; }
+
+footer {
+  position: absolute; left: 80px; right: 80px; top: 1540px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 26px; font-weight: 600; color: var(--on-dark); opacity: .6;
+}
+footer .logo { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -0.02em; }
+footer .logo svg { width: 30px; height: 30px; }
+
+/* marcações que só aparecem no story-01-guia.png */
+.safe { display: none; }
+body.guia .safe { display: grid; place-items: center; position: absolute; left: 0; right: 0; background: rgba(255,60,60,.16); color: #ffc2c2; font-size: 24px; font-weight: 700; }
+body.guia .safe.top { top: 0; height: 250px; border-bottom: 3px dashed rgba(255,110,110,.9); }
+body.guia .safe.bottom { bottom: 0; height: 340px; border-top: 3px dashed rgba(255,110,110,.9); }
+body.guia .sticker-zone { border: 4px dashed var(--accent-dark-coral); border-radius: 24px; background: rgba(240,140,106,.12); display: grid; place-items: center; color: var(--accent-dark-coral); font-size: 26px; font-weight: 700; }
+body.guia .sticker-zone::after { content: 'sticker de link · 600 × 160'; }
+</style>
+</head><body><div class="canvas">
+  <div class="blob a"></div><div class="blob b"></div><div class="blob c"></div>
+
+  <p class="kicker">Novo em Maringá</p>
+  <h1>Chegou o jeito de achar colega de apê sem grupo de WhatsApp.</h1>
+
+  <div class="phone-wrap"><div class="phone"><div class="screen">
+    <div class="island"></div>
+    <div class="status"><span>9:41</span><span class="bat"></span></div>
+    <p class="page-title">Buscar</p>
+    <p class="page-sub">Ordenado pela sua compatibilidade.</p>
+    <div class="list">
+      <div class="card">
+        <div class="avatar" style="background:var(--brand-tint);color:var(--brand)">JA</div>
+        <div><p class="name">Júlia Andrade</p><p class="meta"><span class="place"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Zona 7</span><span>R$ 650</span></p></div>
+        <div class="score"><b class="hi">92<small>%</small></b><span class="bar"><i class="hi-bar" style="width:92%"></i></span></div>
+      </div>
+      <div class="card">
+        <div class="avatar" style="background:var(--coral-tint);color:var(--coral)">RM</div>
+        <div><p class="name">Rafael Moura</p><p class="meta"><span class="place"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Jd. Universitário</span><span>R$ 520</span></p></div>
+        <div class="score"><b class="hi">81<small>%</small></b><span class="bar"><i class="hi-bar" style="width:81%"></i></span></div>
+      </div>
+      <div class="card">
+        <div class="avatar" style="background:var(--surface-sunk);color:var(--ink-2)">BT</div>
+        <div><p class="name">Bianca Torres</p><p class="meta"><span class="place"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Zona 1</span><span>R$ 780</span></p></div>
+        <div class="score"><b class="mid">67<small>%</small></b><span class="bar"><i class="mid-bar" style="width:67%"></i></span></div>
+      </div>
+    </div>
+  </div></div></div>
+
+  <div class="sticker-zone"></div>
+
+  <footer>
+    <span class="logo"><svg viewBox="3 3 20 20" aria-hidden="true"><path d="M12.2 3 3 10.4V23h9.2z" fill="#faf7f2"/><path d="M13.8 3 23 10.4V23h-9.2z" fill="#f08c6a"/></svg>RachaAi</span>
+    <span>@rachaai</span>
+  </footer>
+  <div class="safe top">interface do Instagram · 250 px</div>
+  <div class="safe bottom">interface do Instagram · 340 px</div>
+</div>
+<script>if (location.hash === '#guia') document.body.classList.add('guia');</script>
+</body></html>

@@ -1,0 +1,12 @@
+/* Tokens da marca para as peças do Instagram (mesmos valores do app). */
+:root {
+  --paper: #faf7f2; --surface: #ffffff; --surface-sunk: #f1ece3; --line: #e3dccf;
+  --ink: #1b2b33; --ink-2: #46565e; --ink-3: #5e6d75; --brand: #1e5f7a; --brand-strong: #174c62;
+  --brand-tint: #dcebf1; --coral: #c04e2b; --coral-bright: #e8704a; --coral-tint: #fbe3d9;
+  --leaf: #257a58; --star: #c2860f;
+  --on-dark: #faf7f2; --accent-dark-coral: #f08c6a; --accent-dark-blue: #5fb3d1;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: var(--w); height: var(--h); overflow: hidden; }
+body { background: var(--paper); font-family: 'Schibsted Grotesk', sans-serif; }
+.canvas { position: relative; width: var(--w); height: var(--h); display: grid; place-items: center; }

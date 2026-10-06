@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        /* Schibsted Grotesk (Google Fonts, OFL 1.1), variável 400 a 800, servida do projeto */
+        @font-face { font-family: "Schibsted Grotesk"; font-weight: 400 800; font-display: block; src: url("assets/fonts/schibsted-latin-ext.woff2") format("woff2"); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+        @font-face { font-family: "Schibsted Grotesk"; font-weight: 400 800; font-display: block; src: url("assets/fonts/schibsted-latin.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+        #sig-root { position: absolute; inset: 0; overflow: hidden; background: #faf7f2; font-family: "Schibsted Grotesk", sans-serif; }
+        /* casa do logo com 360 px de altura: 1 unidade do viewBox (26) = 18 px */
+        .sig-half { position: absolute; top: 740px; width: 165.6px; height: 360px; }
+        .sig-half svg { display: block; width: 100%; height: 100%; }
+        #sig-left { left: 360px; }
+        #sig-right { left: 554.4px; }
+        #sig-word {
+          position: absolute; left: 0; right: 0; top: 1150px; text-align: center;
+          font-size: 104px; font-weight: 800; letter-spacing: -0.045em; color: #1b2b33;
+        }
+      </style>
+
+      <div id="sig-root" data-composition-id="assinatura" data-width="1080" data-height="1920">
+        <div class="sig-half" id="sig-left"><svg viewBox="3 3 9.2 20" aria-hidden="true"><path d="M12.2 3 3 10.4V23h9.2z" fill="#1e5f7a" /></svg></div>
+        <div class="sig-half" id="sig-right"><svg viewBox="13.8 3 9.2 20" aria-hidden="true"><path d="M13.8 3 23 10.4V23h-9.2z" fill="#e8704a" /></svg></div>
+        <div id="sig-word">RachaAi</div>
+      </div>
+
+      <script>
+        (function () {
+          var T = window.RACHA_TIMES;
+          // var(--ease-out) do app: cubic-bezier(0.16, 1, 0.3, 1)
+          function bezier(p1x, p1y, p2x, p2y) {
+            function bx(t) { return 3 * (1 - t) * (1 - t) * t * p1x + 3 * (1 - t) * t * t * p2x + t * t * t; }
+            function by(t) { return 3 * (1 - t) * (1 - t) * t * p1y + 3 * (1 - t) * t * t * p2y + t * t * t; }
+            return function (x) {
+              var lo = 0, hi = 1;
+              for (var k = 0; k < 40; k++) { var m = (lo + hi) / 2; if (bx(m) < x) lo = m; else hi = m; }
+              return by((lo + hi) / 2);
+            };
+          }
+          var easeOut = bezier(0.16, 1, 0.3, 1);
+          var tl = gsap.timeline({ paused: true });
+          // home.css: half-left / half-right, 1,6 s, atraso 0,2 s, ease-out em cada trecho do keyframe
+          var d0 = T.sigDelay, a = 1.6 * 0.45, b = 1.6 * 0.55;
+          [["#sig-left", -1, "100% 100%"], ["#sig-right", 1, "0% 100%"]].forEach(function (h) {
+            var sel = h[0], sg = h[1];
+            tl.fromTo(sel, { xPercent: 30 * sg, rotation: 14 * sg, opacity: 0, transformOrigin: h[2] },
+              { xPercent: 12 * sg, rotation: 8 * sg, opacity: 1, duration: a, ease: easeOut }, d0);
+            tl.to(sel, { xPercent: 0, rotation: 0, duration: b, ease: easeOut }, d0 + a);
+          });
+          // depois do clique: "RachaAi" sobe 12 px com fade em 0,4 s e segura até o fim
+          tl.fromTo("#sig-word", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: easeOut }, T.click - T.sigStart);
+          window.__timelines["assinatura"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

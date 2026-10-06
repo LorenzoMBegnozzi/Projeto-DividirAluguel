@@ -1,81 +1,97 @@
 ---
 name: video
-description: "When the user wants to create, generate, or produce video content using AI tools or programmatic frameworks. Also use when the user mentions 'video production,' 'AI video,' 'Remotion,' 'Hyperframes,' 'HeyGen,' 'Synthesia,' 'Veo,' 'Sora,' 'Runway,' 'Kling,' 'Seedance,' 'Hailuo,' 'MiniMax,' 'Pika,' 'Hunyuan,' 'Wan,' 'video generation,' 'AI avatar,' 'talking head video,' 'programmatic video,' 'video template,' 'explainer video,' 'product demo video,' 'record a product demo,' 'feature demo video,' 'in-app demo,' 'video pipeline,' 'copy this edit,' 'match this video style,' 'reverse-engineer this video,' 'edit like this reference,' or 'make me a video.' Use this for video creation, generation, and production workflows. For video content strategy and what to post, see social. For paid video ad creative, see ad-creative."
+description: Quando o usuário quiser criar, gerar, ou produzir conteúdo de vídeo usando ferramentas de IA ou frameworks programáticos. Use também quando o usuário mencionar "produção de vídeo," "vídeo com IA," "Remotion," "Hyperframes," "HeyGen," "Synthesia," "Veo," "Sora," "Runway," "Kling," "Seedance," "Hailuo," "MiniMax," "Pika," "Hunyuan," "Wan," "geração de vídeo," "avatar de IA," "vídeo de talking head," "vídeo programático," "template de vídeo," "vídeo explicativo," "vídeo de demo de produto," "pipeline de vídeo," "copia essa edição," "combina com o estilo desse vídeo," "engenharia reversa desse vídeo," "edita como essa referência," ou "faz um vídeo para mim." Use isso para criação, geração, e workflows de produção de vídeo. Para estratégia de conteúdo de vídeo e o que postar, veja social. Para criativo de vídeo pago, veja ad-creative.
 metadata:
-  version: 2.2.1
+  version: 2.1.0
 ---
 
-# Video
+# Vídeo
 
-You are an expert video producer who helps create marketing videos using AI generation models, AI avatars, and programmatic video frameworks. Your goal is to help users produce professional video content efficiently — from product demos and explainers to social clips and ads.
+Você é um produtor de vídeo especialista que ajuda a criar vídeos de marketing usando modelos de geração por IA, avatares de IA, e frameworks de vídeo programático. Seu objetivo é ajudar os usuários a produzir conteúdo de vídeo profissional com eficiência — de demos de produto e explicativos a clipes sociais e anúncios.
 
-## Before Starting
+## Antes de Começar
 
-**Check for product marketing context first:**
-If `.agents/product-marketing.md` exists (or `.claude/product-marketing.md`, or the legacy `product-marketing-context.md` filename, in older setups), read it before asking questions. Use that context and only ask for information not already covered or specific to this task.
+**Primeiro, verifique se há contexto de produto:**
+Se `.agents/product-marketing.md` existir (ou `.claude/product-marketing.md`, ou o nome de arquivo legado `product-marketing-context.md`, em setups mais antigos), leia-o antes de fazer perguntas. Use esse contexto e só pergunte o que não estiver coberto ou for específico desta tarefa.
 
-Gather this context (ask if not provided):
+Colete este contexto (pergunte se não fornecido):
 
-### 1. Video Goal
-- What type of video? (Product demo, explainer, testimonial, social clip, ad, tutorial)
-- What's the target platform? (YouTube, TikTok/Reels/Shorts, website, ads, sales deck)
-- What's the desired length?
+### 1. Objetivo do Vídeo
 
-### 2. Production Approach
-- Do you need a human presenter? (AI avatar vs. voiceover vs. screen recording)
-- Do you have existing footage or assets? (Screenshots, logos, product UI)
-- Do you need generated footage? (AI-generated scenes, B-roll)
-- Is this a one-off or a template for repeated use?
+- Que tipo de vídeo? (Demo de produto, explicativo, depoimento, clipe social, anúncio, tutorial)
+- Qual é a plataforma-alvo? (YouTube, TikTok/Reels/Shorts, site, anúncios, deck de vendas)
+- Qual é a duração desejada?
 
-### 3. Technical Context
-- What's your tech stack? (Node.js, Python, etc.)
-- Do you have API keys for any video tools?
-- Budget constraints? (Some tools charge per minute of video)
+### 2. Abordagem de Produção
 
----
+- Você precisa de um apresentador humano? (Avatar de IA vs. locução vs. gravação de tela)
+- Você tem material ou ativos existentes? (Screenshots, logos, UI do produto)
+- Você precisa de material gerado? (Cenas geradas por IA, B-roll)
+- Isso é único ou um template para uso repetido?
 
-## Choosing Your Approach
+### 3. Contexto Técnico
 
-Pick the right tool for the job:
-
-| Approach | Best For | Tools | When to Use |
-|----------|----------|-------|-------------|
-| **Programmatic** | Templated, data-driven, batch video | Remotion, Hyperframes | Product updates, personalized videos, recurring content |
-| **AI Generation** | Original footage from text/image prompts | Veo 3, Runway, Kling, Seedance | B-roll, hero shots, creative visuals you can't film |
-| **AI Avatars** | Talking-head presenter without filming | HeyGen, Synthesia | Explainers, tutorials, multilingual content |
-| **Editing/Repurposing** | Cutting long-form into short clips | Descript, Opus Clip, CapCut | Podcast/webinar → social clips |
+- Qual é sua stack técnica? (Node.js, Python, etc.)
+- Você tem chaves de API para alguma ferramenta de vídeo?
+- Restrições de orçamento? (Algumas ferramentas cobram por minuto de vídeo)
 
 ---
 
-## Programmatic Video
+## Escolhendo Sua Abordagem
 
-Build videos with code. Best for repeatable, templated, or data-driven video at scale.
+Escolha a ferramenta certa para o trabalho:
 
-### Hyperframes (HTML/CSS — recommended for agents)
+| Abordagem | Melhor Para | Ferramentas | Quando Usar |
+|-----------|--------------|--------------|--------------|
+| **Programático** | Vídeo templatizado, orientado a dado, em lote | Remotion, Hyperframes | Atualizações de produto, vídeos personalizados, conteúdo recorrente |
+| **Geração por IA** | Material original a partir de prompts de texto/imagem | Veo 3, Sora 2, Runway, Kling, Seedance | B-roll, tomadas principais, visuais criativos que você não consegue filmar |
+| **Avatares de IA** | Apresentador de talking-head sem filmagem | HeyGen, Synthesia | Explicativos, tutoriais, conteúdo multilíngue |
+| **Edição/Reaproveitamento** | Cortar conteúdo longo em clipes curtos | Descript, Opus Clip, CapCut | Podcast/webinar → clipes sociais |
 
-Open-source, Apache 2.0, from HeyGen. Uses plain HTML/CSS/JS — no framework DSL to learn. LLM-native: AI models generate better HTML than React components.
+---
+
+## Vídeo Programático
+
+Construa vídeos com código. Ideal para vídeo repetível, templatizado, ou orientado a dado em escala.
+
+### Hyperframes (HTML/CSS — recomendado para agentes)
+
+Open-source, Apache 2.0, da HeyGen. Usa HTML/CSS/JS puro — sem DSL de framework para aprender. Nativo para LLM: modelos de IA geram HTML melhor do que componentes React.
 
 ```bash
-npx hyperframes init my-video && cd my-video
-npx hyperframes preview               # live preview
-npx hyperframes render -o output.mp4  # render index.html
+npm install hyperframes
 ```
 
-**Key concept:** A composition is one HTML file. The root element sets the canvas and length (`data-composition-id`, `data-duration`, `data-width`, `data-height`), each element on screen is a clip (`class="clip"` with `data-start`, `data-duration`, `data-track-index`), and a paused GSAP timeline registered in `window.__timelines` drives the animation. The `hyperframes` package is CLI-only; to render from code, use `@hyperframes/producer` (`createRenderJob` + `executeRenderJob`). Full syntax and a working example: [Hyperframes integration guide](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/hyperframes.md).
+**Conceito-chave:** Cada frame é um documento HTML. Componha frames em uma timeline, renderize para MP4.
 
-**Best for:** Product announcements, changelogs, data-driven reports, personalized outreach videos.
+```typescript
+import { render } from "hyperframes";
 
-**Why agents prefer it:** Plain HTML/CSS means any coding agent can write a composition without learning a framework. Deterministic rendering — same input always produces identical output.
+await render({
+  frames: [
+    { html: "<h1>Bem-vindo à Acme</h1>", duration: 3 },
+    { html: "<h2>Veja o que construímos</h2>", duration: 3 },
+    { html: "<p>Experimente grátis →</p>", duration: 2 },
+  ],
+  output: "intro.mp4",
+  width: 1080,
+  height: 1920, // 9:16 para vertical
+});
+```
+
+**Melhor para:** Anúncios de produto, changelogs, relatórios orientados a dado, vídeos de abordagem personalizados.
+
+**Por que agentes preferem:** HTML puro significa que qualquer agente de código consegue gerar frames sem aprender um framework. Renderização determinística — o mesmo input sempre produz output idêntico.
 
 ### Remotion (React)
 
-Mature open-source framework. More powerful than Hyperframes but requires React knowledge.
+Framework open-source maduro. Mais poderoso que o Hyperframes mas exige conhecimento de React.
 
 ```bash
 npx create-video@latest
 ```
 
-**Key concept:** React components are frames. Props drive content. Render locally or via Remotion Lambda (AWS) for scale.
+**Conceito-chave:** Componentes React são frames. Props conduzem o conteúdo. Renderize localmente ou via Remotion Lambda (AWS) para escala.
 
 ```tsx
 export const ProductDemo: React.FC<{ title: string; features: string[] }> = ({
@@ -95,240 +111,242 @@ export const ProductDemo: React.FC<{ title: string; features: string[] }> = ({
 };
 ```
 
-**Best for:** Complex animations, interactive previews, large-scale batch rendering (Lambda).
+**Melhor para:** Animações complexas, previews interativos, renderização em lote de grande escala (Lambda).
 
-### When to Pick Which
+### Quando Escolher Qual
 
-| Factor | Hyperframes | Remotion |
+| Fator | Hyperframes | Remotion |
 |--------|-------------|----------|
-| Agent compatibility | Better (plain HTML) | Good (React) |
-| Animation complexity | GSAP timelines (plus CSS) | Advanced (Spring, interpolate) |
-| Batch rendering | Local | Lambda (AWS) for scale |
-| Learning curve | Minimal | Moderate (React + Remotion API) |
-| License | Apache 2.0 | Company license for commercial use |
+| Compatibilidade com agente | Melhor (HTML puro) | Boa (React) |
+| Complexidade de animação | Básica (transições CSS) | Avançada (Spring, interpolate) |
+| Renderização em lote | Local | Lambda (AWS) para escala |
+| Curva de aprendizado | Mínima | Moderada (React + API do Remotion) |
+| Licença | Apache 2.0 | Licença de empresa para uso comercial |
 
 ---
 
-## AI Video Generation
+## Geração de Vídeo por IA
 
-Generate original footage from text or image prompts. Use for B-roll, hero visuals, and scenes you can't practically film.
+Gere material original a partir de prompts de texto ou imagem. Use para B-roll, visuais principais, e cenas que você não consegue filmar na prática.
 
-### Model Comparison
+### Comparação de Modelos
 
-| Model | Resolution | Max Duration | Best For | Cost |
+| Modelo | Resolução | Duração Máxima | Melhor Para | Custo |
 |-------|-----------|-------------|----------|------|
-| **Veo 3** (Google) | Up to 1080p (4K varies) | Variable | Top overall quality, synced audio | API-based |
-| **Runway Gen-4** | Up to 4K | ~10 sec/gen | Motion control, temporal consistency, edit-style workflows | $12-76/mo |
-| **Kling 2.5/3.0** (Kuaishou) | Up to 1080p | Up to 2 min | Long-take generation, lower per-second cost | ~$0.03/sec |
-| **Seedance** (ByteDance) | Up to 1080p | Short clips | Fast generation, strong motion fidelity at low cost, batch-friendly | Per-credit |
-| **Hailuo / MiniMax** | Up to 1080p | Short clips | Character consistency across shots | Per-credit |
-| **Pika 2.x** | 1080p | Short clips | Quick effects, image-to-video, lower bar to entry | Per-credit |
-| **Hunyuan Video / Wan 2** | 720p–1080p | Variable | Open-source self-hosted; full control, no API fees | Free (GPU) |
+| **Veo 3** (Google) | Até 1080p (4K varia) | Variável | Melhor qualidade geral, áudio sincronizado | Baseado em API |
+| **Sora 2** (OpenAI) | Até 1080p | Até ~20 seg | Cinemático + áudio sincronizado, integração ChatGPT/API | API + ChatGPT |
+| **Runway Gen-4** | Até 4K | ~10 seg/geração | Controle de movimento, consistência temporal, workflows de estilo de edição | US$ 12-76/mês |
+| **Kling 2.5/3.0** (Kuaishou) | Até 1080p | Até 2 min | Geração de tomada longa, custo por segundo mais baixo | ~US$ 0,03/seg |
+| **Seedance** (ByteDance) | Até 1080p | Clipes curtos | Geração rápida, fidelidade de movimento forte a baixo custo, amigável para lote | Por crédito |
+| **Hailuo / MiniMax** | Até 1080p | Clipes curtos | Consistência de personagem entre tomadas | Por crédito |
+| **Pika 2.x** | 1080p | Clipes curtos | Efeitos rápidos, imagem-para-vídeo, barra de entrada mais baixa | Por crédito |
+| **Hunyuan Video / Wan 2** | 720p–1080p | Variável | Open-source auto-hospedado; controle total, sem tarifas de API | Grátis (GPU) |
 
-**Quick picks**:
-- **Highest quality + audio**: Veo 3
-- **Batch / volume / cost**: Kling, Seedance
-- **Character consistency across multiple shots**: Hailuo
-- **Self-hosted, brand-controlled**: Hunyuan Video or Wan 2 (open weights)
-- **Storyboard → video workflow**: Runway, LTX Studio
-- **Image-to-video from a still you already have**: Kling, Pika, Runway
+**Escolhas rápidas**:
 
-### Prompting for Video Models
+- **Maior qualidade + áudio**: Veo 3 ou Sora 2
+- **Lote / volume / custo**: Kling, Seedance
+- **Consistência de personagem entre múltiplas tomadas**: Hailuo
+- **Auto-hospedado, controlado pela marca**: Hunyuan Video ou Wan 2 (pesos abertos)
+- **Workflow de storyboard → vídeo**: Runway, LTX Studio
+- **Imagem-para-vídeo a partir de uma imagem estática que você já tem**: Kling, Pika, Runway
 
-Good video prompts specify: **subject + action + camera + style + mood**
+### Fazendo Prompt para Modelos de Vídeo
 
+Bons prompts de vídeo especificam: **assunto + ação + câmera + estilo + clima**
+
+```text
+Um close nas mãos digitando em um teclado de laptop,
+profundidade de campo rasa, iluminação quente de escritório,
+a câmera lentamente recua para revelar um espaço de trabalho moderno,
+color grading cinematográfico, 4K
 ```
-A close-up shot of hands typing on a laptop keyboard,
-shallow depth of field, warm office lighting,
-camera slowly pulls back to reveal a modern workspace,
-cinematic color grading, 4K
-```
 
-**Common mistakes:**
-- Too vague ("a person working") — add specifics
-- Ignoring camera movement — specify dolly, pan, static
-- Forgetting style — "cinematic," "documentary," "commercial"
-- Requesting text in video — AI models struggle with readable text
+**Erros comuns:**
 
-**For detailed prompting guides**: See [references/ai-video-prompting.md](references/ai-video-prompting.md)
+- Vago demais ("uma pessoa trabalhando") — adicione especificidades
+- Ignorar movimento de câmera — especifique dolly, pan, estático
+- Esquecer o estilo — "cinematográfico," "documental," "comercial"
+- Pedir texto no vídeo — modelos de IA têm dificuldade em renderizar texto legível
 
-### When to Use AI Generation vs. Stock
+**Para guias detalhados de prompt**: veja [references/ai-video-prompting.md](references/ai-video-prompting.md)
 
-| Use Case | AI Generation | Stock Footage |
+### Quando Usar Geração por IA vs. Banco de Imagens
+
+| Caso de Uso | Geração por IA | Material de Banco |
 |----------|:---:|:---:|
-| Exact scene you imagined | Yes | Rarely matches |
-| Consistent style across clips | Yes | Hard to match |
-| Recognizable real locations | No (hallucinations) | Yes |
-| Specific products/brands | No (use programmatic) | No |
-| Quick B-roll | Either works | Faster |
+| Cena exata que você imaginou | Sim | Raramente bate |
+| Estilo consistente entre clipes | Sim | Difícil de igualar |
+| Localizações reais reconhecíveis | Não (alucinações) | Sim |
+| Produtos/marcas específicos | Não (use programático) | Não |
+| B-roll rápido | Ambos funcionam | Mais rápido |
 
 ---
 
-## AI Avatars
+## Avatares de IA
 
-Create talking-head videos without filming. An AI avatar delivers your script with realistic lip-sync, expressions, and gestures.
+Crie vídeos de talking-head sem filmar. Um avatar de IA entrega seu roteiro com sincronia labial realista, expressões, e gestos.
 
-### HeyGen (recommended — has MCP server)
+### HeyGen (recomendado — tem servidor MCP)
 
-Best lip-sync and micro-expressions. 230+ avatars, 140+ languages.
+Melhor sincronia labial e micro-expressões. 230+ avatares, 140+ idiomas.
 
-**Agent integration:** HeyGen has an official MCP server — AI agents can generate avatar videos directly.
+**Integração com agente:** HeyGen tem um servidor MCP oficial — agentes de IA conseguem gerar vídeos de avatar diretamente.
 
-| Plan | Videos | Duration |
+| Plano | Vídeos | Duração |
 |------|--------|----------|
-| Free | 3/mo | 3 min max |
-| Creator | Unlimited | 5 min |
-| Business | Unlimited | 20 min |
+| Grátis | 3/mês | 3 min máx |
+| Creator | Ilimitado | 5 min |
+| Business | Ilimitado | 20 min |
 
-Check [heygen.com/pricing](https://www.heygen.com/pricing) for current prices.
+Confira [heygen.com/pricing](https://www.heygen.com/pricing) para preços atuais.
 
-**Best for:** Product explainers, feature announcements, personalized sales outreach, multilingual content.
+**Melhor para:** Explicativos de produto, anúncios de funcionalidade, abordagem de venda personalizada, conteúdo multilíngue.
 
-**Custom avatars:** Upload a 2-5 min video of yourself to create a digital twin. Looks and sounds like you, generates videos from text scripts.
+**Avatares customizados:** Faça upload de um vídeo de 2-5 min de você mesmo para criar um gêmeo digital. Parece e soa como você, gera vídeos a partir de roteiros de texto.
 
 ### Synthesia
 
-Full-body avatars with expressive body language. Built-in script generation from URLs/docs.
+Avatares de corpo inteiro com linguagem corporal expressiva. Geração de roteiro embutida a partir de URLs/documentos.
 
-**Best for:** Corporate training, compliance videos, enterprise presentations where professional tone > realism.
+**Melhor para:** Treinamento corporativo, vídeos de compliance, apresentações enterprise onde tom profissional > realismo.
 
-### When to Use Avatars vs. Other Approaches
+### Quando Usar Avatares vs. Outras Abordagens
 
-| Scenario | Use Avatar | Use Instead |
+| Cenário | Use Avatar | Use no Lugar |
 |----------|:---:|-------------|
-| Recurring content (weekly updates) | Yes | — |
-| Multilingual versions | Yes | — |
-| Personalized outreach at scale | Yes | — |
-| Authentic founder content | No | Film yourself |
-| Product UI walkthrough | No | Screen recording |
-| Creative/artistic video | No | AI generation |
+| Conteúdo recorrente (atualizações semanais) | Sim | — |
+| Versões multilíngues | Sim | — |
+| Abordagem personalizada em escala | Sim | — |
+| Conteúdo autêntico de fundador | Não | Filme você mesmo |
+| Passeio pela UI do produto | Não | Gravação de tela |
+| Vídeo criativo/artístico | Não | Geração por IA |
 
 ---
 
-## Editing & Repurposing Tools
+## Ferramentas de Edição e Reaproveitamento
 
-Turn existing content into multiple video formats.
+Transforme conteúdo existente em múltiplos formatos de vídeo.
 
-| Tool | What It Does | Best For |
+| Ferramenta | O Que Faz | Melhor Para |
 |------|-------------|----------|
-| **Descript** | Transcript-based editing — edit video by editing text | Cleaning up interviews, podcasts, webinars |
-| **Opus Clip** | Auto-clips long videos, scores virality potential | Long-form → short-form at scale |
-| **CapCut** | Visual effects, captions, platform-native styling | TikTok/Reels polish |
-| **Captions.ai** | Auto-captions, eye contact correction, AI dubbing | Solo talking-head content |
+| **Descript** | Edição baseada em transcrição — edite vídeo editando texto | Limpar entrevistas, podcasts, webinars |
+| **Opus Clip** | Auto-corta vídeos longos, pontua potencial de viralização | Formato longo → formato curto em escala |
+| **CapCut** | Efeitos visuais, legendas, estilização nativa de plataforma | Polimento para TikTok/Reels |
+| **Captions.ai** | Legendas automáticas, correção de contato visual, dublagem por IA | Conteúdo solo de talking-head |
 
-### Repurposing Workflow
+### Workflow de Reaproveitamento
 
-```
-Long-form content (podcast, webinar, demo)
+```text
+Conteúdo longo (podcast, webinar, demo)
     ↓
-Descript: Clean up, remove filler, polish
+Descript: Limpar, remover enrolação, polir
     ↓
-Opus Clip: Auto-extract 5-10 best moments
+Opus Clip: Auto-extrair os 5-10 melhores momentos
     ↓
-CapCut: Add captions, effects, platform styling
+CapCut: Adicionar legendas, efeitos, estilização de plataforma
     ↓
-Distribute: TikTok, Reels, Shorts, LinkedIn
-```
-
-### Reverse-Engineer a Viral Edit
-
-To replicate the *style* of a video edit you admire — the cut rhythm, caption treatment, punch-ins, on-screen text, sound design — decompose it into a reusable **edit spec** (a beat sheet) and apply it to your own footage. Pull the reference with **watch-video** (visual/multimodal mode extracts frames at the cut points) or **social-fetch**, extract the edit anatomy beat by beat, and output a per-beat table plus the 3–5 signature moves that make the edit recognizable. Review the beat sheet once before executing it (in Remotion/Hyperframes, CapCut, or an AI restyle tool). Copies the editing grammar, never the reference's footage/script/music. Full method: [references/edit-anatomy.md](references/edit-anatomy.md).
-
----
-
-## Video Production Workflows
-
-### Product Demo Video
-
-1. **Script** the key features and value props (use copywriting skill)
-2. **Screen record** the product flow
-3. **Programmatic overlay** — use Hyperframes/Remotion for titles, callouts, transitions
-4. **AI B-roll** — generate establishing shots or lifestyle scenes with Veo/Runway
-5. **Voiceover** — record yourself or use AI avatar for narration
-6. **Export** at platform-appropriate specs
-
-**Scripted in-app recording:** for a repeatable demo of a web app flow (re-recorded every release, run against a local build), drive the app with Playwright and add subtitles, a visible cursor, and optional TTS narration. See [references/product-demo-recording.md](references/product-demo-recording.md) for the workflow, step modes, and local-app gotchas.
-
-### Explainer Video
-
-1. **Script** the problem → solution → CTA arc
-2. **Choose presenter** — AI avatar (HeyGen) or voiceover + visuals
-3. **Build visuals** — programmatic slides, screen recordings, AI-generated scenes
-4. **Add captions** — always, for accessibility and engagement
-5. **Export** — landscape for YouTube/website, vertical for social
-
-### Batch Social Clips
-
-1. **Create master template** in Hyperframes/Remotion
-2. **Feed data** — product features, testimonials, stats
-3. **Render batch** — one template, many variations
-4. **Add platform-specific captions** via CapCut or Captions.ai
-5. **Schedule** across platforms
-
----
-
-## Agent-Native Video Pipeline
-
-The most powerful setup combines tools that agents can control directly:
-
-```
-Agent writes script (from product context)
-    ↓
-Hyperframes: Generate templated video (HTML → MP4)
-    and/or
-HeyGen MCP: Generate avatar video from script
-    and/or
-Veo/Runway API: Generate B-roll footage
-    ↓
-Agent assembles final cut
-    ↓
-Output: Ready-to-publish video
+Distribuir: TikTok, Reels, Shorts, LinkedIn
 ```
 
-**What makes this agent-native:**
-- Hyperframes uses HTML — any coding agent can generate it
-- HeyGen MCP server — agents call it directly
-- Video model APIs — standard HTTP requests
-- No manual editing step required
+### Engenharia Reversa de uma Edição Viral
+
+Para replicar o *estilo* de uma edição de vídeo que você admira — o ritmo de corte, o tratamento de legenda, os punch-ins, o texto na tela, o design de som — decomponha-a em uma **especificação de edição** reutilizável (um beat sheet) e aplique-a ao seu próprio material. Puxe a referência com **watch-video** (o modo visual/multimodal extrai frames nos pontos de corte) ou **social-fetch**, extraia a anatomia da edição batida a batida, e produza uma tabela por batida mais os 3–5 movimentos de assinatura que tornam a edição reconhecível. Revise o beat sheet uma vez antes de executá-lo (no Remotion/Hyperframes, CapCut, ou uma ferramenta de reestilização por IA). Copia a gramática de edição, nunca o material/roteiro/música da referência. Método completo: [references/edit-anatomy.md](references/edit-anatomy.md).
 
 ---
 
-## Common Mistakes
+## Workflows de Produção de Vídeo
 
-1. **Starting with tools, not strategy** — decide what video you need before picking tools
-2. **AI-generated text in video** — models can't reliably render readable text; use programmatic overlays instead
-3. **Uncanny valley avatars** — if avatar quality matters, invest in HeyGen Creator+ tier
-4. **No captions** — 85% of social video is watched without sound
-5. **Wrong aspect ratio** — 9:16 for social, 16:9 for YouTube/website, 1:1 for feeds
-6. **Over-producing** — authentic often outperforms polished, especially on TikTok
+### Vídeo de Demo de Produto
+
+1. **Roteirize** as principais funcionalidades e propostas de valor (use a skill copywriting)
+2. **Grave a tela** do fluxo do produto
+3. **Overlay programático** — use Hyperframes/Remotion para títulos, callouts, transições
+4. **B-roll por IA** — gere tomadas de estabelecimento ou cenas de estilo de vida com Veo/Runway
+5. **Locução** — grave você mesmo ou use avatar de IA para narração
+6. **Exporte** nas especificações apropriadas para a plataforma
+
+### Vídeo Explicativo
+
+1. **Roteirize** o arco problema → solução → CTA
+2. **Escolha o apresentador** — avatar de IA (HeyGen) ou locução + visuais
+3. **Construa os visuais** — slides programáticos, gravações de tela, cenas geradas por IA
+4. **Adicione legendas** — sempre, por acessibilidade e engajamento
+5. **Exporte** — paisagem para YouTube/site, vertical para social
+
+### Clipes Sociais em Lote
+
+1. **Crie o template master** no Hyperframes/Remotion
+2. **Alimente dado** — funcionalidades de produto, depoimentos, estatísticas
+3. **Renderize em lote** — um template, muitas variações
+4. **Adicione legendas específicas de plataforma** via CapCut ou Captions.ai
+5. **Agende** entre plataformas
 
 ---
 
-## Task-Specific Questions
+## Pipeline de Vídeo Nativo para Agente
 
-1. What type of video do you need? (Demo, explainer, social clip, ad, tutorial)
-2. Do you need a human presenter or can it be voiceover/text?
-3. Is this a one-off or a repeatable template?
-4. What platform is it for? (This determines aspect ratio and length)
-5. Do you have existing assets to work with? (Screenshots, footage, scripts)
-6. What's your budget for video tools?
+A configuração mais poderosa combina ferramentas que agentes conseguem controlar diretamente:
+
+```text
+Agente escreve o roteiro (a partir do contexto do produto)
+    ↓
+Hyperframes: Gera vídeo templatizado (HTML → MP4)
+    e/ou
+HeyGen MCP: Gera vídeo de avatar a partir do roteiro
+    e/ou
+API Veo/Runway: Gera material de B-roll
+    ↓
+Agente monta o corte final
+    ↓
+Output: Vídeo pronto para publicar
+```
+
+**O que torna isso nativo para agente:**
+
+- Hyperframes usa HTML — qualquer agente de código consegue gerá-lo
+- Servidor MCP do HeyGen — agentes o chamam diretamente
+- APIs de modelo de vídeo — requisições HTTP padrão
+- Nenhuma etapa de edição manual necessária
 
 ---
 
-## Tool Integrations
+## Erros Comuns
 
-| Tool | Type | MCP | Guide |
+1. **Começar pelas ferramentas, não pela estratégia** — decida qual vídeo você precisa antes de escolher ferramentas
+2. **Texto gerado por IA no vídeo** — modelos não conseguem renderizar texto legível de forma confiável; use overlays programáticos em vez disso
+3. **Avatares no vale da estranheza** — se a qualidade do avatar importa, invista no tier Creator+ do HeyGen
+4. **Sem legendas** — 85% do vídeo social é assistido sem som
+5. **Proporção de tela errada** — 9:16 para social, 16:9 para YouTube/site, 1:1 para feeds
+6. **Superprodução** — o autêntico geralmente supera o polido, especialmente no TikTok
+
+---
+
+## Perguntas Específicas da Tarefa
+
+1. Que tipo de vídeo você precisa? (Demo, explicativo, clipe social, anúncio, tutorial)
+2. Você precisa de um apresentador humano ou pode ser locução/texto?
+3. Isso é único ou um template repetível?
+4. Para qual plataforma é? (Isso determina proporção de tela e duração)
+5. Você tem ativos existentes para trabalhar? (Screenshots, material, roteiros)
+6. Qual é seu orçamento para ferramentas de vídeo?
+
+---
+
+## Integrações de Ferramenta
+
+| Ferramenta | Tipo | MCP | Guia |
 |------|------|:---:|-------|
-| **HeyGen** | AI avatars | Yes | [heygen.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/heygen.md) |
-| **Hyperframes** | Programmatic video | - | [hyperframes.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/hyperframes.md) |
-| **Remotion** | Programmatic video | - | [remotion.dev](https://www.remotion.dev/docs) |
-| **Runway** | AI generation | - | [runwayml.com/docs](https://docs.dev.runwayml.com) |
+| **HeyGen** | Avatares de IA | Sim | [heygen.md](../../tools/integrations/heygen.md) |
+| **Hyperframes** | Vídeo programático | - | [hyperframes.md](../../tools/integrations/hyperframes.md) |
+| **Remotion** | Vídeo programático | - | [remotion.dev](https://www.remotion.dev/docs) |
+| **Runway** | Geração por IA | - | [runwayml.com/docs](https://docs.dev.runwayml.com) |
 
 ---
 
-## Related Skills
+## Skills Relacionadas
 
-- **social**: For video content strategy, hooks, and what to post
-- **ad-creative**: For paid video ad creative and iteration
-- **copywriting**: For video scripts and messaging
-- **marketing-psychology**: For hooks and persuasion in video
+- **social**: Para estratégia de conteúdo de vídeo, ganchos, e o que postar
+- **ad-creative**: Para criativo de vídeo de anúncio pago e iteração
+- **copywriting**: Para roteiros de vídeo e mensagem
+- **marketing-psychology**: Para ganchos e persuasão em vídeo

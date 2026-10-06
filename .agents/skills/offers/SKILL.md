@@ -1,155 +1,217 @@
 ---
 name: offers
-description: "When the user wants to design, construct, or improve an offer — the thing they actually sell — including value framing, bonus stacking, guarantee design, scarcity/urgency, naming, and payment structure. Also use when the user mentions 'offer,' 'offer design,' 'build an offer,' 'grand slam offer,' 'irresistible offer,' 'value stack,' 'bonus stack,' 'guarantee,' 'risk reversal,' 'money-back guarantee,' 'scarcity,' 'urgency,' 'high-ticket offer,' 'productize a service,' 'naming an offer,' 'payment plan,' 'down-sell,' 'upsell offer,' or 'why isn't my offer converting.' Best for services, agencies, courses, coaching, info products, high-ticket B2B, and direct-response. If you run pure self-serve SaaS, read pricing first — tiers and packaging do more work there. For price level itself (tiers, freemium, value metric), see pricing. For the page that presents the offer, see copywriting. For the launch moment, see launch. For sales collateral, see sales-enablement."
+description: "Quando o usuário quiser desenhar, construir, ou melhorar uma oferta — a coisa que ele de fato vende — incluindo enquadramento de valor, empilhamento de bônus, garantia, escassez/urgência, nomenclatura, e estrutura de pagamento. Use também quando o usuário mencionar 'oferta,' 'desenho de oferta,' 'oferta irrecusável,' 'grand slam offer,' 'empilhamento de valor/bônus,' 'garantia/reversão de risco,' 'garantia de devolução,' 'escassez,' 'urgência,' 'ticket alto,' 'produtizar um serviço,' 'nomear uma oferta,' 'plano de pagamento,' 'down-sell/upsell,' ou 'por que minha oferta não converte.' Melhor para serviços, agências, cursos, coaching, infoprodutos, B2B de ticket alto, e resposta direta. Se você roda um SaaS self-serve, leia pricing primeiro. Para o nível de preço (planos, freemium, métrica de valor), veja pricing. Para a página que apresenta a oferta, veja copywriting. Para o momento de lançamento, veja launch. Para material de vendas, veja sales-enablement."
 metadata:
   version: 1.0.1
 ---
 
-# Offer Design
+# Desenho de Oferta
 
-You are an expert in offer construction. Your goal is to help the user build offers that move — not by writing better copy on a worse offer, but by improving the offer itself.
+Você é um especialista em construção de oferta. Seu objetivo é ajudar o
+usuário a construir ofertas que vendem — não escrevendo copy melhor em
+cima de uma oferta pior, mas melhorando a oferta em si.
 
-## Before Starting
+## Antes de começar
 
-**Check for product marketing context first:**
-If `.agents/product-marketing.md` exists (or `.claude/product-marketing.md`, or the legacy `product-marketing-context.md` filename, in older setups), read it before asking questions. Use that context and only ask for information not already covered or specific to this task.
-
----
-
-## Core Philosophy
-
-**The offer is the thing, not the page.** Better copy on a weak offer compounds slowly. A stronger offer with average copy converts immediately. Most "we need better copy" requests are actually "we need a better offer" requests in disguise.
-
-This skill exists because the rest of the repo handles the *expression* of an offer — `copywriting` writes the sales page, `cro` optimizes the conversion path, `pricing` sets the tier structure, `launch` orchestrates the moment, `paywalls` shapes the upgrade prompt. None of them ask the deeper question: **is the offer underneath any of that actually good?**
-
-### When this skill matters
-
-You sell:
-- **Services** — consulting, freelance, agency retainers, productized services
-- **Courses** — async, cohort-based, live
-- **Coaching** — 1:1, group, mastermind
-- **Info products** — guides, swipe files, templates, communities
-- **High-ticket B2B** — $5K+ ACV with a sales conversation
-- **Direct-response** — e-com promo offers, infomercial-style, paid-traffic-to-VSL
-
-### When `pricing` does more of the work
-
-You sell:
-- **Self-serve SaaS** with tiered subscriptions — the levers are mostly tier structure, value metric, and packaging; offer construction (bonuses, guarantees) is secondary
-- **Marketplaces** — the offer is structural, not constructed
-
-Skim this skill in those cases for the value equation framing, then go to `pricing`.
+**Primeiro, verifique se há contexto de produto:**
+Se `.agents/product-marketing.md` existir (ou `.claude/product-marketing.md`,
+ou o nome de arquivo legado `product-marketing-context.md`, em setups mais
+antigos), leia-o antes de fazer perguntas. Use esse contexto e só pergunte o
+que não estiver coberto ou for específico desta tarefa.
 
 ---
 
-## The Value Equation
+## Filosofia central
 
-The single most useful frame for offer design. Originally from Alex Hormozi's *$100M Offers* — internalized broadly across direct-response and creator-economy training since.
+**A oferta é a coisa, não a página.** Copy melhor em cima de uma oferta
+fraca se acumula devagar. Uma oferta mais forte com copy mediana converte
+imediatamente. A maioria dos pedidos de "precisamos de copy melhor" na
+verdade são pedidos de "precisamos de uma oferta melhor" disfarçados.
 
+Esta skill existe porque o resto do repositório trata da *expressão* de
+uma oferta — a `copywriting` escreve a página de vendas, a `cro` otimiza
+o caminho de conversão, a `pricing` define a estrutura de plano, a
+`launch` orquestra o momento, a `paywalls` molda o prompt de upgrade.
+Nenhuma delas pergunta a questão mais profunda: **a oferta por trás de
+tudo isso é de fato boa?**
+
+### Quando esta skill importa
+
+Você vende:
+
+- **Serviços** — consultoria, freelance, retainer de agência, serviço
+  produtizado
+- **Cursos** — assíncrono, em turma, ao vivo
+- **Coaching** — 1:1, em grupo, mastermind
+- **Infoprodutos** — guias, swipe files, templates, comunidades
+- **B2B de ticket alto** — ACV de R$ 25 mil+ com uma conversa de venda
+- **Resposta direta** — ofertas promocionais de e-commerce, estilo
+  infomercial, tráfego pago para VSL
+
+### Quando a `pricing` faz mais do trabalho
+
+Você vende:
+
+- **SaaS self-serve** com assinaturas em plano — as alavancas são
+  principalmente estrutura de plano, métrica de valor, e empacotamento;
+  construção de oferta (bônus, garantias) é secundário
+- **Marketplaces** — a oferta é estrutural, não construída
+
+Passe os olhos nesta skill nesses casos pelo enquadramento da equação de
+valor, depois vá para a `pricing`.
+
+---
+
+## A equação de valor
+
+O enquadramento mais útil para desenho de oferta. Originalmente de
+*$100M Offers*, de Alex Hormozi — internalizado amplamente em treinamento
+de resposta direta e economia de criador desde então.
+
+```text
+              Resultado dos Sonhos  ×  Probabilidade Percebida de Alcançar
+  Valor  =  ──────────────────────────────────────────────────────────────
+              Atraso de Tempo       ×  Esforço e Sacrifício
 ```
-              Dream Outcome  ×  Perceived Likelihood of Achievement
-  Value  =  ─────────────────────────────────────────────────────────
-              Time Delay     ×   Effort & Sacrifice
-```
 
-You move the four levers like this:
+Você move as quatro alavancas assim:
 
-| Lever | What it means | How to increase value |
-|-------|---------------|-----------------------|
-| **Dream outcome** ↑ | What the customer actually wants | Connect to the bigger goal behind the surface ask. Specify and name it. |
-| **Perceived likelihood** ↑ | Do they believe they'll get it | Proof (case studies, named customers, data), guarantees, methodology specificity |
-| **Time delay** ↓ | How long until result | Faster onboarding, faster first win, faster end-to-end timeline |
-| **Effort & sacrifice** ↓ | What it costs them in time/work/risk besides money | Done-for-you, simpler process, fewer decisions, lower learning curve |
+| Alavanca | O que significa | Como aumentar o valor |
+|---|---|---|
+| **Resultado dos sonhos** ↑ | O que o cliente de fato quer | Conecte ao objetivo maior por trás do pedido de superfície. Especifique e nomeie. |
+| **Probabilidade percebida** ↑ | Ele acredita que vai conseguir | Prova (cases, clientes nomeados, dado), garantias, especificidade de metodologia |
+| **Atraso de tempo** ↓ | Quanto tempo até o resultado | Onboarding mais rápido, primeira vitória mais rápida, cronograma de ponta a ponta mais rápido |
+| **Esforço e sacrifício** ↓ | O que custa em tempo/trabalho/risco além do dinheiro | Feito-para-você, processo mais simples, menos decisões, curva de aprendizado menor |
 
-**Implication for offer construction**: most "lower the price" requests are actually "raise the numerator or lower the denominator" requests. Price is the comparison, not the value.
+**Implicação para construção de oferta**: a maioria dos pedidos de "baixar
+o preço" na verdade são pedidos de "aumentar o numerador ou baixar o
+denominador". Preço é a comparação, não o valor.
 
-**For the full framework, examples, and how to diagnose which lever is broken:** see [references/value-equation.md](references/value-equation.md)
-
----
-
-## The Anatomy of a Complete Offer
-
-A complete offer has six components. Skip any one and conversion suffers.
-
-| # | Component | Question it answers |
-|---|-----------|---------------------|
-| 1 | **Core deliverable** | What do they get? |
-| 2 | **Bonus stack** | What else do they get that makes the core feel undervalued? |
-| 3 | **Guarantee** | What happens if it doesn't work? |
-| 4 | **Scarcity / urgency** | Why now, not later? |
-| 5 | **Name** | What is this thing called? |
-| 6 | **Price + payment structure** | What do they pay and how? |
-
-Most weak offers fail on bonuses (none), guarantees (none or wrong type), or scarcity (none, or fake). Most aggressive-to-the-point-of-cringe offers fail on guarantee (over-promising) or scarcity (fake countdown timers).
-
-**For the full anatomy with worked examples:** see [references/offer-anatomy.md](references/offer-anatomy.md)
+**Para o framework completo, exemplos, e como diagnosticar qual alavanca
+está quebrada:** veja
+[references/value-equation.md](references/value-equation.md)
 
 ---
 
-## Reference Library
+## A anatomia de uma oferta completa
 
-| Reference | When to read |
-|-----------|--------------|
-| [value-equation.md](references/value-equation.md) | Diagnosing which lever is broken on a stuck offer |
-| [offer-anatomy.md](references/offer-anatomy.md) | Building a complete offer from scratch |
-| [guarantee-design.md](references/guarantee-design.md) | Picking the right type of guarantee for your business model |
-| [bonus-stacking.md](references/bonus-stacking.md) | Adding bonuses that raise perceived value without devaluing the core |
-| [scarcity-urgency.md](references/scarcity-urgency.md) | Creating *real* scarcity (and avoiding the fake patterns that destroy trust) |
-| [offer-formats.md](references/offer-formats.md) | Format playbooks by business type — service, course, coaching, info product, SaaS lead magnet, agency retainer, high-ticket B2B |
-| [saas-offers.md](references/saas-offers.md) | SaaS specifically — the discount trap (why discounting to acquire backfires) + four SaaS worked offers (AudienceTap, SaberSim, Teachable, Kit) |
-| [examples.md](references/examples.md) | Anonymized worked examples — before/after for each business type |
+Uma oferta completa tem seis componentes. Pule qualquer um e a conversão
+sofre.
 
----
+| # | Componente | Pergunta que responde |
+|---|---|---|
+| 1 | **Entregável central** | O que a pessoa ganha? |
+| 2 | **Empilhamento de bônus** | O que mais ela ganha que faz o central parecer subvalorizado? |
+| 3 | **Garantia** | O que acontece se não funcionar? |
+| 4 | **Escassez/urgência** | Por que agora, não depois? |
+| 5 | **Nome** | Como essa coisa se chama? |
+| 6 | **Preço + estrutura de pagamento** | O que ela paga e como? |
 
-## The Diagnostic Loop
+A maioria das ofertas fracas falha em bônus (nenhum), garantias (nenhuma
+ou tipo errado), ou escassez (nenhuma, ou falsa). A maioria das ofertas
+agressivas a ponto de constranger falha na garantia (prometer demais) ou
+na escassez (contador regressivo falso).
 
-When the user says "my offer isn't converting" or "I want to improve my offer":
-
-1. **Identify the business type** — service, course, coaching, info product, SaaS, agency, B2B. The right playbook is type-specific.
-2. **State the current offer in plain language** — name, price, what they get, guarantee, deadline. Write it down even if it lives in scattered places now.
-3. **Run the value equation** — score each of the four levers 1–10. The lowest is the binding constraint.
-4. **Audit the anatomy** — which of the six components is missing or weak?
-5. **Pick one lever to fix this iteration** — don't rebuild everything. The biggest lever is usually the one currently scoring lowest.
-6. **Draft the changed component** — new bonus, new guarantee, new scarcity, new name, new payment plan
-7. **Project the lift, honestly** — most single-component changes deliver 10–40% conversion lift. Anyone promising 5x is selling something. Two consecutive iterations on different levers can stack to 2–3x.
+**Para a anatomia completa com exemplos resolvidos:** veja
+[references/offer-anatomy.md](references/offer-anatomy.md)
 
 ---
 
-## When NOT to Use Offer-Design Tactics
+## Biblioteca de referência
 
-Some offer patterns work but cost more than they're worth:
-
-- **Manipulative scarcity** — fake countdown timers, "only 3 spots left" lies. Short-term lift, long-term trust collapse. Don't.
-- **Over-promising guarantees** — "double your revenue or refund + $1,000." Refund risk eats margin; the few cases that fail nuke your reputation publicly.
-- **Bonus inflation** — stacking $50K of "bonuses" on a $497 product so it "feels like a steal." Sophisticated buyers see this. Treat bonuses as additive, not exaggerated.
-- **Course-bro aesthetic on a serious product** — Gold logos, "secret method," fake urgency. Pattern-matches to scam. Wrong room.
-- **Discounting to acquire** — discount-*askers* churn at ~2× the rate of full-price customers, and a coupon anchors the product as cheap. Discount only for upgrades/cross-sells (rewarding existing customers) or real seasonal windows — never to win a new one. Raise value with an offer instead. See [saas-offers.md](references/saas-offers.md).
-
-The repo voice: opinionated, but honest. Building offers well doesn't mean building offers loud.
-
----
-
-## Banned Vocabulary
-
-When drafting offer language (sales pages, emails, headlines), avoid:
-
-- **"Game-changing," "revolutionary," "disruptive," "next-level," "10x"** — pattern-matches to AI slop / course-bro
-- **"Secret," "hidden," "what they don't want you to know"** — clickbait
-- **"Limited time" with no actual time limit** — lying
-- **"Worth $X" or "$Y value" with no comparable** — inflation
-- **"100% guaranteed" without specifying conditions** — legally and brand-wise risky
-
-Use specific numbers, named customers, concrete outcomes, real timelines. Specificity beats superlatives.
+| Referência | Quando ler |
+|---|---|
+| [value-equation.md](references/value-equation.md) | Diagnosticar qual alavanca está quebrada em uma oferta travada |
+| [offer-anatomy.md](references/offer-anatomy.md) | Construir uma oferta completa do zero |
+| [guarantee-design.md](references/guarantee-design.md) | Escolher o tipo certo de garantia para seu modelo de negócio |
+| [bonus-stacking.md](references/bonus-stacking.md) | Adicionar bônus que elevam o valor percebido sem desvalorizar o central |
+| [scarcity-urgency.md](references/scarcity-urgency.md) | Criar escassez *real* (e evitar os padrões falsos que destroem a confiança) |
+| [offer-formats.md](references/offer-formats.md) | Playbooks de formato por tipo de negócio — serviço, curso, coaching, infoproduto, isca digital de SaaS, retainer de agência, B2B de ticket alto |
+| [saas-offers.md](references/saas-offers.md) | SaaS especificamente — a armadilha do desconto (por que dar desconto para adquirir sai pela culatra) + quatro ofertas de SaaS resolvidas (AudienceTap, SaberSim, Teachable, Kit) |
+| [examples.md](references/examples.md) | Exemplos resolvidos anonimizados — antes/depois para cada tipo de negócio |
 
 ---
 
-## Related Skills
+## O loop de diagnóstico
 
-- **pricing** — for price levels, tier structure, value metric, packaging, freemium
-- **copywriting** — for the page that presents the offer
-- **cro** — for optimizing the conversion path the offer travels through
-- **launch** — for the moment you ship the offer
-- **paywalls** — for in-app upgrade-prompt versions of an offer
-- **sales-enablement** — for the deck and one-pager that carry the offer into a sales conversation
-- **emails** — for the email sequence that warms up the offer
-- **marketing-psychology** — for the cognitive biases that make offers land or bounce
+Quando o usuário disser "minha oferta não está convertendo" ou "quero
+melhorar minha oferta":
+
+1. **Identifique o tipo de negócio** — serviço, curso, coaching,
+   infoproduto, SaaS, agência, B2B. O playbook certo é específico do
+   tipo.
+2. **Declare a oferta atual em linguagem simples** — nome, preço, o que a
+   pessoa ganha, garantia, prazo. Escreva mesmo que hoje viva espalhada
+   em lugares diferentes.
+3. **Rode a equação de valor** — pontue cada uma das quatro alavancas de
+   1 a 10. A mais baixa é a restrição vinculante.
+4. **Audite a anatomia** — qual dos seis componentes está faltando ou
+   fraco?
+5. **Escolha uma alavanca para consertar nessa iteração** — não
+   reconstrua tudo. A maior alavanca geralmente é a que está pontuando
+   mais baixo agora.
+6. **Rascunhe o componente alterado** — bônus novo, garantia nova,
+   escassez nova, nome novo, plano de pagamento novo
+7. **Projete o ganho, honestamente** — a maioria das mudanças de um único
+   componente entrega 10-40% de ganho de conversão. Quem promete 5x está
+   vendendo outra coisa. Duas iterações consecutivas em alavancas
+   diferentes podem se somar a 2-3x.
+
+---
+
+## Quando NÃO usar táticas de desenho de oferta
+
+Alguns padrões de oferta funcionam mas custam mais do que valem:
+
+- **Escassez manipuladora** — contadores regressivos falsos, mentiras de
+  "só 3 vagas restantes". Ganho de curto prazo, colapso de confiança de
+  longo prazo. Não faça.
+- **Garantias que prometem demais** — "dobre sua receita ou devolvemos +
+  R$ 5.000." O risco de reembolso come a margem; os poucos casos que
+  falham explodem sua reputação publicamente.
+- **Inflação de bônus** — empilhar R$ 250 mil de "bônus" em um produto de
+  R$ 2.500 para "parecer um roubo". Compradores sofisticados percebem
+  isso. Trate bônus como aditivos, não exagerados.
+- **Estética de curso-bro em um produto sério** — logo dourado, "método
+  secreto," urgência falsa. Faz pattern-match com golpe. Sala errada.
+- **Desconto para adquirir** — quem *pede* desconto cancela a ~2x a taxa
+  de clientes de preço cheio, e um cupom ancora o produto como barato.
+  Desconte só para upgrade/cross-sell (recompensando clientes existentes)
+  ou janelas sazonais reais — nunca para conquistar um novo. Aumente o
+  valor com uma oferta em vez disso. Veja
+  [saas-offers.md](references/saas-offers.md).
+
+A voz do repositório: opinativa, mas honesta. Construir ofertas bem não
+significa construir ofertas gritando.
+
+---
+
+## Vocabulário banido
+
+Ao rascunhar linguagem de oferta (páginas de venda, e-mails, títulos),
+evite:
+
+- **"Revolucionário," "disruptivo," "próximo nível," "10x"** — faz
+  pattern-match com lixo de IA/curso-bro
+- **"Segredo," "escondido," "o que eles não querem que você saiba"** —
+  clickbait
+- **"Tempo limitado" sem limite de tempo real** — mentira
+- **"Vale R$ X" ou "valor de R$ Y" sem comparável** — inflação
+- **"100% garantido" sem especificar condições** — arriscado legal e de
+  marca
+
+Use números específicos, clientes nomeados, resultados concretos,
+cronogramas reais. Especificidade vence superlativo.
+
+---
+
+## Skills relacionadas
+
+- **pricing** — para níveis de preço, estrutura de plano, métrica de valor, empacotamento, freemium
+- **copywriting** — para a página que apresenta a oferta
+- **cro** — para otimizar o caminho de conversão pelo qual a oferta passa
+- **launch** — para o momento em que você lança a oferta
+- **paywalls** — para versões de prompt de upgrade dentro do app de uma oferta
+- **sales-enablement** — para o deck e o one-pager que levam a oferta a uma conversa de venda
+- **emails** — para a sequência de e-mail que aquece a oferta
+- **marketing-psychology** — para os vieses cognitivos que fazem ofertas colarem ou quicarem

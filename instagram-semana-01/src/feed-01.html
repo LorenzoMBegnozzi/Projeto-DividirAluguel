@@ -1,0 +1,61 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="size" content="1080x1350">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400..800&display=block">
+<link rel="stylesheet" href="base.css">
+<style>
+/* feed-01: apresentação da marca, fala com os dois lados. Fundo claro.
+   A ousadia fica no ícone do app; o resto fica quieto. */
+:root { --w: 1080px; --h: 1350px; }
+body {
+  background:
+    radial-gradient(ellipse 120% 55% at 50% 112%, var(--brand-tint) 0%, rgba(220,235,241,.75) 35%, rgba(220,235,241,0) 75%),
+    var(--paper);
+}
+.canvas { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 236px; text-align: center; }
+
+.app-icon {
+  width: 280px; height: 280px; border-radius: 22%; background: var(--surface);
+  display: grid; place-items: center;
+  box-shadow: 0 1px 2px rgba(27,43,51,.06), 0 24px 48px -16px rgba(23,76,98,.28);
+}
+.app-icon svg { width: 176px; height: 176px; }
+
+h1 { margin-top: 76px; font-size: 176px; font-weight: 800; letter-spacing: -0.045em; line-height: .95; color: var(--ink); }
+.linha {
+  margin-top: 40px; max-width: 800px;
+  font-size: 50px; font-weight: 500; line-height: 1.22; letter-spacing: -0.015em;
+  color: var(--ink-2); text-wrap: balance;
+}
+
+/* .landing-btn da landing (50 px de altura, raio 12, 16 px/700) ampliado 2,2x */
+.botoes { margin-top: 76px; display: flex; gap: 24px; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 110px; padding: 0 52px; border-radius: 26px;
+  font-size: 36px; font-weight: 700; letter-spacing: -0.005em; white-space: nowrap;
+  color: #fff; background: var(--brand);
+}
+.btn.coral { background: var(--coral); }
+
+footer {
+  position: absolute; left: 72px; right: 72px; bottom: 64px;
+  display: flex; justify-content: space-between;
+  font-size: 28px; font-weight: 600; color: var(--ink-3);
+}
+</style>
+</head><body><div class="canvas">
+  <div class="app-icon">
+    <svg viewBox="3 3 20 20" aria-hidden="true">
+      <path d="M12.2 3 3 10.4V23h9.2z" fill="var(--brand)"/>
+      <path d="M13.8 3 23 10.4V23h-9.2z" fill="var(--coral-bright)"/>
+    </svg>
+  </div>
+  <h1>RachaAi</h1>
+  <p class="linha">Pra quem procura vaga e pra quem tem quarto sobrando em Maringá.</p>
+  <div class="botoes">
+    <span class="btn">Quero uma vaga</span>
+    <span class="btn coral">Tenho vaga</span>
+  </div>
+  <footer><span>Maringá, PR</span><span>@rachaai</span></footer>
+</div></body></html>

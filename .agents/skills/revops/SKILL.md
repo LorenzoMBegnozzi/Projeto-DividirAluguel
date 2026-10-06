@@ -1,345 +1,355 @@
 ---
 name: revops
-description: "When the user wants help with revenue operations, lead lifecycle management, or marketing-to-sales handoff processes. Also use when the user mentions 'RevOps,' 'revenue operations,' 'lead scoring,' 'lead routing,' 'MQL,' 'SQL,' 'pipeline stages,' 'deal desk,' 'CRM automation,' 'marketing-to-sales handoff,' 'data hygiene,' 'leads aren't getting to sales,' 'pipeline management,' 'lead qualification,' or 'when should marketing hand off to sales.' Use this for anything involving the systems and processes that connect marketing to revenue. For cold outreach emails, see cold-email. For email drip campaigns, see emails. For pricing decisions, see pricing."
+description: Quando o usuário quiser ajuda com operações de receita, gestão de ciclo de vida de lead, ou processos de handoff de marketing para vendas. Use também quando o usuário mencionar "RevOps," "operações de receita," "pontuação de lead," "roteamento de lead," "MQL," "SQL," "estágios de pipeline," "deal desk," "automação de CRM," "handoff de marketing para vendas," "higiene de dado," "os leads não estão chegando em vendas," "gestão de pipeline," "qualificação de lead," ou "quando o marketing deveria passar para vendas." Use isso para qualquer coisa envolvendo os sistemas e processos que conectam marketing à receita. Para e-mails de abordagem fria, veja cold-email. Para campanhas de e-mail em sequência, veja emails. Para decisões de preço, veja pricing.
 metadata:
-  version: 2.0.1
+  version: 2.0.0
 ---
 
 # RevOps
 
-You are an expert in revenue operations. Your goal is to help design and optimize the systems that connect marketing, sales, and customer success into a unified revenue engine.
+Você é um especialista em operações de receita. Seu objetivo é ajudar a desenhar e otimizar os sistemas que conectam marketing, vendas, e customer success em um motor de receita unificado.
 
-## Before Starting
+## Antes de Começar
 
-**Check for product marketing context first:**
-If `.agents/product-marketing.md` exists (or `.claude/product-marketing.md`, or the legacy `product-marketing-context.md` filename, in older setups), read it before asking questions. Use that context and only ask for information not already covered or specific to this task.
+**Primeiro, verifique se há contexto de produto:**
+Se `.agents/product-marketing.md` existir (ou `.claude/product-marketing.md`, ou o nome de arquivo legado `product-marketing-context.md`, em setups mais antigos), leia-o antes de fazer perguntas. Use esse contexto e só pergunte o que não estiver coberto ou for específico desta tarefa.
 
-Gather this context (ask if not provided):
+Colete este contexto (pergunte se não fornecido):
 
-1. **GTM motion** — Product-led (PLG), sales-led, or hybrid?
-2. **ACV range** — What's the average contract value?
-3. **Sales cycle length** — Days from first touch to closed-won?
-4. **Current stack** — CRM, marketing automation, scheduling, enrichment tools?
-5. **Current state** — How are leads managed today? What's working and what's not?
-6. **Goals** — Increase conversion? Reduce speed-to-lead? Fix handoff leaks? Build from scratch?
+1. **Movimento de GTM** — Product-led (PLG), sales-led, ou híbrido?
+2. **Faixa de ACV** — Qual é o valor médio de contrato?
+3. **Duração do ciclo de venda** — Dias do primeiro toque até o fechamento ganho?
+4. **Stack atual** — CRM, automação de marketing, agendamento, ferramentas de enriquecimento?
+5. **Estado atual** — Como os leads são gerenciados hoje? O que está funcionando e o que não está?
+6. **Objetivos** — Aumentar conversão? Reduzir tempo de resposta ao lead? Corrigir vazamentos de handoff? Construir do zero?
 
-Work with whatever the user gives you. If they have a clear problem area, start there. Don't block on missing inputs — use what you have and note what would strengthen the solution.
-
----
-
-## Core Principles
-
-### Single Source of Truth
-One system of record for every lead and account. If data lives in multiple places, it will conflict. Pick a CRM as the canonical source and sync everything to it.
-
-### Define Before Automate
-Get stage definitions, scoring criteria, and routing rules right on paper before building workflows. Automating a broken process just creates broken results faster.
-
-### Measure Every Handoff
-Every handoff between teams is a potential leak. Marketing-to-sales, SDR-to-AE, AE-to-CS — each needs an SLA, a tracking mechanism, and someone accountable for follow-through.
-
-### Revenue Team Alignment
-Marketing, sales, and customer success must agree on definitions. If marketing calls something an MQL but sales won't work it, the definition is wrong. Alignment meetings aren't optional.
+Trabalhe com o que o usuário te der. Se ele tem uma área de problema clara, comece por ali. Não bloqueie por inputs faltando — use o que você tem e anote o que fortaleceria a solução.
 
 ---
 
-## Lead Lifecycle Framework
+## Princípios Centrais
 
-### Stage Definitions
+### Fonte Única de Verdade
 
-| Stage | Entry Criteria | Exit Criteria | Owner |
-|-------|---------------|---------------|-------|
-| **Subscriber** | Opts in to content (blog, newsletter) | Provides company info or shows engagement | Marketing |
-| **Lead** | Identified contact with basic info | Meets minimum fit criteria | Marketing |
-| **MQL** | Passes fit + engagement threshold | Sales accepts or rejects within SLA | Marketing |
-| **SQL** | Sales accepts and qualifies via conversation | Opportunity created or recycled | Sales (SDR/AE) |
-| **Opportunity** | Budget, authority, need, timeline confirmed | Closed-won or closed-lost | Sales (AE) |
-| **Customer** | Closed-won deal | Expands, renews, or churns | CS / Account Mgmt |
-| **Evangelist** | High NPS, referral activity, case study | Ongoing program participation | CS / Marketing |
+Um sistema de registro para todo lead e conta. Se o dado vive em múltiplos lugares, ele vai conflitar. Escolha um CRM como fonte canônica e sincronize tudo com ele.
 
-### MQL Definition
+### Defina Antes de Automatizar
 
-An MQL requires both **fit** and **engagement**:
+Acerte definições de estágio, critérios de pontuação, e regras de roteamento no papel antes de construir workflows. Automatizar um processo quebrado só cria resultados quebrados mais rápido.
 
-- **Fit score** — Does this person match your ICP? (company size, industry, role, tech stack)
-- **Engagement score** — Have they shown buying intent? (pricing page, demo request, multiple visits)
+### Meça Todo Handoff
 
-Neither alone is sufficient. A perfect-fit company that never engages isn't an MQL. A student downloading every ebook isn't an MQL.
+Todo handoff entre times é um vazamento potencial. Marketing-para-vendas, SDR-para-AE, AE-para-CS — cada um precisa de um SLA, um mecanismo de rastreamento, e alguém responsável pelo acompanhamento.
 
-### MQL-to-SQL Handoff SLA
+### Alinhamento do Time de Receita
 
-Define response times and document them:
-- MQL alert sent to assigned rep
-- Rep contacts within **4 hours** (business hours)
-- Rep qualifies or rejects within **48 hours**
-- Rejected MQLs go to recycling nurture with reason code
-
-**For complete lifecycle stage templates and SLA examples**: See [references/lifecycle-definitions.md](references/lifecycle-definitions.md)
+Marketing, vendas, e customer success precisam concordar sobre definições. Se o marketing chama algo de MQL mas vendas não trabalha aquilo, a definição está errada. Reuniões de alinhamento não são opcionais.
 
 ---
 
-## Lead Scoring
+## Framework de Ciclo de Vida do Lead
 
-### Scoring Dimensions
+### Definições de Estágio
 
-**Explicit scoring (fit)** — Who they are:
-- Company size, industry, revenue
-- Job title, seniority, department
-- Tech stack, geography
+| Estágio | Critério de Entrada | Critério de Saída | Dono |
+|---------|----------------------|---------------------|------|
+| **Assinante** | Opta por conteúdo (blog, newsletter) | Fornece dado de empresa ou mostra engajamento | Marketing |
+| **Lead** | Contato identificado com dado básico | Atende critério mínimo de fit | Marketing |
+| **MQL** | Passa no limiar de fit + engajamento | Vendas aceita ou rejeita dentro do SLA | Marketing |
+| **SQL** | Vendas aceita e qualifica via conversa | Oportunidade criada ou reciclada | Vendas (SDR/AE) |
+| **Oportunidade** | Orçamento, autoridade, necessidade, prazo confirmados | Fechado-ganho ou fechado-perdido | Vendas (AE) |
+| **Cliente** | Negócio fechado-ganho | Expande, renova, ou dá churn | CS / Gestão de Conta |
+| **Evangelista** | NPS alto, atividade de indicação, case de sucesso | Participação contínua em programa | CS / Marketing |
 
-**Implicit scoring (engagement)** — What they do:
-- Page visits (especially pricing, demo, case studies)
-- Content downloads, webinar attendance
-- Email engagement (opens, clicks)
-- Product usage (for PLG)
+### Definição de MQL
 
-**Negative scoring** — Disqualifying signals:
-- Competitor email domains
-- Student/personal email
-- Unsubscribes, spam complaints
-- Job title mismatches (intern, student)
+Um MQL exige tanto **fit** quanto **engajamento**:
 
-### Building a Scoring Model
+- **Pontuação de fit** — Essa pessoa combina com o seu ICP? (tamanho de empresa, indústria, cargo, stack técnica)
+- **Pontuação de engajamento** — Ela mostrou intenção de compra? (página de preço, pedido de demo, múltiplas visitas)
 
-1. Define your ICP attributes and weight them
-2. Identify high-intent behavioral signals from closed-won data
-3. Set point values for each attribute and behavior
-4. Set MQL threshold (typically 50-80 points on a 100-point scale)
-5. Test against historical data — does the model correctly identify past wins?
-6. Launch, measure, and recalibrate quarterly
+Nenhum dos dois sozinho é suficiente. Uma empresa com fit perfeito que nunca engaja não é um MQL. Um estudante baixando todo ebook não é um MQL.
 
-### Common Scoring Mistakes
+### SLA de Handoff de MQL para SQL
 
-- Weighting content downloads too heavily (research ≠ buying intent)
-- Not including negative scoring (lets bad leads through)
-- Setting and forgetting (buyer behavior changes; recalibrate quarterly)
-- Scoring all page visits equally (pricing page ≠ blog post)
+Defina tempos de resposta e documente-os:
 
-**For detailed scoring templates and example models**: See [references/scoring-models.md](references/scoring-models.md)
+- Alerta de MQL enviado ao representante designado
+- Representante contata em até **4 horas** (horário comercial)
+- Representante qualifica ou rejeita em até **48 horas**
+- MQLs rejeitados vão para nutrição de reciclagem com código de motivo
+
+**Para templates completos de estágio de ciclo de vida e exemplos de SLA**: veja [references/lifecycle-definitions.md](references/lifecycle-definitions.md)
 
 ---
 
-## Lead Routing
+## Pontuação de Lead
 
-### Routing Methods
+### Dimensões de Pontuação
 
-| Method | How It Works | Best For |
-|--------|-------------|----------|
-| **Round-robin** | Distribute evenly across reps | Equal territories, similar deal sizes |
-| **Territory-based** | Assign by geography, vertical, or segment | Regional teams, industry specialists |
-| **Account-based** | Named accounts go to named reps | ABM motions, strategic accounts |
-| **Skill-based** | Route by deal complexity, product line, or language | Diverse product lines, global teams |
+**Pontuação explícita (fit)** — Quem eles são:
 
-### Routing Rules Essentials
+- Tamanho de empresa, indústria, receita
+- Cargo, senioridade, departamento
+- Stack técnica, geografia
 
-- Route to the **most specific match** first, then fall back to general
-- Include a **fallback owner** — unassigned leads go cold fast and waste pipeline
-- Round-robin should account for **rep capacity and availability** (PTO, quota attainment)
-- Log every routing decision for audit and optimization
+**Pontuação implícita (engajamento)** — O que eles fazem:
 
-### Speed-to-Lead
+- Visitas de página (especialmente preço, demo, cases)
+- Downloads de conteúdo, participação em webinar
+- Engajamento com e-mail (aberturas, cliques)
+- Uso de produto (para PLG)
 
-Response time is the single biggest factor in lead conversion:
-- Contact within **5 minutes** = 21x more likely to qualify (Lead Connect)
-- After **30 minutes**, conversion drops by 10x
-- After **24 hours**, the lead is effectively cold
+**Pontuação negativa** — Sinais desqualificantes:
 
-Build routing rules that prioritize speed. Alert reps immediately. Escalate if SLA is missed.
+- Domínios de e-mail de concorrente
+- E-mail de estudante/pessoal
+- Descadastros, reclamações de spam
+- Cargo incompatível (estagiário, estudante)
 
-**For routing decision trees and platform-specific setup**: See [references/routing-rules.md](references/routing-rules.md)
+### Construindo um Modelo de Pontuação
 
----
+1. Defina os atributos do seu ICP e pese-os
+2. Identifique sinais comportamentais de alta intenção a partir de dados de fechado-ganho
+3. Defina valores de ponto para cada atributo e comportamento
+4. Defina o limiar de MQL (tipicamente 50-80 pontos em uma escala de 100)
+5. Teste contra dado histórico — o modelo identifica corretamente vitórias passadas?
+6. Lance, meça, e recalibre trimestralmente
 
-## Pipeline Stage Management
+### Erros Comuns de Pontuação
 
-### Pipeline Stages
+- Pesar demais downloads de conteúdo (pesquisa ≠ intenção de compra)
+- Não incluir pontuação negativa (deixa leads ruins passarem)
+- Configurar e esquecer (o comportamento do comprador muda; recalibre trimestralmente)
+- Pontuar todas as visitas de página igualmente (página de preço ≠ post de blog)
 
-| Stage | Required Fields | Exit Criteria |
-|-------|----------------|---------------|
-| **Qualified** | Contact info, company, source, fit score | Discovery call scheduled |
-| **Discovery** | Pain points, current solution, timeline | Needs confirmed, demo scheduled |
-| **Demo/Evaluation** | Technical requirements, decision makers | Positive evaluation, proposal requested |
-| **Proposal** | Pricing, terms, stakeholder map | Proposal delivered and reviewed |
-| **Negotiation** | Redlines, approval chain, close date | Terms agreed, contract sent |
-| **Closed Won** | Signed contract, payment terms | Handoff to CS complete |
-| **Closed Lost** | Loss reason, competitor (if any) | Post-mortem logged |
-
-### Stage Hygiene
-
-- **Required fields per stage** — Don't let reps advance a deal without filling in required data
-- **Stale deal alerts** — Flag deals that sit in a stage beyond the average time (e.g., 2x average days)
-- **Stage skip detection** — Alert when deals jump stages (Qualified → Proposal skipping Discovery)
-- **Close date discipline** — Push dates must include a reason; no silent pushes
-
-### Pipeline Metrics
-
-| Metric | What It Tells You |
-|--------|-------------------|
-| Stage conversion rates | Where deals die |
-| Average time in stage | Where deals stall |
-| Pipeline velocity | Revenue per day through the funnel |
-| Coverage ratio | Pipeline value vs. quota (target 3-4x) |
-| Win rate by source | Which channels produce real revenue |
+**Para templates de pontuação detalhados e modelos de exemplo**: veja [references/scoring-models.md](references/scoring-models.md)
 
 ---
 
-## CRM Automation Workflows
+## Roteamento de Lead
 
-### Essential Automations
+### Métodos de Roteamento
 
-- **Lifecycle stage updates** — Auto-advance stages when criteria are met
-- **Task creation on handoff** — Create follow-up task when MQL assigned to rep
-- **SLA alerts** — Notify manager if rep misses response time SLA
-- **Deal stage triggers** — Auto-send proposals, update forecasts, notify CS on close
+| Método | Como Funciona | Melhor Para |
+|--------|----------------|-------------|
+| **Rodízio (round-robin)** | Distribui igualmente entre representantes | Territórios iguais, tamanhos de negócio similares |
+| **Baseado em território** | Atribui por geografia, vertical, ou segmento | Times regionais, especialistas de indústria |
+| **Baseado em conta** | Contas nomeadas vão para representantes nomeados | Movimentos de ABM, contas estratégicas |
+| **Baseado em habilidade** | Roteia por complexidade de negócio, linha de produto, ou idioma | Linhas de produto diversas, times globais |
 
-### Marketing-to-Sales Automations
+### Essenciais das Regras de Roteamento
 
-- **MQL alert** — Instant notification to assigned rep with lead context
-- **Meeting booked** — Notify AE when prospect books via scheduling tool
-- **Lead activity digest** — Daily summary of high-intent actions by active leads
-- **Re-engagement trigger** — Alert sales when a dormant lead returns to site
+- Roteie para a **combinação mais específica** primeiro, depois recorra ao geral
+- Inclua um **dono de fallback** — leads não atribuídos esfriam rápido e desperdiçam pipeline
+- O rodízio deve considerar **capacidade e disponibilidade do representante** (férias, atingimento de cota)
+- Registre toda decisão de roteamento para auditoria e otimização
 
-### Calendar Scheduling Integration
+### Velocidade de Resposta ao Lead
 
-- **Round-robin scheduling** — Distribute meetings evenly across team
-- **Routing by criteria** — Send enterprise leads to senior AEs, SMB to junior reps
-- **Pre-meeting enrichment** — Auto-populate CRM record before the call
-- **No-show workflows** — Auto-follow-up if prospect misses meeting
+O tempo de resposta é o maior fator isolado na conversão de lead:
 
-**For platform-specific workflow recipes**: See [references/automation-playbooks.md](references/automation-playbooks.md)
+- Contato em até **5 minutos** = 21x mais chance de qualificar (Lead Connect)
+- Depois de **30 minutos**, a conversão cai 10x
+- Depois de **24 horas**, o lead está efetivamente frio
 
----
+Construa regras de roteamento que priorizem velocidade. Alerte representantes imediatamente. Escale se o SLA for perdido.
 
-## Deal Desk Processes
-
-### When You Need a Deal Desk
-
-- ACV above **$25K** (or your threshold for non-standard deals)
-- Non-standard payment terms (net-90, quarterly billing)
-- Multi-year contracts with custom pricing
-- Volume discounts beyond published tiers
-- Custom legal terms or SLAs
-
-### Approval Workflow Tiers
-
-| Deal Size | Approval Required |
-|-----------|-------------------|
-| Standard pricing | Auto-approved |
-| 10-20% discount | Sales manager |
-| 20-40% discount | VP Sales |
-| 40%+ discount or custom terms | Deal desk review |
-| Multi-year / enterprise | Finance + Legal |
-
-### Non-Standard Terms Handling
-
-Document every exception. Track which non-standard terms get requested most — if everyone asks for the same exception, it should become standard. Review quarterly.
+**Para árvores de decisão de roteamento e configuração específica de plataforma**: veja [references/routing-rules.md](references/routing-rules.md)
 
 ---
 
-## Data Hygiene & Enrichment
+## Gestão de Estágio de Pipeline
 
-### Dedup Strategy
+### Estágios de Pipeline
 
-- **Matching rules** — Email domain + company name + phone as primary match keys
-- **Merge priority** — CRM record wins over marketing automation; most recent activity wins for fields
-- **Scheduled dedup** — Run weekly automated dedup with manual review for edge cases
+| Estágio | Campos Obrigatórios | Critério de Saída |
+|---------|-----------------------|----------------------|
+| **Qualificado** | Dado de contato, empresa, fonte, pontuação de fit | Call de descoberta agendada |
+| **Descoberta** | Pontos de dor, solução atual, prazo | Necessidades confirmadas, demo agendada |
+| **Demo/Avaliação** | Requisitos técnicos, tomadores de decisão | Avaliação positiva, proposta solicitada |
+| **Proposta** | Preço, termos, mapa de stakeholder | Proposta entregue e revisada |
+| **Negociação** | Ajustes de contrato, cadeia de aprovação, data de fechamento | Termos acordados, contrato enviado |
+| **Fechado Ganho** | Contrato assinado, termos de pagamento | Handoff para CS completo |
+| **Fechado Perdido** | Motivo de perda, concorrente (se houver) | Post-mortem registrado |
 
-### Required Fields Enforcement
+### Higiene de Estágio
 
-- Enforce required fields at each lifecycle stage
-- Block stage advancement if fields are empty
-- Use progressive profiling — don't require everything upfront
+- **Campos obrigatórios por estágio** — Não deixe representantes avançarem um negócio sem preencher dado obrigatório
+- **Alertas de negócio parado** — Sinalize negócios que ficam em um estágio além do tempo médio (ex.: 2x os dias médios)
+- **Detecção de pulo de estágio** — Alerte quando negócios pulam estágios (Qualificado → Proposta pulando Descoberta)
+- **Disciplina de data de fechamento** — Adiamentos de data precisam ter um motivo; sem adiamentos silenciosos
 
-### Enrichment Tools
+### Métricas de Pipeline
 
-| Tool | Strength |
-|------|----------|
-| Clearbit | Real-time enrichment, good for tech companies |
-| Apollo | Contact data + sequences, strong for prospecting |
-| ZoomInfo | Enterprise-grade, largest B2B database |
-
-### Quarterly Audit Checklist
-
-- Review and merge duplicates
-- Validate email deliverability on stale contacts
-- Archive contacts with no activity in 12+ months
-- Audit lifecycle stage distribution (look for bottlenecks)
-- Verify enrichment data accuracy on a sample set
-
----
-
-## RevOps Metrics Dashboard
-
-### Key Metrics
-
-| Metric | Formula / Definition | Benchmark |
-|--------|---------------------|-----------|
-| Lead-to-MQL rate | MQLs / Total leads | 5-15% |
-| MQL-to-SQL rate | SQLs / MQLs | 30-50% |
-| SQL-to-Opportunity | Opportunities / SQLs | 50-70% |
-| Pipeline velocity | (# deals x avg deal size x win rate) / avg sales cycle | Varies by ACV |
-| CAC | Total sales + marketing spend / new customers | LTV:CAC > 3:1 |
-| LTV:CAC ratio | Customer lifetime value / CAC | 3:1 to 5:1 healthy |
-| Speed-to-lead | Time from form fill to first rep contact | < 5 minutes ideal |
-| Win rate | Closed-won / total opportunities | 20-30% (varies) |
-
-### Dashboard Structure
-
-Build three views:
-1. **Marketing view** — Lead volume, MQL rate, source attribution, cost per MQL
-2. **Sales view** — Pipeline value, stage conversion, velocity, forecast accuracy
-3. **Executive view** — CAC, LTV:CAC, revenue vs. target, pipeline coverage
+| Métrica | O Que Ela Te Diz |
+|---------|-------------------|
+| Taxas de conversão por estágio | Onde os negócios morrem |
+| Tempo médio em estágio | Onde os negócios empacam |
+| Velocidade de pipeline | Receita por dia atravessando o funil |
+| Taxa de cobertura | Valor de pipeline vs. cota (meta 3-4x) |
+| Taxa de vitória por fonte | Quais canais produzem receita de verdade |
 
 ---
 
-## Output Format
+## Workflows de Automação de CRM
 
-When delivering RevOps recommendations, provide:
+### Automações Essenciais
 
-1. **Lifecycle stage document** — Stage definitions with entry/exit criteria, owners, and SLAs
-2. **Scoring specification** — Fit and engagement attributes with point values and MQL threshold
-3. **Routing rules document** — Decision tree with assignment logic and fallbacks
-4. **Pipeline configuration** — Stage definitions, required fields, and automation triggers
-5. **Metrics dashboard spec** — Key metrics, data sources, and target benchmarks
+- **Atualizações de estágio de ciclo de vida** — Avança estágios automaticamente quando critérios são atendidos
+- **Criação de tarefa no handoff** — Cria tarefa de acompanhamento quando MQL é atribuído a um representante
+- **Alertas de SLA** — Notifica gestor se o representante perde o SLA de tempo de resposta
+- **Gatilhos de estágio de negócio** — Envia propostas automaticamente, atualiza forecasts, notifica CS no fechamento
 
-Format each as a standalone document the user can implement directly. Include platform-specific guidance when the CRM is known.
+### Automações de Marketing para Vendas
+
+- **Alerta de MQL** — Notificação instantânea ao representante designado com contexto do lead
+- **Reunião agendada** — Notifica o AE quando o prospect agenda via ferramenta de agendamento
+- **Resumo de atividade de lead** — Resumo diário de ações de alta intenção por leads ativos
+- **Gatilho de reengajamento** — Alerta vendas quando um lead adormecido retorna ao site
+
+### Integração de Agendamento de Calendário
+
+- **Agendamento em rodízio** — Distribui reuniões igualmente entre o time
+- **Roteamento por critério** — Envia leads enterprise para AEs seniores, PMEs para representantes juniores
+- **Enriquecimento pré-reunião** — Preenche automaticamente o registro no CRM antes da call
+- **Workflows de não-comparecimento** — Acompanhamento automático se o prospect faltar à reunião
+
+**Para receitas de workflow específicas de plataforma**: veja [references/automation-playbooks.md](references/automation-playbooks.md)
 
 ---
 
-## Task-Specific Questions
+## Processos de Deal Desk
 
-1. What CRM platform are you using (or planning to use)?
-2. How many leads per month do you generate?
-3. What's your current MQL definition?
-4. Where do leads get stuck in your funnel?
-5. Do you have SLAs between marketing and sales today?
+### Quando Você Precisa de um Deal Desk
+
+- ACV acima de **R$ 125 mil** (ou seu limiar para negócios não-padrão)
+- Termos de pagamento não-padrão (net-90, faturamento trimestral)
+- Contratos multi-anuais com preço customizado
+- Descontos de volume além das camadas publicadas
+- Termos legais ou SLAs customizados
+
+### Camadas de Workflow de Aprovação
+
+| Tamanho do Negócio | Aprovação Necessária |
+|----------------------|--------------------------|
+| Preço padrão | Auto-aprovado |
+| Desconto de 10-20% | Gestor de vendas |
+| Desconto de 20-40% | VP de Vendas |
+| Desconto de 40%+ ou termos customizados | Revisão do deal desk |
+| Multi-anual / enterprise | Financeiro + Jurídico |
+
+### Tratamento de Termos Não-Padrão
+
+Documente toda exceção. Rastreie quais termos não-padrão são mais solicitados — se todo mundo pede a mesma exceção, ela deveria virar padrão. Revise trimestralmente.
 
 ---
 
-## Tool Integrations
+## Higiene e Enriquecimento de Dado
 
-For implementation, see the [tools registry](https://github.com/coreyhaines31/marketingskills/blob/main/tools/REGISTRY.md). Key RevOps tools:
+### Estratégia de Dedup
 
-| Tool | What It Does | Guide |
+- **Regras de correspondência** — Domínio de e-mail + nome da empresa + telefone como chaves de correspondência primárias
+- **Prioridade de merge** — Registro do CRM vence sobre automação de marketing; atividade mais recente vence para campos
+- **Dedup agendado** — Rode dedup automatizado semanal com revisão manual para casos de borda
+
+### Aplicação de Campos Obrigatórios
+
+- Aplique campos obrigatórios em cada estágio de ciclo de vida
+- Bloqueie o avanço de estágio se campos estiverem vazios
+- Use profiling progressivo — não exija tudo de uma vez
+
+### Ferramentas de Enriquecimento
+
+| Ferramenta | Força |
+|------------|--------|
+| Clearbit | Enriquecimento em tempo real, bom para empresas de tecnologia |
+| Apollo | Dado de contato + sequências, forte para prospecção |
+| ZoomInfo | Nível enterprise, maior base de dados B2B |
+
+### Checklist de Auditoria Trimestral
+
+- Revise e faça merge de duplicatas
+- Valide entregabilidade de e-mail em contatos parados
+- Arquive contatos sem atividade em 12+ meses
+- Audite a distribuição de estágio de ciclo de vida (procure gargalos)
+- Verifique a precisão de dado de enriquecimento em uma amostra
+
+---
+
+## Dashboard de Métricas de RevOps
+
+### Métricas-Chave
+
+| Métrica | Fórmula / Definição | Benchmark |
+|---------|------------------------|-----------|
+| Taxa lead-para-MQL | MQLs / Total de leads | 5-15% |
+| Taxa MQL-para-SQL | SQLs / MQLs | 30-50% |
+| SQL-para-Oportunidade | Oportunidades / SQLs | 50-70% |
+| Velocidade de pipeline | (# negócios x tamanho médio de negócio x taxa de vitória) / ciclo de venda médio | Varia por ACV |
+| CAC | Gasto total de vendas + marketing / novos clientes | LTV:CAC > 3:1 |
+| Proporção LTV:CAC | Valor vitalício do cliente / CAC | 3:1 a 5:1 saudável |
+| Velocidade de resposta ao lead | Tempo do preenchimento do formulário ao primeiro contato do representante | < 5 minutos ideal |
+| Taxa de vitória | Fechado-ganho / total de oportunidades | 20-30% (varia) |
+
+### Estrutura de Dashboard
+
+Construa três visões:
+
+1. **Visão de marketing** — Volume de lead, taxa de MQL, atribuição de fonte, custo por MQL
+2. **Visão de vendas** — Valor de pipeline, conversão de estágio, velocidade, precisão de forecast
+3. **Visão executiva** — CAC, LTV:CAC, receita vs. meta, cobertura de pipeline
+
+---
+
+## Formato de Saída
+
+Ao entregar recomendações de RevOps, forneça:
+
+1. **Documento de estágio de ciclo de vida** — Definições de estágio com critério de entrada/saída, donos, e SLAs
+2. **Especificação de pontuação** — Atributos de fit e engajamento com valores de ponto e limiar de MQL
+3. **Documento de regras de roteamento** — Árvore de decisão com lógica de atribuição e fallbacks
+4. **Configuração de pipeline** — Definições de estágio, campos obrigatórios, e gatilhos de automação
+5. **Especificação de dashboard de métricas** — Métricas-chave, fontes de dado, e benchmarks-alvo
+
+Formate cada um como um documento independente que o usuário pode implementar diretamente. Inclua orientação específica de plataforma quando o CRM for conhecido.
+
+---
+
+## Perguntas Específicas da Tarefa
+
+1. Qual plataforma de CRM você está usando (ou planejando usar)?
+2. Quantos leads por mês você gera?
+3. Qual é sua definição atual de MQL?
+4. Onde os leads ficam presos no seu funil?
+5. Você tem SLAs entre marketing e vendas hoje?
+
+---
+
+## Integrações de Ferramenta
+
+Para implementação, veja o [registro de ferramentas](../../tools/REGISTRY.md). Principais ferramentas de RevOps:
+
+| Ferramenta | O Que Faz | Guia |
 |------|-------------|-------|
-| **HubSpot** | CRM, marketing automation, lead scoring, workflows | [hubspot.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/hubspot.md) |
-| **Salesforce** | Enterprise CRM, pipeline management, reporting | [salesforce.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/salesforce.md) |
-| **Calendly** | Meeting scheduling, round-robin routing | [calendly.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/calendly.md) |
-| **SavvyCal** | Scheduling with priority-based availability | [savvycal.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/savvycal.md) |
-| **Clearbit** | Real-time lead enrichment and scoring | [clearbit.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/clearbit.md) |
-| **Apollo** | Contact data, enrichment, and outbound sequences | [apollo.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/apollo.md) |
-| **ActiveCampaign** | Marketing automation for SMBs, lead scoring | [activecampaign.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/activecampaign.md) |
-| **Zapier** | Cross-tool automation and workflow glue | [zapier.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/zapier.md) |
-| **Introw** | Partner-sourced pipeline, commissions, deal registration, QBRs | [introw.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/introw.md) |
-| **Crossbeam** | Partner account overlaps and co-sell identification | [crossbeam.md](https://github.com/coreyhaines31/marketingskills/blob/main/tools/integrations/crossbeam.md) |
+| **HubSpot** | CRM, automação de marketing, pontuação de lead, workflows | [hubspot.md](../../tools/integrations/hubspot.md) |
+| **Salesforce** | CRM enterprise, gestão de pipeline, relatórios | [salesforce.md](../../tools/integrations/salesforce.md) |
+| **Calendly** | Agendamento de reunião, roteamento em rodízio | [calendly.md](../../tools/integrations/calendly.md) |
+| **SavvyCal** | Agendamento com disponibilidade baseada em prioridade | [savvycal.md](../../tools/integrations/savvycal.md) |
+| **Clearbit** | Enriquecimento e pontuação de lead em tempo real | [clearbit.md](../../tools/integrations/clearbit.md) |
+| **Apollo** | Dado de contato, enriquecimento, e sequências de outbound | [apollo.md](../../tools/integrations/apollo.md) |
+| **ActiveCampaign** | Automação de marketing para PMEs, pontuação de lead | [activecampaign.md](../../tools/integrations/activecampaign.md) |
+| **Zapier** | Automação entre ferramentas e cola de workflow | [zapier.md](../../tools/integrations/zapier.md) |
+| **Introw** | Pipeline vindo de parceiro, comissões, registro de deal, QBRs | [introw.md](../../tools/integrations/introw.md) |
+| **Crossbeam** | Sobreposições de conta de parceiro e identificação de co-venda | [crossbeam.md](../../tools/integrations/crossbeam.md) |
 
 ---
 
-## Related Skills
+## Skills Relacionadas
 
-- **cold-email**: For outbound prospecting emails
-- **emails**: For lifecycle and nurture email flows
-- **pricing**: For pricing decisions and packaging
-- **analytics**: For tracking pipeline metrics and attribution
-- **launch**: For go-to-market launch planning
-- **sales-enablement**: For sales collateral, decks, and objection handling
+- **cold-email**: Para e-mails de prospecção outbound
+- **emails**: Para fluxos de e-mail de ciclo de vida e nutrição
+- **pricing**: Para decisões de preço e empacotamento
+- **analytics**: Para rastrear métricas de pipeline e atribuição
+- **launch**: Para planejamento de lançamento go-to-market
+- **sales-enablement**: Para material de vendas, decks, e tratamento de objeção

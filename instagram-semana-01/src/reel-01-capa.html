@@ -1,0 +1,22 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="size" content="1080x1920">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400..800&display=block">
+<link rel="stylesheet" href="base.css">
+<style>
+/* capa do reel-01: o frame dos 9 s (cartão com 92%) sem a legenda, com o título por cima.
+   O frame vem de reel-01/renders/reel-01-9s.png (npx hyperframes snapshot --at 9). */
+:root { --w: 1080px; --h: 1920px; }
+body { background: var(--brand-strong); }
+.frame { position: absolute; left: 0; top: 0; width: 1080px; height: 1160px; overflow: hidden; }
+.frame img { display: block; width: 1080px; height: 1920px; }
+h1 {
+  position: absolute; left: 90px; right: 140px; top: 1150px;
+  font-size: 120px; font-weight: 800; line-height: 1; letter-spacing: -0.045em; color: var(--paper);
+  text-wrap: balance;
+}
+</style>
+</head><body>
+  <div class="frame"><img src="../reel-01/renders/reel-01-9s.png" alt=""></div>
+  <h1>Dividir apê é loteria?</h1>
+</body></html>

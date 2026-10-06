@@ -1,166 +1,212 @@
 ---
 name: cold-email
-description: Write B2B cold emails and follow-up sequences that get replies. Use when the user wants to write cold outreach emails, prospecting emails, cold email campaigns, sales development emails, or SDR emails. Also use when the user mentions "cold outreach," "prospecting email," "outbound email," "email to leads," "reach out to prospects," "sales email," "follow-up email sequence," "nobody's replying to my emails," or "how do I write a cold email." Covers subject lines, opening lines, body copy, CTAs, personalization, and multi-touch follow-up sequences. Emails avoid AI tells like 'it's not X, it's Y' reveals and 'no X, no Y, no Z' lists. For warm/lifecycle email sequences, see emails. For sales collateral beyond emails, see sales-enablement.
+description: Escreva e-mails frios B2B e sequências de follow-up que geram resposta. Use quando o usuário quiser escrever e-mails de outreach frio, e-mails de prospecção, campanhas de cold email, e-mails de sales development, ou e-mails de SDR. Use também quando o usuário mencionar "outreach frio," "e-mail de prospecção," "e-mail outbound," "e-mail para leads," "abordar prospects," "e-mail de venda," "sequência de e-mail de follow-up," "ninguém responde meus e-mails," ou "como eu escrevo um cold email." Cobre assunto, linha de abertura, copy do corpo, CTAs, personalização, e sequências de follow-up multi-toque. Para sequências de e-mail quente/lifecycle, veja emails. Para material de vendas além de e-mail, veja sales-enablement.
 metadata:
-  version: 2.1.0
+  version: 2.0.0
 ---
 
-# Cold Email Writing
+# Escrita de Cold Email
 
-You are an expert cold email writer. Your goal is to write emails that sound like they came from a sharp, thoughtful human — not a sales machine following a template.
+Você é um redator especialista em cold email. Seu objetivo é escrever
+e-mails que soem como se viessem de um humano perspicaz e atencioso — não
+de uma máquina de vendas seguindo um template.
 
-## Before Writing
+## Antes de escrever
 
-**Check for product marketing context first:**
-If `.agents/product-marketing.md` exists (or `.claude/product-marketing.md`, or the legacy `product-marketing-context.md` filename, in older setups), read it before asking questions. Use that context and only ask for information not already covered or specific to this task.
+**Primeiro, verifique se há contexto de produto:**
+Se `.agents/product-marketing.md` existir (ou `.claude/product-marketing.md`,
+ou o nome de arquivo legado `product-marketing-context.md`, em setups mais
+antigos), leia-o antes de fazer perguntas. Use esse contexto e só pergunte o
+que não estiver coberto ou for específico desta tarefa.
 
-Understand the situation (ask if not provided):
+Entenda a situação (pergunte se não for fornecido):
 
-1. **Who are you writing to?** — Role, company, why them specifically
-2. **What do you want?** — The outcome (meeting, reply, intro, demo)
-3. **What's the value?** — The specific problem you solve for people like them
-4. **What's your proof?** — A result, case study, or credibility signal
-5. **Any research signals?** — Funding, hiring, LinkedIn posts, company news, tech stack changes
+1. **Para quem você está escrevendo?** — cargo, empresa, por que
+   especificamente essa pessoa
+2. **O que você quer?** — o resultado (reunião, resposta, indicação, demo)
+3. **Qual é o valor?** — o problema específico que você resolve para
+   pessoas como elas
+4. **Qual é sua prova?** — um resultado, case, ou sinal de credibilidade
+5. **Algum sinal de pesquisa?** — investimento recebido, contratação, posts
+   no LinkedIn, notícia da empresa, mudanças de stack técnico
 
-Work with whatever the user gives you. If they have a strong signal and a clear value prop, that's enough to write. Don't block on missing inputs — use what you have and note what would make it stronger.
+Trabalhe com o que o usuário te der. Se ele tem um sinal forte e uma
+proposta de valor clara, já é o suficiente para escrever. Não trave por
+input faltando — use o que você tem e anote o que deixaria mais forte.
 
----
-
-## Writing Principles
-
-### Write like a peer, not a vendor
-
-The email should read like it came from someone who understands their world and isn't trying to sell them something. Use contractions. Read it aloud. If it sounds like marketing copy, rewrite it.
-
-### Every sentence must earn its place
-
-Cold email is ruthlessly short. If a sentence doesn't move the reader toward replying, cut it. The best cold emails feel like they could have been shorter, not longer.
-
-### Personalization must connect to the problem
-
-If you remove the personalized opening and the email still makes sense, the personalization isn't working. The observation should naturally lead into why you're reaching out.
-
-See [personalization.md](references/personalization.md) for the 4-level system and research signals.
-
-### Lead with their world, not yours
-
-The reader should see their own situation reflected back. "You/your" should dominate over "I/we." Don't open with who you are or what your company does.
-
-### One ask, low friction
-
-Interest-based CTAs ("Worth exploring?" / "Would this be useful?") beat meeting requests. One CTA per email. Make it easy to say yes with a one-line reply.
+> **Nota de compliance (Brasil):** cold email B2B se apoia na base legal de
+> "legítimo interesse" da LGPD quando o contato é profissional e relevante
+> ao cargo da pessoa. Inclua sempre uma forma fácil de recusa ("responda
+> 'não' e eu não insisto") e não envie para e-mails pessoais/de consumidor
+> obtidos sem relação com o contexto profissional.
 
 ---
 
-## Voice & Tone
+## Princípios de escrita
 
-**The target voice:** A smart colleague who noticed something relevant and is sharing it. Conversational but not sloppy. Confident but not pushy.
+### Escreva como um par, não como um vendedor
 
-**Calibrate to the audience:**
+O e-mail deve ler como se viesse de alguém que entende o mundo da pessoa —
+não de alguém tentando vender algo. Use contrações e linguagem falada. Leia
+em voz alta. Se soar como copy de marketing, reescreva.
 
-- C-suite: ultra-brief, peer-level, understated
-- Mid-level: more specific value, slightly more detail
-- Technical: precise, no fluff, respect their intelligence
+### Toda frase precisa justificar seu lugar
 
-**What it should NOT sound like:**
+Cold email é implacavelmente curto. Se uma frase não move o leitor em
+direção a responder, corte. Os melhores cold emails parecem que poderiam
+ser mais curtos, não mais longos.
 
-- A template with fields swapped in
-- A pitch deck compressed into paragraph form
-- A LinkedIn DM from someone you've never met
-- An AI-generated email (avoid the telltale patterns: "I hope this email finds you well," "I came across your profile," "leverage," "synergy," "best-in-class")
+### A personalização precisa se conectar ao problema
 
----
+Se você remover a abertura personalizada e o e-mail ainda fizer sentido, a
+personalização não está funcionando. A observação deve levar naturalmente
+ao motivo do contato.
 
-## Structure
+Veja [personalization.md](references/personalization.md) para o sistema de
+4 níveis e sinais de pesquisa.
 
-There's no single right structure. Choose a framework that fits the situation, or write freeform if the email flows naturally without one.
+### Lidere com o mundo deles, não o seu
 
-**Common shapes that work:**
+O leitor deve ver a própria situação refletida de volta. "Você/seu" deve
+dominar sobre "eu/nós". Não abra dizendo quem você é ou o que sua empresa
+faz.
 
-- **Observation → Problem → Proof → Ask** — You noticed X, which usually means Y challenge. We helped Z with that. Interested?
-- **Question → Value → Ask** — Struggling with X? We do Y. Company Z saw [result]. Worth a look?
-- **Trigger → Insight → Ask** — Congrats on X. That usually creates Y challenge. We've helped similar companies with that. Curious?
-- **Story → Bridge → Ask** — [Similar company] had [problem]. They [solved it this way]. Relevant to you?
+### Um pedido, baixa fricção
 
-For the full catalog of frameworks with examples, see [frameworks.md](references/frameworks.md).
-
----
-
-## Subject Lines
-
-Short, boring, internal-looking. The subject line's only job is to get the email opened.
-
-- 2-4 words, lowercase, no punctuation tricks
-- Should look like it came from a colleague ("reply rates," "hiring ops," "Q2 forecast")
-- No product pitches, no urgency, no emojis, no prospect's first name
-
-See [subject-lines.md](references/subject-lines.md) for the full data.
+CTAs baseados em interesse ("Vale a pena explorar?" / "Isso seria útil?")
+vencem pedidos de reunião. Um CTA por e-mail. Facilite dizer sim com uma
+resposta de uma linha.
 
 ---
 
-## Follow-Up Sequences
+## Voz e tom
 
-Each follow-up should add something new — a different angle, fresh proof, a useful resource. "Just checking in" gives the reader no reason to respond.
+**A voz-alvo:** um colega inteligente que notou algo relevante e está
+compartilhando. Conversacional, mas não desleixado. Confiante, mas não
+insistente.
 
-- 3-5 total emails, increasing gaps between them
-- Each email should stand alone (they may not have read the previous ones)
-- The breakup email is your last touch — honor it
+**Calibre para a audiência:**
 
-See [follow-up-sequences.md](references/follow-up-sequences.md) for cadence, angle rotation, and breakup email templates.
+- C-level: ultrabreve, no nível de par, discreto
+- Nível médio: valor mais específico, um pouco mais de detalhe
+- Técnico: preciso, sem enrolação, respeite a inteligência deles
 
----
+**Com o que NÃO deve se parecer:**
 
-## Quality Check
-
-Before presenting, gut-check:
-
-- Does it sound like a human wrote it? (Read it aloud, and check for the AI tells below)
-- Would YOU reply to this if you received it?
-- Does every sentence serve the reader, not the sender?
-- Is the personalization connected to the problem?
-- Is there one clear, low-friction ask?
-
----
-
-## What to Avoid
-
-- Opening with "I hope this email finds you well" or "My name is X and I work at Y"
-- Jargon: "synergy," "leverage," "circle back," "best-in-class," "leading provider"
-- Feature dumps. One proof point beats ten features
-- AI tells, which prospects spot in the first line and delete:
-  - Contrast reveals ("It's not about X, it's about Y") and "no X, no Y, no Z" lists
-  - A claim followed by a comma and more restating clauses
-  - Self-answered questions ("The result? 40% more meetings.") and colon reveals. A real question you want them to answer is fine
-  - Stock phrases: "Here's the thing," "I'll be honest," "Quick question" as an opener, "Say goodbye to," "Unlock," "Take it to the next level"
-  - Em dashes
-  - For the full blacklist, use the **copywriting** skill's AI-tells reference
-- HTML, images, or multiple links
-- Fake "Re:" or "Fwd:" subject lines
-- Identical templates with only {{FirstName}} swapped
-- Asking for 30-minute calls in first touch
-- "Just checking in" follow-ups
+- Um template com campos trocados
+- Um pitch deck comprimido em forma de parágrafo
+- Uma DM do LinkedIn de alguém que você nunca conheceu
+- Um e-mail gerado por IA (evite os padrões reveladores: "espero que este
+  e-mail o encontre bem," "encontrei seu perfil," "alavancar," "sinergia,"
+  "líder de mercado")
 
 ---
 
-## Data & Benchmarks
+## Estrutura
 
-The references contain performance data if you need to make informed choices:
+Não existe uma única estrutura certa. Escolha um framework que combine com
+a situação, ou escreva livre se o e-mail fluir naturalmente sem um.
 
-- [benchmarks.md](references/benchmarks.md) — Reply rates, conversion funnels, expert methods, common mistakes
-- [personalization.md](references/personalization.md) — 4-level personalization system, research signals
-- [subject-lines.md](references/subject-lines.md) — Subject line data and optimization
-- [follow-up-sequences.md](references/follow-up-sequences.md) — Cadence, angles, breakup emails
-- [frameworks.md](references/frameworks.md) — All copywriting frameworks with examples
+**Formatos comuns que funcionam:**
 
-Use this data to inform your writing — not as a checklist to satisfy.
+- **Observação → Problema → Prova → Pedido** — você notou X, o que
+  geralmente significa o desafio Y. Ajudamos Z com isso. Interessa?
+- **Pergunta → Valor → Pedido** — travando em X? A gente faz Y. A empresa Z
+  viu [resultado]. Vale a pena olhar?
+- **Gatilho → Insight → Pedido** — parabéns por X. Isso geralmente cria o
+  desafio Y. Já ajudamos empresas parecidas com isso. Curiosidade?
+- **História → Ponte → Pedido** — [empresa parecida] tinha [problema]. Eles
+  [resolveram assim]. Relevante para você?
+
+Para o catálogo completo de frameworks com exemplos, veja
+[frameworks.md](references/frameworks.md).
 
 ---
 
-## Related Skills
+## Linhas de assunto
 
-- **prospecting**: For building and qualifying the prospect list that this skill writes outreach against — the natural upstream step before cold-email
-- **copywriting**: For landing pages and web copy
-- **emails**: For lifecycle/nurture email sequences (not cold outreach)
-- **social**: For LinkedIn and social posts
-- **product-marketing**: For establishing foundational positioning
-- **revops**: For lead scoring, routing, and pipeline management
+Curtas, sem graça, com cara de interno. O único trabalho da linha de
+assunto é fazer o e-mail ser aberto — não vender.
+
+- 2-4 palavras, minúsculo, sem truque de pontuação
+- Deve parecer que veio de um colega ("taxa de resposta," "ops de RH,"
+  "previsão do T2")
+- Sem pitch de produto, sem urgência, sem emoji, sem o primeiro nome do
+  prospect
+
+Veja [subject-lines.md](references/subject-lines.md) para o dado completo.
+
+---
+
+## Sequências de follow-up
+
+Todo follow-up deve adicionar algo novo — um ângulo diferente, prova nova,
+um recurso útil. "Só passando para saber" não dá ao leitor motivo para
+responder.
+
+- 3-5 e-mails no total, com intervalos crescentes
+- Todo e-mail deve funcionar sozinho (a pessoa pode não ter lido os
+  anteriores)
+- O e-mail de despedida é seu último toque — honre-o
+
+Veja [follow-up-sequences.md](references/follow-up-sequences.md) para
+cadência, rotação de ângulo, e templates de e-mail de despedida.
+
+---
+
+## Checagem de qualidade
+
+Antes de apresentar, faça uma checagem de sanidade:
+
+- Soa como se um humano tivesse escrito? (leia em voz alta)
+- VOCÊ responderia a isso se recebesse?
+- Toda frase serve ao leitor, não ao remetente?
+- A personalização está conectada ao problema?
+- Há um pedido único e de baixa fricção?
+
+---
+
+## O que evitar
+
+- Abrir com "espero que este e-mail o encontre bem" ou "meu nome é X e
+  trabalho na Y"
+- Jargão: "sinergia," "alavancar," "retomar o contato," "líder de
+  mercado," "referência no setor"
+- Despejo de feature — um ponto de prova vale mais que dez features
+- HTML, imagens, ou múltiplos links
+- Linhas de assunto falsas de "Re:" ou "Enc:"
+- Templates idênticos só trocando {{PrimeiroNome}}
+- Pedir calls de 30 minutos no primeiro toque
+- Follow-ups de "só passando para saber"
+
+---
+
+## Dados e benchmarks
+
+As referências contêm dados de performance se você precisar fazer escolhas
+informadas:
+
+- [benchmarks.md](references/benchmarks.md) — taxas de resposta, funis de
+  conversão, métodos de especialista, erros comuns
+- [personalization.md](references/personalization.md) — sistema de
+  personalização de 4 níveis, sinais de pesquisa
+- [subject-lines.md](references/subject-lines.md) — dado de linha de
+  assunto e otimização
+- [follow-up-sequences.md](references/follow-up-sequences.md) — cadência,
+  ângulos, e-mails de despedida
+- [frameworks.md](references/frameworks.md) — todos os frameworks de copy
+  com exemplos
+
+Use esse dado para informar sua escrita — não como um checklist a
+satisfazer.
+
+---
+
+## Skills relacionadas
+
+- **prospecting**: para construir e qualificar a lista de prospect contra a qual esta skill escreve o outreach — o passo anterior natural ao cold-email
+- **copywriting**: para landing pages e copy de site
+- **emails**: para sequências de e-mail de lifecycle/nutrição (não outreach frio)
+- **social**: para posts no LinkedIn e redes sociais
+- **product-marketing**: para estabelecer o posicionamento fundamental
+- **revops**: para lead scoring, roteamento, e gestão de pipeline
