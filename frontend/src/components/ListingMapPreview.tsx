@@ -13,13 +13,14 @@ const defaultIcon = L.icon({
   iconAnchor: [12, 41],
 })
 
-export default function ListingMapPreview({ latitude, longitude }: { latitude: number; longitude: number }) {
+/** Mapa estático do anúncio. `heightClass` muda a altura (padrão h-40). */
+export default function ListingMapPreview({ latitude, longitude, heightClass = 'h-40' }: { latitude: number; longitude: number; heightClass?: string }) {
   return (
     <div className="overflow-hidden rounded-lg border border-line">
       <MapContainer
         center={[latitude, longitude]}
         zoom={15}
-        className="h-40 w-full"
+        className={`${heightClass} w-full`}
         dragging={false}
         scrollWheelZoom={false}
         doubleClickZoom={false}

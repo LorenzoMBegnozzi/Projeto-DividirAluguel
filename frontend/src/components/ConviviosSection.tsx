@@ -81,7 +81,7 @@ export default function ConviviosSection() {
   }
 
   return (
-    <Card className="mx-auto mt-6 max-w-2xl">
+    <Card>
       <h2 className="mb-1 text-h3 text-ink">Convívios e avaliações</h2>
       <p className="mb-4 text-caption text-ink-3">
         Só é possível avaliar quem já morou com você. Para registrar um novo convívio, acesse o perfil da pessoa

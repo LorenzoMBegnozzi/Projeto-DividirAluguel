@@ -142,9 +142,11 @@ public class DiscoveryService {
      * não aparece no texto livre digitado pelo anunciante (ex.: "Zona 7") — removemos o zero
      * à esquerda dos dois lados antes de comparar.
      */
+    /** "Zona 07" = "zona 7"; "Jardim Universitário" = "jardim universitario" (sem acento e espaço duplo). */
     private String normalizeLocation(String value) {
         if (value == null) return null;
-        return value.trim().toLowerCase().replaceAll("(?<![0-9])0+(?=[0-9])", "");
+        String noAccents = java.text.Normalizer.normalize(value, java.text.Normalizer.Form.NFD).replaceAll("\\p{M}", "");
+        return noAccents.trim().toLowerCase().replaceAll("\\s+", " ").replaceAll("(?<![0-9])0+(?=[0-9])", "");
     }
 
     private void requireRenter(Long userId) {

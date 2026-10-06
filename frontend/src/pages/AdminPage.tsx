@@ -43,7 +43,7 @@ import { paymentMethodLabels } from '../api/billing'
 import type { PaymentStatus, PaymentType } from '../types'
 import { apiErrorMessage } from '../api/client'
 import { formatDateTime, formatMoney } from '../utils/format'
-import { Alert, Badge, Button, Card, EmptyState, chipClass, cx, fieldClass, pageTitleClass } from '../components/ui'
+import { Alert, Badge, Button, Card, EmptyState, Page, PageHeader, chipClass, cx, fieldClass } from '../components/ui'
 import type { BadgeTone } from '../components/ui'
 import { confirmDialog } from '../components/ConfirmDialog'
 
@@ -61,12 +61,11 @@ export default function AdminPage() {
   const [tab, setTab] = useState<Tab>('RESUMO')
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
-      <h1 className={cx(pageTitleClass, 'mb-1 flex items-center gap-2')}>
-        <ShieldCheck className="size-7 text-brand" aria-hidden="true" />
-        Administração
-      </h1>
-      <p className="mb-6 text-small text-ink-3">Visão geral, denúncias, contas, anúncios e pagamentos. Toda ação fica registrada no log.</p>
+    <Page>
+      <PageHeader
+        title={<span className="flex items-center gap-2"><ShieldCheck className="size-7 text-brand" aria-hidden="true" />Administração</span>}
+        description="Visão geral, denúncias, contas, anúncios e pagamentos. Toda ação fica registrada no log."
+      />
 
       <div role="tablist" className="mb-6 flex gap-1 overflow-x-auto border-b border-line">
         {TABS.map(({ value, label, icon: Icon }) => (
@@ -91,7 +90,7 @@ export default function AdminPage() {
       {tab === 'USUARIOS' && <UsersTab />}
       {tab === 'ANUNCIOS' && <ListingsTab />}
       {tab === 'PAGAMENTOS' && <PaymentsTab />}
-    </div>
+    </Page>
   )
 }
 
@@ -170,11 +169,12 @@ function DashboardTab({ onOpen }: { onOpen: (tab: Tab) => void }) {
         <>
           <KpiCards data={data} />
           <AttentionList data={data} onOpen={onOpen} />
-          <div className="grid gap-5 md:grid-cols-2">
+          {/* tela larga: os dois gráficos e a tabela de bairros lado a lado */}
+          <div className="grid gap-5 md:grid-cols-2 2xl:grid-cols-3">
             <SignupsChart weeks={data.signupsByWeek} />
             <RevenueBreakdown data={data} />
+            <div className="md:col-span-2 2xl:col-span-1"><NeighborhoodsTable rows={data.topNeighborhoods} /></div>
           </div>
-          <NeighborhoodsTable rows={data.topNeighborhoods} />
         </>
       )}
     </div>

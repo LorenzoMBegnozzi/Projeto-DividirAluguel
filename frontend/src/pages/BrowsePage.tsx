@@ -4,58 +4,35 @@ import { browseEstablishments, browseRoommates, startConversation, startConversa
 import { getInterestStatus, getInterestedPeople, markInterest, unmarkInterest, type InterestStatus } from '../api/interest'
 import { getListingPhotos } from '../api/listings'
 import { apiErrorMessage } from '../api/client'
-import {
-  Banknote,
-  ChevronLeft,
-  ChevronRight,
-  Cigarette,
-  CigaretteOff,
-  GraduationCap,
-  Heart,
-  Home,
-  LayoutGrid,
-  List,
-  MapPin,
-  MapPinned,
-  PawPrint,
-  Salad,
-  Star,
-  Users,
-  X,
-} from 'lucide-react'
-import Fact from '../components/Fact'
-import PropertyFacts from '../components/PropertyFacts'
-import ListingMapPreview from '../components/ListingMapPreview'
-import CompatScore from '../components/CompatScore'
-import LocationAutocomplete from '../components/LocationAutocomplete'
+import { ChevronLeft, ChevronRight, Heart, MapPinned, SlidersHorizontal, Users, X } from 'lucide-react'
 import PickLocationModal from '../components/PickLocationModal'
+import ListingRow from '../components/browse/ListingRow'
 import PhotoLightbox from '../components/PhotoLightbox'
 import { useAuth } from '../context/AuthContext'
-import { dietLabels, genderLabels, genderPreferenceLabels, petPreferenceLabels, smokingHabitLabels } from '../constants/profileOptions'
-import Avatar from '../components/Avatar'
-import { formatResidents } from '../utils/format'
+import type { ReactNode } from 'react'
 import type { BrowseItem, UserProfile } from '../types'
-import { Alert, Badge, Button, Card, EmptyState, cx, fieldClass, focusRing, pageTitleClass } from '../components/ui'
+import { Alert, Button, Card, EmptyState, SegmentedControl, Select, Sheet, Skeleton, cx, focusRing, pageTitleClass } from '../components/ui'
+import FilterPanel from '../components/browse/FilterPanel'
+import { effectiveRange, priceStats, rangeLabel } from '../components/browse/price'
+import { activeFilterCount, amenityLabels, applyFilters, availableFacets, hiddenByProfile, profileRules, sortItems, sortLabels, type FilterState, type SortKey } from '../components/browse/filters'
+import { useBrowseFilters } from '../components/browse/useBrowseFilters'
 
-type Tab = 'ROOMMATES' | 'ESTABLISHMENTS'
-type ViewMode = 'list' | 'grid'
 
 /** Quantos anúncios mostrar por página: carregar tudo de uma vez pesa a tela com muitas fotos e mapas. */
-const PAGE_SIZE = 10
+const PAGE_SIZE = 12
 
 export default function BrowsePage() {
   const navigate = useNavigate()
   const { user } = useAuth()
-  const [tab, setTab] = useState<Tab>('ROOMMATES')
-  // No computador (a partir do breakpoint md, onde a grade tem 2 colunas) começa em grade; no celular, em lista.
-  const [viewMode, setViewMode] = useState<ViewMode>(() =>
-    window.matchMedia('(min-width: 768px)').matches ? 'grid' : 'list',
-  )
-  const [bairro, setBairro] = useState('')
-  const [precoMax, setPrecoMax] = useState('')
-  const [mapPoint, setMapPoint] = useState<{ lat: number; lng: number } | null>(null)
+  // filtros ficam no endereço (voltar de um anúncio mantém a busca)
+  const filters = useBrowseFilters()
+  const { tab, bairro, mapPoint } = filters
+  const [sheetOpen, setSheetOpen] = useState(false)
   const [showMapPicker, setShowMapPicker] = useState(false)
   const [items, setItems] = useState<BrowseItem[]>([])
+  // bairros e faculdades já vistos nos anúncios (sugestões do campo "Onde", sem API); acumula,
+  // para a lista não encolher depois que um bairro é escolhido
+  const [places, setPlaces] = useState<Record<string, Record<string, 'Bairro' | 'Faculdade'>>>({})  // por aba
   const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -74,12 +51,7 @@ export default function BrowsePage() {
     const timeout = setTimeout(load, 300)
     return () => clearTimeout(timeout)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tab, bairro, mapPoint, precoMax])
-
-  function handleBairroChange(value: string) {
-    setBairro(value)
-    setMapPoint(null)
-  }
+  }, [tab, bairro, mapPoint?.lat, mapPoint?.lng])
 
   function load() {
     setLoading(true)
@@ -93,20 +65,93 @@ export default function BrowsePage() {
       bairro: mapPoint ? undefined : bairro.trim() || undefined,
       lat: mapPoint?.lat,
       lng: mapPoint?.lng,
-      precoMax: precoMax ? Number(precoMax) : undefined,
     }
     const request = tab === 'ROOMMATES' ? browseRoommates(filters) : browseEstablishments(filters)
     request
-      .then(setItems)
+      .then((list) => {
+        setItems(list)
+        setPlaces((prev) => {
+          const next = { ...prev[tab] }
+          for (const { listing } of list) {
+            if (listing.preferredNeighborhood?.trim()) next[listing.preferredNeighborhood.trim()] ??= 'Bairro'
+            if (listing.nearCollege?.trim()) next[listing.nearCollege.trim()] ??= 'Faculdade'
+          }
+          return { ...prev, [tab]: next }
+        })
+      })
       .catch((err) => setError(apiErrorMessage(err, 'Não foi possível carregar os anúncios')))
       .finally(() => setLoading(false))
   }
 
-  const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE))
-  const pageItems = useMemo(
-    () => items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
-    [items, page],
+  // Filtros de escolha + regras do cadastro, aplicados aqui mesmo sobre a lista do servidor:
+  // tudo responde na hora (a barra de valor muda a lista enquanto a alça anda).
+  const stats = useMemo(() => priceStats(items.flatMap((i) => (i.listing.price != null ? [Number(i.listing.price)] : []))), [items])
+  const price = effectiveRange(filters.price, stats)
+  const state: FilterState = {
+    price, priceIsOpenEnded: !!price && !!stats && price[1] >= stats.max,
+    compatMin: filters.compatMin, slotsMin: filters.slotsMin, onlyMyGender: filters.onlyMyGender,
+    bedroomsMin: filters.bedroomsMin, bathroomsMin: filters.bathroomsMin, garage: filters.garage,
+    pets: filters.pets, smoker: filters.smoker, amenities: filters.amenities, matchProfile: filters.matchProfile,
+  }
+  const rules = useMemo(() => profileRules(user), [user])
+  const myGender = user?.gender ?? null
+  const stateKey = JSON.stringify(state)
+  const visible = useMemo(
+    () => sortItems(applyFilters(items, state, rules, myGender), filters.sort),
+    [items, stateKey, rules, myGender, filters.sort], // eslint-disable-line react-hooks/exhaustive-deps
   )
+  const facets = useMemo(() => availableFacets(items), [items])
+  const count = (change: Partial<FilterState>) => applyFilters(items, { ...state, ...change }, rules, myGender).length
+  const hidden = hiddenByProfile(items, state, rules, myGender)
+  const activeCount = activeFilterCount(state, !!bairro || !!mapPoint)
+  // mudou qualquer filtro ou a ordem: volta para a 1ª página
+  const filterKey = stateKey + filters.sort
+  const [lastFilterKey, setLastFilterKey] = useState(filterKey)
+  if (filterKey !== lastFilterKey) { setLastFilterKey(filterKey); setPage(1) }
+
+  const totalPages = Math.max(1, Math.ceil(visible.length / PAGE_SIZE))
+  const pageItems = useMemo(
+    () => visible.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    [visible, page],
+  )
+
+  // chips do que está valendo (cada um com o seu "x")
+  const chips: Array<{ key: string; label: string; remove: () => void; icon?: typeof MapPinned }> = []
+  if (mapPoint) chips.push({ key: 'mapa', label: bairro || 'Perto do ponto no mapa', icon: MapPinned, remove: () => filters.setMapPoint(null) })
+  else if (bairro) chips.push({ key: 'bairro', label: bairro, remove: () => filters.setBairro('') })
+  if (price && stats) chips.push({ key: 'valor', label: rangeLabel(price, stats), remove: () => filters.setPrice(null) })
+  if (state.compatMin) chips.push({ key: 'compat', label: `${state.compatMin}%+ compatível`, remove: () => filters.setCompatMin(0) })
+  if (state.slotsMin) chips.push({ key: 'vagas', label: `${state.slotsMin}+ vagas livres`, remove: () => filters.setSlotsMin(0) })
+  if (state.onlyMyGender) chips.push({ key: 'exclusiva', label: myGender === 'FEMININO' ? 'Só mulheres' : 'Só homens', remove: () => filters.setOnlyMyGender(false) })
+  if (state.bedroomsMin) chips.push({ key: 'dorm', label: `${state.bedroomsMin}+ dormitórios`, remove: () => filters.setBedroomsMin(0) })
+  if (state.bathroomsMin) chips.push({ key: 'banh', label: `${state.bathroomsMin}+ banheiros`, remove: () => filters.setBathroomsMin(0) })
+  if (state.garage) chips.push({ key: 'garagem', label: 'Garagem', remove: () => filters.setGarage(false) })
+  if (state.pets) chips.push({ key: 'pet', label: 'Aceita pet', remove: () => filters.setPets(false) })
+  if (state.smoker) chips.push({ key: 'fumante', label: 'Aceita fumante', remove: () => filters.setSmoker(false) })
+  for (const a of state.amenities) chips.push({ key: a, label: amenityLabels[a], remove: () => filters.toggleAmenity(a) })
+
+  const placeOptions = useMemo(
+    () => Object.entries(places[tab] ?? {}).sort(([a], [b]) => a.localeCompare(b, 'pt-BR', { numeric: true })).map(([label, hint]) => ({ label, hint })),
+    [places, tab],
+  )
+  const panel = (
+    <FilterPanel
+      f={filters}
+      state={state}
+      stats={stats}
+      priceMatching={applyFilters(items, state, rules, myGender).length}
+      facets={facets}
+      count={count}
+      rules={rules}
+      hidden={hidden}
+      myGender={myGender}
+      onOpenMap={() => setShowMapPicker(true)}
+      placeOptions={placeOptions}
+      onClear={filters.clearAll}
+      activeCount={activeCount}
+    />
+  )
+  const results = visible.length === 1 ? '1 anúncio' : `${visible.length} anúncios`
 
   // Só busca fotos/interesse de quem está na página atual — não da lista inteira de uma vez.
   useEffect(() => {
@@ -216,84 +261,67 @@ export default function BrowsePage() {
   }
 
   return (
-    <div className={`mx-auto px-4 py-8 transition-[max-width] ${viewMode === 'grid' ? 'max-w-5xl' : 'max-w-2xl'}`}>
-      <h1 className={cx('mb-1', pageTitleClass)}>Buscar</h1>
-      <p className="mb-4 text-small text-ink-3">Ordenado pela sua compatibilidade.</p>
+    <div className="mx-auto w-full max-w-400 px-4 py-6 lg:px-8">
+      <div className="mb-5 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+        <div>
+          <h1 className={cx('mb-1', pageTitleClass)}>Buscar</h1>
+          <p className="text-small text-ink-3" aria-live="polite">
+            {loading ? 'Procurando…' : `${results} em Maringá${filters.sort === 'compat' ? ', os mais compatíveis primeiro' : ''}`}
+            {!loading && visible.length !== items.length && <span className="text-ink-3"> · {items.length} no total</span>}
+          </p>
+        </div>
+        <SegmentedControl
+          label="O que você procura"
+          className="w-full sm:w-96"
+          value={tab}
+          onChange={filters.setTab}
+          options={[
+            { value: 'ROOMMATES', label: 'Busco uma vaga' },
+            { value: 'ESTABLISHMENTS', label: 'Busco um imóvel' },
+          ]}
+        />
+      </div>
       {tab === 'ROOMMATES' && !user?.gender && (
         <Alert tone="info" className="mb-4">
           Informe seu sexo no perfil para ver também as vagas exclusivas para homens ou mulheres.
         </Alert>
       )}
 
-      <div className="mb-6 flex gap-2">
-        <Button
-          onClick={() => setTab('ROOMMATES')}
-          variant={tab === 'ROOMMATES' ? 'inverse' : 'secondary'}
-          className="flex-1"
-        >
-          Busco uma vaga
-        </Button>
-        <Button
-          onClick={() => setTab('ESTABLISHMENTS')}
-          variant={tab === 'ESTABLISHMENTS' ? 'inverse' : 'secondary'}
-          className="flex-1"
-        >
-          Busco um imóvel
-        </Button>
-        <Button
-          onClick={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')}
-          title={viewMode === 'list' ? 'Ver em grade' : 'Ver em lista'}
-          aria-label={viewMode === 'list' ? 'Ver em grade' : 'Ver em lista'}
-          variant="secondary"
-          icon={viewMode === 'list' ? LayoutGrid : List}
-          className="shrink-0"
-        />
-      </div>
-
-      <div className={`flex flex-col gap-3 sm:flex-row ${mapPoint ? 'mb-2' : 'mb-6'}`}>
-        <div className="flex flex-1 gap-2">
-          <div className="flex-1">
-            <LocationAutocomplete
-              value={bairro}
-              onChange={handleBairroChange}
-              onSelectPlace={(place) => setMapPoint({ lat: place.lat, lng: place.lon })}
-              placeholder="Bairro ou faculdade"
-              className={fieldClass()}
-            />
+      <div className="lg:grid lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[320px_minmax(0,1fr)]">
+        {/* computador: filtros numa coluna fixa à esquerda */}
+        <aside className="hidden lg:block" aria-label="Filtros">
+          <div className="sticky top-20 max-h-[calc(100dvh-6rem)] overflow-y-auto overscroll-contain rounded-xl border border-line bg-surface p-5 shadow-sm">
+            {panel}
           </div>
-          <Button
-            onClick={() => setShowMapPicker(true)}
-            title="Marcar local no mapa"
-            aria-label="Marcar local no mapa"
-            variant="secondary"
-            icon={MapPinned}
-            className="shrink-0"
-          />
-        </div>
-        <input
-          value={precoMax}
-          onChange={(e) => setPrecoMax(e.target.value)}
-          type="number"
-          min="0"
-          placeholder="Orçamento máximo (R$)"
-          className={cx(fieldClass(), 'flex-1')}
-        />
-      </div>
+        </aside>
 
-      {mapPoint && (
-        <div className="mb-6 flex items-center gap-1.5 text-caption text-ink-3">
-          <MapPinned className="size-3.5 shrink-0" aria-hidden="true" />
-          Mostrando lugares perto do ponto marcado no mapa
-          <button
-            type="button"
-            onClick={() => setMapPoint(null)}
-            className={cx('ml-1 inline-flex items-center gap-1 rounded-sm font-semibold text-ink-2 hover:text-danger', focusRing)}
-          >
-            <X className="size-3.5" aria-hidden="true" />
-            limpar
-          </button>
-        </div>
-      )}
+        <div className="min-w-0">
+          {/* barra de ferramentas: filtros (celular), o que está valendo (chips), ordenar e lista/grade.
+              No celular os chips descem para a linha de baixo. */}
+          <div className="flex flex-wrap items-center gap-2">
+            <Button variant="secondary" icon={SlidersHorizontal} onClick={() => setSheetOpen(true)} className="lg:hidden">
+              Filtros{activeCount > 0 && <span className="ml-0.5 grid size-5 place-items-center rounded-full bg-brand text-micro font-bold text-on-brand">{activeCount}</span>}
+            </Button>
+            <div className="order-last flex basis-full flex-wrap items-center gap-2 empty:hidden lg:order-none lg:flex-1 lg:basis-auto">
+              {chips.map((c) => <FilterChip key={c.key} icon={c.icon} onRemove={c.remove}>{c.label}</FilterChip>)}
+              {chips.length >= 2 && (
+                <button type="button" onClick={filters.clearAll} className={cx('min-h-8 rounded-sm px-1 text-caption font-semibold text-ink-3 hover:text-danger', focusRing)}>
+                  Limpar filtros
+                </button>
+              )}
+            </div>
+            <Select
+              label="Ordenar por"
+              hideLabel
+              value={filters.sort}
+              onChange={(e) => filters.setSort(e.target.value as SortKey)}
+              className="text-small"
+              wrapperClassName="min-w-0 flex-1 sm:ml-auto sm:flex-none sm:w-52"
+            >
+              {(Object.keys(sortLabels) as SortKey[]).map((k) => <option key={k} value={k}>{sortLabels[k]}</option>)}
+            </Select>
+          </div>
+          <div className="mb-5" />
 
       {lightbox && <PhotoLightbox photos={lightbox} onClose={() => setLightbox(null)} />}
 
@@ -301,8 +329,7 @@ export default function BrowsePage() {
         <PickLocationModal
           onClose={() => setShowMapPicker(false)}
           onConfirm={(lat, lng) => {
-            setMapPoint({ lat, lng })
-            setBairro('')
+            filters.setMapPoint({ lat, lng })
             setShowMapPicker(false)
           }}
         />
@@ -311,205 +338,116 @@ export default function BrowsePage() {
       {error && <Alert tone="danger" className="mb-4">{error}</Alert>}
 
       {loading ? (
-        <div className="p-8 text-center text-ink-3">Carregando…</div>
-      ) : items.length === 0 ? (
-        <EmptyState title="Ainda não há anúncios ativos nessa categoria. Volte mais tarde!" />
-      ) : (
-        <div ref={resultsRef}>
-        <div className={viewMode === 'grid' ? 'grid grid-cols-1 gap-4 md:grid-cols-2' : 'flex flex-col gap-4'}>
-          {pageItems.map((item) => (
-            <Card key={item.listing.id} padding="sm" className="flex flex-col sm:p-5">
-              {(listingPhotos[item.listing.id] ?? []).length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => setLightbox(listingPhotos[item.listing.id])}
-                  aria-label="Ver fotos do anúncio"
-                  className={cx('relative mb-3 block h-40 w-full overflow-hidden rounded-lg', focusRing)}
-                >
-                  <img src={listingPhotos[item.listing.id][0]} alt="" className="h-full w-full object-cover" />
-                  {listingPhotos[item.listing.id].length > 1 && (
-                    <span className="absolute bottom-2 right-2 rounded-sm bg-scrim px-2 py-0.5 text-caption font-bold text-on-inverse">
-                      {listingPhotos[item.listing.id].length} fotos
-                    </span>
-                  )}
-                </button>
-              )}
-              <div className="mb-3 flex items-start justify-between gap-3">
-                <div className="flex min-w-0 items-center gap-3">
-                  <Avatar photoUrl={item.user.photoUrl} name={item.user.name} size={44} />
-                  <div className="min-w-0">
-                    <h2 className="truncate text-h3 text-ink">
-                      {tab === 'ROOMMATES' ? item.user.name : item.listing.title}
-                    </h2>
-                    <p className="truncate text-caption text-ink-3">
-                      {tab === 'ROOMMATES' ? item.user.occupation : item.user.name}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex shrink-0 flex-col items-end gap-1.5">
-                  <CompatScore score={item.compatibilityScore} />
-                  {item.listing.highlighted && (
-                    <Badge tone="warning" icon={Star}>
-                      Destaque
-                    </Badge>
-                  )}
-                </div>
+        <div className="flex flex-col gap-4" aria-busy="true">
+          <span className="sr-only">Carregando…</span>
+          {[0, 1, 2, 3].map((i) => (
+            <Card key={i} padding="none" className="flex flex-col overflow-hidden sm:min-h-66 sm:flex-row">
+              <Skeleton className="aspect-16/10 shrink-0 rounded-none sm:aspect-auto sm:w-64 md:w-80 lg:w-64 xl:w-100" />
+              <div className="flex flex-1 flex-col gap-3 p-4 sm:p-6">
+                <div className="flex justify-between gap-4"><div className="flex-1 space-y-2"><Skeleton className="h-5 w-3/5" /><Skeleton className="h-4 w-2/5" /></div><Skeleton className="h-12 w-20" /></div>
+                <Skeleton className="h-3 w-4/5" />
+                <Skeleton className="h-3 w-1/2" />
+                <div className="mt-auto flex items-end justify-between"><Skeleton className="h-8 w-32" /><Skeleton className="h-11 w-36" /></div>
               </div>
-
-              {tab === 'ROOMMATES' && item.user.bio && <p className="mb-3 text-body text-ink-2">{item.user.bio}</p>}
-
-              {tab === 'ROOMMATES' && (
-                <div className="mb-3 flex flex-wrap gap-x-3 gap-y-1 text-caption text-ink-3">
-                  {item.user.gender && <Fact icon={Users}>{genderLabels[item.user.gender]}</Fact>}
-                  {item.user.smokingHabit && <Fact icon={Cigarette}>{smokingHabitLabels[item.user.smokingHabit]}</Fact>}
-                  {item.user.diet && (
-                    <Fact icon={Salad}>
-                      {item.user.diet === 'OUTRO' && item.user.dietOther ? item.user.dietOther : dietLabels[item.user.diet]}
-                    </Fact>
-                  )}
-                  {item.user.petPreferences.length > 0 && (
-                    <Fact icon={PawPrint}>
-                      {item.user.petPreferences.map((p) => petPreferenceLabels[p]).join(', ')}
-                    </Fact>
-                  )}
-                </div>
-              )}
-
-              {tab === 'ESTABLISHMENTS' && (
-                <div className="mb-3 flex flex-wrap gap-x-3 gap-y-1 text-caption text-ink-3">
-                  {item.listing.acceptsPets != null && (
-                    <Fact icon={PawPrint}>{item.listing.acceptsPets ? 'Aceita animais' : 'Não aceita animais'}</Fact>
-                  )}
-                  {item.listing.acceptsSmoker != null && (
-                    <Fact icon={item.listing.acceptsSmoker ? Cigarette : CigaretteOff}>
-                      {item.listing.acceptsSmoker ? 'Aceita fumantes' : 'Não aceita fumantes'}
-                    </Fact>
-                  )}
-                </div>
-              )}
-
-              <p className="mb-3 text-body text-ink-2">
-                <strong className="text-ink">{item.listing.title}</strong>
-                {item.listing.description && <span className="block">{item.listing.description}</span>}
-              </p>
-
-              <div className="mb-3 flex flex-wrap gap-x-3 gap-y-1 text-caption text-ink-3">
-                {item.listing.preferredNeighborhood && <Fact icon={MapPin}>{item.listing.preferredNeighborhood}</Fact>}
-                {item.listing.nearCollege && <Fact icon={GraduationCap}>Perto de {item.listing.nearCollege}</Fact>}
-                {item.listing.price != null && (
-                  <Fact icon={Banknote}>
-                    <span className="tabular-nums">R$ {item.listing.price}</span>
-                  </Fact>
-                )}
-                {tab === 'ROOMMATES' && item.listing.genderPreference !== 'QUALQUER' && (
-                  <Fact icon={Users}>{genderPreferenceLabels[item.listing.genderPreference]}</Fact>
-                )}
-                {item.listing.availableSlots != null && (
-                  <Fact icon={Users}>
-                    {item.listing.availableSlots} {item.listing.availableSlots === 1 ? 'vaga disponível' : 'vagas disponíveis'}
-                  </Fact>
-                )}
-                {formatResidents(item.listing.currentResidentsMale, item.listing.currentResidentsFemale) && (
-                  <Fact icon={Home}>{formatResidents(item.listing.currentResidentsMale, item.listing.currentResidentsFemale)}</Fact>
-                )}
-                <PropertyFacts listing={item.listing} />
-              </div>
-
-              {item.listing.latitude != null && item.listing.longitude != null && (
-                <div className="mb-3">
-                  <ListingMapPreview latitude={item.listing.latitude} longitude={item.listing.longitude} />
-                  {item.listing.address && <p className="mt-1 text-caption text-ink-3">{item.listing.address}</p>}
-                </div>
-              )}
-
-              {tab === 'ESTABLISHMENTS' ? (
-                <>
-                  <div className="mb-2 flex gap-2">
-                    <Button
-                      onClick={() => handleConversar(item.listing.id)}
-                      disabled={startingId === item.listing.id}
-                      className="flex-1"
-                    >
-                      {startingId === item.listing.id ? 'Abrindo…' : 'Conversar com o dono'}
-                    </Button>
-                    <Button
-                      onClick={() => handleToggleInterest(item.listing.id)}
-                      disabled={togglingInterestId === item.listing.id}
-                      variant="secondary"
-                      className={cx(
-                        'shrink-0 gap-1.5 px-3',
-                        interestStatus[item.listing.id]?.interested && 'border-brand bg-brand-tint text-brand-strong hover:border-brand',
-                      )}
-                    >
-                      <Heart
-                        className="size-4"
-                        aria-hidden="true"
-                        fill={interestStatus[item.listing.id]?.interested ? 'currentColor' : 'none'}
-                      />
-                      {interestStatus[item.listing.id]?.interested ? 'Interessado' : 'Tenho interesse'}
-                    </Button>
-                  </div>
-
-                  {interestStatus[item.listing.id]?.interested && interestStatus[item.listing.id]?.total === 1 && (
-                    <p className="mt-1 flex items-center gap-1 text-caption font-semibold text-ink-3">
-                      <Users className="size-3.5" aria-hidden="true" />
-                      Você é o único interessado até o momento
-                    </p>
-                  )}
-
-                  {(interestStatus[item.listing.id]?.total ?? 0) > (interestStatus[item.listing.id]?.interested ? 1 : 0) && (
-                    <div className="mt-1">
-                      <button
-                        onClick={() => handleToggleExpanded(item.listing.id)}
-                        className={cx('flex items-center gap-1 rounded-sm text-caption font-semibold text-ink-3 hover:text-brand', focusRing)}
-                      >
-                        <Users className="size-3.5" aria-hidden="true" />
-                        {(interestStatus[item.listing.id]?.total ?? 0) - (interestStatus[item.listing.id]?.interested ? 1 : 0)} pessoa(s){' '}
-                        {interestStatus[item.listing.id]?.interested ? 'também se interessaram' : 'se interessaram'}
-                      </button>
-
-                      {expandedListingId === item.listing.id && (
-                        <Card tone="sunk" padding="sm" className="mt-2 flex flex-col gap-2">
-                          {loadingPeopleId === item.listing.id ? (
-                            <p className="text-caption text-ink-3">Carregando…</p>
-                          ) : (interestedPeople[item.listing.id] ?? []).length === 0 ? (
-                            <p className="text-caption text-ink-3">Ninguém mais se interessou ainda.</p>
-                          ) : (
-                            interestedPeople[item.listing.id]?.map((person) => (
-                              <div key={person.id} className="flex items-center justify-between gap-2">
-                                <button
-                                  onClick={() => navigate(`/usuarios/${person.id}`)}
-                                  className={cx('rounded-sm text-small font-semibold text-ink hover:text-brand hover:underline', focusRing)}
-                                >
-                                  {person.name}
-                                </button>
-                                <Button
-                                  onClick={() => handleConversarComInteressado(item.listing.id, person.id)}
-                                  disabled={startingPeerId === person.id}
-                                  variant="secondary"
-                                  size="sm"
-                                >
-                                  {startingPeerId === person.id ? 'Abrindo…' : 'Conversar'}
-                                </Button>
-                              </div>
-                            ))
-                          )}
-                        </Card>
-                      )}
-                    </div>
-                  )}
-                </>
-              ) : (
-                <Button
-                  onClick={() => handleConversar(item.listing.id)}
-                  disabled={startingId === item.listing.id}
-                  full
-                >
-                  {startingId === item.listing.id ? 'Abrindo…' : 'Conversar'}
-                </Button>
-              )}
             </Card>
           ))}
+        </div>
+      ) : items.length === 0 ? (
+        <EmptyState title="Ainda não há anúncios ativos nessa categoria. Volte mais tarde!" />
+      ) : visible.length === 0 ? (
+        <EmptyState
+          title="Nenhum anúncio com esses filtros."
+          action={<Button variant="secondary" size="sm" onClick={filters.clearAll}>Limpar filtros</Button>}
+        >
+          {hidden > 0 ? `${hidden} ${hidden === 1 ? 'foi escondido' : 'foram escondidos'} por não combinar com o seu perfil.` : 'Tente tirar algum filtro ou aumentar a faixa de valor.'}
+        </EmptyState>
+      ) : (
+        <div ref={resultsRef}>
+        <div className="flex flex-col gap-4">
+          {pageItems.map((item) => {
+            const id = item.listing.id
+            const status = interestStatus[id]
+            const others = (status?.total ?? 0) - (status?.interested ? 1 : 0)
+            return (
+              <ListingRow
+                key={id}
+                item={item}
+                kind={tab === 'ROOMMATES' ? 'vaga' : 'imovel'}
+                photos={listingPhotos[id]}
+                onOpenPhotos={() => setLightbox(listingPhotos[id])}
+                actions={tab === 'ESTABLISHMENTS' ? (
+                  <>
+                    <Button
+                      onClick={() => handleToggleInterest(id)}
+                      disabled={togglingInterestId === id}
+                      variant="secondary"
+                      className={cx('gap-1.5 px-3', status?.interested && 'border-brand bg-brand-tint text-brand-strong hover:border-brand')}
+                    >
+                      <Heart className="size-4" aria-hidden="true" fill={status?.interested ? 'currentColor' : 'none'} />
+                      {status?.interested ? 'Interessado' : 'Tenho interesse'}
+                    </Button>
+                    <Button onClick={() => handleConversar(id)} disabled={startingId === id}>
+                      {startingId === id ? 'Abrindo…' : 'Conversar com o dono'}
+                    </Button>
+                  </>
+                ) : (
+                  <Button onClick={() => handleConversar(id)} disabled={startingId === id}>
+                    {startingId === id ? 'Abrindo…' : 'Conversar'}
+                  </Button>
+                )}
+                below={tab === 'ESTABLISHMENTS' && (
+                  <>
+                    {status?.interested && status.total === 1 && (
+                      <p className="flex items-center gap-1 text-caption font-semibold text-ink-3">
+                        <Users className="size-3.5" aria-hidden="true" />
+                        Você é o único interessado até o momento
+                      </p>
+                    )}
+                    {others > 0 && (
+                      <div>
+                        <button
+                          onClick={() => handleToggleExpanded(id)}
+                          className={cx('flex items-center gap-1 rounded-sm text-caption font-semibold text-ink-3 hover:text-brand', focusRing)}
+                        >
+                          <Users className="size-3.5" aria-hidden="true" />
+                          {others} pessoa(s){' '}
+                          {status?.interested ? 'também se interessaram' : 'se interessaram'}
+                        </button>
+                        {expandedListingId === id && (
+                          <Card tone="sunk" padding="sm" className="mt-2 flex flex-col gap-2">
+                            {loadingPeopleId === id ? (
+                              <p className="text-caption text-ink-3">Carregando…</p>
+                            ) : (interestedPeople[id] ?? []).length === 0 ? (
+                              <p className="text-caption text-ink-3">Ninguém mais se interessou ainda.</p>
+                            ) : (
+                              interestedPeople[id]?.map((person) => (
+                                <div key={person.id} className="flex items-center justify-between gap-2">
+                                  <button
+                                    onClick={() => navigate(`/usuarios/${person.id}`)}
+                                    className={cx('rounded-sm text-small font-semibold text-ink hover:text-brand hover:underline', focusRing)}
+                                  >
+                                    {person.name}
+                                  </button>
+                                  <Button
+                                    onClick={() => handleConversarComInteressado(id, person.id)}
+                                    disabled={startingPeerId === person.id}
+                                    variant="secondary"
+                                    size="sm"
+                                  >
+                                    {startingPeerId === person.id ? 'Abrindo…' : 'Conversar'}
+                                  </Button>
+                                </div>
+                              ))
+                            )}
+                          </Card>
+                        )}
+                      </div>
+                    )}
+                  </>
+                )}
+              />
+            )
+          })}
         </div>
 
         {totalPages > 1 && (
@@ -535,6 +473,36 @@ export default function BrowsePage() {
         )}
         </div>
       )}
+        </div>
+      </div>
+
+      {/* celular: os mesmos filtros numa gaveta */}
+      <Sheet
+        open={sheetOpen}
+        onClose={() => setSheetOpen(false)}
+        title="Filtros"
+        footer={<Button full onClick={() => setSheetOpen(false)}>Ver {results}</Button>}
+      >
+        {panel}
+      </Sheet>
     </div>
+  )
+}
+
+/** Filtro ativo: rótulo + botão de remover (44 px de toque em tela de toque). */
+function FilterChip({ children, onRemove, icon: Icon }: { children: ReactNode; onRemove: () => void; icon?: typeof MapPinned }) {
+  return (
+    <span className="inline-flex h-8 max-w-full items-center gap-1.5 rounded-full border border-brand bg-brand-tint pl-3 text-caption font-semibold text-brand-strong motion-safe:animate-[chip-in_var(--dur-base)_var(--ease-spring)]">
+      {Icon && <Icon className="size-3.5 shrink-0" aria-hidden="true" />}
+      <span className="truncate">{children}</span>
+      <button
+        type="button"
+        onClick={onRemove}
+        aria-label={`Remover filtro: ${typeof children === 'string' ? children : 'filtro'}`}
+        className={cx('grid size-8 shrink-0 place-items-center rounded-full hover:bg-brand hover:text-on-brand pointer-coarse:-my-1.5 pointer-coarse:size-11', focusRing)}
+      >
+        <X className="size-3.5" aria-hidden="true" />
+      </button>
+    </span>
   )
 }

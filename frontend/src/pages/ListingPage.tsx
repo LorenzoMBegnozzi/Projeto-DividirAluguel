@@ -48,6 +48,10 @@ import InterestSection from '../components/InterestSection'
 import MarkUnavailableModal from '../components/MarkUnavailableModal'
 import {
   Alert,
+  Columns,
+  EmptyState,
+  Page,
+  PageHeader,
   Badge,
   Button,
   Card,
@@ -59,7 +63,6 @@ import {
   focusRing,
   hintClass,
   labelClass,
-  pageTitleClass,
 } from '../components/ui'
 import { genderPreferenceLabels, genderPreferenceOptions, parkingLayoutOptions } from '../constants/profileOptions'
 import type { GenderPreference, Listing, ListingType, ParkingLayout, Plan } from '../types'
@@ -273,151 +276,8 @@ export default function ListingPage() {
   const needsExtraCredit = freeSlotsFull && plan.extraCredits > 0
   const mustBuyExtra = freeSlotsFull && plan.extraCredits === 0
 
-  return (
-    <div className="mx-auto max-w-2xl px-4 py-8">
-      <h1 className={cx(pageTitleClass, 'mb-1')}>Meus anúncios</h1>
-      <p className="mb-6 text-small text-ink-3">
-        {plan
-          ? `${plan.freeListingsUsed} de ${plan.freeListings} anúncios grátis em uso. A partir do ${plan.freeListings + 1}º, cada anúncio extra custa ${formatMoney(plan.extraListingPrice)} por ${plan.extraListingDays} dias.`
-          : 'Carregando...'}
-      </p>
-
-      {listError && <Alert tone="danger" className="mb-4">{listError}</Alert>}
-
-      {!loadingList && listings.length > 0 && (
-        <div className="mb-8 flex flex-col gap-3">
-          {listings.map((listing) => {
-            const expanded = expandedId === listing.id
-            return (
-              <Card key={listing.id} padding="sm">
-                <div className="flex items-start justify-between gap-3">
-                  <button
-                    onClick={() => setExpandedId(expanded ? null : listing.id)}
-                    className={cx('flex-1 rounded-md text-left', focusRing)}
-                  >
-                    <div className="mb-1 flex flex-wrap items-center gap-1.5">
-                      <Badge>{listing.type === 'TEM_VAGA' ? 'Tenho vaga' : 'Estabelecimento'}</Badge>
-                      {!listing.available && (
-                        <Badge tone="inverse">
-                          Indisponível{listing.dealClosedWithUserName ? ` · alugado para ${listing.dealClosedWithUserName}` : ''}
-                        </Badge>
-                      )}
-                      {(interestCounts[listing.id] ?? 0) > 0 && (
-                        <Badge tone="brand">
-                          <Heart className="size-3.5 shrink-0" aria-hidden="true" fill="currentColor" />
-                          {interestCounts[listing.id]} {interestCounts[listing.id] === 1 ? 'interessado' : 'interessados'}
-                        </Badge>
-                      )}
-                      {listing.expiresAt && (
-                        <Badge tone="brand" icon={Clock}>
-                          Extra até {formatDate(listing.expiresAt)}
-                        </Badge>
-                      )}
-                      {listing.highlighted && listing.highlightedUntil && (
-                        <Badge tone="warning" icon={Star}>
-                          Destaque até {formatDate(listing.highlightedUntil)}
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="flex items-center gap-1 text-body font-semibold text-ink">
-                      {listing.title}
-                      {expanded ? (
-                        <ChevronUp className="size-4 shrink-0 text-ink-3" aria-hidden="true" />
-                      ) : (
-                        <ChevronDown className="size-4 shrink-0 text-ink-3" aria-hidden="true" />
-                      )}
-                    </p>
-                    {listing.preferredNeighborhood && <p className="text-caption text-ink-3">{listing.preferredNeighborhood}</p>}
-                  </button>
-                  <div className="flex shrink-0 flex-col items-end gap-2">
-                    <div className="flex items-center gap-1">
-                      {listing.available ? (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setUnavailableModalListing(listing)}
-                          className="hover:text-brand!"
-                        >
-                          Marcar indisponível
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleMarkAvailable(listing.id)}
-                          className="hover:text-leaf!"
-                        >
-                          Marcar disponível
-                        </Button>
-                      )}
-                      <Button variant="ghost" size="sm" onClick={() => handleDelete(listing.id)} className="hover:text-danger!">
-                        Remover
-                      </Button>
-                    </div>
-                    {plan && (
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        icon={Star}
-                        onClick={() => handleHighlight(listing.id)}
-                        className="text-mel! hover:bg-mel-tint"
-                      >
-                        Destacar · {formatMoney(plan.highlightPrice)} / {plan.highlightDays} dias
-                      </Button>
-                    )}
-                  </div>
-                </div>
-
-                {expanded && (
-                  <div className="mt-3 border-t border-line pt-3">
-                    {listing.description && <p className="mb-2 text-body text-ink-2">{listing.description}</p>}
-                    <div className="mb-3 flex flex-wrap gap-x-3 gap-y-1 text-caption text-ink-3">
-                      {listing.preferredNeighborhood && <Fact icon={MapPin}>{listing.preferredNeighborhood}</Fact>}
-                      {listing.nearCollege && <Fact icon={GraduationCap}>Perto de {listing.nearCollege}</Fact>}
-                      {listing.price != null && (
-                        <Fact icon={Banknote}>
-                          <span className="tabular-nums">R$ {listing.price}</span>
-                        </Fact>
-                      )}
-                      {listing.availableSlots != null && (
-                        <Fact icon={Users}>
-                          {listing.availableSlots} {listing.availableSlots === 1 ? 'vaga disponível' : 'vagas disponíveis'}
-                        </Fact>
-                      )}
-                      {formatResidents(listing.currentResidentsMale, listing.currentResidentsFemale) && (
-                        <Fact icon={Home}>{formatResidents(listing.currentResidentsMale, listing.currentResidentsFemale)}</Fact>
-                      )}
-                      {listing.type === 'TEM_VAGA' && listing.genderPreference !== 'QUALQUER' && (
-                        <Fact icon={Users}>{genderPreferenceLabels[listing.genderPreference]}</Fact>
-                      )}
-                      {listing.acceptsPets != null && (
-                        <Fact icon={PawPrint}>{listing.acceptsPets ? 'Aceita animais' : 'Não aceita animais'}</Fact>
-                      )}
-                      {listing.acceptsSmoker != null && (
-                        <Fact icon={listing.acceptsSmoker ? Cigarette : CigaretteOff}>
-                          {listing.acceptsSmoker ? 'Aceita fumantes' : 'Não aceita fumantes'}
-                        </Fact>
-                      )}
-                      <PropertyFacts listing={listing} />
-                    </div>
-                    {listing.latitude != null && listing.longitude != null && (
-                      <ListingMapPreview latitude={listing.latitude} longitude={listing.longitude} />
-                    )}
-                    {listing.type === 'ESTABELECIMENTO' && (
-                      <div className="mt-3">
-                        <InterestSection listingId={listing.id} isOwner />
-                      </div>
-                    )}
-                    <ListingPhotoManager listingId={listing.id} />
-                  </div>
-                )}
-              </Card>
-            )
-          })}
-        </div>
-      )}
-
-      {mustBuyExtra && plan ? (
+  const form = (
+    mustBuyExtra && plan ? (
         <Card>
           <h2 className="mb-1 text-h3 text-ink">Você usou seus {plan.freeListings} anúncios grátis</h2>
           <p className="mb-4 text-small text-ink-3">
@@ -603,7 +463,167 @@ export default function ListingPage() {
             {loading ? 'Salvando…' : 'Publicar anúncio'}
           </Button>
         </Card>
+      )
+  )
+
+  return (
+    <Page>
+      <PageHeader
+        title="Meus anúncios"
+        description={plan
+          ? `${plan.freeListingsUsed} de ${plan.freeListings} anúncios grátis em uso. A partir do ${plan.freeListings + 1}º, cada anúncio extra custa ${formatMoney(plan.extraListingPrice)} por ${plan.extraListingDays} dias.`
+          : 'Carregando...'}
+      />
+
+      {/* computador: anúncios à esquerda, formulário à direita (preso ao rolar, com rolagem própria);
+          celular: anúncios e depois o formulário, como antes */}
+      <Columns
+        side="right"
+        asideWidth="lg"
+        asideFirst={false}
+        aside={<div className="lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto lg:overscroll-contain lg:rounded-xl">{form}</div>}
+      >
+      {listError && <Alert tone="danger" className="mb-4">{listError}</Alert>}
+
+      {!loadingList && listings.length === 0 && !listError && (
+        <EmptyState title="Nenhum anúncio publicado ainda.">Use o formulário para publicar o primeiro.</EmptyState>
       )}
+
+      {!loadingList && listings.length > 0 && (
+        <div className="flex flex-col gap-3">
+          {listings.map((listing) => {
+            const expanded = expandedId === listing.id
+            return (
+              <Card key={listing.id} padding="sm">
+                {/* celular: ações abaixo do título, quebrando linha; a partir do sm, à direita */}
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <button
+                    onClick={() => setExpandedId(expanded ? null : listing.id)}
+                    className={cx('min-w-0 flex-1 rounded-md text-left', focusRing)}
+                  >
+                    <div className="mb-1 flex flex-wrap items-center gap-1.5">
+                      <Badge>{listing.type === 'TEM_VAGA' ? 'Tenho vaga' : 'Estabelecimento'}</Badge>
+                      {!listing.available && (
+                        <Badge tone="inverse">
+                          Indisponível{listing.dealClosedWithUserName ? ` · alugado para ${listing.dealClosedWithUserName}` : ''}
+                        </Badge>
+                      )}
+                      {(interestCounts[listing.id] ?? 0) > 0 && (
+                        <Badge tone="brand">
+                          <Heart className="size-3.5 shrink-0" aria-hidden="true" fill="currentColor" />
+                          {interestCounts[listing.id]} {interestCounts[listing.id] === 1 ? 'interessado' : 'interessados'}
+                        </Badge>
+                      )}
+                      {listing.expiresAt && (
+                        <Badge tone="brand" icon={Clock}>
+                          Extra até {formatDate(listing.expiresAt)}
+                        </Badge>
+                      )}
+                      {listing.highlighted && listing.highlightedUntil && (
+                        <Badge tone="warning" icon={Star}>
+                          Destaque até {formatDate(listing.highlightedUntil)}
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="flex items-center gap-1 text-body font-semibold text-ink">
+                      {listing.title}
+                      {expanded ? (
+                        <ChevronUp className="size-4 shrink-0 text-ink-3" aria-hidden="true" />
+                      ) : (
+                        <ChevronDown className="size-4 shrink-0 text-ink-3" aria-hidden="true" />
+                      )}
+                    </p>
+                    {listing.preferredNeighborhood && <p className="text-caption text-ink-3">{listing.preferredNeighborhood}</p>}
+                  </button>
+                  <div className="flex flex-wrap items-center gap-2 sm:shrink-0 sm:flex-col sm:items-end">
+                    <div className="flex flex-wrap items-center gap-1">
+                      {listing.available ? (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setUnavailableModalListing(listing)}
+                          className="hover:text-brand!"
+                        >
+                          Marcar indisponível
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleMarkAvailable(listing.id)}
+                          className="hover:text-leaf!"
+                        >
+                          Marcar disponível
+                        </Button>
+                      )}
+                      <Button variant="ghost" size="sm" onClick={() => handleDelete(listing.id)} className="hover:text-danger!">
+                        Remover
+                      </Button>
+                    </div>
+                    {plan && (
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        icon={Star}
+                        onClick={() => handleHighlight(listing.id)}
+                        className="text-mel! hover:bg-mel-tint"
+                      >
+                        Destacar · {formatMoney(plan.highlightPrice)} / {plan.highlightDays} dias
+                      </Button>
+                    )}
+                  </div>
+                </div>
+
+                {expanded && (
+                  <div className="mt-3 border-t border-line pt-3">
+                    {listing.description && <p className="mb-2 text-body text-ink-2">{listing.description}</p>}
+                    <div className="mb-3 flex flex-wrap gap-x-3 gap-y-1 text-caption text-ink-3">
+                      {listing.preferredNeighborhood && <Fact icon={MapPin}>{listing.preferredNeighborhood}</Fact>}
+                      {listing.nearCollege && <Fact icon={GraduationCap}>Perto de {listing.nearCollege}</Fact>}
+                      {listing.price != null && (
+                        <Fact icon={Banknote}>
+                          <span className="tabular-nums">R$ {listing.price}</span>
+                        </Fact>
+                      )}
+                      {listing.availableSlots != null && (
+                        <Fact icon={Users}>
+                          {listing.availableSlots} {listing.availableSlots === 1 ? 'vaga disponível' : 'vagas disponíveis'}
+                        </Fact>
+                      )}
+                      {formatResidents(listing.currentResidentsMale, listing.currentResidentsFemale) && (
+                        <Fact icon={Home}>{formatResidents(listing.currentResidentsMale, listing.currentResidentsFemale)}</Fact>
+                      )}
+                      {listing.type === 'TEM_VAGA' && listing.genderPreference !== 'QUALQUER' && (
+                        <Fact icon={Users}>{genderPreferenceLabels[listing.genderPreference]}</Fact>
+                      )}
+                      {listing.acceptsPets != null && (
+                        <Fact icon={PawPrint}>{listing.acceptsPets ? 'Aceita animais' : 'Não aceita animais'}</Fact>
+                      )}
+                      {listing.acceptsSmoker != null && (
+                        <Fact icon={listing.acceptsSmoker ? Cigarette : CigaretteOff}>
+                          {listing.acceptsSmoker ? 'Aceita fumantes' : 'Não aceita fumantes'}
+                        </Fact>
+                      )}
+                      <PropertyFacts listing={listing} />
+                    </div>
+                    {listing.latitude != null && listing.longitude != null && (
+                      <ListingMapPreview latitude={listing.latitude} longitude={listing.longitude} />
+                    )}
+                    {listing.type === 'ESTABELECIMENTO' && (
+                      <div className="mt-3">
+                        <InterestSection listingId={listing.id} isOwner />
+                      </div>
+                    )}
+                    <ListingPhotoManager listingId={listing.id} />
+                  </div>
+                )}
+              </Card>
+            )
+          })}
+        </div>
+      )}
+
+      </Columns>
 
       {unavailableModalListing && (
         <MarkUnavailableModal
@@ -613,6 +633,6 @@ export default function ListingPage() {
           onConfirm={handleConfirmUnavailable}
         />
       )}
-    </div>
+    </Page>
   )
 }

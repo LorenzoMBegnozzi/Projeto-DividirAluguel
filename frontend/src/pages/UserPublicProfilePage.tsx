@@ -18,7 +18,7 @@ import { useAuth } from '../context/AuthContext'
 import StarRating from '../components/StarRating'
 import ReportUserModal from '../components/ReportUserModal'
 import Avatar from '../components/Avatar'
-import { Alert, Button, Card, EmptyState, Input, fieldClass, labelClass } from '../components/ui'
+import { Alert, Button, Card, Columns, EmptyState, Input, Page, fieldClass, labelClass } from '../components/ui'
 import type { Avaliacao, AvaliacaoResumo, Convivio, ReportReason, UserProfile } from '../types'
 
 function formatDate(value: string) {
@@ -163,7 +163,9 @@ export default function UserPublicProfilePage() {
   const isSelf = currentUser?.id === user.id
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-8">
+    // computador: a pessoa numa coluna fixa à esquerda; convívio e avaliações à direita
+    <Page>
+      <Columns asideWidth="md" aside={(
       <Card>
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -199,7 +201,8 @@ export default function UserPublicProfilePage() {
         {blocked && <p className="mt-3 text-caption text-leaf">Você bloqueou {user.name}.</p>}
         {blockError && <p className="mt-3 text-caption text-danger">{blockError}</p>}
       </Card>
-
+      )}>
+      <div className="flex flex-col gap-6">
       {showReport && (
         <ReportUserModal
           userName={user.name}
@@ -211,7 +214,7 @@ export default function UserPublicProfilePage() {
       )}
 
       {!isSelf && (
-        <Card as="section" className="mt-6">
+        <Card as="section">
           <h2 className="mb-3 text-h3 text-ink">Convívio</h2>
 
           {!convivio && (
@@ -309,7 +312,7 @@ export default function UserPublicProfilePage() {
         </Card>
       )}
 
-      <Card as="section" className="mt-6">
+      <Card as="section">
         <h2 className="mb-3 text-h3 text-ink">Avaliações de quem já morou junto</h2>
         {!resumo || resumo.total === 0 ? (
           <EmptyState title="Ainda sem avaliações." />
@@ -360,6 +363,8 @@ export default function UserPublicProfilePage() {
           ))}
         </div>
       </Card>
-    </div>
+      </div>
+      </Columns>
+    </Page>
   )
 }

@@ -49,7 +49,7 @@ export default function CapabilitiesSection() {
   }
 
   return (
-    <Card className="mx-auto mt-6 max-w-2xl">
+    <Card>
       <h2 className="mb-1 text-h3 text-ink">Quero também...</h2>
       <p className="mb-4 text-small text-ink-3">Você pode ativar as duas coisas na mesma conta, sem precisar cadastrar de novo.</p>
 

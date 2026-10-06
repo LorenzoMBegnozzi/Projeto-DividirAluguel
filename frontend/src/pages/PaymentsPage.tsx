@@ -5,7 +5,7 @@ import { cancelPayment, getPayments, getPlan, paymentMethodLabels, simulatePayme
 import { apiErrorMessage } from '../api/client'
 import { formatDateTime, formatMoney } from '../utils/format'
 import type { Listing, Payment, PaymentStatus, Plan } from '../types'
-import { Alert, Badge, Button, Card, EmptyState, buttonClass, cx, kickerClass, pageTitleClass } from '../components/ui'
+import { Alert, Badge, Button, Card, Columns, EmptyState, Page, PageHeader, buttonClass, cx, kickerClass } from '../components/ui'
 import type { BadgeTone } from '../components/ui'
 
 const statusTone: Record<PaymentStatus, BadgeTone> = {
@@ -80,18 +80,20 @@ export default function PaymentsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-8">
-      <h1 className={cx(pageTitleClass, 'mb-1')}>Pagamentos</h1>
-      <p className="mb-6 text-small text-ink-3">Anúncios extras e destaques que você comprou.</p>
+    <Page>
+      <PageHeader title="Pagamentos" description="Anúncios extras e destaques que você comprou." />
 
+      {/* computador: avisos e resumo do plano à esquerda (presos ao rolar); histórico à direita */}
+      <Columns asideWidth="md" aside={(
+      <div className="flex flex-col gap-3">
       {plan?.paymentMode === 'SIMULADO' && (
-        <Alert tone="warning" icon={FlaskConical} className="mb-4">
+        <Alert tone="warning" icon={FlaskConical}>
           Ambiente de teste: os pagamentos são simulados. Use o botão "Simular pagamento" para confirmar — nenhuma
           cobrança real é feita.
         </Alert>
       )}
       {plan?.paymentMode === 'MERCADOPAGO' && (
-        <div className="mb-4 flex items-start gap-2.5 rounded-md bg-surface-sunk px-3.5 py-2.5 text-small text-ink-2">
+        <div className="flex items-start gap-2.5 rounded-md bg-surface-sunk px-3.5 py-2.5 text-small text-ink-2">
           <ShieldCheck className="mt-0.5 size-4 shrink-0 text-leaf" aria-hidden="true" />
           <span>
             Pagamento seguro pelo <strong className="text-ink">Mercado Pago</strong>: Pix, cartão de crédito ou débito. Os
@@ -100,10 +102,8 @@ export default function PaymentsPage() {
         </div>
       )}
 
-      {error && <Alert tone="danger" className="mb-4">{error}</Alert>}
-
       {plan && (
-        <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-1">
           <Card padding="sm">
             <p className={kickerClass}>Anúncios grátis</p>
             <p className="text-h3 tabular-nums text-ink">
@@ -116,6 +116,10 @@ export default function PaymentsPage() {
           </Card>
         </div>
       )}
+      </div>
+      )}>
+
+      {error && <Alert tone="danger" className="mb-4">{error}</Alert>}
 
       {payments.length === 0 ? (
         <EmptyState title="Você ainda não fez nenhuma compra.">
@@ -179,6 +183,7 @@ export default function PaymentsPage() {
           ))}
         </div>
       )}
-    </div>
+      </Columns>
+    </Page>
   )
 }

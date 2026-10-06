@@ -33,7 +33,7 @@ export default function NavBar() {
 
   return (
     <header className="sticky top-0 z-(--z-sticky) border-b border-line bg-surface">
-      <div className="mx-auto flex h-15 max-w-4xl items-center justify-between px-4">
+      <div className="mx-auto flex h-15 max-w-400 items-center justify-between px-4 lg:px-8">
         <LogoLink />
 
         <nav className="hidden items-center gap-0.5 lg:flex">

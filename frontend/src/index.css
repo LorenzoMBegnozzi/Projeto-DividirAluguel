@@ -292,3 +292,42 @@ body {
   overflow-x: hidden;
   overflow-x: clip;
 }
+
+/* ---------- barra de duas alças (components/ui/RangeSlider) ----------
+   Os dois inputs nativos ficam um sobre o outro e só a alça recebe toque. A alça tem 44 px de
+   área de toque; o desenho visível (miolo + anel azul) tem ~28 px. Foco: anel extra. */
+.range-input {
+  position: absolute; inset: 0; width: 100%; height: 100%; margin: 0;
+  appearance: none; -webkit-appearance: none; background: transparent; pointer-events: none;
+}
+.range-input::-webkit-slider-runnable-track { height: 100%; background: transparent; }
+.range-input::-moz-range-track { height: 100%; background: transparent; }
+.range-input::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none; pointer-events: auto; cursor: grab;
+  width: 44px; height: 44px; border: 0; border-radius: 50%;
+  background: radial-gradient(circle, var(--color-surface) 0 10px, var(--color-brand) 10.5px 14px, transparent 14.5px);
+  transition: transform var(--dur-fast) var(--ease-standard);
+}
+.range-input::-moz-range-thumb {
+  pointer-events: auto; cursor: grab;
+  width: 44px; height: 44px; border: 0; border-radius: 50%;
+  background: radial-gradient(circle, var(--color-surface) 0 10px, var(--color-brand) 10.5px 14px, transparent 14.5px);
+  transition: transform var(--dur-fast) var(--ease-standard);
+}
+.range-input:active::-webkit-slider-thumb { cursor: grabbing; transform: scale(1.12); }
+.range-input:active::-moz-range-thumb { cursor: grabbing; transform: scale(1.12); }
+.range-input:focus-visible { outline: none; }
+.range-input:focus-visible::-webkit-slider-thumb {
+  background: radial-gradient(circle, var(--color-surface) 0 10px, var(--color-brand) 10.5px 14px, var(--color-focus) 14.5px 17.5px, transparent 18px);
+}
+.range-input:focus-visible::-moz-range-thumb {
+  background: radial-gradient(circle, var(--color-surface) 0 10px, var(--color-brand) 10.5px 14px, var(--color-focus) 14.5px 17.5px, transparent 18px);
+}
+/* cada navegador numa regra: um seletor desconhecido invalidaria a regra inteira */
+@media (prefers-reduced-motion: reduce) {
+  .range-input::-webkit-slider-thumb { transition: none; }
+  .range-input::-moz-range-thumb { transition: none; }
+}
+
+/* entrada de chip de filtro (BrowsePage) */
+@keyframes chip-in { from { opacity: 0; transform: scale(0.85); } }

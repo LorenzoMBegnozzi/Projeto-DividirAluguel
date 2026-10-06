@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Ban, UserRound } from 'lucide-react'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { getConversation, getMessages, isOtherTyping, markTyping, sendMessage } from '../api/discovery'
 import { apiErrorMessage } from '../api/client'
 import { useAuth } from '../context/AuthContext'
 import Avatar from '../components/Avatar'
 import TypingIndicator from '../components/TypingIndicator'
+import ChatLayout from '../components/chat/ChatLayout'
+import { confirmDialog } from '../components/ConfirmDialog'
+import { blockUser } from '../api/moderation'
 import { Alert, Badge, Button, ButtonLink, Card, Skeleton, cardClass, cx, fieldClass } from '../components/ui'
 import type { ConversationSummary, Message } from '../types'
 
@@ -27,6 +30,7 @@ export default function ChatPage() {
   const [content, setContent] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [otherTyping, setOtherTyping] = useState(false)
+  const [blocked, setBlocked] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const lastTypingSentAt = useRef(0)
   const [messageListRef] = useAutoAnimate()
@@ -75,6 +79,24 @@ export default function ChatPage() {
     }
   }
 
+  // mesmo texto e mesma confirmação que a lista de conversas usava
+  async function handleBlock(userId: number) {
+    if (!(await confirmDialog({
+      title: 'Bloquear essa pessoa?',
+      description: 'Vocês não vão mais aparecer um para o outro e não poderão trocar novas mensagens.',
+      confirmLabel: 'Bloquear',
+      danger: true,
+    }))) {
+      return
+    }
+    try {
+      await blockUser(userId)
+      setBlocked(true)
+    } catch (err) {
+      setError(apiErrorMessage(err, 'Não foi possível bloquear'))
+    }
+  }
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     if (!conversationId || !content.trim()) return
@@ -89,9 +111,9 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="mx-auto flex h-[calc(100vh-124px)] max-w-2xl flex-col px-4 py-4 lg:h-[calc(100vh-60px)]">
+    <ChatLayout activeId={conversationId ? Number(conversationId) : undefined}>
       <Card padding="sm" className="mb-3 flex items-center gap-3">
-        <ButtonLink to="/conversas" variant="ghost" icon={ArrowLeft} className="shrink-0" />
+        <ButtonLink to="/conversas" variant="ghost" icon={ArrowLeft} className="shrink-0 lg:hidden" />
         {conversation ? (
           <div className="flex min-w-0 items-center gap-2.5">
             <Avatar photoUrl={conversation.otherUser.photoUrl} name={conversation.otherUser.name} size={36} />
@@ -111,6 +133,21 @@ export default function ChatPage() {
         ) : (
           <Skeleton className="h-9 w-40 rounded-md" />
         )}
+        {/* ações sobre a pessoa desta conversa (no celular, só o ícone) */}
+        {conversation && (
+          <div className="ml-auto flex shrink-0 items-center gap-1">
+            <ButtonLink to={`/usuarios/${conversation.otherUser.id}`} variant="ghost" size="sm" icon={UserRound} aria-label="Ver perfil" className="hover:!text-brand">
+              <span className="hidden sm:inline">Ver perfil</span>
+            </ButtonLink>
+            {blocked ? (
+              <span className="px-3 text-caption font-semibold text-ink-3">Bloqueado</span>
+            ) : (
+              <Button variant="ghost" size="sm" icon={Ban} aria-label="Bloquear" onClick={() => handleBlock(conversation.otherUser.id)} className="hover:!text-danger">
+                <span className="hidden sm:inline">Bloquear</span>
+              </Button>
+            )}
+          </div>
+        )}
       </Card>
 
       {error && <Alert tone="danger" className="mb-2">{error}</Alert>}
@@ -122,7 +159,7 @@ export default function ChatPage() {
             <div key={message.id} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
               <div
                 className={cx(
-                  'max-w-[75%] px-3.5 py-2.5 text-body',
+                  'max-w-[75%] px-3.5 py-2.5 text-body lg:max-w-[60%]',
                   mine
                     ? 'rounded-lg rounded-br-xs bg-brand text-on-brand'
                     : 'rounded-lg rounded-bl-xs bg-surface-sunk text-ink',
@@ -146,6 +183,6 @@ export default function ChatPage() {
         />
         <Button type="submit">Enviar</Button>
       </form>
-    </div>
+    </ChatLayout>
   )
 }

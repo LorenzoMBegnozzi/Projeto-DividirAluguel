@@ -34,7 +34,7 @@ export default function BlockedUsersSection() {
   }
 
   return (
-    <Card className="mx-auto mt-6 max-w-2xl">
+    <Card>
       <h2 className="mb-1 text-h3 text-ink">Usuários bloqueados</h2>
       <p className="mb-4 text-caption text-ink-3">Vocês não aparecem um para o outro enquanto o bloqueio existir.</p>
 

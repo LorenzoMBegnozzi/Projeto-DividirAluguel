@@ -36,7 +36,7 @@ export default function DeleteAccountSection() {
   }
 
   return (
-    <Card as="section" tone="danger" className="mt-6">
+    <Card as="section" tone="danger">
       <h2 className="mb-1 text-h3 text-ink">Excluir minha conta</h2>
       <p className="mb-4 text-small text-ink-3">
         Apaga seus dados pessoais do RachaAi. <strong className="text-ink-2">Não dá para desfazer.</strong>

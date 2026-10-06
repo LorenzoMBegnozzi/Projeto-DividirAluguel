@@ -51,6 +51,35 @@ class ListingRulesTest extends ApiTestSupport {
         mvc.perform(jsonPost("/api/conversations", woman, Map.of("listingId", listingId))).andExpect(status().isOk());
     }
 
+    private boolean appearsWhenSearching(Account viewer, String bairro, long listingId) throws Exception {
+        JsonNode items = body(mvc.perform(auth(get("/api/browse/roommates").param("bairro", bairro), viewer)).andExpect(status().isOk()));
+        for (JsonNode item : items) {
+            if (item.get("listing").get("id").asLong() == listingId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Test
+    @DisplayName("busca por bairro acha pelo pedaço do nome, sem ligar para acento, maiúscula ou zero à esquerda")
+    void neighborhoodSearchIgnoresAccentsCaseAndLeadingZeros() throws Exception {
+        Account owner = advertiser();
+        Map<String, Object> body = listingBody("TEM_VAGA");
+        body.put("preferredNeighborhood", "Jardim Universitário");
+        long uni = createListing(owner, body);
+        Map<String, Object> body7 = listingBody("TEM_VAGA");
+        body7.put("preferredNeighborhood", "Zona 7");
+        long zona7 = createListing(owner, body7);
+
+        Account viewer = renter("FEMININO");
+        assertThat(appearsWhenSearching(viewer, "jardim universitario", uni)).isTrue();
+        assertThat(appearsWhenSearching(viewer, "UNIVERS", uni)).isTrue();
+        assertThat(appearsWhenSearching(viewer, "zona 07", zona7)).isTrue();
+        assertThat(appearsWhenSearching(viewer, "zona  7", zona7)).isTrue();
+        assertThat(appearsWhenSearching(viewer, "zona 7", uni)).isFalse();
+    }
+
     @Test
     @DisplayName("suítes não podem passar do número de dormitórios")
     void suitesCannotExceedBedrooms() throws Exception {

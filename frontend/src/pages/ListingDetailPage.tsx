@@ -1,21 +1,18 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, Banknote, Cigarette, CigaretteOff, GraduationCap, Home, MapPin, PawPrint, Users } from 'lucide-react'
+import { ArrowLeft, MapPin } from 'lucide-react'
 import { getListing, getListingPhotos } from '../api/listings'
 import { getUser } from '../api/profile'
 import { startConversation } from '../api/discovery'
 import { apiErrorMessage } from '../api/client'
 import { useAuth } from '../context/AuthContext'
-import { formatResidents } from '../utils/format'
-import { genderPreferenceLabels } from '../constants/profileOptions'
 import PhotoLightbox from '../components/PhotoLightbox'
-import Fact from '../components/Fact'
-import PropertyFacts from '../components/PropertyFacts'
+import ListingFeatures from '../components/detail/ListingFeatures'
 import InterestSection from '../components/InterestSection'
 import Avatar from '../components/Avatar'
 import ListingMapPreview from '../components/ListingMapPreview'
 import type { Listing, UserProfile } from '../types'
-import { Alert, Badge, Button, Card, cx, focusRing, pageTitleClass } from '../components/ui'
+import { Alert, Badge, Button, Card, Columns, Page, cx, focusRing, pageTitleClass } from '../components/ui'
 
 export default function ListingDetailPage() {
   const { listingId } = useParams()
@@ -64,107 +61,129 @@ export default function ListingDetailPage() {
 
   if (error || !listing) {
     return (
-      <div className="mx-auto max-w-2xl px-4 py-8">
+      <Page width="narrow">
         <Alert tone="danger">{error ?? 'Anúncio não encontrado'}</Alert>
-      </div>
+      </Page>
     )
   }
 
+  const hasMap = listing.latitude != null && listing.longitude != null
+  const place = [listing.preferredNeighborhood, listing.nearCollege && `perto de ${listing.nearCollege}`].filter(Boolean).join(' · ')
+
+  // cartão de contato: à direita e preso ao rolar no computador; depois do conteúdo no celular
+  const contact = (
+    <Card className="flex flex-col gap-4">
+      <p className="text-ink">
+        {listing.price != null ? (
+          <><span className="text-h1">R$ {Number(listing.price).toLocaleString('pt-BR')}</span><span className="text-small text-ink-3"> /mês</span></>
+        ) : (
+          <span className="text-small text-ink-3">Valor não informado</span>
+        )}
+      </p>
+      {owner && (
+        <Link
+          to={`/usuarios/${owner.id}`}
+          className={cx('flex items-center gap-3 rounded-md border border-line p-3 transition hover:border-ink', focusRing)}
+        >
+          <Avatar photoUrl={owner.photoUrl} name={owner.name} size={44} />
+          <div className="min-w-0">
+            <p className="truncate font-semibold text-ink">{owner.name}</p>
+            {owner.occupation && <p className="truncate text-caption text-ink-3">{owner.occupation}</p>}
+          </div>
+        </Link>
+      )}
+      {error && <Alert tone="danger">{error}</Alert>}
+      {owner && currentUser && owner.id !== currentUser.id && (
+        <Button onClick={handleConversar} disabled={starting} full>
+          {starting ? 'Abrindo…' : 'Conversar'}
+        </Button>
+      )}
+      {/* "Tenho interesse" e quem mais se interessou: ações de contato, ficam junto do Conversar */}
+      {listing.type === 'ESTABELECIMENTO' && currentUser && (currentUser.id === listing.userId || currentUser.renter) && (
+        <InterestSection listingId={listing.id} isOwner={currentUser.id === listing.userId} />
+      )}
+    </Card>
+  )
+
   return (
-    <div className="mx-auto max-w-2xl px-4 py-8">
-      <Link to="/conversas" className={cx('mb-4 inline-flex items-center gap-1 rounded-sm text-small text-ink-3 hover:text-ink', focusRing)}>
+    // estilo portal: largura contida, destaque no topo (fotos ou, sem fotos, o mapa),
+    // conteúdo à esquerda e o cartão de preço/contato fixo à direita
+    <Page width="medium">
+      {/* um cartão grande em volta de tudo: o anúncio vira uma "ficha" única sobre o fundo */}
+      <Card padding="none" className="p-4 sm:p-6 lg:p-8">
+      <Link to="/conversas" className={cx('mb-3 inline-flex min-h-11 items-center gap-1 rounded-sm text-small text-ink-3 hover:text-ink', focusRing)}>
         <ArrowLeft className="size-4" aria-hidden="true" />
         voltar
       </Link>
 
-      <Card>
-        <div className="mb-3 flex items-start justify-between gap-3">
-          <div>
+      {/* destaque do topo */}
+      {photos.length > 0 ? (
+        <div className="relative mb-6 grid h-64 grid-cols-4 grid-rows-2 gap-2 overflow-hidden rounded-xl sm:h-80 lg:h-96">
+          {photos.slice(0, 3).map((photoUrl, i) => (
+            <button
+              key={photoUrl}
+              type="button"
+              onClick={() => setLightboxIndex(i)}
+              aria-label="Ampliar foto"
+              className={cx(
+                'overflow-hidden',
+                i === 0 ? (photos.length === 1 ? 'col-span-4 row-span-2' : 'col-span-3 row-span-2') : photos.length === 2 ? 'row-span-2' : '',
+                focusRing,
+              )}
+            >
+              <img src={photoUrl} alt="" className="size-full object-cover transition-transform duration-(--dur-slow) hover:scale-103 motion-reduce:transition-none" />
+            </button>
+          ))}
+          {photos.length > 1 && (
+            <Button size="sm" variant="secondary" onClick={() => setLightboxIndex(0)} className="absolute right-3 bottom-3 shadow-md">
+              Ver as {photos.length} fotos
+            </Button>
+          )}
+        </div>
+      ) : hasMap ? (
+        <div className="mb-6">
+          <ListingMapPreview latitude={listing.latitude!} longitude={listing.longitude!} heightClass="h-56 sm:h-72 lg:h-80" />
+        </div>
+      ) : null}
+
+      {lightboxIndex !== null && (
+        <PhotoLightbox photos={photos} startIndex={lightboxIndex} onClose={() => setLightboxIndex(null)} />
+      )}
+
+      <Columns side="right" asideWidth="md" asideFirst={false} aside={contact}>
+        <div className="flex flex-col gap-4">
+          <header className="mb-2">
             <h1 className={pageTitleClass}>{listing.title}</h1>
-            {!listing.available && <p className="mt-1"><Badge tone="danger">Não disponível mais</Badge></p>}
-          </div>
+            {place && (
+              <p className="mt-2 flex items-center gap-1.5 text-body text-ink-3">
+                <MapPin className="size-4 shrink-0" aria-hidden="true" />{place}
+              </p>
+            )}
+            {!listing.available && <p className="mt-2"><Badge tone="danger">Não disponível mais</Badge></p>}
+          </header>
+
+          <ListingFeatures listing={listing} />
+
+          {listing.description && (
+            <Card as="section">
+              <h2 className="mb-2 text-h3 text-ink">Sobre</h2>
+              <p className="text-body text-ink-2">{listing.description}</p>
+            </Card>
+          )}
+
+          {(hasMap || listing.address) && (
+            <Card as="section">
+              <h2 className="mb-2 text-h3 text-ink">Onde fica</h2>
+              {listing.address && (
+                <p className="mb-3 flex items-center gap-1.5 text-small text-ink-2"><MapPin className="size-4 shrink-0 text-ink-3" aria-hidden="true" />{listing.address}</p>
+              )}
+              {/* o mapa já está no topo quando não há fotos */}
+              {hasMap && photos.length > 0 && <ListingMapPreview latitude={listing.latitude!} longitude={listing.longitude!} heightClass="h-64" />}
+            </Card>
+          )}
         </div>
-
-        {owner && (
-          <Link
-            to={`/usuarios/${owner.id}`}
-            className={cx('mb-4 flex items-center gap-3 rounded-md border border-line p-3 transition hover:border-ink', focusRing)}
-          >
-            <Avatar photoUrl={owner.photoUrl} name={owner.name} size={44} />
-            <div className="min-w-0">
-              <p className="truncate font-semibold text-ink">{owner.name}</p>
-              {owner.occupation && <p className="truncate text-caption text-ink-3">{owner.occupation}</p>}
-            </div>
-          </Link>
-        )}
-
-        {photos.length > 0 && (
-          <div className="mb-4 flex gap-2 overflow-x-auto">
-            {photos.map((photoUrl, i) => (
-              <button key={photoUrl} type="button" onClick={() => setLightboxIndex(i)} aria-label="Ampliar foto" className={cx('shrink-0 rounded-md', focusRing)}>
-                <img src={photoUrl} alt="" className="h-40 w-56 rounded-md object-cover" />
-              </button>
-            ))}
-          </div>
-        )}
-
-        {lightboxIndex !== null && (
-          <PhotoLightbox photos={photos} startIndex={lightboxIndex} onClose={() => setLightboxIndex(null)} />
-        )}
-
-        {listing.description && <p className="mb-4 text-body text-ink-2">{listing.description}</p>}
-
-        <div className="mb-4 flex flex-wrap gap-x-3 gap-y-1 text-caption text-ink-3">
-          {listing.preferredNeighborhood && <Fact icon={MapPin}>{listing.preferredNeighborhood}</Fact>}
-          {listing.nearCollege && <Fact icon={GraduationCap}>Perto de {listing.nearCollege}</Fact>}
-          {listing.price != null && (
-            <Fact icon={Banknote}>
-              <span className="tabular-nums">R$ {listing.price}</span>
-            </Fact>
-          )}
-          {listing.availableSlots != null && (
-            <Fact icon={Users}>
-              {listing.availableSlots} {listing.availableSlots === 1 ? 'vaga disponível' : 'vagas disponíveis'}
-            </Fact>
-          )}
-          {formatResidents(listing.currentResidentsMale, listing.currentResidentsFemale) && (
-            <Fact icon={Home}>{formatResidents(listing.currentResidentsMale, listing.currentResidentsFemale)}</Fact>
-          )}
-          {listing.type === 'TEM_VAGA' && listing.genderPreference !== 'QUALQUER' && (
-            <Fact icon={Users}>{genderPreferenceLabels[listing.genderPreference]}</Fact>
-          )}
-          {listing.acceptsPets != null && (
-            <Fact icon={PawPrint}>{listing.acceptsPets ? 'Aceita animais' : 'Não aceita animais'}</Fact>
-          )}
-          {listing.acceptsSmoker != null && (
-            <Fact icon={listing.acceptsSmoker ? Cigarette : CigaretteOff}>
-              {listing.acceptsSmoker ? 'Aceita fumantes' : 'Não aceita fumantes'}
-            </Fact>
-          )}
-          <PropertyFacts listing={listing} />
-        </div>
-
-        {listing.latitude != null && listing.longitude != null && (
-          <div className="mb-4">
-            <ListingMapPreview latitude={listing.latitude} longitude={listing.longitude} />
-            {listing.address && <p className="mt-1 text-caption text-ink-3">{listing.address}</p>}
-          </div>
-        )}
-
-        {error && <Alert tone="danger" className="mb-3">{error}</Alert>}
-
-        {listing.type === 'ESTABELECIMENTO' && currentUser && (currentUser.id === listing.userId || currentUser.renter) && (
-          <div className="mb-3">
-            <InterestSection listingId={listing.id} isOwner={currentUser.id === listing.userId} />
-          </div>
-        )}
-
-        {owner && currentUser && owner.id !== currentUser.id && (
-          <Button onClick={handleConversar} disabled={starting} full>
-            {starting ? 'Abrindo…' : 'Conversar'}
-          </Button>
-        )}
+      </Columns>
       </Card>
-    </div>
+    </Page>
   )
 }
