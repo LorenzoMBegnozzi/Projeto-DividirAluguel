@@ -331,3 +331,7 @@ body {
 
 /* entrada de chip de filtro (BrowsePage) */
 @keyframes chip-in { from { opacity: 0; transform: scale(0.85); } }
+
+/* Mapas (Leaflet): as camadas internas usam z-index 400–1000 e passavam por cima do menu e da
+   caixa de notificações. isolation cria um contexto próprio: esses números só valem dentro do mapa. */
+.leaflet-container { isolation: isolate; }
