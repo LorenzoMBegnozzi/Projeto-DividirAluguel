@@ -37,7 +37,7 @@ export default function CompatDemo() {
   const running = !reduced && visible && tabOn && !hold
 
   // cursor falso
-  // `snap`: reposiciona sem transição (o cursor reaparece perto do próximo hábito em vez de
+  // `snap`: reposiciona sem transição (o cursor reaparece perto do próximo hábito em vez de.
   // atravessar os outros por cima do texto)
   const [cursor, setCursor] = useState({ x: 0, y: 0, on: false, snap: false })
   const [press, setPress] = useState<{ id: HabitId | null; n: number }>({ id: null, n: 0 })
