@@ -6,7 +6,7 @@
 
 | O quê | Regra | Padrão |
 |---|---|---|
-| Anúncios grátis | Cada conta que anuncia tem até **3 anúncios ativos** grátis (vaga para dividir ou imóvel, em qualquer mistura) | 3 |
+| Anúncios grátis | Cada conta que anuncia tem até **2 anúncios ativos** grátis (vaga para dividir ou imóvel, em qualquer mistura) | 2 |
 | Anúncio extra | Do **4º anúncio em diante** é preciso comprar um *anúncio extra*. Cada compra vale por **1 anúncio** e ele fica ativo por N dias; depois disso é desativado sozinho | R$ 19,90 por 30 dias |
 | Destaque avulso | Pagando, o anúncio **aparece no topo da busca**, à frente dos outros, **independente da compatibilidade**, por N dias | R$ 14,90 por 30 dias |
 | Comprar de novo o destaque | Se o anúncio já está em destaque, os dias **somam** (não perde o que já pagou) | |
@@ -33,8 +33,8 @@ conforme o mercado.** O destaque de 30 dias foi a duração escolhida na defini�
 ## Fluxo de uso
 
 **Anúncio extra**
-1. A pessoa já tem 3 anúncios grátis ativos e tenta publicar o 4º → a tela mostra "Você usou
-   seus 3 anúncios grátis" e o botão *Comprar anúncio extra*.
+1. A pessoa já tem 2 anúncios grátis ativos e tenta publicar o 3º → a tela mostra "Você usou
+   seus 2 anúncios grátis" e o botão *Comprar anúncio extra*.
 2. Clicar cria um pagamento `PENDENTE` e abre a tela **Pagamentos**.
 3. Depois que o pagamento é confirmado (`PAGO`), vira **1 crédito**.
 4. A pessoa publica o anúncio; ele consome o crédito e ganha `expiresAt` (30 dias).
@@ -137,7 +137,7 @@ O sistema já guarda o CPF de quem compra, que é o dado exigido do tomador na n
 |---|---|
 | Regras de compra, crédito, destaque, confirmação | `backend/.../billing/BillingService.java` |
 | Preços e prazos (configuração) | `backend/.../billing/BillingProperties.java` e `application.yml` |
-| Cota de 3 grátis e consumo do crédito ao publicar | `backend/.../listing/ListingService.java` |
+| Cota de 2 grátis e consumo do crédito ao publicar | `backend/.../listing/ListingService.java` |
 | Desativação de anúncios extras vencidos | `backend/.../listing/ListingExpirationJob.java` |
 | Destaque no topo da busca | `backend/.../match/DiscoveryService.java` (`HIGHLIGHT_FIRST_THEN_COMPATIBILITY`) |
 | Tela de pagamentos | `frontend/src/pages/PaymentsPage.tsx` e `PaymentReturnPage.tsx` (volta do checkout) |

@@ -18,7 +18,7 @@ Formato único:
 
 ```json
 { "timestamp": "2026-09-20T21:40:39Z", "status": 402, "error": "Payment Required",
-  "message": "Você já usa os 3 anúncios grátis. Compre um anúncio extra para publicar outro." }
+  "message": "Você já usa os 2 anúncios grátis. Compre um anúncio extra para publicar outro." }
 ```
 
 | Código | Quando |
@@ -126,7 +126,7 @@ A resposta de anúncio devolve os mesmos campos.
 
 `address`, `latitude` e `longitude` são obrigatórios (o pino no mapa).
 
-- **Limite grátis:** até 3 anúncios grátis ativos por conta. Do 4º em diante é preciso ter um
+- **Limite grátis:** até 2 anúncios grátis ativos por conta. Do 3º em diante é preciso ter um
   crédito de anúncio extra pago; sem ele a resposta é **402**. Com crédito, o anúncio nasce
   com `expiresAt` (validade) e o crédito é consumido.
 
@@ -234,7 +234,7 @@ Detalhes das regras em [06-COBRANCA.md](06-COBRANCA.md).
 Exemplo de `GET /api/billing/plan`:
 
 ```json
-{ "freeListings": 3, "freeListingsUsed": 3, "extraCredits": 0,
+{ "freeListings": 2, "freeListingsUsed": 2, "extraCredits": 0,
   "extraListingPrice": 19.90, "extraListingDays": 30,
   "highlightPrice": 14.90, "highlightDays": 30, "simulatedMode": true }
 ```

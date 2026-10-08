@@ -1,0 +1,34 @@
+# Porta de entrada do servidor: recebe a internet (80/443), emite e renova sozinho os certificados
+# HTTPS (Let's Encrypt) e repassa cada domínio para o site do ambiente certo.
+# Os valores {$...} vêm de deploy/caddy/.env (copie de .env.caddy.example).
+{
+	email {$ACME_EMAIL}
+}
+
+# --- Produção ---
+{$DOMINIO} {
+	encode zstd gzip
+	header Strict-Transport-Security "max-age=31536000"
+	reverse_proxy rachaai-prod-site:80 {
+		# porta de origem do visitante (o IP já vai no X-Forwarded-For)
+		header_up X-Real-Port {remote_port}
+	}
+}
+
+www.{$DOMINIO} {
+	redir https://{$DOMINIO}{uri} permanent
+}
+
+# --- Homologação (fica desligada a maior parte do tempo: ver deploy/README.md) ---
+homolog.{$DOMINIO} {
+	encode zstd gzip
+	# não aparece no Google
+	header X-Robots-Tag "noindex, nofollow"
+	reverse_proxy rachaai-homolog-site:80 {
+		header_up X-Real-Port {remote_port}
+	}
+	# homolog desligado: em vez de um erro técnico, um aviso
+	handle_errors 502 503 {
+		respond "Homologação desligada no momento. Ligue com: bash deploy/servidor.sh homolog subir" 503
+	}
+}

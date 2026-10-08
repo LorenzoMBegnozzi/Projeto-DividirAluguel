@@ -126,7 +126,7 @@ class AdminModerationTest extends ApiTestSupport {
     @DisplayName("reembolso de anúncio extra já usado tira o anúncio do ar")
     void refundUsedExtraDeactivatesListing() throws Exception {
         Account owner = advertiser();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {   // ocupa os 2 grátis
             createListing(owner, listingBody("ESTABELECIMENTO"));
         }
         long paymentId = body(mvc.perform(jsonPost("/api/billing/payments", owner, Map.of("type", "ANUNCIO_EXTRA")))
@@ -138,7 +138,7 @@ class AdminModerationTest extends ApiTestSupport {
                 .andExpect(status().isOk());
         java.util.List<Long> activeIds = new java.util.ArrayList<>();
         body(mvc.perform(auth(get("/api/listings/mine"), owner))).forEach(l -> activeIds.add(l.get("id").asLong()));
-        assertThat(activeIds).doesNotContain(extraListing).hasSize(3);
+        assertThat(activeIds).doesNotContain(extraListing).hasSize(2);
     }
 
     @Test

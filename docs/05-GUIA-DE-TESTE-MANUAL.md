@@ -211,7 +211,7 @@ a cobrança (os pagamentos feitos nos testes continuam no banco; para limpá-los
 | `bia.vaga@teste.com` | Anuncia | 2 vagas para dividir (uma **só para mulheres**), perfil parecido com o da Rita |
 | `davi.vaga@teste.com` | Anuncia | 1 vaga, perfil parecido com o do Caio |
 | `marcos.imoveis@teste.com` | Anuncia | 2 imóveis: Kitnet (sem pet/fumante) e Casa (aceita os dois) |
-| `lucia.limite@teste.com` | Anuncia | **já usa os 3 anúncios grátis** |
+| `lucia.limite@teste.com` | Anuncia | **já usa os 2 anúncios grátis** |
 
 > Se você já criou anúncios pela tela com outras contas, eles também aparecem na busca e podem
 > mudar a contagem de itens das tabelas abaixo (as notas dos itens do seed continuam iguais).
@@ -317,7 +317,7 @@ Teste também **novato.alugar@teste.com** (sem perfil): todos os scores ficam em
 
 Entre como **marcos.imoveis@teste.com** → **Meus anúncios**:
 
-1. ✔ Cabeçalho: "2 de 3 anúncios grátis em uso. A partir do 4º, cada anúncio extra custa
+1. ✔ Cabeçalho: "1 de 2 anúncios grátis em uso. A partir do 3º, cada anúncio extra custa
    R$ 19,90 por 30 dias."
 2. ✔ Os 2 imóveis aparecem com o botão **Remover** e **Destacar · R$ 14,90 / 30 dias**.
    Clique no título de um anúncio para **expandir** os detalhes e as **fotos**.
@@ -336,11 +336,11 @@ Entre como **marcos.imoveis@teste.com** → **Meus anúncios**:
 9. **Marcar indisponível** (com ou sem escolher com quem fechou negócio) tira o anúncio da busca;
    **Marcar disponível** traz de volta.
 
-### 6.7 Limite de 3 grátis e anúncio extra (cobrança)
+### 6.7 Limite de 2 grátis e anúncio extra (cobrança)
 
 Entre como **lucia.limite@teste.com** → **Meus anúncios**:
 
-1. ✔ "3 de 3 anúncios grátis em uso" e, no lugar do formulário, o painel **"Você usou seus 3
+1. ✔ "2 de 2 anúncios grátis em uso" e, no lugar do formulário, o painel **"Você usou seus 2
    anúncios grátis"** com o botão **Comprar anúncio extra · R$ 19,90**.
 2. Clique nele → ✔ vai para **Pagamentos**: aviso amarelo de **ambiente de teste**, contadores
    ("3 de 3 em uso", "0 disponível(is)") e uma compra **Pendente** de R$ 19,90.
@@ -550,7 +550,7 @@ docker exec -it rachaai-db-1 sqlplus rachaai/SUA_DB_PASSWORD@localhost/XEPDB1
 4. Clique no cadeado **Authorize** (topo), cole o token e confirme.
 5. Agora chame qualquer rota, por exemplo `GET /api/browse/roommates` ✔ lista ordenada, ou
    `GET /api/billing/plan` como Rita ✔ **403**, e como `lucia.limite@teste.com`
-   ✔ `{"freeListings":3,"freeListingsUsed":3,"extraCredits":0,...,"simulatedMode":true}`.
+   ✔ `{"freeListings":2,"freeListingsUsed":2,"extraCredits":0,...,"simulatedMode":true}`.
 
 Lista completa das rotas em [04-API.md](04-API.md).
 

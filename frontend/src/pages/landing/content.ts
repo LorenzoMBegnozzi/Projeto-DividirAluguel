@@ -23,7 +23,7 @@ export const hero: Record<LandingMode, { lead: string; words: string[]; text: st
   },
 }
 
-export const promises = ['Grátis para quem procura', '3 anúncios grátis para quem anuncia', 'Feito para Maringá']
+export const promises = ['Grátis para quem procura', '2 anúncios grátis para quem anuncia', 'Feito para Maringá']
 
 // ---------- demonstração de compatibilidade ("Experimente") ----------
 export type HabitId = 'fuma' | 'pet' | 'cedo' | 'visitas'
@@ -79,7 +79,7 @@ export const steps: Record<LandingMode, { title: string; items: Step[] }> = {
     title: 'Da vaga vazia ao novo colega, em 3 passos',
     items: [
       { title: 'Publique a vaga', short: 'Anúncio', text: 'Fotos, valor, bairro e as regras da casa. Leva poucos minutos.',
-        details: ['Vaga para dividir ou imóvel inteiro', 'Fotos, valor e regras da casa', '3 anúncios ativos grátis'] },
+        details: ['Vaga para dividir ou imóvel inteiro', 'Fotos, valor e regras da casa', '2 anúncios ativos grátis'] },
       { title: 'Receba interessados', short: 'Interessados', text: 'Cada pessoa chega com a % de compatibilidade com você ao lado do nome.',
         details: ['A % de cada interessado ao lado do nome', 'Perfil com os hábitos de convivência', 'Avaliações de quem já morou com a pessoa'] },
       { title: 'Escolha com calma', short: 'Conversa', text: 'Converse primeiro com quem mais combina e feche com quem você aguenta morar junto.',

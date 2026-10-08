@@ -11,7 +11,7 @@ import type { PublicPrices } from '../../types'
  * Só aparece, esmaecido, enquanto o GET /billing/precos não responde, para o cartão não mudar
  * de tamanho quando os valores chegam. O valor que vale é sempre o da API.
  */
-export const DEFAULT_PRICES: PublicPrices = { freeListings: 3, extraListingPrice: 1, extraListingDays: 30, highlightPrice: 1, highlightDays: 30 }
+export const DEFAULT_PRICES: PublicPrices = { freeListings: 2, extraListingPrice: 1, extraListingDays: 30, highlightPrice: 1, highlightDays: 30 }
 
 export function simulate(n: number, highlight: boolean, p: PublicPrices) {
   const free = Math.min(n, p.freeListings)

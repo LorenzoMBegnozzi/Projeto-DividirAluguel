@@ -1,0 +1,30 @@
+# Caddy: o único container com porta aberta para a internet (80 e 443). Sobe uma vez e fica ligado,
+# servindo produção e homologação. Use deploy/servidor.sh caddy subir (ver deploy/README.md).
+name: toctocwho-caddy
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: always
+    mem_limit: 64m
+    env_file: .env
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # certificados: guardados num volume para não pedir de novo a cada reinício
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - web
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+networks:
+  web:
+    name: toctocwho-web
+    external: true

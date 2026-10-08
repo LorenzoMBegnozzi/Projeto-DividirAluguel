@@ -57,7 +57,7 @@ export default function TermsPage() {
       <Section title="4. Anúncios">
         <ul>
           <li>Quem anuncia é o único responsável pela veracidade do anúncio e por ter o direito de anunciar o imóvel.</li>
-          <li>Cada conta pode ter até <strong>3 anúncios ativos grátis</strong>. A partir do 4º, é preciso comprar um anúncio extra.</li>
+          <li>Cada conta pode ter até <strong>2 anúncios ativos grátis</strong>. A partir do 3º, é preciso comprar um anúncio extra.</li>
           <li>O <strong>anúncio extra</strong> fica ativo por 30 dias e não renova sozinho. O <strong>destaque</strong> coloca o anúncio no topo da busca por 30 dias.</li>
           <li>Preços e prazos em vigor aparecem na tela antes da compra.</li>
           <li>O anúncio aparece para outros usuários com o endereço e a localização no mapa que você informar.</li>

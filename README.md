@@ -11,8 +11,8 @@ capacidade depois, no perfil, sem criar outra conta:
 
 - **Procurar vaga** — navega pelos anúncios (filtro por bairro, mapa e orçamento; vagas por sexo)
   e puxa conversa. **Nunca paga.**
-- **Anunciar** — publica vaga para dividir ou imóvel inteiro, com fotos. **Até 3 anúncios
-  grátis**; do 4º em diante paga um *anúncio extra*; pode pagar um *destaque* para aparecer no
+- **Anunciar** — publica vaga para dividir ou imóvel inteiro, com fotos. **Até 2 anúncios
+  grátis**; do 3º em diante paga um *anúncio extra*; pode pagar um *destaque* para aparecer no
   topo da busca.
 
 Também tem: perfil com foto, convívios e avaliações entre quem já morou junto, notificações,
@@ -43,7 +43,7 @@ Copy-Item .env.dev.example .env.dev    # só na primeira vez; depois edite as se
 | Banco Oracle | `localhost:1522`, serviço `XEPDB1` | `localhost:1532`, serviço `XEPDB1` |
 | E-mails de teste (Mailpit) | http://localhost:8025 | http://localhost:8035 |
 
-Produção não expõe API nem banco; ver [docs/07-AMBIENTES.md](docs/07-AMBIENTES.md).
+Produção não expõe API nem banco; ver [docs/07-AMBIENTES.md](docs/07-AMBIENTES.md). Para colocar no ar numa VPS (produção + homologação, HTTPS, backup): **[deploy/README.md](deploy/README.md)**.
 
 ## Documentação
 
@@ -57,7 +57,7 @@ Produção não expõe API nem banco; ver [docs/07-AMBIENTES.md](docs/07-AMBIENT
 | [02 — Arquitetura](docs/02-ARQUITETURA.md) | como o sistema é organizado, segurança, cálculo de compatibilidade |
 | [03 — Banco de dados](docs/03-BANCO-DE-DADOS.md) | tabelas, colunas, regras, migrations, consultas úteis |
 | [04 — API](docs/04-API.md) | todas as rotas, permissões e erros |
-| [06 — Cobrança](docs/06-COBRANCA.md) | regras de 3 grátis / extra / destaque, modo simulado, como ligar Pix de verdade |
+| [06 — Cobrança](docs/06-COBRANCA.md) | regras de 2 grátis / extra / destaque, modo simulado, como ligar Pix de verdade |
 
 ## Estrutura do repositório
 

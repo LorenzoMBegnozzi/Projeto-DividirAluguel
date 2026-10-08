@@ -74,7 +74,7 @@ app:
     # MERCADOPAGO: cobrança pelo Mercado Pago (Pix, crédito e débito). Ver docs/06-COBRANCA.md.
     # DESATIVADO: nenhuma compra pode ser feita.
     mode: ${BILLING_MODE:SIMULADO}
-    free-listings: ${FREE_LISTINGS:3}
+    free-listings: ${FREE_LISTINGS:2}
     # Preços de TESTE (R$ 1,00, o mínimo que o Mercado Pago aceita com folga). Definir os reais antes de lançar.
     extra-listing-price: ${EXTRA_LISTING_PRICE:1.00}
     extra-listing-days: ${EXTRA_LISTING_DAYS:30}

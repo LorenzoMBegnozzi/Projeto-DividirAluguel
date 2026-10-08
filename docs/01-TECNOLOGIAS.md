@@ -120,7 +120,7 @@ e podem ser trocadas no arquivo `.env` (raiz do projeto).
 | `JWT_EXPIRATION_MINUTES` | 1440 (24 h) | validade do login |
 | `CORS_ALLOWED_ORIGINS` | `http://localhost:5173` | origens permitidas |
 | `BILLING_MODE` | `SIMULADO` | `SIMULADO` ou outro valor (ver [06-COBRANCA.md](06-COBRANCA.md)) |
-| `FREE_LISTINGS` | 3 | anúncios grátis por conta |
+| `FREE_LISTINGS` | 2 | anúncios grátis por conta |
 | `EXTRA_LISTING_PRICE` / `EXTRA_LISTING_DAYS` | 19.90 / 30 | preço e validade do anúncio extra |
 | `HIGHLIGHT_PRICE` / `HIGHLIGHT_DAYS` | 14.90 / 30 | preço e duração do destaque |
 | `EXPIRATION_CHECK` | `PT10M` | de quanto em quanto tempo o sistema desativa anúncios extras vencidos |

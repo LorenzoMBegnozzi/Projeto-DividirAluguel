@@ -165,7 +165,7 @@ usado nos links vem de `APP_BASE_URL`.
 
 Regras em [06-COBRANCA.md](06-COBRANCA.md). Resumo do desenho:
 
-- **3 grátis:** `ListingService.create` conta os anúncios ativos **sem validade**. Se já são 3,
+- **2 grátis:** `ListingService.create` conta os anúncios ativos **sem validade**. Se já são 2,
   exige um crédito.
 - **Crédito de anúncio extra:** é uma linha de `pagamentos` paga e com `anuncio_id` nulo.
   `BillingService.consumeExtraCredit` liga o crédito ao anúncio recém-criado e define `expira_em`.

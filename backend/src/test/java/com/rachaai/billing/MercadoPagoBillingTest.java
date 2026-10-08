@@ -265,7 +265,7 @@ class MercadoPagoBillingTest extends ApiTestSupport {
     void publicPrices() throws Exception {
         mvc.perform(get("/api/billing/precos"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.freeListings").value(3))
+                .andExpect(jsonPath("$.freeListings").value(2))
                 .andExpect(jsonPath("$.extraListingPrice").value(1.00))
                 .andExpect(jsonPath("$.highlightPrice").value(1.00))
                 .andExpect(jsonPath("$.highlightDays").value(30))

@@ -11,7 +11,7 @@
 **What it does:** Plataforma onde estudantes e jovens que chegam a Maringá encontram vaga ou alguém para dividir apartamento. Cada pessoa monta um perfil com hábitos de convivência (fumo, bebida, alimentação, pets, rotina, barulho, visitas) e cada anúncio mostra a % de compatibilidade com ela. Dá para filtrar por bairro, mapa e orçamento e chamar direto no chat.
 **Product category:** Dividir aluguel / moradia estudantil / colega de quarto (república, "apê compartilhado", "vaga em república").
 **Product type:** Marketplace de dois lados (web app + PWA).
-**Business model:** Quem procura nunca paga. Quem anuncia tem 3 anúncios ativos grátis; do 4º em diante paga *anúncio extra* (R$ 19,90 / 30 dias, valor de partida) e pode pagar *destaque* para aparecer no topo da busca (R$ 14,90 / 30 dias). Pagamento via Mercado Pago (Pix, crédito, débito). **[confirmar preços finais — hoje estão em R$ 1,00 de teste]**
+**Business model:** Quem procura nunca paga. Quem anuncia tem 2 anúncios ativos grátis; do 3º em diante paga *anúncio extra* (R$ 19,90 / 30 dias, valor de partida) e pode pagar *destaque* para aparecer no topo da busca (R$ 14,90 / 30 dias). Pagamento via Mercado Pago (Pix, crédito, débito). **[confirmar preços finais — hoje estão em R$ 1,00 de teste]**
 
 ## Target Audience
 **Lado da demanda (procura vaga):** universitários de outras cidades que vão estudar em Maringá (UEM, Unicesumar, UniCesumar, UniFCV etc. **[confirmar instituições-alvo]**), 18–25 anos, orçamento apertado, sem rede de contatos na cidade.
@@ -35,7 +35,7 @@ B2C de dois lados — sem comitê de compra.
 |---------|-------------|-----------|------------------|
 | Calouro(a) de fora | Preço, distância da faculdade, segurança, não morar com gente estranha | Não conhece ninguém em Maringá; grupos são caóticos | Vê quanto combina com cada pessoa antes de chamar; procurar é grátis |
 | Morador(a) com quarto vago | Achar alguém rápido e confiável para não pagar o aluguel sozinho | Filtrar 50 mensagens no grupo, gente que some | Anúncio grátis e compatibilidade de cada interessado antes de responder |
-| Proprietário / imobiliária | Imóvel ocupado, inquilino que paga | Pouca visibilidade com público universitário | Até 3 anúncios grátis + destaque no topo da busca |
+| Proprietário / imobiliária | Imóvel ocupado, inquilino que paga | Pouca visibilidade com público universitário | Até 2 anúncios grátis + destaque no topo da busca |
 
 ## Problems & Pain Points
 **Core problem:** Achar com quem morar numa cidade nova depende de grupos de WhatsApp/Facebook enormes e desorganizados, onde não dá para saber se a pessoa combina com você até já estar morando junto.
@@ -66,7 +66,7 @@ B2C de dois lados — sem comitê de compra.
 | Objection | Response |
 |-----------|----------|
 | "Já tem os grupos de WhatsApp, é de graça." | Aqui também é grátis para quem procura, e você vê o perfil e a compatibilidade antes de chamar, em vez de garimpar 800 mensagens. |
-| "Ainda tem poucos anúncios." | **[ponto fraco real no lançamento]** Anunciar é grátis (3 anúncios), então quem tem vaga não tem motivo para não postar também aqui. |
+| "Ainda tem poucos anúncios." | **[ponto fraco real no lançamento]** Anunciar é grátis (2 anúncios), então quem tem vaga não tem motivo para não postar também aqui. |
 | "É seguro falar com desconhecido?" | Cadastro com CPF, avaliações de convívio, bloqueio e denúncia, vagas só para mulheres invisíveis para homens. |
 | "Compatibilidade de app funciona mesmo?" | A conta usa hábitos concretos (fuma, pet, rotina, barulho), não personalidade; é um filtro, a decisão é sua. |
 
@@ -95,13 +95,13 @@ B2C de dois lados — sem comitê de compra.
 | Procurar vaga | Capacidade da conta de quem busca lugar (nunca paga) |
 | Anunciar | Capacidade de quem publica vaga ou imóvel inteiro |
 | Compatibilidade | % calculada pelos hábitos de convivência dos dois perfis |
-| Anúncio extra | Anúncio pago a partir do 4º ativo, vale 30 dias |
+| Anúncio extra | Anúncio pago a partir do 3º ativo, vale 30 dias |
 | Destaque | Anúncio pago que aparece no topo da busca por 30 dias |
 | Convívio | Registro de que duas pessoas moraram juntas, base das avaliações |
 
 ## Brand Voice
 **Tone:** Descontraído, próximo, de universitário para universitário — sem ser infantil.
-**Style:** Direto e curto; pergunta concreta ("Fuma? Tem pet?"); emojis com moderação em redes sociais; números concretos (92%, 3 grátis).
+**Style:** Direto e curto; pergunta concreta ("Fuma? Tem pet?"); emojis com moderação em redes sociais; números concretos (92%, 2 grátis).
 **Personality:** Amigável, prático, local, confiável, leve.
 
 ## Proof Points

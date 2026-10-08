@@ -96,12 +96,11 @@ profile "$A3" '{"gender":"MASCULINO","allergyTags":[],"petPreferences":[],"bio":
 listing "$A3" '{"type":"ESTABELECIMENTO","title":"Kitnet mobiliada no Centro","description":"Kitnet 25m², sem pets e sem fumantes.","preferredNeighborhood":"Centro","price":900,"address":"Av. Brasil, 1200 - Centro","latitude":-23.4205,"longitude":-51.9333,"acceptsPets":false,"acceptsSmoker":false}' > /dev/null
 CASA=$(listing "$A3" '{"type":"ESTABELECIMENTO","title":"Casa 3 quartos na Zona 7","description":"Aceita pets e fumantes (área externa).","preferredNeighborhood":"Zona 7","price":2200,"address":"Rua Mandaguari, 450 - Zona 7","latitude":-23.4100,"longitude":-51.9490,"acceptsPets":true,"acceptsSmoker":true}')
 
-echo "== Conta com os 3 anuncios gratis ja em uso =="
+echo "== Conta com os 2 anuncios gratis ja em uso =="
 A4=$(token lucia.limite@teste.com "Lúcia Limite" ADVERTISER 09198740962); reset_listings "$A4"
-profile "$A4" '{"needsCarParking":false,"needsMotorcycleParking":false,"gender":"FEMININO","smokingHabit":"NAO_FUMO","drinkingHabit":"BEBO_COM_MODERACAO","diet":"ONIVORO","petPreferences":["CACHORRO"],"allergyTags":["NENHUMA"],"bio":"Ja tenho 3 anuncios ativos.","occupation":"Corretora"}'
+profile "$A4" '{"needsCarParking":false,"needsMotorcycleParking":false,"gender":"FEMININO","smokingHabit":"NAO_FUMO","drinkingHabit":"BEBO_COM_MODERACAO","diet":"ONIVORO","petPreferences":["CACHORRO"],"allergyTags":["NENHUMA"],"bio":"Ja tenho 2 anuncios ativos.","occupation":"Corretora"}'
 listing "$A4" '{"type":"ESTABELECIMENTO","title":"Apartamento 1 quarto Zona 3","description":"Aceita pets.","preferredNeighborhood":"Zona 3","price":1300,"address":"Rua Pioneiro, 100 - Zona 3","latitude":-23.4000,"longitude":-51.9300,"acceptsPets":true,"acceptsSmoker":false}' > /dev/null
 listing "$A4" '{"type":"ESTABELECIMENTO","title":"Sala comercial adaptada","description":"Sem pets.","preferredNeighborhood":"Centro","price":1500,"address":"Av. Herval, 700 - Centro","latitude":-23.4230,"longitude":-51.9350,"acceptsPets":false,"acceptsSmoker":false}' > /dev/null
-listing "$A4" '{"type":"TEM_VAGA","title":"Vaga em apê compartilhado","description":"Quarto individual.","preferredNeighborhood":"Zona 3","price":600,"address":"Rua Pioneiro, 250 - Zona 3","latitude":-23.4005,"longitude":-51.9310}' > /dev/null
 
 echo "== Conversa de exemplo: Rita -> Casa do Marcos (anuncio ${CASA:-?}) =="
 RITA_CONVERSAS=$(curl -s "$BASE/conversations" -H "Authorization: Bearer $R1" | grep -o '"otherUser"' | wc -l)
