@@ -12,6 +12,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmailIgnoreCase(String email);
 
+    Optional<User> findByGoogleSub(String googleSub);
+
     boolean existsByCpf(String cpf);
 
     /** Busca da área administrativa: por nome ou e-mail (vazio = todos), mais recentes primeiro. */

@@ -63,6 +63,9 @@ app:
   # Registros de acesso (Marco Civil, art. 15): por quantos dias guardar. A lei pede 6 meses.
   access-log:
     retention-days: ${ACCESS_LOG_RETENTION_DAYS:183}
+  google:
+    # Login com Google: Client ID do Google Cloud (tipo "Aplicativo da Web"). Vazio = desligado.
+    client-id: ${GOOGLE_CLIENT_ID:}
   admin:
     # E-mails das contas administradoras, separados por vírgula (ver AdminBootstrap).
     emails: ${ADMIN_EMAILS:}

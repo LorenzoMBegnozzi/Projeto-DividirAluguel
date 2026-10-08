@@ -16,6 +16,7 @@ import IosInstallHint from './components/IosInstallHint'
 import ThemeToggle from './components/ThemeToggle'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import CompleteGoogleSignupPage from './pages/CompleteGoogleSignupPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
 import ProfilePage from './pages/ProfilePage'
@@ -74,6 +75,7 @@ function AppContent() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/registro" element={<RegisterPage />} />
+        <Route path="/completar-cadastro" element={<CompleteGoogleSignupPage />} />
         <Route path="/esqueci-senha" element={<ForgotPasswordPage />} />
         <Route path="/confirmar-email/:token" element={<ConfirmEmailPage />} />
         <Route path="/termos" element={<TermsPage />} />

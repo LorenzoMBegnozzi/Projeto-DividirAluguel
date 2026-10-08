@@ -8,14 +8,8 @@ import { useAuth } from '../context/AuthContext'
 import { apiErrorMessage } from '../api/client'
 import type { AdvertiserKind, Role } from '../types'
 import { Alert, Button, Card, Checkbox, Input, cx, fieldClass, focusRing } from '../components/ui'
-
-function formatCpf(value: string) {
-  const digits = value.replace(/\D/g, '').slice(0, 11)
-  return digits
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
-}
+import GoogleSignInButton from '../components/GoogleSignInButton'
+import { formatCpf } from '../utils/format'
 
 // /registro?perfil=procurar|anunciar (botões da landing) já abre no perfil escolhido
 const PERFIL_ROLE: Record<string, Role> = { procurar: 'RENTER', anunciar: 'ADVERTISER' }
@@ -200,6 +194,7 @@ export default function RegisterPage() {
             {loading ? 'Criando…' : 'Criar conta'}
           </Button>
         </form>
+        <GoogleSignInButton text="signup_with" preferredRole={role} className="mt-5" />
         <LegalLinks className="mt-6" />
       </Card>
     </div>

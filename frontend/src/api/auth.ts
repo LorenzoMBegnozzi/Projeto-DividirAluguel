@@ -30,6 +30,34 @@ export function confirmEmail(token: string) {
   return client.post('/auth/confirmar-email', { token })
 }
 
+// ---------------------------------------------------------------- login com Google
+
+/** null = login com Google desligado no servidor (sem GOOGLE_CLIENT_ID): o botão não aparece. */
+export function googleConfig() {
+  return client.get<{ clientId: string | null }>('/auth/google/config').then((res) => res.data)
+}
+
+export type GoogleLoginResponse =
+  | { status: 'LOGGED_IN'; token: string; user: AuthResponse['user'] }
+  | { status: 'SIGNUP_REQUIRED'; signupToken: string; name: string; email: string }
+
+/** credential = o token que o botão do Google entrega ao site. */
+export function googleLogin(credential: string) {
+  return client.post<GoogleLoginResponse>('/auth/google', { credential }).then((res) => res.data)
+}
+
+/** Tela "falta pouco": completa o cadastro de quem entrou com o Google pela primeira vez. */
+export function googleSignup(data: {
+  signupToken: string
+  birthDate: string
+  cpf: string
+  role: Role
+  advertiserKind: AdvertiserKind | null
+  acceptTerms: boolean
+}) {
+  return client.post<AuthResponse>('/auth/google/cadastro', data).then((res) => res.data)
+}
+
 export function fetchMe() {
   return client.get<AuthResponse['user']>('/users/me').then((res) => res.data)
 }

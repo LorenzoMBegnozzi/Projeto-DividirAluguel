@@ -6,6 +6,7 @@ import com.rachaai.common.CpfValidator;
 import com.rachaai.common.EmailService;
 import com.rachaai.security.JwtService;
 import com.rachaai.security.RateLimiter;
+import com.rachaai.user.AdvertiserKind;
 import com.rachaai.user.LegalTerms;
 import com.rachaai.user.Role;
 import com.rachaai.user.User;
@@ -73,40 +74,47 @@ public class AuthService {
     @Transactional
     public AuthResponse register(RegisterRequest request, String clientIp) {
         rateLimiter.hit(rateLimiter.REGISTER_PER_IP, clientIp);
-        if (userRepository.existsByEmailIgnoreCase(request.email())) {
+        String cpf = validateNewAccount(request.email(), request.birthDate(), request.cpf());
+        User user = newAccount(request.name(), request.email(), passwordEncoder.encode(request.password()),
+                request.birthDate(), cpf, request.role(), request.advertiserKind());
+        emailConfirmationService.start(user);
+
+        String token = jwtService.generateToken(user);
+        return new AuthResponse(token, UserResponse.from(user, false));
+    }
+
+    /**
+     * Regras de quem pode ter conta (cadastro por e-mail e pelo Google): e-mail sem conta, 18 anos
+     * ou mais e CPF válido que ainda não tem conta.
+     *
+     * @return o CPF só com dígitos
+     */
+    String validateNewAccount(String email, LocalDate birthDate, String rawCpf) {
+        if (userRepository.existsByEmailIgnoreCase(email)) {
             throw ApiException.conflict("Já existe uma conta com este e-mail");
         }
-        if (Period.between(request.birthDate(), LocalDate.now()).getYears() < MINIMUM_AGE) {
+        if (Period.between(birthDate, LocalDate.now()).getYears() < MINIMUM_AGE) {
             throw ApiException.badRequest("Você precisa ter " + MINIMUM_AGE + " anos ou mais para se cadastrar");
         }
-
-        String cpf = CpfValidator.onlyDigits(request.cpf());
+        String cpf = CpfValidator.onlyDigits(rawCpf);
         if (!CpfValidator.isValid(cpf)) {
             throw ApiException.badRequest("CPF inválido");
         }
         if (userRepository.existsByCpf(cpf)) {
             throw ApiException.conflict("Já existe uma conta com este CPF");
         }
+        return cpf;
+    }
 
-        boolean renter = request.role() == Role.RENTER;
-        boolean advertiser = request.role() == Role.ADVERTISER;
-        User user = new User(
-                request.name(),
-                request.email().toLowerCase(),
-                passwordEncoder.encode(request.password()),
-                request.birthDate(),
-                cpf,
-                renter,
-                advertiser,
-                advertiser ? request.advertiserKind() : null
-        );
+    /** Cria e salva a conta (já validada por validateNewAccount), com o aceite dos termos atuais. */
+    User newAccount(String name, String email, String passwordHash, LocalDate birthDate, String cpf,
+                    Role role, AdvertiserKind advertiserKind) {
+        boolean advertiser = role == Role.ADVERTISER;
+        User user = new User(name, email.toLowerCase(), passwordHash, birthDate, cpf,
+                role == Role.RENTER, advertiser, advertiser ? advertiserKind : null);
         user.setAdmin(adminBootstrap.isConfiguredAdmin(user.getEmail()));
         user.acceptLegalTerms(LegalTerms.CURRENT_VERSION);
-        user = userRepository.save(user);
-        emailConfirmationService.start(user);
-
-        String token = jwtService.generateToken(user);
-        return new AuthResponse(token, UserResponse.from(user, false));
+        return userRepository.save(user);
     }
 
     /**

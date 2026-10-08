@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { apiErrorMessage } from '../api/client'
 import { Alert, Button, Card, Checkbox, fieldClass } from '../components/ui'
+import GoogleSignInButton from '../components/GoogleSignInButton'
 
 export default function LoginPage() {
   const { login } = useAuth()
@@ -75,6 +76,7 @@ export default function LoginPage() {
             {loading ? 'Entrando…' : 'Entrar'}
           </Button>
         </form>
+        <GoogleSignInButton text="continue_with" className="mt-5" />
 
         <p className="mt-6 text-center text-small text-ink-3">
           Ainda não tem conta?{' '}

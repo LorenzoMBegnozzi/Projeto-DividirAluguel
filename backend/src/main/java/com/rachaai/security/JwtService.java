@@ -1,6 +1,8 @@
 package com.rachaai.security;
 
+import com.rachaai.auth.GoogleIdentity;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import com.rachaai.user.User;
@@ -14,6 +16,10 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
+
+    /** Tipo do token de "completar cadastro com Google" (ver generateGoogleSignupToken). */
+    private static final String GOOGLE_SIGNUP_TYPE = "google-signup";
+    private static final long GOOGLE_SIGNUP_MINUTES = 30;
 
     private final SecretKey key;
     private final long expirationMinutes;
@@ -40,6 +46,34 @@ public class JwtService {
                 .compact();
     }
 
+    /**
+     * Comprovante de curta duração (30 min) para a tela "falta pouco" do login com Google: guarda
+     * quem o Google confirmou, até a pessoa completar o cadastro. NÃO é login: o assunto não é um
+     * e-mail e o "typ" faz isValid recusar, então ele não abre nenhuma rota protegida.
+     */
+    public String generateGoogleSignupToken(GoogleIdentity identity) {
+        Date now = new Date();
+        return Jwts.builder()
+                .subject("google:" + identity.subject())
+                .claim("typ", GOOGLE_SIGNUP_TYPE)
+                .claim("email", identity.email())
+                .claim("name", identity.name())
+                .issuedAt(now)
+                .expiration(new Date(now.getTime() + GOOGLE_SIGNUP_MINUTES * 60_000))
+                .signWith(key)
+                .compact();
+    }
+
+    /** Lê o comprovante de generateGoogleSignupToken; expirado, adulterado ou de outro tipo → JwtException. */
+    public GoogleIdentity parseGoogleSignupToken(String token) {
+        Claims claims = extractAllClaims(token);
+        if (!GOOGLE_SIGNUP_TYPE.equals(claims.get("typ", String.class)) || !claims.getSubject().startsWith("google:")) {
+            throw new JwtException("não é um comprovante de cadastro com Google");
+        }
+        return new GoogleIdentity(claims.getSubject().substring("google:".length()),
+                claims.get("email", String.class), true, claims.get("name", String.class));
+    }
+
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
     }
@@ -57,6 +91,7 @@ public class JwtService {
     public boolean isValid(String token, SecurityUser user) {
         String email = extractEmail(token);
         return email.equals(user.getUsername())
+                && extractAllClaims(token).get("typ") == null   // só token de login (não o de cadastro)
                 && !isExpired(token)
                 && extractTokenVersion(token) == user.getUser().getTokenVersion()
                 && !user.getUser().isBlocked();

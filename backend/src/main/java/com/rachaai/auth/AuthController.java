@@ -15,10 +15,13 @@ public class AuthController {
 
     private final AuthService authService;
     private final EmailConfirmationService emailConfirmationService;
+    private final GoogleAuthService googleAuthService;
 
-    public AuthController(AuthService authService, EmailConfirmationService emailConfirmationService) {
+    public AuthController(AuthService authService, EmailConfirmationService emailConfirmationService,
+                          GoogleAuthService googleAuthService) {
         this.authService = authService;
         this.emailConfirmationService = emailConfirmationService;
+        this.googleAuthService = googleAuthService;
     }
 
     @PostMapping("/register")
@@ -31,6 +34,28 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request, HttpServletRequest http) {
         AuthResponse response = authService.login(request, ClientIp.of(http));
+        http.setAttribute(AccessLogFilter.USER_ID_ATTRIBUTE, response.user().id());
+        return ResponseEntity.ok(response);
+    }
+
+    /** O site pergunta se o login com Google está ligado (e com qual Client ID desenhar o botão). */
+    @GetMapping("/google/config")
+    public GoogleConfigResponse googleConfig() {
+        return googleAuthService.config();
+    }
+
+    @PostMapping("/google")
+    public ResponseEntity<GoogleLoginResponse> googleLogin(@Valid @RequestBody GoogleLoginRequest request, HttpServletRequest http) {
+        GoogleLoginResponse response = googleAuthService.login(request, ClientIp.of(http));
+        if (response.user() != null) {
+            http.setAttribute(AccessLogFilter.USER_ID_ATTRIBUTE, response.user().id());
+        }
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/google/cadastro")
+    public ResponseEntity<AuthResponse> googleSignup(@Valid @RequestBody GoogleSignupRequest request, HttpServletRequest http) {
+        AuthResponse response = googleAuthService.completeSignup(request, ClientIp.of(http));
         http.setAttribute(AccessLogFilter.USER_ID_ATTRIBUTE, response.user().id());
         return ResponseEntity.ok(response);
     }

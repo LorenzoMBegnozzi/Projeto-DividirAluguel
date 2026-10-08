@@ -1,5 +1,14 @@
 const currency = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })
 
+/** "12345678901" → "123.456.789-01" (enquanto digita: formata o que já tem). */
+export function formatCpf(value: string) {
+  const digits = value.replace(/\D/g, '').slice(0, 11)
+  return digits
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
+}
+
 export function formatMoney(value: number) {
   return currency.format(value)
 }

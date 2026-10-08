@@ -1,7 +1,8 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { clearToken, getToken, setToken } from '../api/client'
-import { fetchMe, login as loginRequest, logout as logoutRequest, register as registerRequest } from '../api/auth'
+import { fetchMe, googleLogin as googleLoginRequest, googleSignup as googleSignupRequest, login as loginRequest, logout as logoutRequest, register as registerRequest } from '../api/auth'
+import { clearPendingGoogleSignup, savePendingGoogleSignup } from '../utils/googleSignup'
 import type { AdvertiserKind, Role, UserProfile } from '../types'
 
 interface AuthContextValue {
@@ -18,6 +19,9 @@ interface AuthContextValue {
     advertiserKind: AdvertiserKind | null,
     acceptTerms: boolean,
   ) => Promise<void>
+  /** "Continuar com Google": entra (true) ou guarda o cadastro pendente para a tela "falta pouco" (false). */
+  googleLogin: (credential: string, preferredRole?: Role | null) => Promise<boolean>
+  completeGoogleSignup: (data: Parameters<typeof googleSignupRequest>[0]) => Promise<void>
   logout: () => void
   refreshUser: () => Promise<void>
 }
@@ -68,6 +72,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(res.user)
   }
 
+  async function googleLogin(credential: string, preferredRole: Role | null = null) {
+    const res = await googleLoginRequest(credential)
+    if (res.status === 'LOGGED_IN') {
+      setToken(res.token, true)
+      setUser(res.user)
+      return true
+    }
+    savePendingGoogleSignup({ signupToken: res.signupToken, name: res.name, email: res.email, role: preferredRole })
+    return false
+  }
+
+  async function completeGoogleSignup(data: Parameters<typeof googleSignupRequest>[0]) {
+    const res = await googleSignupRequest(data)
+    clearPendingGoogleSignup()
+    setToken(res.token, true)
+    setUser(res.user)
+  }
+
   function logout() {
     // Avisa o servidor para o token deixar de valer (em todos os aparelhos). Se falhar (sem
     // internet, token já vencido), sai do mesmo jeito neste navegador.
@@ -78,7 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, login, register, googleLogin, completeGoogleSignup, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   )

@@ -82,6 +82,10 @@ public class User {
     @Column(name = "email_confirmado_em")
     private Instant emailConfirmedAt;
 
+    /** Conta do Google ligada a esta (o "sub" do Google: fixo, não muda se o e-mail mudar lá). */
+    @Column(name = "google_sub", unique = true)
+    private String googleSub;
+
     /** Preenchido = a pessoa excluiu a conta e os dados pessoais foram apagados. */
     @Column(name = "excluido_em")
     private Instant deletedAt;
@@ -267,6 +271,15 @@ public class User {
         }
     }
 
+    public String getGoogleSub() {
+        return googleSub;
+    }
+
+    /** Liga a conta do Google: dali em diante "continuar com Google" entra nesta conta. */
+    public void linkGoogle(String googleSub) {
+        this.googleSub = googleSub;
+    }
+
     public boolean isDeleted() {
         return deletedAt != null;
     }
@@ -283,6 +296,7 @@ public class User {
         this.name = "Usuário excluído";
         this.email = "excluido-" + id + "@conta-excluida.invalid";
         this.cpf = null;
+        this.googleSub = null;
         this.birthDate = LocalDate.of(1900, 1, 1);
         this.passwordHash = unusablePasswordHash;
         this.occupation = null;
