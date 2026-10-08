@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 140" role="img" aria-label="Toc Toc Who?">
+  <!-- porta dupla: cada folha é uma pessoa, juntas formam a casa -->
+  <path d="M20 128 V60 A40 40 0 0 1 58 20.05 V128 Z" fill="#1e5f7a"/>
+  <path d="M62 128 V20.05 A40 40 0 0 1 100 60 V128 Z" fill="#e8704a"/>
+  <circle cx="50" cy="82" r="3.4" fill="#faf7f2"/>
+  <circle cx="70" cy="82" r="3.4" fill="#faf7f2"/>
+  <rect x="12" y="128" width="96" height="6" rx="3" fill="#1b2b33"/>
+</svg>

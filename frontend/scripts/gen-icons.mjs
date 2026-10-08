@@ -1,4 +1,4 @@
-// Gera os PNG do PWA e o apple-touch-icon a partir de public/pwa-icon.svg (mesma geometria da LogoMark).
+// Gera os PNG do PWA e o apple-touch-icon a partir de public/pwa-icon.svg (mesma porta dupla da LogoMark).
 //   node scripts/gen-icons.mjs   (usa o playwright-core de ../marketing e o Chrome instalado)
 import { readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
@@ -8,7 +8,7 @@ const { chromium } = require('playwright-core')
 const pub = new URL('../public/', import.meta.url)
 const pwa = readFileSync(new URL('pwa-icon.svg', pub), 'utf8')
 // no apple-touch-icon o iOS não recorta em círculo: o desenho pode ocupar 60% do lado
-const apple = pwa.replace('translate(89.6 89.6) scale(12.8)', 'translate(56.32 56.32) scale(15.36)')
+const apple = pwa.replace('translate(121 82.75) scale(2.25)', 'translate(94 48.1) scale(2.7)')
 const jobs = [[pwa, 192, 'pwa-192x192.png'], [pwa, 512, 'pwa-512x512.png'], [apple, 180, 'apple-touch-icon.png']]
 
 const browser = await chromium.launch({ executablePath: process.env.CHROME ?? 'C:/Program Files/Google/Chrome/Application/chrome.exe' })

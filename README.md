@@ -1,4 +1,4 @@
-# RachaAi
+# Toc Toc Who? (antigo RachaAi)
 
 Plataforma para **dividir aluguel** (ou alugar um imóvel) em Maringá. Estudantes que vêm de
 outras cidades encontram com quem dividir apartamento perto da faculdade, sem depender de

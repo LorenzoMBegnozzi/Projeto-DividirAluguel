@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Toc Toc Who?">
+  <!-- versão escura: fundo azul petróleo, folhas em tons claros para manter contraste -->
+  <rect width="512" height="512" rx="112" fill="#1b2b33"/>
+  <g transform="translate(88 40) scale(2.8)">
+    <path d="M20 128 V60 A40 40 0 0 1 58 20.05 V128 Z" fill="#5fb3d1"/>
+    <path d="M62 128 V20.05 A40 40 0 0 1 100 60 V128 Z" fill="#f08c6a"/>
+    <circle cx="50" cy="82" r="3.4" fill="#1b2b33"/>
+    <circle cx="70" cy="82" r="3.4" fill="#1b2b33"/>
+    <rect x="12" y="128" width="96" height="6" rx="3" fill="#f4efe8"/>
+  </g>
+</svg>

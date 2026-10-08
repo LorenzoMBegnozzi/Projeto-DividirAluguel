@@ -17,7 +17,7 @@ export default function LandingFooter() {
       <div className="grid gap-10 border-t border-line pt-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
         <div>
           <Logo size="md" />
-          <p className="mt-3 max-w-xs text-small text-ink-3">Para achar com quem dividir o aluguel em Maringá, sem grupo de WhatsApp.</p>
+          <p className="mt-3 max-w-xs text-small text-ink-3">Para achar com quem dividir o aluguel em Maringá, sem garimpar em grupos.</p>
           {contactEmail && (
             <a href={`mailto:${contactEmail}`} className="mt-3 inline-block text-small font-semibold text-brand hover:underline">{contactEmail}</a>
           )}
@@ -37,7 +37,7 @@ export default function LandingFooter() {
           </nav>
         ))}
       </div>
-      <p className="mt-12 text-caption text-ink-3">© {new Date().getFullYear()} RachaAi · feito em Maringá</p>
+      <p className="mt-12 text-caption text-ink-3">© {new Date().getFullYear()} Toc Toc Who? · feito em Maringá</p>
     </footer>
   )
 }

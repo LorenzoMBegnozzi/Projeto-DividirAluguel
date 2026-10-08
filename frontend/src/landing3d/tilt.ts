@@ -1,4 +1,4 @@
-// O apartamento inclina em direção ao cursor. `heroState.spin` (giro da troca de
+// A casinha inclina em direção ao cursor. `heroState.spin` (giro da troca de
 // modo, animado pelo GSAP) é somado ao ângulo; só este loop escreve no elemento.
 //
 // Inclina pela CÂMERA (cameraOrbit + jumpCameraToGoal) e não por `orientation`:
@@ -7,13 +7,13 @@
 import { damp, onFrame, pointer } from './loop'
 import type { ModelViewerElement } from './modelViewer'
 
-export const heroState = { spin: 0, split: 0 }
+export const heroState = { spin: 0, open: 0 }
 
 interface TiltOptions { reducedMotion: boolean; baseYaw: number; basePitch: number }
 
 export function startTilt(mv: ModelViewerElement, { reducedMotion, baseYaw, basePitch }: TiltOptions) {
   let roll = 0, pitch = 0, yaw = 0
-  let lastSplit = -1
+  let lastOpen = -1
 
   return onFrame((now, dt) => {
     let tx = 0, ty = 0
@@ -32,10 +32,10 @@ export function startTilt(mv: ModelViewerElement, { reducedMotion, baseYaw, base
     mv.jumpCameraToGoal()
     mv.style.rotate = `${roll.toFixed(2)}deg`
 
-    // quadro da animação "split" (0 = colado, 1 = rachado); só escreve se mudou
-    if (mv.loaded && Math.abs(heroState.split - lastSplit) > 0.0005) {
-      mv.currentTime = heroState.split
-      lastSplit = heroState.split
+    // quadro da animação "open" (0 = porta fechada, ~1 = aberta); só escreve se mudou
+    if (mv.loaded && Math.abs(heroState.open - lastOpen) > 0.0005) {
+      mv.currentTime = heroState.open
+      lastOpen = heroState.open
     }
   })
 }

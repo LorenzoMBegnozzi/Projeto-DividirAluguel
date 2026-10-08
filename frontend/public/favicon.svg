@@ -1,12 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- mesma geometria da LogoMark (components/Logo.tsx, viewBox 26), escalada 2.4x e centrada -->
+  <!-- mesma porta dupla da LogoMark (components/Logo.tsx, viewBox 120x140), escalada e centrada -->
   <style>
-    .bg { fill: #faf7f2 } .a { fill: #1e5f7a } .b { fill: #e8704a }
-    @media (prefers-color-scheme: dark) { .bg { fill: #1a2228 } .a { fill: #5fb3d1 } .b { fill: #f08c6a } }
+    .bg { fill: #faf7f2 } .a { fill: #1e5f7a } .b { fill: #e8704a } .k { fill: #faf7f2 } .c { fill: #1b2b33 }
+    @media (prefers-color-scheme: dark) { .bg { fill: #1a2228 } .a { fill: #5fb3d1 } .b { fill: #f08c6a } .k { fill: #1a2228 } .c { fill: #f4efe8 } }
   </style>
   <rect class="bg" width="64" height="64" rx="14"/>
-  <g transform="translate(0.8 0.8) scale(2.4)">
-    <path class="a" d="M12.2 3 3 10.4V23h9.2z"/>
-    <path class="b" d="M13.8 3 23 10.4V23h-9.2z"/>
+  <g transform="translate(8.6 2) scale(0.39)">
+    <path class="a" d="M20 128 V60 A40 40 0 0 1 58 20.05 V128 Z"/>
+    <path class="b" d="M62 128 V20.05 A40 40 0 0 1 100 60 V128 Z"/>
+    <circle class="k" cx="50" cy="82" r="4"/>
+    <circle class="k" cx="70" cy="82" r="4"/>
+    <rect class="c" x="12" y="128" width="96" height="6" rx="3"/>
   </g>
 </svg>

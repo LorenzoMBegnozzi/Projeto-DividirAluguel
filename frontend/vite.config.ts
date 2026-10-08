@@ -55,8 +55,8 @@ export default defineConfig(({ command }) => {
         includeAssets: ['favicon.svg'],
         manifest: {
           id: '/',
-          name: 'RachaAi',
-          short_name: 'RachaAi',
+          name: 'Toc Toc Who?',
+          short_name: 'Toc Toc Who?',
           description: 'Encontre com quem dividir o aluguel',
           lang: 'pt-BR',
           start_url: '/',

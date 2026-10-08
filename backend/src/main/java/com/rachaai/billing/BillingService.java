@@ -320,8 +320,8 @@ public class BillingService {
 
     private String title(Payment payment) {
         return payment.getType() == PaymentType.DESTAQUE
-                ? "RachaAi - Destaque de anúncio (" + props.highlightDays() + " dias)"
-                : "RachaAi - Anúncio extra (" + props.extraListingDays() + " dias)";
+                ? "Toc Toc Who? - Destaque de anúncio (" + props.highlightDays() + " dias)"
+                : "Toc Toc Who? - Anúncio extra (" + props.extraListingDays() + " dias)";
     }
 
     String reference(Payment payment) {

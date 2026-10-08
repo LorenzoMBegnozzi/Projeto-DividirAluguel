@@ -9,18 +9,18 @@ export default function TermsPage() {
   return (
     <LegalLayout title="Termos de Uso">
       <p>
-        Estes Termos regem o uso do <strong>RachaAi</strong>, oferecido por <strong>{LEGAL.controllerName}</strong>,{' '}
+        Estes Termos regem o uso do <strong>Toc Toc Who?</strong>, oferecido por <strong>{LEGAL.controllerName}</strong>,{' '}
         {LEGAL.controllerDocument}. Ao criar uma conta você concorda com eles e com a{' '}
         <Link to="/privacidade">Política de Privacidade</Link>. Se não concordar, não use a plataforma.
       </p>
 
-      <Section title="1. O que é o RachaAi">
+      <Section title="1. O que é o Toc Toc Who?">
         <p>
-          O RachaAi é uma plataforma que <strong>conecta</strong> pessoas que procuram lugar para morar com quem tem uma
+          O Toc Toc Who? é uma plataforma que <strong>conecta</strong> pessoas que procuram lugar para morar com quem tem uma
           vaga para dividir ou um imóvel para alugar, principalmente estudantes de Maringá.
         </p>
         <p>
-          O RachaAi <strong>não é imobiliária</strong>, não é dono dos imóveis anunciados, não participa das negociações,
+          O Toc Toc Who? <strong>não é imobiliária</strong>, não é dono dos imóveis anunciados, não participa das negociações,
           não recebe aluguel nem caução, e não é parte de nenhum contrato entre os usuários. Também não verifica
           antecedentes, identidade nem a situação dos imóveis.
         </p>
@@ -39,7 +39,7 @@ export default function TermsPage() {
       </Section>
 
       <Section title="3. O que não é permitido">
-        <p>É proibido usar o RachaAi para:</p>
+        <p>É proibido usar o Toc Toc Who? para:</p>
         <ul>
           <li>publicar anúncios falsos, de imóveis que você não tem direito de anunciar, ou com fotos e informações enganosas;</li>
           <li>aplicar golpes, pedir pagamentos adiantados sem mostrar o imóvel, ou pedir dados bancários e senhas;</li>
@@ -66,7 +66,7 @@ export default function TermsPage() {
 
       <Section title="5. Pagamentos">
         <ul>
-          <li>Pagamentos são processados por um provedor de pagamento parceiro; o RachaAi não guarda dados de cartão ou conta bancária.</li>
+          <li>Pagamentos são processados por um provedor de pagamento parceiro; o Toc Toc Who? não guarda dados de cartão ou conta bancária.</li>
           <li>
             Pelo Código de Defesa do Consumidor (art. 49), você pode desistir de uma compra em até <strong>7 dias</strong>{' '}
             e receber o valor de volta. Peça pelo e-mail {LEGAL.supportEmail}.
@@ -83,7 +83,7 @@ export default function TermsPage() {
         </p>
         <p>
           Os acordos de aluguel e de convivência são feitos diretamente entre os usuários, que respondem por eles. O
-          RachaAi não se responsabiliza por danos, prejuízos ou conflitos decorrentes desses acordos, dos encontros ou da
+          Toc Toc Who? não se responsabiliza por danos, prejuízos ou conflitos decorrentes desses acordos, dos encontros ou da
           convivência.
         </p>
       </Section>
@@ -102,7 +102,7 @@ export default function TermsPage() {
 
       <Section title="8. Conteúdo que você publica">
         <p>
-          Fotos, textos e anúncios continuam sendo seus. Ao publicar, você autoriza o RachaAi a exibi-los na plataforma
+          Fotos, textos e anúncios continuam sendo seus. Ao publicar, você autoriza o Toc Toc Who? a exibi-los na plataforma
           enquanto estiverem publicados, e declara que tem direito de usá-los (por exemplo, as fotos do imóvel).
         </p>
       </Section>
@@ -110,7 +110,7 @@ export default function TermsPage() {
       <Section title="9. Disponibilidade e responsabilidade">
         <p>
           Trabalhamos para o site funcionar sempre, mas ele pode ficar fora do ar para manutenção ou por problemas
-          técnicos. O RachaAi não garante que você vai encontrar uma vaga ou um inquilino, nem a veracidade das informações
+          técnicos. O Toc Toc Who? não garante que você vai encontrar uma vaga ou um inquilino, nem a veracidade das informações
           publicadas por outros usuários.
         </p>
       </Section>

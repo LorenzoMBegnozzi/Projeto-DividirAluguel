@@ -27,7 +27,7 @@ import java.util.UUID;
 
 /**
  * Mercado Pago, Checkout Pro: a pessoa paga numa página do próprio Mercado Pago (Pix, crédito ou
- * débito) e volta ao site. O número do cartão nunca passa pelo RachaAi.
+ * débito) e volta ao site. O número do cartão nunca passa pelo Toc Toc Who?
  *
  * APIs usadas: POST /checkout/preferences (cria a cobrança), GET /v1/payments/search (acha o
  * pagamento pela nossa referência), GET /v1/payments/{id} (confere um pagamento do webhook).
@@ -63,7 +63,7 @@ public class MercadoPagoGateway implements PaymentGateway {
                 "currency_id", "BRL",
                 "unit_price", amount)));
         body.put("external_reference", reference);
-        body.put("statement_descriptor", "RACHAAI");
+        body.put("statement_descriptor", "TOCTOCWHO");
         body.put("back_urls", Map.of("success", returnUrl, "pending", returnUrl, "failure", returnUrl));
         // O Mercado Pago só volta sozinho ao site (auto_return) para endereço https.
         if (returnUrl.startsWith("https://")) {
@@ -203,7 +203,7 @@ public class MercadoPagoGateway implements PaymentGateway {
             log.error("Mercado Pago respondeu {}: {}", status, e.getResponseBodyAsString());
             if (status == 401 || status == 403) {
                 throw new ApiException(org.springframework.http.HttpStatus.BAD_GATEWAY,
-                        "O Mercado Pago recusou a credencial do RachaAi para esta operação (erro " + status
+                        "O Mercado Pago recusou a credencial do Toc Toc Who? para esta operação (erro " + status
                                 + "). Confira o Access Token e se a aplicação tem permissão para essa ação, como reembolsar.");
             }
             throw unavailable(e);

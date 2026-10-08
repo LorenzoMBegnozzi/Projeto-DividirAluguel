@@ -17,6 +17,29 @@
 /* barra de carregamento padrão do model-viewer: aparece como um risco em cima de cada modelo */
 .l3d-wrap model-viewer::part(default-progress-bar) { display: none; }
 
+/* balões da cena da porta: "toc" dos dois lados e o "who?" acima da porta */
+.l3d-bubble {
+  position: absolute; z-index: 1; pointer-events: none; opacity: 0;
+  font-weight: 800; letter-spacing: -0.02em; line-height: 1; white-space: nowrap;
+  background: var(--color-surface); color: var(--color-ink); border: 1px solid var(--color-line);
+  border-radius: 999px; box-shadow: var(--shadow-md);
+  translate: -50% -50%;
+}
+.l3d-toc { padding: 0.35em 0.7em; font-size: var(--text-small); color: var(--color-ink-2); }
+.l3d-toc.is-left { left: 34%; top: 60%; }
+.l3d-toc.is-right { left: 66%; top: 53%; }
+.l3d-who {
+  left: 50%; top: 37%; padding: 0.4em 0.8em 0.45em;
+  font-size: var(--text-h2); color: var(--color-coral);
+  border-radius: var(--radius-lg);
+}
+/* rabinho do balão, apontando para a porta */
+.l3d-who::after {
+  content: ""; position: absolute; left: 50%; bottom: -7px; width: 12px; height: 12px;
+  background: inherit; border-right: 1px solid var(--color-line); border-bottom: 1px solid var(--color-line);
+  translate: -50% 0; rotate: 45deg;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .l3d-stage { transition: none; }
 }

@@ -9,7 +9,7 @@ export default function PrivacyPolicyPage() {
   return (
     <LegalLayout title="Política de Privacidade">
       <p>
-        Esta Política explica quais dados pessoais o <strong>RachaAi</strong> coleta, para que usa, com quem
+        Esta Política explica quais dados pessoais o <strong>Toc Toc Who?</strong> coleta, para que usa, com quem
         compartilha e como você exerce seus direitos, conforme a Lei Geral de Proteção de Dados (Lei nº
         13.709/2018, a “LGPD”). Ao criar uma conta, você declara que leu e entendeu esta Política.
       </p>
@@ -185,7 +185,7 @@ export default function PrivacyPolicyPage() {
       </Section>
 
       <Section title="8. Menores de idade">
-        <p>O RachaAi é só para maiores de 18 anos. Não coletamos intencionalmente dados de menores.</p>
+        <p>O Toc Toc Who? é só para maiores de 18 anos. Não coletamos intencionalmente dados de menores.</p>
       </Section>
 
       <Section title="9. Mudanças nesta Política">

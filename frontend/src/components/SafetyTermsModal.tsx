@@ -34,7 +34,7 @@ export default function SafetyTermsModal() {
       </h2>
 
       <p className="mb-3 text-body text-ink-2">
-        O RachaAi ajuda você a encontrar pessoas para dividir moradia — mas quem vai morar com você ainda é
+        O Toc Toc Who? ajuda você a encontrar pessoas para dividir moradia — mas quem vai morar com você ainda é
         alguém que você não conhece pessoalmente. Alguns cuidados fazem toda a diferença:
       </p>
 
@@ -48,7 +48,7 @@ export default function SafetyTermsModal() {
       </ol>
 
       <p className="mb-3 text-caption text-ink-3">
-        O RachaAi é um espaço de conexão e não faz verificação de antecedentes nem participa dos acordos entre
+        O Toc Toc Who? é um espaço de conexão e não faz verificação de antecedentes nem participa dos acordos entre
         usuários. A segurança nos encontros, negociações e na convivência é de responsabilidade de cada pessoa
         envolvida.
       </p>

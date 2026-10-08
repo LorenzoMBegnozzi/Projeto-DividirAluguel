@@ -80,7 +80,7 @@ function Screens({ mode }: { mode: LandingMode }) {
 
       <div className="p3-notif" data-notif>
         <span className="p3-notif-icon"><Bell className="h-3.5 w-3.5" /></span>
-        <span className="min-w-0"><b>RachaAi</b><span className="block truncate">{procurar ? 'Marina: Posso visitar no sábado?' : 'João quer visitar sua vaga'}</span></span>
+        <span className="min-w-0"><b>Toc Toc Who?</b><span className="block truncate">{procurar ? 'Marina: Posso visitar no sábado?' : 'João quer visitar sua vaga'}</span></span>
       </div>
     </>
   )

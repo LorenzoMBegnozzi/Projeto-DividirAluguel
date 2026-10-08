@@ -26,7 +26,7 @@
 
 @theme {
   /* =====================================================================================
-     Design system do RachaAi: FONTE ÚNICA DE VERDADE. Nenhuma cor, tamanho de texto, raio,
+     Design system do Toc Toc Who?: FONTE ÚNICA DE VERDADE. Nenhuma cor, tamanho de texto, raio,
      sombra, camada ou curva fora daqui (scripts/check-design.mjs falha se voltar).
      Guia de uso: docs/10-DESIGN-SYSTEM.md
      ===================================================================================== */
@@ -66,7 +66,7 @@
   --text-label--letter-spacing: 0.12em;
   --text-micro: 0.6875rem;        /* 11 px: só selo/contador (nunca texto corrido) */
   --text-micro--line-height: 0.875rem;
-  --text-logo-sm: 1rem;           /* nome "RachaAi" no Logo (tamanhos fixos do componente) */
+  --text-logo-sm: 1rem;           /* nome "Toc Toc Who?" no Logo (tamanhos fixos do componente) */
   --text-logo-md: 1.25rem;
   --text-logo-lg: 1.75rem;
   --text-landing-h2: clamp(2rem, 4.2vw, 3rem);       /* 32–48 px: títulos de seção da landing */

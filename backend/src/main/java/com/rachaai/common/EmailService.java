@@ -42,7 +42,7 @@ public class EmailService {
         String text = """
                 Olá, %s!
 
-                Falta pouco para usar o RachaAi. Confirme que este e-mail é seu acessando o link abaixo
+                Falta pouco para usar o Toc Toc Who? Confirme que este e-mail é seu acessando o link abaixo
                 (válido por %d horas):
 
                 %s
@@ -50,21 +50,21 @@ public class EmailService {
                 Até confirmar, você já pode entrar e completar o perfil, mas ainda não consegue anunciar
                 nem conversar com outras pessoas.
 
-                Se você não criou uma conta no RachaAi, ignore este e-mail.
+                Se você não criou uma conta no Toc Toc Who?, ignore este e-mail.
                 """.formatted(name, validHours, link);
         String html = EmailTemplate.render(
-                "Confirme seu e-mail para começar a usar o RachaAi.",
+                "Confirme seu e-mail para começar a usar o Toc Toc Who?",
                 "Confirme seu e-mail",
                 new String[]{
                         "Olá, <strong>" + EmailTemplate.escape(name) + "</strong>!",
-                        "Falta pouco para usar o RachaAi. Confirme que este e-mail é seu para poder anunciar e conversar com outras pessoas.",
+                        "Falta pouco para usar o Toc Toc Who? Confirme que este e-mail é seu para poder anunciar e conversar com outras pessoas.",
                 },
                 "Confirmar e-mail",
                 link,
                 "O link vale por <strong>" + validHours + " horas</strong>. Até confirmar, você já pode entrar e completar o perfil.",
-                "Se você não criou uma conta no RachaAi, ignore este e-mail."
+                "Se você não criou uma conta no Toc Toc Who?, ignore este e-mail."
         );
-        send(to, "RachaAi - confirme seu e-mail", text, html, "confirmação");
+        send(to, "Toc Toc Who? - confirme seu e-mail", text, html, "confirmação");
     }
 
     @Async
@@ -73,7 +73,7 @@ public class EmailService {
         String text = """
                 Olá, %s!
 
-                Recebemos um pedido para redefinir a senha da sua conta no RachaAi.
+                Recebemos um pedido para redefinir a senha da sua conta no Toc Toc Who?
                 Para criar uma senha nova, acesse o link abaixo (válido por %d minutos):
 
                 %s
@@ -81,18 +81,18 @@ public class EmailService {
                 Se não foi você, ignore este e-mail: sua senha continua a mesma.
                 """.formatted(name, validMinutes, link);
         String html = EmailTemplate.render(
-                "Crie uma senha nova para a sua conta no RachaAi.",
+                "Crie uma senha nova para a sua conta no Toc Toc Who?",
                 "Redefinir sua senha",
                 new String[]{
                         "Olá, <strong>" + EmailTemplate.escape(name) + "</strong>!",
-                        "Recebemos um pedido para redefinir a senha da sua conta no RachaAi. Clique no botão para criar uma senha nova.",
+                        "Recebemos um pedido para redefinir a senha da sua conta no Toc Toc Who? Clique no botão para criar uma senha nova.",
                 },
                 "Criar senha nova",
                 link,
                 "O link vale por <strong>" + validMinutes + " minutos</strong> e só pode ser usado uma vez. Ao trocar a senha, você sai de todos os aparelhos.",
                 "Se não foi você que pediu, ignore este e-mail: sua senha continua a mesma."
         );
-        send(to, "RachaAi - redefinição de senha", text, html, "redefinição de senha");
+        send(to, "Toc Toc Who? - redefinição de senha", text, html, "redefinição de senha");
     }
 
     private void send(String to, String subject, String text, String html, String kind) {

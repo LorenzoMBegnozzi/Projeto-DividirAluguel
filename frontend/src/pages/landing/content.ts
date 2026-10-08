@@ -12,7 +12,7 @@ export const hero: Record<LandingMode, { lead: string; words: string[]; text: st
   procurar: {
     lead: 'Ache quem combina',
     words: ['com a sua rotina.', 'com o seu pet.', 'com o seu horário.', 'com o seu bolso.'],
-    text: 'Monte seu perfil de convivência e veja, em cada anúncio, o quanto você combina com quem já mora lá. Sem garimpar grupo de WhatsApp.',
+    text: 'Monte seu perfil de convivência e veja, em cada anúncio, o quanto você combina com quem já mora lá. Sem garimpar em grupos.',
     cta: 'Criar conta grátis',
   },
   anunciar: {
@@ -108,10 +108,10 @@ export const faq: Array<{ q: string; a: string }> = [
   },
   {
     q: 'Funciona fora de Maringá?',
-    a: 'Por enquanto o RachaAi é feito para Maringá: bairros, mapa e faculdades da cidade. Outras cidades vêm depois.',
+    a: 'Por enquanto o Toc Toc Who? é feito para Maringá: bairros, mapa e faculdades da cidade. Outras cidades vêm depois.',
   },
   {
     q: 'Como eu pago um anúncio extra ou um destaque?',
-    a: 'Pelo Mercado Pago, com Pix, cartão de crédito ou débito. O número do cartão fica com o Mercado Pago, não passa pelo RachaAi.',
+    a: 'Pelo Mercado Pago, com Pix, cartão de crédito ou débito. O número do cartão fica com o Mercado Pago, não passa pelo Toc Toc Who?',
   },
 ]

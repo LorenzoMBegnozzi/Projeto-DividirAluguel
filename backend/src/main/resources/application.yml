@@ -51,7 +51,7 @@ app:
   # Endereço público do site, usado nos links enviados por e-mail.
   base-url: ${APP_BASE_URL:http://localhost:8081}
   mail:
-    from: ${MAIL_FROM:RachaAi <nao-responda@rachaai.local>}
+    from: ${MAIL_FROM:Toc Toc Who? <nao-responda@rachaai.local>}
   # Limite de tentativas (ver RateLimiter). Estes são os valores de produção.
   rate-limit:
     login-erros-por-email: 5      # erros de senha por e-mail a cada 15 min

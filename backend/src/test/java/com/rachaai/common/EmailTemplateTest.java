@@ -20,7 +20,7 @@ class EmailTemplateTest {
         String html = render("Ana", "http://localhost:8082/confirmar-email/abc123");
         assertThat(html).contains("Confirmar e-mail")
                 .contains("href=\"http://localhost:8082/confirmar-email/abc123\"")
-                .contains("Racha<span");
+                .contains("Toc Toc <span");
     }
 
     @Test

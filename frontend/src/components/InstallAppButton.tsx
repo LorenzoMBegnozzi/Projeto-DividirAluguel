@@ -9,6 +9,6 @@ export default function InstallAppButton({ className = '' }: { className?: strin
   if (!canInstall) return null
 
   return (
-    <Button variant="ghost" size="sm" icon={Download} onClick={promptInstall} title="Instalar o RachaAi" aria-label="Instalar o RachaAi" className={className} />
+    <Button variant="ghost" size="sm" icon={Download} onClick={promptInstall} title="Instalar o Toc Toc Who?" aria-label="Instalar o Toc Toc Who?" className={className} />
   )
 }

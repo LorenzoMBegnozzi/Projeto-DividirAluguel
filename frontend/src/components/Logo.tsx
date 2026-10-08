@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { homePath } from '../utils/profile'
+import { DOOR_LEFT, DOOR_RIGHT } from './logoShape'
 
-// Marca do RachaAi. Tamanhos e variantes fixos (não aceita className de tamanho/cor):
+// Marca do Toc Toc Who? Tamanhos e variantes fixos (não aceita className de tamanho/cor):
 //   size  sm  ícone 20 px + texto 16 px  → cabeçalhos compactos
 //         md  ícone 28 px + texto 20 px  → NavBar, header e rodapé da landing (padrão)
 //         lg  ícone 36 px + texto 28 px  → topo das telas de autenticação e de fluxo isolado
@@ -17,10 +18,14 @@ const markSize: Record<LogoSize, string> = { sm: 'size-5', md: 'size-7', lg: 'si
 const textSize: Record<LogoSize, string> = { sm: 'text-logo-sm', md: 'text-logo-md', lg: 'text-logo-lg' }
 
 export function LogoMark({ size = 'md', className = '' }: { size?: LogoSize; className?: string }) {
+  // porta dupla: cada folha é uma pessoa (azul procura, coral anuncia); juntas formam a casa
   return (
-    <svg viewBox="0 0 26 26" className={`${markSize[size]} shrink-0 ${className}`} aria-hidden="true">
-      <path d="M12.2 3 3 10.4V23h9.2z" fill="var(--color-brand)" />
-      <path d="M13.8 3 23 10.4V23h-9.2z" fill="var(--color-coral-bright)" />
+    <svg viewBox="4 14 112 124" className={`${markSize[size]} shrink-0 ${className}`} aria-hidden="true">
+      <path d={DOOR_LEFT} fill="var(--color-brand)" />
+      <path d={DOOR_RIGHT} fill="var(--color-coral-bright)" />
+      <circle cx="50" cy="82" r="3.4" fill="var(--color-paper)" />
+      <circle cx="70" cy="82" r="3.4" fill="var(--color-paper)" />
+      <rect x="12" y="128" width="96" height="6" rx="3" fill="var(--color-ink)" />
     </svg>
   )
 }
@@ -28,10 +33,10 @@ export function LogoMark({ size = 'md', className = '' }: { size?: LogoSize; cla
 export default function Logo({ size = 'md', variant = 'full', tone = 'auto' }: { size?: LogoSize; variant?: 'full' | 'mark'; tone?: 'auto' | 'inverse' }) {
   if (variant === 'mark') return <LogoMark size={size} />
   return (
-    <span className={`inline-flex items-center gap-2 font-extrabold leading-none tracking-tight ${textSize[size]} ${tone === 'inverse' ? 'text-on-inverse' : 'text-ink'}`}>
+    <span className={`inline-flex items-center gap-2 whitespace-nowrap font-extrabold leading-none tracking-tight ${textSize[size]} ${tone === 'inverse' ? 'text-on-inverse' : 'text-ink'}`}>
       <LogoMark size={size} />
       <span>
-        Racha<span className={tone === 'inverse' ? 'text-brand-tint' : 'text-brand'}>Ai</span>
+        Toc Toc <span className={tone === 'inverse' ? 'text-coral-tint' : 'text-coral'}>who?</span>
       </span>
     </span>
   )
@@ -42,7 +47,7 @@ export function LogoLink({ size, className = '' }: { size?: LogoSize; className?
   const { user } = useAuth()
   const to = user ? homePath(user) : '/'
   return (
-    <Link to={to} aria-label={user ? 'RachaAi, tela inicial' : 'RachaAi, página inicial'} className={`inline-flex rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus ${className}`}>
+    <Link to={to} aria-label={user ? 'Toc Toc Who?, tela inicial' : 'Toc Toc Who?, página inicial'} className={`inline-flex rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus ${className}`}>
       <Logo size={size} />
     </Link>
   )

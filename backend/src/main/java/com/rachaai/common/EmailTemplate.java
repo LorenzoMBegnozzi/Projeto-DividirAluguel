@@ -3,7 +3,7 @@ package com.rachaai.common;
 import org.springframework.web.util.HtmlUtils;
 
 /**
- * Layout dos e-mails do RachaAi (mesmas cores do site): cabeçalho com a marca, cartão branco,
+ * Layout dos e-mails do Toc Toc Who? (mesmas cores do site): cabeçalho com a marca, cartão branco,
  * botão de ação e o link por extenso como alternativa.
  *
  * E-mail em HTML não aceita o CSS moderno do site: tudo é montado com tabelas e estilos escritos
@@ -19,6 +19,7 @@ public final class EmailTemplate {
     private static final String BRAND = "#1e5f7a";
     private static final String BRAND_TINT = "#dcebf1";
     private static final String CORAL = "#e8704a";
+    private static final String CORAL_TEXT = "#c04e2b"; // coral escuro: o claro não dá contraste em texto
     private static final String PAPER = "#faf7f2";
     private static final String LINE = "#e3dccf";
     private static final String INK = "#1b2b33";
@@ -62,10 +63,10 @@ public final class EmailTemplate {
                   <tr><td align="center" style="padding:32px 16px;">
                     <table role="presentation" width="100%%" cellpadding="0" cellspacing="0" border="0" style="max-width:520px;font-family:%4$s;">
                       <tr><td align="center" style="padding:0 0 20px;">
-                        <!-- logo igual ao do site: as duas metades da casa (azul e coral) + "RachaAi" com o "Ai" em azul.
+                        <!-- logo igual ao do site: a porta dupla (folha azul e folha coral) + "Toc Toc" com o "who?" em coral.
                              Blocos com cantos arredondados no lugar do SVG, que o Gmail não mostra. -->
-                        <span style="display:inline-block;vertical-align:middle;width:11px;height:20px;background-color:%6$s;border-radius:7px 0 0 2px;"></span><span style="display:inline-block;vertical-align:middle;width:11px;height:20px;margin-left:2px;background-color:%16$s;border-radius:0 7px 2px 0;"></span>
-                        <span style="vertical-align:middle;margin-left:8px;font-size:28px;font-weight:800;letter-spacing:-0.5px;color:%5$s;">Racha<span style="color:%6$s;">Ai</span></span>
+                        <span style="display:inline-block;vertical-align:middle;width:11px;height:20px;background-color:%6$s;border-radius:11px 0 0 0;"></span><span style="display:inline-block;vertical-align:middle;width:11px;height:20px;margin-left:2px;background-color:%16$s;border-radius:0 11px 0 0;"></span>
+                        <span style="vertical-align:middle;margin-left:8px;font-size:28px;font-weight:800;letter-spacing:-0.5px;color:%5$s;">Toc Toc <span style="color:%17$s;">who?</span></span>
                       </td></tr>
                       <tr><td bgcolor="#ffffff" style="background-color:#ffffff;border:1px solid %7$s;border-radius:12px;padding:32px 28px;">
                         <h1 style="margin:0 0 16px;font-size:22px;line-height:28px;font-weight:800;color:%5$s;">%1$s</h1>
@@ -80,7 +81,7 @@ public final class EmailTemplate {
                           <a href="%9$s" target="_blank" style="color:%6$s;word-break:break-all;">%9$s</a></p>
                       </td></tr>
                       <tr><td align="center" style="padding:20px 8px 0;font-size:12px;line-height:18px;color:%14$s;">
-                        %15$s<br>RachaAi · dividir moradia em Maringá
+                        %15$s<br>Toc Toc Who? · dividir moradia em Maringá
                       </td></tr>
                     </table>
                   </td></tr>
@@ -89,7 +90,7 @@ public final class EmailTemplate {
                 </html>
                 """.formatted(
                 escape(title), PAPER, escape(preheader), FONT, INK, BRAND, LINE,
-                body, url, escape(buttonText), BRAND_TINT, INK, note, INK_3, footer, CORAL);
+                body, url, escape(buttonText), BRAND_TINT, INK, note, INK_3, footer, CORAL, CORAL_TEXT);
     }
 
     /** Escapa texto para ir dentro do HTML (nomes, títulos). */

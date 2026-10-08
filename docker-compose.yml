@@ -62,7 +62,7 @@ services:
       MAIL_PASSWORD: ${MAIL_PASSWORD:-}
       MAIL_AUTH: ${MAIL_AUTH:-false}
       MAIL_STARTTLS: ${MAIL_STARTTLS:-false}
-      MAIL_FROM: ${MAIL_FROM:-RachaAi <nao-responda@rachaai.local>}
+      MAIL_FROM: ${MAIL_FROM:-Toc Toc Who? <nao-responda@rachaai.local>}
     ports:
       - "${API_PORT:?defina API_PORT no .env do ambiente}:8080"
 

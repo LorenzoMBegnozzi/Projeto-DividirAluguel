@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Toc Toc Who? — marca</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;800&display=swap" rel="stylesheet">
+<style>
+  :root { --petroleo: #1e5f7a; --coral: #e8704a; --creme: #faf7f2; --tinta: #1b2b33; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Schibsted Grotesk", Arial, sans-serif; background: #efe9df; color: var(--tinta); }
+  main { max-width: 1100px; margin: 0 auto; padding: 32px 16px 64px; display: grid; gap: 20px; }
+  h2 { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: #5e6d75; margin: 0 0 14px; font-weight: 500; }
+  .card { background: var(--creme); border-radius: 22px; padding: 28px; }
+  .card.escuro { background: var(--tinta); color: #f4efe8; }
+  .card.escuro h2 { color: #bdb8ae; }
+  .grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+
+  /* logo horizontal */
+  .logo { display: flex; align-items: center; gap: 18px; }
+  .logo svg { height: 96px; width: auto; flex: none; }
+  .nome { line-height: .92; }
+  .nome b { display: block; font-weight: 800; font-size: 52px; letter-spacing: -.03em; }
+  .nome i { display: block; font-style: normal; font-weight: 800; font-size: 40px; letter-spacing: -.02em; color: var(--coral); }
+  .escuro .nome i { color: #f08c6a; }
+
+  /* logo empilhado */
+  .empilhado { display: grid; justify-items: center; gap: 12px; text-align: center; }
+  .empilhado svg { height: 120px; }
+  .empilhado .nome b, .empilhado .nome i { display: inline; font-size: 40px; }
+
+  /* ícones */
+  .icones { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 22px; }
+  .icones figure { margin: 0; display: grid; justify-items: center; gap: 8px; font-size: 12px; color: #5e6d75; }
+  .icones img { display: block; }
+
+  /* animação "toc toc → who? → abre" */
+  .anima { display: grid; place-items: center; gap: 18px; min-height: 340px; }
+  .palco { position: relative; width: 180px; height: 210px; }
+  .palco svg { width: 100%; height: 100%; overflow: visible; }
+  .folha-e { transform-box: fill-box; transform-origin: left center; animation: folhaE 4.8s infinite; }
+  .folha-d { transform-box: fill-box; transform-origin: right center; animation: folhaD 4.8s infinite; }
+  .porta { transform-box: fill-box; transform-origin: center bottom; animation: toc 4.8s infinite; }
+  .luz { animation: luz 4.8s infinite; }
+  .bate { position: absolute; top: 34%; font-weight: 800; font-size: 18px; color: var(--coral); opacity: 0; }
+  .bate.um { left: -46px; animation: bate1 4.8s infinite; }
+  .bate.dois { right: -46px; animation: bate2 4.8s infinite; }
+  .quem { font-weight: 800; font-size: 34px; color: var(--coral); animation: quem 4.8s infinite; }
+  @keyframes toc { 0%,6%,14%,20%,100% { transform: none } 9% { transform: translateX(-3px) rotate(-1deg) } 17% { transform: translateX(3px) rotate(1deg) } }
+  @keyframes bate1 { 0%,6% { opacity: 0; transform: scale(.6) } 9% { opacity: 1; transform: scale(1) } 22%,100% { opacity: 0 } }
+  @keyframes bate2 { 0%,14% { opacity: 0; transform: scale(.6) } 17% { opacity: 1; transform: scale(1) } 30%,100% { opacity: 0 } }
+  @keyframes folhaE { 0%,46% { transform: none } 58%,84% { transform: scaleX(.42) skewY(-6deg) } 94%,100% { transform: none } }
+  @keyframes folhaD { 0%,46% { transform: none } 58%,84% { transform: scaleX(.42) skewY(6deg) } 94%,100% { transform: none } }
+  @keyframes luz { 0%,46% { opacity: 0 } 58%,84% { opacity: 1 } 94%,100% { opacity: 0 } }
+  @keyframes quem { 0%,26% { opacity: 0; transform: translateY(8px) } 34%,86% { opacity: 1; transform: none } 94%,100% { opacity: 0 } }
+  @media (prefers-reduced-motion: reduce) { .anima * { animation: none !important; } .quem { opacity: 1 } }
+</style>
+</head>
+<body>
+<main>
+  <div class="grid">
+    <section class="card">
+      <h2>Logo · claro</h2>
+      <div class="logo">
+        <svg viewBox="0 0 120 140" aria-hidden="true"><use href="#porta"/></svg>
+        <div class="nome"><b>Toc Toc</b><i>who?</i></div>
+      </div>
+    </section>
+    <section class="card escuro">
+      <h2>Logo · escuro</h2>
+      <div class="logo">
+        <svg viewBox="0 0 120 140" aria-hidden="true"><use href="#porta-escura"/></svg>
+        <div class="nome"><b>Toc Toc</b><i>who?</i></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="grid">
+    <section class="card empilhado">
+      <h2>Empilhado</h2>
+      <svg viewBox="0 0 120 140" aria-hidden="true"><use href="#porta"/></svg>
+      <div class="nome"><b>Toc Toc </b><i>who?</i></div>
+    </section>
+    <section class="card anima">
+      <h2>Animação · toc toc → who? → abre</h2>
+      <div class="palco">
+        <span class="bate um">toc</span><span class="bate dois">toc</span>
+        <svg viewBox="0 0 120 140" aria-hidden="true">
+          <g class="porta">
+            <path class="luz" d="M20 128 V60 A40 40 0 0 1 100 60 V128 Z" fill="#ffd9a8"/>
+            <g class="folha-e"><path d="M20 128 V60 A40 40 0 0 1 58 20.05 V128 Z" fill="#1e5f7a"/><circle cx="50" cy="82" r="3.4" fill="#faf7f2"/></g>
+            <g class="folha-d"><path d="M62 128 V20.05 A40 40 0 0 1 100 60 V128 Z" fill="#e8704a"/><circle cx="70" cy="82" r="3.4" fill="#faf7f2"/></g>
+          </g>
+          <rect x="12" y="128" width="96" height="6" rx="3" fill="#1b2b33"/>
+        </svg>
+      </div>
+      <div class="quem">who?</div>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>Ícone do app e favicon</h2>
+    <div class="icones">
+      <figure><img src="icone-app.svg" width="160" height="160" alt=""><figcaption>app · claro</figcaption></figure>
+      <figure><img src="icone-app-escuro.svg" width="160" height="160" alt=""><figcaption>app · escuro</figcaption></figure>
+      <figure><img src="icone-app.svg" width="64" height="64" alt=""><figcaption>64 px</figcaption></figure>
+      <figure><img src="icone-app.svg" width="32" height="32" alt=""><figcaption>32 px</figcaption></figure>
+      <figure><img src="icone.svg" width="16" height="19" alt=""><figcaption>16 px (aba)</figcaption></figure>
+    </div>
+  </section>
+</main>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="porta">
+      <path d="M20 128 V60 A40 40 0 0 1 58 20.05 V128 Z" fill="#1e5f7a"/>
+      <path d="M62 128 V20.05 A40 40 0 0 1 100 60 V128 Z" fill="#e8704a"/>
+      <circle cx="50" cy="82" r="3.4" fill="#faf7f2"/>
+      <circle cx="70" cy="82" r="3.4" fill="#faf7f2"/>
+      <rect x="12" y="128" width="96" height="6" rx="3" fill="#1b2b33"/>
+    </g>
+    <g id="porta-escura">
+      <path d="M20 128 V60 A40 40 0 0 1 58 20.05 V128 Z" fill="#5fb3d1"/>
+      <path d="M62 128 V20.05 A40 40 0 0 1 100 60 V128 Z" fill="#f08c6a"/>
+      <circle cx="50" cy="82" r="3.4" fill="#1b2b33"/>
+      <circle cx="70" cy="82" r="3.4" fill="#1b2b33"/>
+      <rect x="12" y="128" width="96" height="6" rx="3" fill="#f4efe8"/>
+    </g>
+  </defs>
+</svg>
+</body>
+</html>

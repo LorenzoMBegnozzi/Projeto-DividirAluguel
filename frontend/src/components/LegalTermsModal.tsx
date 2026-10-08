@@ -43,7 +43,7 @@ export default function LegalTermsModal() {
 
       <p className="mb-3 text-body text-ink-2">
         Publicamos os <strong className="text-ink">Termos de Uso</strong> e a{' '}
-        <strong className="text-ink">Política de Privacidade</strong> do RachaAi (versão de {LEGAL_VERSION_LABEL}). Eles
+        <strong className="text-ink">Política de Privacidade</strong> do Toc Toc Who? (versão de {LEGAL_VERSION_LABEL}). Eles
         explicam as regras da plataforma, quais dados guardamos, para quê, e como excluir sua conta.
       </p>
       <p className="mb-2 flex flex-wrap gap-x-4 text-small">

@@ -16,7 +16,7 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI rachaaiOpenApi() {
         return new OpenAPI()
-                .info(new Info().title("RachaAi API").version("v1"))
+                .info(new Info().title("Toc Toc Who? API").version("v1"))
                 .addSecurityItem(new SecurityRequirement().addList(BEARER_SCHEME))
                 .components(new Components().addSecuritySchemes(BEARER_SCHEME,
                         new SecurityScheme()
