@@ -335,3 +335,18 @@ body {
 /* Mapas (Leaflet): as camadas internas usam z-index 400–1000 e passavam por cima do menu e da
    caixa de notificações. isolation cria um contexto próprio: esses números só valem dentro do mapa. */
 .leaflet-container { isolation: isolate; }
+
+/* Pinos do mapa da busca (BrowseMapModal): vaga em azul, imóvel em coral; destaque um pouco maior.
+   (nome em português: .map-pin já é o pino animado da landing) */
+.mapa-pino { background: none; border: 0; filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.3)); }
+.mapa-pino-vaga { color: var(--color-brand); }
+.mapa-pino-imovel { color: var(--color-coral-bright); }
+.mapa-pino-destaque svg { transform: scale(1.15); transform-origin: 50% 100%; }
+.mapa-pino:hover svg { transform: scale(1.12); transform-origin: 50% 100%; }
+
+/* Balão do Leaflet nas cores do tema (o padrão é branco fixo e some no escuro) */
+.leaflet-popup-content-wrapper, .leaflet-popup-tip { background: var(--color-surface); color: var(--color-ink); box-shadow: var(--shadow-md); }
+.leaflet-popup-content-wrapper { border-radius: var(--radius-lg); }
+.leaflet-popup-content { margin: 14px 16px; font: inherit; line-height: inherit; }
+.leaflet-popup-content p { margin: 0; }
+.leaflet-container a.leaflet-popup-close-button { color: var(--color-ink-3); }

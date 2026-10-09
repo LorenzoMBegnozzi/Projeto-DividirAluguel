@@ -105,7 +105,7 @@ export default function HomePage() {
               </ul>
             </div>
 
-            <Suspense fallback={<div className="aspect-[5/4] max-h-[520px] w-full" />}>
+            <Suspense fallback={<div className="aspect-3/2 max-h-[520px] w-full" />}>
               <Landing3D mode={mode} onPeak={setShown} onReady={() => { ready3d.current = true }} />
             </Suspense>
           </div>

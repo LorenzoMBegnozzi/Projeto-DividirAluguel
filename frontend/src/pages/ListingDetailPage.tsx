@@ -12,6 +12,7 @@ import InterestSection from '../components/InterestSection'
 import Avatar from '../components/Avatar'
 import ListingMapPreview from '../components/ListingMapPreview'
 import type { Listing, UserProfile } from '../types'
+import { homePath } from '../utils/profile'
 import { Alert, Badge, Button, Card, Columns, Page, cx, focusRing, pageTitleClass } from '../components/ui'
 
 export default function ListingDetailPage() {
@@ -111,10 +112,15 @@ export default function ListingDetailPage() {
     <Page width="medium">
       {/* um cartão grande em volta de tudo: o anúncio vira uma "ficha" única sobre o fundo */}
       <Card padding="none" className="p-4 sm:p-6 lg:p-8">
-      <Link to="/conversas" className={cx('mb-3 inline-flex min-h-11 items-center gap-1 rounded-sm text-small text-ink-3 hover:text-ink', focusRing)}>
+      {/* volta para onde a pessoa estava (busca, conversa, perfil…); se abriu o link direto, vai para o início */}
+      <button
+        type="button"
+        onClick={() => ((window.history.state as { idx?: number } | null)?.idx ? navigate(-1) : navigate(currentUser ? homePath(currentUser) : '/'))}
+        className={cx('mb-3 inline-flex min-h-11 items-center gap-1 rounded-sm text-small text-ink-3 hover:text-ink', focusRing)}
+      >
         <ArrowLeft className="size-4" aria-hidden="true" />
         voltar
-      </Link>
+      </button>
 
       {/* destaque do topo */}
       {photos.length > 0 ? (

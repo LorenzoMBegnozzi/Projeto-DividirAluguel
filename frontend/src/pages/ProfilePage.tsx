@@ -193,7 +193,7 @@ export default function ProfilePage() {
           logout()
           navigate('/login')
         }}
-        className="mx-auto flex! hover:bg-danger-tint! hover:text-danger! lg:mx-0"
+        className="mx-auto flex! bg-danger-tint! text-danger! hover:bg-danger/15! lg:mx-0"
       >
         Sair
       </Button>

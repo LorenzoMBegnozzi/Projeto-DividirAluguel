@@ -1,5 +1,5 @@
 // Modo leve do 3D: aparelho fraco, pouca memória, economia de dados ou movimento reduzido.
-// Nele só o apartamento aparece (sem casinhas e sem sombra).
+// Nele a cena do mascote aparece sem sombra.
 interface NavigatorHints {
   deviceMemory?: number
   connection?: { saveData?: boolean }

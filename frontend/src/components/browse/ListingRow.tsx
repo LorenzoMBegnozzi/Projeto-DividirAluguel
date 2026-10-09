@@ -33,7 +33,7 @@ export default function ListingRow({ item, kind, photos, onOpenPhotos, actions, 
   ].filter(Boolean)
 
   return (
-    <Card as="article" padding="none" className="flex flex-col overflow-hidden sm:min-h-66 sm:flex-row">
+    <Card as="article" padding="none" tone={kind === 'imovel' ? 'coral' : undefined} className="flex flex-col overflow-hidden transition-colors duration-(--dur-slow) sm:min-h-66 sm:flex-row">
       {/* foto (ou espaço neutro com o bairro) */}
       <div className="relative aspect-16/10 shrink-0 bg-surface-sunk sm:aspect-auto sm:w-64 md:w-80 lg:w-64 xl:w-100">
         {photos && photos.length > 0 ? (

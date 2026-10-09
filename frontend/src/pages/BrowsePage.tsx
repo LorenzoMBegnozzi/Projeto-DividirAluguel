@@ -5,7 +5,7 @@ import { getInterestStatus, getInterestedPeople, markInterest, unmarkInterest, t
 import { getListingPhotos } from '../api/listings'
 import { apiErrorMessage } from '../api/client'
 import { ChevronLeft, ChevronRight, Heart, MapPinned, SlidersHorizontal, Users, X } from 'lucide-react'
-import PickLocationModal from '../components/PickLocationModal'
+import BrowseMapModal from '../components/browse/BrowseMapModal'
 import ListingRow from '../components/browse/ListingRow'
 import PhotoLightbox from '../components/PhotoLightbox'
 import { useAuth } from '../context/AuthContext'
@@ -28,7 +28,7 @@ export default function BrowsePage() {
   const filters = useBrowseFilters()
   const { tab, bairro, mapPoint } = filters
   const [sheetOpen, setSheetOpen] = useState(false)
-  const [showMapPicker, setShowMapPicker] = useState(false)
+  const [showMap, setShowMap] = useState(false)
   const [items, setItems] = useState<BrowseItem[]>([])
   // bairros e faculdades já vistos nos anúncios (sugestões do campo "Onde", sem API); acumula,
   // para a lista não encolher depois que um bairro é escolhido
@@ -145,7 +145,7 @@ export default function BrowsePage() {
       rules={rules}
       hidden={hidden}
       myGender={myGender}
-      onOpenMap={() => setShowMapPicker(true)}
+      onOpenMap={() => setShowMap(true)}
       placeOptions={placeOptions}
       onClear={filters.clearAll}
       activeCount={activeCount}
@@ -275,6 +275,7 @@ export default function BrowsePage() {
           className="w-full sm:w-96"
           value={tab}
           onChange={filters.setTab}
+          tone={tab === 'ESTABLISHMENTS' ? 'coral' : 'brand'}
           options={[
             { value: 'ROOMMATES', label: 'Busco uma vaga' },
             { value: 'ESTABLISHMENTS', label: 'Busco um imóvel' },
@@ -302,6 +303,8 @@ export default function BrowsePage() {
             <Button variant="secondary" icon={SlidersHorizontal} onClick={() => setSheetOpen(true)} className="lg:hidden">
               Filtros{activeCount > 0 && <span className="ml-0.5 grid size-5 place-items-center rounded-full bg-brand text-micro font-bold text-on-brand">{activeCount}</span>}
             </Button>
+            {/* no celular o "Ver no mapa" do painel fica na gaveta: atalho aqui também */}
+            <Button variant="secondary" icon={MapPinned} onClick={() => setShowMap(true)} className="lg:hidden">Mapa</Button>
             <div className="order-last flex basis-full flex-wrap items-center gap-2 empty:hidden lg:order-none lg:flex-1 lg:basis-auto">
               {chips.map((c) => <FilterChip key={c.key} icon={c.icon} onRemove={c.remove}>{c.label}</FilterChip>)}
               {chips.length >= 2 && (
@@ -325,15 +328,7 @@ export default function BrowsePage() {
 
       {lightbox && <PhotoLightbox photos={lightbox} onClose={() => setLightbox(null)} />}
 
-      {showMapPicker && (
-        <PickLocationModal
-          onClose={() => setShowMapPicker(false)}
-          onConfirm={(lat, lng) => {
-            filters.setMapPoint({ lat, lng })
-            setShowMapPicker(false)
-          }}
-        />
-      )}
+      {showMap && <BrowseMapModal onClose={() => setShowMap(false)} />}
 
       {error && <Alert tone="danger" className="mb-4">{error}</Alert>}
 
@@ -341,7 +336,7 @@ export default function BrowsePage() {
         <div className="flex flex-col gap-4" aria-busy="true">
           <span className="sr-only">Carregando…</span>
           {[0, 1, 2, 3].map((i) => (
-            <Card key={i} padding="none" className="flex flex-col overflow-hidden sm:min-h-66 sm:flex-row">
+            <Card key={i} padding="none" tone={tab === 'ESTABLISHMENTS' ? 'coral' : undefined} className="flex flex-col overflow-hidden sm:min-h-66 sm:flex-row">
               <Skeleton className="aspect-16/10 shrink-0 rounded-none sm:aspect-auto sm:w-64 md:w-80 lg:w-64 xl:w-100" />
               <div className="flex flex-1 flex-col gap-3 p-4 sm:p-6">
                 <div className="flex justify-between gap-4"><div className="flex-1 space-y-2"><Skeleton className="h-5 w-3/5" /><Skeleton className="h-4 w-2/5" /></div><Skeleton className="h-12 w-20" /></div>

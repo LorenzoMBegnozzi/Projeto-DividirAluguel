@@ -39,20 +39,17 @@ export default function FilterPanel({ f, state, stats, priceMatching, facets, co
   return (
     <div className="space-y-6">
       <Block title="Onde">
-        <div className="flex gap-2">
-          <div className="min-w-0 flex-1">
-            <LocationAutocomplete
-              value={f.bairro}
-              onChange={f.setBairro}
-              onSelectPlace={(p) => f.setPlacePoint({ lat: p.lat, lng: p.lon })}
-              localOptions={placeOptions}
-              placeholder="Bairro ou faculdade"
-              className={fieldClass()}
-            />
-          </div>
-          <Button variant="secondary" icon={MapPinned} title="Marcar local no mapa" aria-label="Marcar local no mapa" onClick={onOpenMap} className="shrink-0" />
-        </div>
-        {f.mapPoint && <p className="mt-2 text-caption text-ink-3">Vagas num raio perto do ponto marcado.</p>}
+        <LocationAutocomplete
+          value={f.bairro}
+          onChange={f.setBairro}
+          onSelectPlace={(p) => f.setPlacePoint({ lat: p.lat, lng: p.lon })}
+          localOptions={placeOptions}
+          placeholder="Bairro ou faculdade"
+          className={fieldClass()}
+        />
+        {f.mapPoint && <p className="mt-2 text-caption text-ink-3">Anúncios num raio perto do local escolhido.</p>}
+        {/* todas as vagas (azul) e imóveis (coral) num mapa, com um balão por anúncio */}
+        <Button variant="secondary" icon={MapPinned} onClick={onOpenMap} full className="mt-2">Ver no mapa</Button>
       </Block>
 
       {stats && (

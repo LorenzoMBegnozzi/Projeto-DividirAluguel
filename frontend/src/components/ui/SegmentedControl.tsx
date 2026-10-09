@@ -16,6 +16,7 @@ export default function SegmentedControl<T extends string>({
   value,
   onChange,
   label,
+  tone = 'brand',
   className,
 }: {
   options: SegmentOption<T>[]
@@ -23,6 +24,8 @@ export default function SegmentedControl<T extends string>({
   onChange: (value: T) => void
   /** nome do grupo para leitor de tela */
   label: string
+  /** cor da pílula; muda com transição (ex.: a busca fica coral em "imóvel") */
+  tone?: 'brand' | 'coral'
   className?: string
 }) {
   const refs = useRef<(HTMLButtonElement | null)[]>([])
@@ -48,7 +51,10 @@ export default function SegmentedControl<T extends string>({
       {/* a pílula: anda uma coluna inteira por opção */}
       <span
         aria-hidden="true"
-        className="absolute inset-y-1 left-1 rounded-full bg-brand transition-transform duration-(--dur-slow) ease-spring motion-reduce:transition-none"
+        className={cx(
+          'absolute inset-y-1 left-1 rounded-full transition-[transform,background-color] duration-(--dur-slow) ease-spring motion-reduce:transition-none',
+          tone === 'coral' ? 'bg-coral' : 'bg-brand',
+        )}
         style={{ width: `calc((100% - 0.5rem) / ${options.length})`, transform: `translateX(${index * 100}%)` }}
       />
       {options.map((o, i) => (

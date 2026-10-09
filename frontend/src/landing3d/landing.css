@@ -1,44 +1,35 @@
 /* Estilos do palco 3D da landing. Ficam fora do index.css de propósito: só são
    baixados junto com o chunk lazy (Landing3D), nunca pelo app logado. */
 
-.l3d-wrap { position: relative; width: 100%; aspect-ratio: 5 / 4; max-height: 520px; }
+.l3d-wrap { position: relative; width: 100%; aspect-ratio: 3 / 2; max-height: 520px; }
 .l3d-stage {
-  position: absolute; inset: 6% 4%;
+  position: absolute; inset: 0;
   opacity: 0; transform: translateY(24px) scale(0.97);
   transition: opacity 0.8s ease, transform 1s cubic-bezier(.2, .8, .2, 1);
 }
 .l3d-stage.is-ready { opacity: 1; transform: none; }
 .l3d-stage model-viewer { width: 100%; height: 100%; --poster-color: transparent; pointer-events: none; }
 
-.l3d-particles { position: absolute; inset: 0; pointer-events: none; }
-.l3d-particle { position: absolute; will-change: transform; }
-.l3d-particle-inner { width: 100%; height: 100%; }
-.l3d-particle model-viewer { width: 100%; height: 100%; --poster-color: transparent; pointer-events: none; }
 /* barra de carregamento padrão do model-viewer: aparece como um risco em cima de cada modelo */
 .l3d-wrap model-viewer::part(default-progress-bar) { display: none; }
 
-/* balões da cena da porta: "toc" dos dois lados e o "who?" acima da porta */
+/* falas dos caranguejos: left/top é a ponta do rabinho, logo acima de quem fala (posições casam
+   com a câmera fixa da cena); o GSAP centraliza o balão nesse ponto */
 .l3d-bubble {
   position: absolute; z-index: 1; pointer-events: none; opacity: 0;
-  font-weight: 800; letter-spacing: -0.02em; line-height: 1; white-space: nowrap;
+  font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; white-space: nowrap;
   background: var(--color-surface); color: var(--color-ink); border: 1px solid var(--color-line);
-  border-radius: 999px; box-shadow: var(--shadow-md);
-  translate: -50% -50%;
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-md);
+  padding: 0.5em 0.85em; font-size: var(--text-small);
 }
-.l3d-toc { padding: 0.35em 0.7em; font-size: var(--text-small); color: var(--color-ink-2); }
-.l3d-toc.is-left { left: 34%; top: 60%; }
-.l3d-toc.is-right { left: 66%; top: 53%; }
-.l3d-who {
-  left: 50%; top: 37%; padding: 0.4em 0.8em 0.45em;
-  font-size: var(--text-h2); color: var(--color-coral);
-  border-radius: var(--radius-lg);
-}
-/* rabinho do balão, apontando para a porta */
-.l3d-who::after {
+/* rabinho do balão, apontando para baixo (para o caranguejo) */
+.l3d-bubble::after {
   content: ""; position: absolute; left: 50%; bottom: -7px; width: 12px; height: 12px;
   background: inherit; border-right: 1px solid var(--color-line); border-bottom: 1px solid var(--color-line);
   translate: -50% 0; rotate: 45deg;
 }
+.l3d-say.is-leaving { left: 60%; top: 32%; color: var(--color-coral); }
+.l3d-say.is-arriving { left: 61%; top: 36%; color: var(--color-brand); }
 
 @media (prefers-reduced-motion: reduce) {
   .l3d-stage { transition: none; }

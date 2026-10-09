@@ -1,13 +1,13 @@
-// Palco 3D da landing: a casinha com a porta dupla do logo (toc toc → who? → abre) + casinhas.
+// Palco 3D da landing: o mascote. Um caranguejo-eremita deixa a concha ("vou deixar pro próximo")
+// e outro caranguejo chega e faz dela a casa nova — a vaga passando adiante.
 // Carregado com React.lazy pela HomePage, então nem o Three.js nem o GSAP entram
 // no bundle do app logado. Os elementos 3D são criados fora do React (DOM direto)
 // e destruídos no unmount; o React só cuida do contêiner e dos props.
 import { useEffect, useRef } from 'react'
 import { setRunning } from './loop'
 import { createModelViewer, loadModelViewer, type ModelViewerElement } from './modelViewer'
-import { createParticles } from './particles'
 import { isLiteDevice, whenIdle } from './perf'
-import { createScene, createSwitcher } from './choreography'
+import { CAMERA, createScene, createSwitcher } from './choreography'
 import { startTilt } from './tilt'
 import './landing.css'
 
@@ -24,14 +24,11 @@ interface Props {
 // cor de cada modo vem do tema (claro/escuro), não fica fixa no código
 const cssColor = (name: string) => getComputedStyle(document.documentElement).getPropertyValue(name).trim()
 const colorFor = (mode: LandingMode) => cssColor(mode === 'procurar' ? '--color-brand' : '--color-coral-bright')
-const TOC_LABEL = 'toc'
 
 export default function Landing3D({ mode, onPeak, onReady }: Props) {
   const stageRef = useRef<HTMLDivElement>(null)
-  const particlesRef = useRef<HTMLDivElement>(null)
-  const tocLeftRef = useRef<HTMLSpanElement>(null)
-  const tocRightRef = useRef<HTMLSpanElement>(null)
-  const whoRef = useRef<HTMLSpanElement>(null)
+  const sayLeavingRef = useRef<HTMLSpanElement>(null)
+  const sayArrivingRef = useRef<HTMLSpanElement>(null)
   const switchRef = useRef<(() => Promise<void>) | null>(null)
   const modeRef = useRef(mode)
   // callbacks mais recentes, sem recriar o 3D quando o pai re-renderiza
@@ -40,38 +37,33 @@ export default function Landing3D({ mode, onPeak, onReady }: Props) {
 
   useEffect(() => {
     const stage = stageRef.current!
-    const particlesBox = particlesRef.current!
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches
-    const isMobile = matchMedia('(max-width: 640px)').matches
     const lite = isLiteDevice()
     const cleanups: Array<() => void> = []
     let cancelled = false
     let mv: ModelViewerElement | null = null
-    let particles: ReturnType<typeof createParticles> | null = null
     let scene: ReturnType<typeof createScene> = null
 
+    // a estrela-do-mar da areia acompanha o modo (azul procurar / coral anunciar)
     const applyColors = () => {
-      const c = colorFor(modeRef.current)
-      const paint = (name: string, color: string) => mv?.model?.getMaterialByName(name)?.pbrMetallicRoughness.setBaseColorFactor(color)
-      paint('accent', c)
-      // as folhas da porta seguem o logo (e o tema claro/escuro)
-      paint('leafLeft', cssColor('--color-brand'))
-      paint('leafRight', cssColor('--color-coral-bright'))
-      particles?.tint(c)
+      mv?.model?.getMaterialByName('accent')?.pbrMetallicRoughness.setBaseColorFactor(colorFor(modeRef.current))
     }
     const startScene = () => {
       scene?.kill()
-      if (!mv) return
-      scene = createScene({ mv, tocs: [tocLeftRef.current!, tocRightRef.current!], who: whoRef.current! }, { reducedMotion })
+      scene = createScene({ leaving: sayLeavingRef.current!, arriving: sayArrivingRef.current! }, { reducedMotion })
     }
 
     const boot = () => loadModelViewer().then(() => {
       if (cancelled) return
       mv = createModelViewer({
-        src: '/landing/door-house.glb',
-        alt: 'Ilustração 3D de uma casinha com uma porta dupla, uma folha azul e outra coral, que se abre',
-        'animation-name': 'open',
-        'camera-orbit': '0deg 76deg auto',
+        src: '/landing/caranguejo.glb',
+        alt: 'Ilustração 3D: um caranguejo-eremita laranja sai da concha azul e a deixa na areia; outro caranguejo chega e faz dela a casa nova',
+        'animation-name': 'cena',
+        'camera-orbit': `${CAMERA.yaw}deg ${CAMERA.pitch}deg ${CAMERA.radius}`,
+        'camera-target': CAMERA.target,
+        // câmera fixa um pouco mais perto que o enquadramento automático (os caranguejos saem pela borda)
+        'min-camera-orbit': 'auto auto 1m',
+        'max-camera-orbit': 'auto auto 40m',
         'field-of-view': '26deg',
         'environment-image': 'neutral',
         exposure: '1.05',
@@ -84,23 +76,19 @@ export default function Landing3D({ mode, onPeak, onReady }: Props) {
         loading: 'eager',
       })
       stage.prepend(mv)
-      particles = createParticles(particlesBox, { isMobile, reducedMotion, lite })
-      cleanups.push(() => particles?.destroy())
-      cleanups.push(startTilt(mv, { reducedMotion, baseYaw: 0, basePitch: 76 }))
+      cleanups.push(startTilt(mv, { reducedMotion, baseYaw: CAMERA.yaw, basePitch: CAMERA.pitch, radius: CAMERA.radius }))
 
       mv.addEventListener('load', () => {
         if (cancelled || !mv) return
         mv.pause()                     // a animação não "toca": o GSAP escolhe o quadro
         applyColors()
         startScene()
-        particles?.load('/landing/house.glb')
         stage.classList.add('is-ready')
         callbacks.current.onReady()
       }, { once: true })
 
-      switchRef.current = createSwitcher({
+      const runSwitch = createSwitcher({
         stage,
-        particles: () => particles?.items ?? [],
         reducedMotion,
         onPeak: () => {
           applyColors()
@@ -108,11 +96,10 @@ export default function Landing3D({ mode, onPeak, onReady }: Props) {
         },
         restartScene: startScene,
       })
-      // a troca de modo assume a porta: a cena para e recomeça quando o giro termina
-      const runSwitch = switchRef.current
+      // a troca de modo assume o palco: a cena para (balões somem) e recomeça quando o giro termina
       switchRef.current = () => {
         scene?.pause()
-        for (const el of [tocLeftRef.current, tocRightRef.current, whoRef.current]) if (el) el.style.opacity = '0'
+        for (const el of [sayLeavingRef.current, sayArrivingRef.current]) if (el) el.style.opacity = '0'
         return runSwitch()
       }
     }).catch(() => { /* sem 3D (offline, navegador antigo): a landing segue só com texto */ })
@@ -153,12 +140,10 @@ export default function Landing3D({ mode, onPeak, onReady }: Props) {
 
   return (
     <div className="l3d-wrap">
-      <div ref={particlesRef} className="l3d-particles" aria-hidden="true" />
       <div ref={stageRef} className="l3d-stage" />
-      {/* balões da cena (o 3D não tem texto): só decoração, o leitor de tela fica com o alt */}
-      <span ref={tocLeftRef} className="l3d-bubble l3d-toc is-left" aria-hidden="true">{TOC_LABEL}</span>
-      <span ref={tocRightRef} className="l3d-bubble l3d-toc is-right" aria-hidden="true">{TOC_LABEL}</span>
-      <span ref={whoRef} className="l3d-bubble l3d-who" aria-hidden="true">who?</span>
+      {/* falas dos caranguejos (o 3D não tem texto): só decoração, o leitor de tela fica com o alt */}
+      <span ref={sayLeavingRef} className="l3d-bubble l3d-say is-leaving" aria-hidden="true">Vou deixar pro próximo!</span>
+      <span ref={sayArrivingRef} className="l3d-bubble l3d-say is-arriving" aria-hidden="true">Opa, casa nova!</span>
     </div>
   )
 }

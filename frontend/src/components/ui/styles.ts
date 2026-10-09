@@ -57,7 +57,7 @@ export const hintClass = 'mt-1.5 text-caption text-ink-3'
 export const errorClass = 'mt-1.5 text-caption font-semibold text-danger'
 
 /* ---------- cartão ---------- */
-export type CardTone = 'surface' | 'sunk' | 'danger' | 'brand'
+export type CardTone = 'surface' | 'sunk' | 'danger' | 'brand' | 'coral'
 export type CardPadding = 'none' | 'sm' | 'md' | 'lg'
 const cardTone: Record<CardTone, string> = {
   surface: 'rounded-xl border border-line bg-surface shadow-sm',
@@ -65,6 +65,8 @@ const cardTone: Record<CardTone, string> = {
   sunk: 'rounded-lg border border-line bg-surface-sunk',
   danger: 'rounded-xl border border-danger/40 bg-surface shadow-sm',
   brand: 'rounded-xl border border-brand bg-brand-tint',
+  // anúncio de imóvel na busca: um toque leve do coral (o lado "imóvel"), sem pintar a tela toda
+  coral: 'rounded-xl border border-coral/25 bg-coral-tint/40 shadow-sm',
 }
 const cardPad: Record<CardPadding, string> = { none: '', sm: 'p-4', md: 'p-5 sm:p-6', lg: 'p-6 sm:p-8' }
 export function cardClass({ tone = 'surface', padding = 'md', interactive = false }: { tone?: CardTone; padding?: CardPadding; interactive?: boolean } = {}) {
