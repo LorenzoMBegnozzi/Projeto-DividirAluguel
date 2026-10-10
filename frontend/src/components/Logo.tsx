@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { homePath } from '../utils/profile'
-import { DOOR_LEFT, DOOR_RIGHT } from './logoShape'
+import { SHELL_BODY, SHELL_SPIRAL } from './logoShape'
 
 // Marca do Toc Toc Who? Tamanhos e variantes fixos (não aceita className de tamanho/cor):
 //   size  sm  ícone 20 px + texto 16 px  → cabeçalhos compactos
@@ -18,14 +18,11 @@ const markSize: Record<LogoSize, string> = { sm: 'size-5', md: 'size-7', lg: 'si
 const textSize: Record<LogoSize, string> = { sm: 'text-logo-sm', md: 'text-logo-md', lg: 'text-logo-lg' }
 
 export function LogoMark({ size = 'md', className = '' }: { size?: LogoSize; className?: string }) {
-  // porta dupla: cada folha é uma pessoa (azul procura, coral anuncia); juntas formam a casa
+  // concha estrela: a casa que o caranguejo carrega (azul da marca, espiral em brand-tint; os dois seguem o tema)
   return (
-    <svg viewBox="4 14 112 124" className={`${markSize[size]} shrink-0 ${className}`} aria-hidden="true">
-      <path d={DOOR_LEFT} fill="var(--color-brand)" />
-      <path d={DOOR_RIGHT} fill="var(--color-coral-bright)" />
-      <circle cx="50" cy="82" r="3.4" fill="var(--color-paper)" />
-      <circle cx="70" cy="82" r="3.4" fill="var(--color-paper)" />
-      <rect x="12" y="128" width="96" height="6" rx="3" fill="var(--color-ink)" />
+    <svg viewBox="8 8 84 84" className={`${markSize[size]} shrink-0 ${className}`} aria-hidden="true">
+      <path d={SHELL_BODY} fill="var(--color-brand)" stroke="var(--color-brand)" strokeWidth="3" strokeLinejoin="round" />
+      <path d={SHELL_SPIRAL} fill="none" stroke="var(--color-brand-tint)" strokeWidth="4.6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }

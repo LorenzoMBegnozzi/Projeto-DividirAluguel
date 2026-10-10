@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Toc Toc Who?">
+  <!-- concha em espiral rachada ao meio: azul | coral, como a porta dupla -->
+  <defs><clipPath id="e"><rect x="0" y="0" width="58.0" height="120"/></clipPath><clipPath id="d"><rect x="62.0" y="0" width="60" height="120"/></clipPath></defs>
+  <g clip-path="url(#e)" fill="#1e5f7a"><ellipse cx="60" cy="80" rx="40" ry="24"/><ellipse cx="60" cy="54" rx="29" ry="15"/><ellipse cx="60" cy="35" rx="19" ry="10"/><ellipse cx="60" cy="22" rx="11" ry="6.5"/><circle cx="60" cy="13" r="4.2"/><rect x="20" y="80" width="80" height="22"/></g>
+  <g clip-path="url(#d)" fill="#e8704a"><ellipse cx="60" cy="80" rx="40" ry="24"/><ellipse cx="60" cy="54" rx="29" ry="15"/><ellipse cx="60" cy="35" rx="19" ry="10"/><ellipse cx="60" cy="22" rx="11" ry="6.5"/><circle cx="60" cy="13" r="4.2"/><rect x="20" y="80" width="80" height="22"/></g>
+  <g fill="none" stroke="#faf7f2" stroke-width="3" stroke-linecap="round" opacity=".9"><path d="M23.199999999999996 70.88 A40 24 0 0 0 96.80000000000001 70.88"/><path d="M33.32 48.3 A29 15 0 0 0 86.68 48.3"/><path d="M42.519999999999996 31.2 A19 10 0 0 0 77.48 31.2"/></g>
+</svg>

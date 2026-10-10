@@ -1,0 +1,27 @@
+{
+ "logo-3d": {
+  "forma": {
+   "voltas": 3.5,
+   "crescimento": 2.4,
+   "ponta": 0.5,
+   "enrola": 0.5,
+   "boca": 0.42,
+   "faixa": [
+    0.22,
+    0.29
+   ],
+   "pontas": {
+    "n": 10,
+    "altura": 0.75,
+    "onde": 0.0,
+    "largura": 0.28,
+    "agudo": 4
+   }
+  },
+  "cam": {
+   "az": 25,
+   "el": 72,
+   "folga": 1.0
+  }
+ }
+}

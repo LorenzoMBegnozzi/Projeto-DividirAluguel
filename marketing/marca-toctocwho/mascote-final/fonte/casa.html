@@ -1,0 +1,333 @@
+<!doctype html><html><head><meta charset="utf-8">
+<style>html,body{margin:0;background:transparent}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script>
+</head><body>
+<script type="module">
+// Mascote "casa nas costas": concha enorme por cima e o caranguejo quase todo embaixo dela (estilo chunky).
+// Formas grossas e simples, olhos grandes pretos e brilhantes, garras redondas e perninhas pontudas.
+// Concha e olhos nas hastes vêm do caranguejo.glb da landing (a cara do mascote continua a mesma).
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const SIZE = 1024;
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1); renderer.setSize(SIZE, SIZE);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.NeutralToneMapping;
+document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+const key = new THREE.DirectionalLight(0xffffff, 1.6); key.position.set(3, 6, 5); scene.add(key);
+const fill = new THREE.DirectionalLight(0xdcebf1, 0.5); fill.position.set(-4, 2, 3); scene.add(fill);
+const hemi = new THREE.HemisphereLight(0xffffff, 0xead9c0, 0); scene.add(hemi);
+const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 100);
+
+const gltf = await new GLTFLoader().loadAsync('./caranguejo.glb');
+const src = gltf.scene;
+const M = {}; src.traverse((o) => { if (o.material) M[o.material.name] = o.material; });
+const V = (...a) => new THREE.Vector3(...a);
+
+// ---------- peças ----------
+function elipsoide(r, mat, pos = [0, 0, 0], seg = 40) {
+  const m = new THREE.Mesh(new THREE.SphereGeometry(1, seg, Math.round(seg * 0.7)), mat);
+  m.scale.set(...r); m.position.set(...pos); return m;
+}
+const bola = (r, mat, pos) => elipsoide([r, r, r], mat, pos, 20);
+
+/** segmento reto de a até b, afinando de r0 para r1, com bolinha na junta de cada ponta */
+function segmento(a, b, r0, r1, mat, juntas = true) {
+  const g = new THREE.Group(), d = b.clone().sub(a), L = d.length();
+  const cil = new THREE.Mesh(new THREE.CylinderGeometry(r1, r0, L, 18, 1), mat);
+  cil.position.copy(a).addScaledVector(d, 0.5);
+  cil.quaternion.setFromUnitVectors(V(0, 1, 0), d.normalize());
+  g.add(cil);
+  if (juntas) { g.add(bola(r0 * 1.08, mat, a.toArray())); g.add(bola(r1 * 1.02, mat, b.toArray())); }
+  return g;
+}
+
+/** tubo curvo afinando (antenas e dedos da pinça) */
+function curvo(pontos, r0, r1, mat) {
+  const curva = new THREE.CatmullRomCurve3(pontos, false, 'centripetal');
+  const n = 40, R = 10, geo = new THREE.TubeGeometry(curva, n, 1, R, false);
+  const pos = geo.attributes.position, c = V(), p = V();
+  for (let i = 0; i <= n; i++) {
+    const t = i / n, r = r0 + (r1 - r0) * t; curva.getPointAt(t, c);
+    for (let j = 0; j <= R; j++) { const k = i * (R + 1) + j; p.fromBufferAttribute(pos, k).sub(c).multiplyScalar(r).add(c); pos.setXYZ(k, p.x, p.y, p.z); }
+  }
+  geo.computeVertexNormals();
+  const g = new THREE.Group(); g.add(new THREE.Mesh(geo, mat));
+  g.add(bola(r0, mat, pontos[0].toArray())); g.add(bola(Math.max(r1, 0.006), mat, pontos.at(-1).toArray()));
+  return g;
+}
+
+/**
+ * Garra (quelípodo) no espaço do corpo: ombro → cotovelo (para o lado e para baixo) → pulso (para a frente e
+ * para cima) → mão com a pinça erguida, os dois dedos lado a lado (abrindo em V para quem olha).
+ * s = lado (-1 = direita do caranguejo, à esquerda de quem olha), k = tamanho; ergue / abreBraco giram o braço
+ * no ombro; abre = abertura da pinça (rad); inclina = quanto a pinça tomba para dentro.
+ */
+function garra(s, k, { abre = 0.32, ergue = 0, abreBraco = 0, inclina = 0.35 } = {}) {
+  const ombro = new THREE.Group();
+  ombro.position.set(s * 0.48, -0.06, 0.22);
+  ombro.rotation.set(-ergue, 0, s * abreBraco, 'XYZ');
+  const O = V(0, 0, 0), E = V(s * 0.3 * k, -0.08 * k, 0.22 * k), P = V(s * 0.24 * k, 0.12 * k, 0.46 * k);
+  ombro.add(segmento(O, E, 0.085 * k, 0.075 * k, M.crab));
+  ombro.add(segmento(E, P, 0.075 * k, 0.085 * k, M.crab));
+  const mao = new THREE.Group(); mao.position.copy(P); ombro.add(mao);
+  mao.rotation.set(0.35, 0, -s * inclina, 'XYZ');       // a pinça aponta para cima, tombando um pouco para dentro
+  mao.add(elipsoide([0.17 * k, 0.23 * k, 0.15 * k], M.crab, [0, 0.16 * k, 0]));
+  mao.add(elipsoide([0.1 * k, 0.15 * k, 0.07 * k], M.crabDark, [s * 0.09 * k, 0.17 * k, 0.04 * k], 28));   // mancha escura por fora
+  const topo = 0.34 * k;
+  // dedo fixo (por dentro) e dedo móvel (por fora), curvados um para o outro
+  const fixo = curvo([V(-s * 0.06 * k, topo, 0), V(-s * 0.07 * k, topo + 0.12 * k, 0.01 * k), V(-s * 0.02 * k, topo + 0.24 * k, 0)], 0.07 * k, 0.018 * k, M.crabDark);
+  const movel = new THREE.Group(); movel.position.set(s * 0.06 * k, topo - 0.02 * k, 0); movel.rotation.z = s * abre;
+  movel.add(curvo([V(0, 0, 0), V(s * 0.01 * k, 0.13 * k, 0.01 * k), V(-s * 0.04 * k, 0.25 * k, 0)], 0.065 * k, 0.018 * k, M.crabDark));
+  mao.add(fixo, movel);
+  return ombro;
+}
+
+/** Concha em alta resolução: a mesma espiral logarítmica do generate-landing-crab.mjs (mesmos números e o
+ *  mesmo giro final), só que com 4× mais segmentos. A origem é o centro da boca, como no nó 'concha'. */
+function makeShell() {
+  const turns = 4.2, mouth = 0.5, coil = 0.4, spire = 1.55, growth = 2.05;
+  const k = Math.log(growth) / (2 * Math.PI), S = 420, T = 72, sMin = -turns * 2 * Math.PI;
+  const center = (s) => { const g = Math.exp(k * s); return V(coil * g * Math.cos(s), spire * (1 - g), coil * g * Math.sin(s)); };
+  const pos = [], nor = [];
+  for (let i = 0; i <= S; i++) {
+    const s = sMin + ((0 - sMin) * i) / S, g = Math.exp(k * s), c = center(s), rad = V(Math.cos(s), 0, Math.sin(s));
+    for (let j = 0; j <= T; j++) {
+      const a = (2 * Math.PI * j) / T, n = rad.clone().multiplyScalar(Math.cos(a)).add(V(0, Math.sin(a), 0));
+      pos.push(...c.clone().addScaledVector(n, mouth * g).toArray()); nor.push(...n.toArray());
+    }
+  }
+  const listra = (j) => { const f = j / T; return (f >= 0.15 && f < 0.25) || (f >= 0.5 && f < 0.6) || (f >= 0.85 && f < 0.9); };
+  const azul = [], clara = [];
+  for (let i = 0; i < S; i++) for (let j = 0; j < T; j++) {
+    const a = i * (T + 1) + j, b = a + T + 1, l = listra(j) ? clara : azul;
+    l.push(a, a + 1, b, a + 1, b + 1, b);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+  geo.setIndex([...azul, ...clara]); geo.addGroup(0, azul.length, 0); geo.addGroup(azul.length, clara.length, 1);
+  const dentro = new THREE.Group();
+  const casca = new THREE.Mesh(geo, window.FOSCO ? [B.shell, B.shellLight] : [M.shell, M.shellLight]); dentro.add(casca);
+  // parede de dentro: a mesma malha vista por dentro, escura (é ela que forma a "cavidade" onde o caranguejo mora)
+  const parede = M.shellInside.clone(); parede.side = THREE.BackSide;
+  dentro.add(new THREE.Mesh(geo, parede));
+  const c0 = center(0);
+  const borda = new THREE.Mesh(new THREE.TorusGeometry(mouth, 0.04, 20, 160), window.FOSCO ? B.shellLight : M.shellLight); borda.position.copy(c0); dentro.add(borda);
+  dentro.add(bola(0.03, M.shellLight, center(sMin).toArray()));
+  // o mesmo giro do gerador: ponta para cima e para trás, boca para baixo e para a frente; origem no centro da boca
+  const axis = V(-0.78, 0.6, -0.18).normalize();
+  let front = V(0.05, -1, 0.12); front = front.sub(axis.clone().multiplyScalar(front.dot(axis))).normalize();
+  const side = V().crossVectors(axis, front);
+  const mouthAt = side.clone().multiplyScalar(c0.x).add(axis.clone().multiplyScalar(c0.y)).add(front.clone().multiplyScalar(c0.z));
+  dentro.matrixAutoUpdate = false;
+  dentro.matrix.makeBasis(side, axis, front).setPosition(mouthAt.clone().negate());
+  const g = new THREE.Group(); g.add(dentro); return g;
+}
+
+/** o caranguejo inteiro, centro da carapaça na origem, olhando para +z */
+
+// ---------- caranguejo chunky ----------
+const brilho = new THREE.MeshStandardMaterial({ color: 0x0f1a20, roughness: 0.12, metalness: 0 });
+const branco = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.2, emissive: 0xffffff, emissiveIntensity: 0.35 });
+
+/** cone de a até b (base grossa em a, ponta em b) */
+function cone(a, b, r, mat) {
+  const d = b.clone().sub(a), L = d.length();
+  const m = new THREE.Mesh(new THREE.ConeGeometry(r, L, 28, 1), mat);
+  m.position.copy(a).addScaledVector(d, 0.5);
+  m.quaternion.setFromUnitVectors(V(0, 1, 0), d.normalize());
+  return m;
+}
+
+/** garra redonda com pinça curta em V: s = lado, k = tamanho, ergue = sobe a mão, abre = abertura do V */
+function garraRedonda(s, k, { ergue = 0, abre = 0.16, frente = 0 } = {}) {
+  const g = new THREE.Group();
+  const ombro = V(s * 0.46, -0.08, 0.24);
+  const mao = V(s * (0.72 + 0.05 * k), -0.04 + 0.5 * ergue, 0.82 + 0.2 * frente);
+  g.add(segmento(ombro, mao, 0.13, 0.12, M.crab));
+  g.add(elipsoide([0.24 * k, 0.23 * k, 0.24 * k], M.crab, mao.toArray(), 40));
+  // pinça curta e grossa: dois dedos curvados um para o outro, quase fechados, apontando para cima e para a frente
+  for (const [lado, tam] of [[1, 1.0], [-1, 0.8]]) {
+    const base = mao.clone().add(V(s * lado * 0.08 * k, 0.16 * k, 0.05 * k));
+    const meio = base.clone().add(V(s * lado * Math.sin(abre) * 0.14 * k, 0.13 * k * tam, 0.06 * k));
+    const ponta = meio.clone().add(V(-s * lado * 0.06 * k, 0.1 * k * tam, 0.03 * k));
+    g.add(curvo([base, meio, ponta], 0.12 * k * tam, 0.02 * k, M.crab));
+  }
+  return g;
+}
+
+function caranguejo(p) {
+  const g = new THREE.Group();
+  g.add(elipsoide([0.62, 0.42, 0.5], M.crab, [0, 0, 0], 56));
+  g.add(elipsoide([0.54, 0.24, 0.42], M.belly, [0, -0.18, 0.06], 40));
+  // olhos grandes, pretos e brilhantes, com dois pontos de luz
+  for (const s of [-1, 1]) {
+    const fechado = (p.piscar ?? []).includes(s > 0 ? 'e' : 'd');
+    const olho = elipsoide([0.135, fechado ? 0.025 : 0.175, 0.09], brilho, [s * 0.2, 0.17, 0.4], 40);
+    g.add(olho);
+    if (!fechado) {
+      g.add(elipsoide([0.045, 0.055, 0.02], branco, [s * 0.2 - 0.045, 0.24, 0.48], 20));
+      g.add(bola(0.02, branco, [s * 0.2 + 0.04, 0.1, 0.48]));
+    }
+    const b = elipsoide([0.08, 0.045, 0.02], M.blush, [s * 0.38, -0.02, 0.38], 20); b.rotation.y = s * 0.55; g.add(b);
+  }
+  for (let i = -2; i <= 2; i++) {     // boquinha
+    const x = i * 0.026, y = -0.08 - 0.022 * (1 - (i / 2) ** 2);
+    g.add(bola(0.015, M.ink, [x, y, 0.5 * Math.sqrt(Math.max(0, 1 - (x / 0.62) ** 2 - (y / 0.42) ** 2)) + 0.003]));
+  }
+  // garras: a do lado direito do caranguejo (s = -1) maior
+  g.add(garraRedonda(-1, p.garraGrande ?? 1.2, p.garraD ?? {}));
+  g.add(garraRedonda(1, 1.0, p.garraE ?? {}));
+  // perninhas pontudas: 3 de cada lado, coxa curta para fora e ponta descendo até o chão
+  const passo = p.passo;
+  [0.12, -0.1, -0.32].forEach((z, i) => {
+    for (const s of [-1, 1]) {
+      const q = passo === undefined ? 0 : Math.sin(Math.PI * 2 * (passo + i / 3 + (s > 0 ? 0.5 : 0)));
+      const quadril = V(s * 0.42, -0.24, z);
+      const joelho = V(s * (0.78 + 0.04 * i), -0.2 + 0.06 * Math.max(0, q), z + 0.05 * q);
+      const pe = V(s * (0.98 + 0.06 * i), -0.92 + 0.12 * Math.max(0, q), z + 0.12 * q + (i === 0 ? 0.1 : 0));
+      g.add(segmento(quadril, joelho, 0.1, 0.09, M.crab));
+      g.add(cone(joelho, pe, 0.095, M.crab));
+    }
+  });
+  return g;
+}
+
+
+/** O caranguejo antigo do caranguejo.glb (corpo, olhos nas hastes, sorriso, bochechas e perninhas) com as
+ *  garras novas, de braço articulado e pinça de dois dedos. Centro do corpo na origem, olhando para +z. */
+function caranguejoMisto(p) {
+  const g = new THREE.Group();
+  const antigo = src.getObjectByName('laranja').clone();
+  antigo.position.set(0, -0.55, 0); antigo.rotation.set(0, 0, 0); antigo.scale.setScalar(1);
+  // sem as garras antigas e sem a barriguinha de trás (dentro da concha ela aparecia como um calombo na nuca)
+  antigo.traverse((o) => { if (o.name.startsWith('laranja-garra') || o.material?.name === 'belly') o.visible = false; });
+  for (const lado of p.piscar ?? []) {
+    const h = antigo.getObjectByName('laranja-haste-' + lado);
+    h.children.find((c) => c.name.startsWith('laranja-olho')).scale.set(1, 0.12, 1);
+  }
+  g.add(antigo);
+  g.add(garra(-1, p.garraGrande ?? 1.5, p.garraD ?? {}));
+  g.add(garra(1, p.garraPequena ?? 1.15, p.garraE ?? {}));
+  return g;
+}
+
+// ---------- acabamento de brinquedo de vinil: fosco, com textura leve de massinha ----------
+function texturaRuido(tam = 256) {
+  const c = document.createElement('canvas'); c.width = c.height = tam;
+  const ctx = c.getContext('2d'), img = ctx.createImageData(tam, tam);
+  let s = 12345; const r = () => ((s = (s * 16807) % 2147483647) / 2147483647);
+  for (let i = 0; i < tam * tam; i++) { const v = 128 + (r() - 0.5) * 70; img.data.set([v, v, v, 255], i * 4); }
+  ctx.putImageData(img, 0, 0);
+  const tx = new THREE.CanvasTexture(c); tx.wrapS = tx.wrapT = THREE.RepeatWrapping; tx.repeat.set(6, 6); return tx;
+}
+const RUIDO = texturaRuido();
+function fosco(base, rough, bump = 0.004) {
+  const m = base.clone(); m.roughness = rough; m.metalness = 0; m.bumpMap = RUIDO; m.bumpScale = bump; return m;
+}
+const B = {
+  crab: fosco(M.crab, 0.62), crabDark: fosco(M.crabDark, 0.62), blush: fosco(M.blush, 0.8, 0),
+  shell: fosco(M.shell, 0.5, 0.003), shellLight: fosco(M.shellLight, 0.55, 0.003), ink: fosco(M.ink, 0.25, 0),
+};
+
+/** garra gorda de brinquedo: braço grosso, mão bem redonda e dois dedos grossos de ponta arredondada */
+function garraGorda(s, k, { ergue = 0, abre = 0.08 } = {}) {
+  const g = new THREE.Group();
+  const ombro = V(s * 0.5, -0.1, 0.2);
+  const pulso = V(s * 0.86, -0.05 + 0.45 * ergue, 0.42);
+  g.add(segmento(ombro, pulso, 0.15, 0.14, B.crab));
+  const mao = pulso.clone().add(V(s * 0.04, 0.2 * k, 0.06));
+  g.add(elipsoide([0.27 * k, 0.33 * k, 0.26 * k], B.crab, mao.toArray(), 48));
+  // dedo de dentro (fixo) e dedo de fora (móvel), grossos, curvando um para o outro
+  const topo = mao.clone().add(V(0, 0.27 * k, 0.02));
+  const dentro = [topo.clone().add(V(-s * 0.09 * k, 0, 0)), topo.clone().add(V(-s * 0.11 * k, 0.17 * k, 0.02)), topo.clone().add(V(-s * 0.03 * k, 0.3 * k, 0.03))];
+  g.add(curvo(dentro, 0.12 * k, 0.055 * k, B.crab));
+  const fora0 = topo.clone().add(V(s * 0.1 * k, -0.02 * k, 0));
+  const a = abre;
+  const fora = [fora0, fora0.clone().add(V(s * (0.05 + 0.2 * a) * k, 0.2 * k, 0.03)), fora0.clone().add(V(s * (-0.12 + 0.3 * a) * k, 0.38 * k, 0.05))];
+  g.add(curvo(fora, 0.13 * k, 0.06 * k, B.crab));
+  return g;
+}
+
+/** O mascote em versão brinquedo: corpo e olhos do caranguejo antigo (olhos maiores), sorriso em linha,
+ *  garras gordas e perninhas grossas. Centro do corpo na origem, olhando para +z. */
+function caranguejoBrinquedo(p) {
+  const g = new THREE.Group();
+  const antigo = src.getObjectByName('laranja').clone();
+  antigo.position.set(0, -0.55, 0); antigo.rotation.set(0, 0, 0); antigo.scale.setScalar(1);
+  antigo.traverse((o) => {
+    if (o.name.startsWith('laranja-garra') || o.name.startsWith('laranja-perna') || o.material?.name === 'belly') o.visible = false;
+    if (!o.material) return;
+    const n = o.material.name;
+    if (n === 'ink' && o.parent?.name === 'laranja-corpo') o.visible = false;      // sorriso de pontinhos
+    else if (B[n]) o.material = B[n];
+  });
+  // hastes um pouco mais grossas e olhos maiores, com a pupila grande
+  for (const lado of ['e', 'd']) {
+    const h = antigo.getObjectByName('laranja-haste-' + lado);
+    h.scale.set(1.35, 0.9, 1.35);
+    const olho = h.children.find((c) => c.name.startsWith('laranja-olho'));
+    olho.scale.set(1.25 / 1.35, 1.25 / 0.9, 1.25 / 1.35);
+    olho.traverse((o) => { if (o.material?.name === 'ink') o.scale.setScalar(1.1); });
+    if ((p.piscar ?? []).includes(lado)) olho.scale.y *= 0.12;
+  }
+  g.add(antigo);
+  // sorriso em linha contínua, colado na frente do corpo (elipsoide 0.62 × 0.42 × 0.5)
+  const pts = [];
+  for (let i = 0; i <= 8; i++) {
+    const x = -0.12 + 0.24 * (i / 8), y = -0.07 - 0.045 * (1 - (x / 0.12) ** 2);
+    pts.push(V(x, y, 0.5 * Math.sqrt(Math.max(0, 1 - (x / 0.62) ** 2 - (y / 0.42) ** 2)) + 0.012));
+  }
+  g.add(curvo(pts, 0.016, 0.016, B.ink));
+  // perninhas grossas: 3 de cada lado, saindo de baixo e indo para fora
+  [0.05, -0.15, -0.35].forEach((z) => {
+    for (const s of [-1, 1]) {
+      const a = V(s * 0.42, -0.2, z), b = V(s * 0.72, -0.28, z + 0.04), c = V(s * 0.84, -0.6, z + 0.1);
+      g.add(segmento(a, b, 0.11, 0.1, B.crab));
+      g.add(segmento(b, c, 0.1, 0.06, B.crab));
+    }
+  });
+  g.add(garraGorda(-1, p.garraGrande ?? 1.15, p.garraD ?? {}));
+  g.add(garraGorda(1, p.garraPequena ?? 1.0, p.garraE ?? {}));
+  return g;
+}
+
+let grupo = null;
+window.renderPose = (p) => {
+  if (grupo) scene.remove(grupo);
+  grupo = new THREE.Group(); scene.add(grupo);
+  window.FUNDO = p.fundoConcha ?? 0.05; window.FOSCO = !!p.brinquedo;
+  key.intensity = p.brinquedo ? 1.15 : 1.6; fill.intensity = p.brinquedo ? 0.7 : 0.5; hemi.intensity = p.brinquedo ? 0.55 : 0;
+  const concha = makeShell();
+  const S = p.conchaEscala ?? 2.3;
+  concha.scale.set(p.pontaEsquerda ? S : -S, S, S);
+  concha.rotation.set(-(p.conchaInclina ?? 0.6), p.conchaGira ?? -0.5, 0, 'YXZ');
+  concha.position.y = 1.1;
+  grupo.add(concha); concha.updateMatrixWorld(true);
+  const n = V(0, -1, 0).applyQuaternion(concha.quaternion).normalize();
+  // gira a concha em volta da própria boca: com ~180° a massa da espiral fica por cima do caranguejo
+  concha.rotateOnWorldAxis(n, p.conchaRola ?? 0); concha.updateMatrixWorld(true);
+  const yaw = Math.atan2(n.x, n.z) + (p.virar ?? 0);
+  const crab = p.chunky ? caranguejo(p) : p.brinquedo ? caranguejoBrinquedo(p) : caranguejoMisto(p);
+  crab.scale.setScalar(p.crabEscala ?? 1.3);
+  crab.rotation.set(p.olhar ?? 0, yaw, p.tomba ?? 0, 'YXZ');
+  crab.position.copy(concha.position).addScaledVector(n, p.saida ?? 0.25).add(V(0, p.subir ?? 0, 0));
+  grupo.add(crab);
+  const c = p.cam ?? {};
+  const meio = new THREE.Box3().setFromObject(grupo).getCenter(V());
+  const target = c.target ? V(...c.target) : meio.add(V(0, c.dy ?? 0, 0));
+  const az = yaw + THREE.MathUtils.degToRad(c.azRel ?? 0);
+  const el = THREE.MathUtils.degToRad(c.el ?? 10), d = c.dist ?? 11;
+  camera.fov = c.fov ?? 28; camera.updateProjectionMatrix();
+  camera.position.set(target.x + d * Math.cos(el) * Math.sin(az), target.y + d * Math.sin(el), target.z + d * Math.cos(el) * Math.cos(az));
+  camera.lookAt(target);
+  renderer.render(scene, camera);
+  return renderer.domElement.toDataURL('image/png');
+};
+window.ready = true;
+</script></body></html>

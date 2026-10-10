@@ -210,18 +210,26 @@ function makeCrab(name, remap = {}) {
 }
 
 // ---------------------------------------------------------------------------
-// Concha: espiral logarítmica de verdade (como as conchas de caracol reais). Um tubo que dá ~4
-// voltas em torno de um eixo, crescendo 2× por volta, com a ponta no alto; a boca (onde fica a
-// barriguinha do caranguejo) tem uma borda clara e o fundo escuro; três listras claras seguem a espiral.
+// Concha estrela (a mesma do logo): espiral logarítmica baixa e larga, com pontas em volta da borda de
+// cada volta e uma listra clara seguindo a espiral por cima. A boca (onde fica a barriguinha do
+// caranguejo) tem uma borda clara que acompanha as pontas e o fundo escuro.
 // ---------------------------------------------------------------------------
-const SHELL = { turns: 4.2, mouth: 0.5, coil: 0.4, spire: 1.55, growth: 2.05 }
+const SHELL = { turns: 3.5, mouth: 0.5, coil: 0.5, spire: 0.6, growth: 2.4 }
+const SPIKES = { n: 10, height: 0.75, at: 0, width: 0.28, sharp: 4 }   // pontas: por volta, altura, ângulo no tubo
+/** raio relativo do tubo no ângulo a (seção) e na posição s (espiral): 1 + a ponta, se houver */
+function spikeAt(a, s) {
+  const { n, height, at, width, sharp } = SPIKES
+  const d = Math.atan2(Math.sin(a - at), Math.cos(a - at))
+  const fade = Math.min(1, -s / (Math.PI * 0.7))   // a boca é lisa: as pontas somem na última ~1/3 de volta
+  return 1 + height * fade * Math.exp(-(d * d) / (2 * width * width)) * (0.5 + 0.5 * Math.cos(s * n)) ** sharp
+}
 let shellBottom = 0   // quanto a concha desce abaixo da boca (para pousar na areia)
 
 function makeShell() {
   const p = new Parts()
   const { turns, mouth, coil, spire, growth } = SHELL
   const k = Math.log(growth) / (2 * Math.PI)
-  const S = 96, T = 20
+  const S = 200, T = 36
   const sMin = -turns * 2 * Math.PI
   const up = [0, 1, 0]
   const center = (s) => { const g = Math.exp(k * s); return [coil * g * Math.cos(s), spire * (1 - g), coil * g * Math.sin(s)] }
@@ -235,11 +243,19 @@ function makeShell() {
     for (let j = 0; j <= T; j++) {
       const t = (2 * Math.PI * j) / T
       const n = add3(mul3(rad, Math.cos(t)), mul3(up, Math.sin(t)))
-      verts.push(add3(c, mul3(n, mouth * g)))
-      normals.push(n)
+      verts.push(add3(c, mul3(n, mouth * g * spikeAt(t, s))))
     }
   }
-  const stripe = (j) => [3, 4, 10, 11, 17].includes(j)   // listras que acompanham a espiral
+  // normais pela própria malha (as pontas deformam o tubo): cruzado das diferenças vizinhas
+  const at = (i, j) => verts[Math.min(S, Math.max(0, i)) * (T + 1) + ((j + T) % T)]
+  for (let i = 0; i <= S; i++) for (let j = 0; j <= T; j++) {
+    const du = sub3(at(i + 1, j), at(i - 1, j)), dv = sub3(at(i, j + 1), at(i, j - 1))
+    let n = norm3(cross3(du, dv))
+    const c = center(sMin + ((0 - sMin) * i) / S)
+    if (dot3(n, sub3(verts[i * (T + 1) + j], c)) < 0) n = mul3(n, -1)   // para fora
+    normals.push(n)
+  }
+  const stripe = (j) => j / T >= 0.17 && j / T < 0.3   // listra clara seguindo a espiral, por cima
   const tris = { shell: [], shellLight: [] }
   for (let i = 0; i < S; i++) for (let j = 0; j < T; j++) {
     const a = i * (T + 1) + j, b = a + T + 1
@@ -256,7 +272,7 @@ function makeShell() {
     for (let j = 0; j <= V; j++) {
       const q = (2 * Math.PI * j) / V
       const n = norm3(add3(mul3(dir, Math.cos(q)), [0, 0, Math.sin(q)]))
-      lipV.push(add3(add3(c0, mul3(dir, R0)), mul3(n, LIP)))
+      lipV.push(add3(add3(c0, mul3(dir, R0 * spikeAt(t, 0))), mul3(n, LIP)))
       lipN.push(n)
     }
   }
@@ -267,8 +283,9 @@ function makeShell() {
 
   // girar para a pose do caranguejo: ponta para cima, para trás e para a esquerda da tela; boca
   // virada para baixo e para a frente (é dali que sai o corpo). A origem do nó vira o centro da boca.
-  const axis = norm3([-0.78, 0.6, -0.18])
-  let front = [0.05, -1, 0.12]
+  // espiral virada para a câmera (é ela, com as pontas, que faz a concha ler como estrela)
+  const axis = norm3([-0.2, 0.6, 0.8])
+  let front = [0, -1, 0.35]
   front = norm3(sub3(front, mul3(axis, dot3(front, axis))))
   const side = cross3(axis, front)
   const place = (v) => sub3(add3(add3(mul3(side, v[0]), mul3(axis, v[1])), mul3(front, v[2])), mouthAt)
@@ -366,7 +383,8 @@ function stateB(t) {
 }
 
 const SHELL_ON_A = [0, 0.86, -0.42]
-const SHELL_ON_B = SHELL_ON_A.map((v) => v * SCALE_B)
+// no pequeno, a concha assenta um pouco mais atrás e mais baixa (proporcional ao corpo menor)
+const SHELL_ON_B = [0, 0.55, -0.7]
 const SHELL_REST = [SPOT - 0.1, -shellBottom - 0.02, -0.4]   // pousada na areia, boca para baixo
 function stateShell(t, a, b) {
   const onA = add3([a.x, a.y, 0], SHELL_ON_A)

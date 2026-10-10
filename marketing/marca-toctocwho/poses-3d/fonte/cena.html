@@ -1,0 +1,61 @@
+<!doctype html><html><head><meta charset="utf-8">
+<style>html,body{margin:0;background:transparent}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script>
+</head><body>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const SIZE = 1024;
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1); renderer.setSize(SIZE, SIZE);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.NeutralToneMapping; renderer.toneMappingExposure = 1.0;
+document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+const key = new THREE.DirectionalLight(0xffffff, 1.6); key.position.set(3, 6, 5); scene.add(key);
+const fill = new THREE.DirectionalLight(0xdcebf1, 0.5); fill.position.set(-4, 2, 3); scene.add(fill);
+const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 100);
+
+const gltf = await new GLTFLoader().loadAsync('./caranguejo.glb');
+scene.add(gltf.scene);
+const mixer = new THREE.AnimationMixer(gltf.scene);
+mixer.clipAction(gltf.animations[0]).play();
+const byName = {}; gltf.scene.traverse((o) => { (byName[o.name] ??= []).push(o); });
+window.nodeNames = Object.keys(byName);
+const N = (n) => byName[n]?.[0];
+// pose de repouso de todos os nós: cada render parte dela (senão uma pose vaza para a seguinte)
+const rest = []; gltf.scene.traverse((o) => rest.push([o, o.position.clone(), o.quaternion.clone(), o.scale.clone()]));
+// globo do olho = filho da haste (é ele que a animação achata para piscar)
+const eye = (lado) => N('laranja-haste-' + lado).children.find((c) => c.name.startsWith('laranja-olho'));
+
+// pose: { t, hide:[...], set: {nodeName: {p:[x,y,z], r:[x,y,z], s:[..] , all:bool}} , cam: {az, el, dist, target:[x,y,z], fov} }
+window.renderPose = (pose) => {
+  for (const [o, p, q, s] of rest) { o.position.copy(p); o.quaternion.copy(q); o.scale.copy(s); }
+  mixer.setTime(pose.t ?? 3.0);
+  for (const name of Object.keys(byName)) for (const o of byName[name]) o.visible = true;
+  for (const h of pose.hide ?? []) for (const o of byName[h] ?? []) o.visible = false;
+  for (const [name, v] of Object.entries(pose.set ?? {})) {
+    const list = v.all ? byName[name] : [byName[name][v.i ?? 0]];
+    for (const o of list) {
+      if (v.p) o.position.set(...v.p);
+      if (v.dp) o.position.add(new THREE.Vector3(...v.dp));
+      if (v.r) o.rotation.set(...v.r, 'XYZ');
+      if (v.s) o.scale.set(...v.s);
+    }
+  }
+  for (const lado of pose.blink ?? []) eye(lado).scale.set(1, 0.12, 1);
+  const c = pose.cam ?? {};
+  const target = new THREE.Vector3(...(c.target ?? [-0.6, 0.8, 0]));
+  const az = THREE.MathUtils.degToRad(c.az ?? 0), el = THREE.MathUtils.degToRad(c.el ?? 12), d = c.dist ?? 7;
+  camera.fov = c.fov ?? 28; camera.updateProjectionMatrix();
+  camera.position.set(target.x + d * Math.cos(el) * Math.sin(az), target.y + d * Math.sin(el), target.z + d * Math.cos(el) * Math.cos(az));
+  camera.lookAt(target);
+  renderer.render(scene, camera);
+  return renderer.domElement.toDataURL('image/png');
+};
+window.ready = true;
+</script></body></html>

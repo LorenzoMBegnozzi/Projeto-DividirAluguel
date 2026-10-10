@@ -1,0 +1,144 @@
+<!doctype html><html><head><meta charset="utf-8">
+<style>html,body{margin:0;background:transparent}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script>
+</head><body>
+<script type="module">
+// Só a concha, para o ícone/logo: a espiral logarítmica do generate-landing-crab.mjs com os números soltos
+// (voltas, crescimento, altura da ponta, raio do enrolamento, boca), listras configuráveis e a boca com borda
+// clara e parede de dentro escura. Câmera enquadra sozinha.
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const SIZE = 1024;
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1); renderer.setSize(SIZE, SIZE);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.NeutralToneMapping;
+document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+const key = new THREE.DirectionalLight(0xffffff, 1.5); key.position.set(3, 6, 5); scene.add(key);
+const fill = new THREE.DirectionalLight(0xdcebf1, 0.5); fill.position.set(-4, 2, 3); scene.add(fill);
+const camera = new THREE.PerspectiveCamera(26, 1, 0.1, 200);
+const V = (...a) => new THREE.Vector3(...a);
+
+const gltf = await new GLTFLoader().loadAsync('./caranguejo.glb');
+const M = {}; gltf.scene.traverse((o) => { if (o.material) M[o.material.name] = o.material; });
+
+/**
+ * f = { voltas, crescimento (× por volta), ponta (altura da espira), enrola (raio do enrolamento), boca (raio do tubo
+ *       na boca), achata (tubo oval: <1 achata), listras: 'faixa' | 'finas' | 'aneis' | 'lisa', faixa: [ini, fim] }
+ */
+function concha(f) {
+  const voltas = f.voltas ?? 4.2, mouth = f.boca ?? 0.5, coil = f.enrola ?? 0.4, spire = f.ponta ?? 1.55, growth = f.crescimento ?? 2.05;
+  const achata = f.achata ?? 1;
+  const k = Math.log(growth) / (2 * Math.PI), S = 520, T = 80, sMin = -voltas * 2 * Math.PI;
+  const center = (s) => { const g = Math.exp(k * s); return V(coil * g * Math.cos(s), spire * (1 - g), coil * g * Math.sin(s)); };
+  const pos = [], nor = [];
+  for (let i = 0; i <= S; i++) {
+    const s = sMin + ((0 - sMin) * i) / S, g = Math.exp(k * s), c = center(s), rad = V(Math.cos(s), 0, Math.sin(s));
+    for (let j = 0; j <= T; j++) {
+      const a = (2 * Math.PI * j) / T;
+      // pontas: N por volta, num ângulo do tubo (ombro = em cima e para fora); lábio: abre a boca para fora no fim
+      let m = 1;
+      if (f.pontas) {
+        const { n = 8, altura = 0.5, onde = 0.8, largura = 0.35, agudo = 6 } = f.pontas;
+        const ang = Math.exp(-((Math.atan2(Math.sin(a - onde), Math.cos(a - onde))) ** 2) / (2 * largura * largura));
+        const pico = Math.pow(0.5 + 0.5 * Math.cos(s * n), agudo);
+        m += altura * ang * pico;
+      }
+      if (f.nodulos) m += f.nodulos * Math.pow(0.5 + 0.5 * Math.cos(s * 14), 2) * Math.max(0, Math.cos(a - 0.6)) ** 2;
+      if (f.labio) {
+        const fim = Math.max(0, 1 - (-s) / (Math.PI * (f.labioVolta ?? 0.6)));
+        m += f.labio * fim * fim * Math.max(0, Math.cos(a + 0.2)) ** 1.5;
+      }
+      const off = rad.clone().multiplyScalar(Math.cos(a) * mouth * g * m).add(V(0, Math.sin(a) * mouth * g * achata * m, 0));
+      const n = rad.clone().multiplyScalar(Math.cos(a) * achata).add(V(0, Math.sin(a), 0)).normalize();
+      pos.push(...c.clone().add(off).toArray()); nor.push(...n.toArray());
+    }
+  }
+  const modo = f.listras ?? 'faixa';
+  const [fi, ff] = f.faixa ?? [0.12, 0.42];
+  const clara = (i, j) => {
+    const fr = j / T, volta = (i / S) * voltas;
+    if (modo === 'lisa') return false;
+    if (modo === 'finas') return (fr >= 0.15 && fr < 0.25) || (fr >= 0.5 && fr < 0.6) || (fr >= 0.85 && fr < 0.9);
+    if (modo === 'aneis') return Math.floor(volta * (f.aneis ?? 9)) % 2 === 1;
+    return fr >= fi && fr < ff;                                    // faixa larga que acompanha a espiral
+  };
+  const azul = [], branca = [];
+  for (let i = 0; i < S; i++) for (let j = 0; j < T; j++) {
+    const a = i * (T + 1) + j, b = a + T + 1, l = clara(i, j) ? branca : azul;
+    l.push(a, a + 1, b, a + 1, b + 1, b);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+  geo.setIndex([...azul, ...branca]); geo.addGroup(0, azul.length, 0); geo.addGroup(azul.length, branca.length, 1);
+  if (f.pontas || f.nodulos || f.labio) geo.computeVertexNormals();
+  const g = new THREE.Group();
+  g.add(new THREE.Mesh(geo, [M.shell, M.shellLight]));
+  const dentro = M.shellInside.clone(); dentro.side = THREE.BackSide;
+  g.add(new THREE.Mesh(geo, dentro));
+  // borda clara na boca (oval se o tubo for achatado)
+  const c0 = center(0);
+  const borda = new THREE.Mesh(new THREE.TorusGeometry(mouth, 0.04 * (f.bordaGrossa ?? 1), 20, 180), M.shellLight);
+  borda.position.copy(c0); borda.scale.set(1, achata, 1);
+  if (!f.labio) g.add(borda);
+  return g;
+}
+
+/** vieira: leque com costelas, orelhinhas na dobradiça; faixas claras alternando nas costelas */
+function vieira(f) {
+  const U = 260, W = 120, R = 2, costelas = f.costelas ?? 9, abre = THREE.MathUtils.degToRad(f.abertura ?? 62);
+  const pos = [], idxA = [], idxB = [];
+  for (let i = 0; i <= U; i++) {
+    const u = -abre + (2 * abre * i) / U;
+    for (let j = 0; j <= W; j++) {
+      const v = j / W, rr = R * v;
+      const rib = 0.09 * Math.abs(Math.sin((u / abre) * costelas * Math.PI / 2 * 2)) * v;
+      const dome = 0.95 * Math.sin(Math.PI * v * 0.9) * Math.cos((u / abre) * Math.PI / 2) ** 0.6;
+      pos.push(rr * Math.sin(u), rr * Math.cos(u) - 0.9, dome + rib);
+    }
+  }
+  for (let i = 0; i < U; i++) for (let j = 0; j < W; j++) {
+    const a = i * (W + 1) + j, b = a + W + 1;
+    const faixa = Math.floor(((i + 0.5) / U) * costelas * 2) % 2 === 1;
+    (faixa ? idxB : idxA).push(a, b, a + 1, a + 1, b, b + 1);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.setIndex([...idxA, ...idxB]); geo.addGroup(0, idxA.length, 0); geo.addGroup(idxA.length, idxB.length, 1);
+  geo.computeVertexNormals();
+  const g = new THREE.Group();
+  const m0 = M.shell.clone(); m0.side = THREE.DoubleSide; const m1 = M.shellLight.clone(); m1.side = THREE.DoubleSide;
+  g.add(new THREE.Mesh(geo, [m0, m1]));
+  for (const s of [-1, 1]) {        // orelhinhas
+    const o = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.32, 0.08), m0);
+    o.position.set(s * 0.32, -0.82, 0.04); o.rotation.z = s * 0.12; g.add(o);
+  }
+  return g;
+}
+
+let grupo = null;
+window.renderPose = (p) => {
+  if (grupo) scene.remove(grupo);
+  grupo = new THREE.Group(); scene.add(grupo);
+  const c = (p.forma?.tipo === 'vieira') ? vieira(p.forma) : concha(p.forma ?? {});
+  c.rotation.set(...(p.giro ?? [0, 0, 0]).map((x) => THREE.MathUtils.degToRad(x)), 'YXZ');
+  grupo.add(c); grupo.updateMatrixWorld(true);
+  // centraliza e enquadra pela esfera que envolve a concha
+  const caixa = new THREE.Box3().setFromObject(grupo), meio = caixa.getCenter(V());
+  const raio = caixa.getBoundingSphere(new THREE.Sphere()).radius;
+  const cam = p.cam ?? {};
+  const az = THREE.MathUtils.degToRad(cam.az ?? 0), el = THREE.MathUtils.degToRad(cam.el ?? 20);
+  camera.fov = 26; camera.updateProjectionMatrix();
+  const d = (raio / Math.sin(THREE.MathUtils.degToRad(13))) * (cam.folga ?? 1.02);
+  camera.position.set(meio.x + d * Math.cos(el) * Math.sin(az), meio.y + d * Math.sin(el), meio.z + d * Math.cos(el) * Math.cos(az));
+  camera.lookAt(meio);
+  renderer.render(scene, camera);
+  return renderer.domElement.toDataURL('image/png');
+};
+window.ready = true;
+</script></body></html>

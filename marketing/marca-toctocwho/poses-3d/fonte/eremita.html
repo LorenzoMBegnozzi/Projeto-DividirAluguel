@@ -1,0 +1,138 @@
+<!doctype html><html><head><meta charset="utf-8">
+<style>html,body{margin:0;background:transparent}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script>
+</head><body>
+<script type="module">
+// Eremita "de verdade": a concha grande e deitada (boca para a frente, ponta para trás e para cima) e só a
+// frente do caranguejo saindo pela boca: rosto, olhos nas hastes, garras (a direita maior, como nos eremitas
+// reais), pernas articuladas até o chão e antenas. Concha, corpo, olhos e garras são as peças do caranguejo.glb.
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const SIZE = 1024;
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1); renderer.setSize(SIZE, SIZE);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.NeutralToneMapping;
+document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+const key = new THREE.DirectionalLight(0xffffff, 1.6); key.position.set(3, 6, 5); scene.add(key);
+const fill = new THREE.DirectionalLight(0xdcebf1, 0.5); fill.position.set(-4, 2, 3); scene.add(fill);
+const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 100);
+
+const gltf = await new GLTFLoader().loadAsync('./caranguejo.glb');
+const src = gltf.scene;
+const mats = {}; src.traverse((o) => { if (o.material) mats[o.material.name] = o.material; });
+
+let grupo = null;
+const V = (...a) => new THREE.Vector3(...a);
+
+/** tubo liso passando pelos pontos, com bolinhas nas juntas e na ponta */
+function membro(pontos, r0, r1, mat) {
+  const g = new THREE.Group();
+  const curva = new THREE.CatmullRomCurve3(pontos, false, 'centripetal');
+  const n = 48, geo = new THREE.TubeGeometry(curva, n, 1, 12, false);
+  // afina o tubo de r0 a r1 ao longo do comprimento
+  const pos = geo.attributes.position, centro = new THREE.Vector3(), p = new THREE.Vector3();
+  for (let i = 0; i <= n; i++) {
+    const t = i / n, r = r0 + (r1 - r0) * t;
+    curva.getPointAt(t, centro);
+    for (let j = 0; j <= 12; j++) {
+      const k = i * 13 + j; p.fromBufferAttribute(pos, k).sub(centro).multiplyScalar(r).add(centro); pos.setXYZ(k, p.x, p.y, p.z);
+    }
+  }
+  geo.computeVertexNormals();
+  g.add(new THREE.Mesh(geo, mat));
+  for (const [i, q] of pontos.entries()) {
+    const r = r0 + (r1 - r0) * (i / (pontos.length - 1));
+    const s = new THREE.Mesh(new THREE.SphereGeometry(r * 1.05, 16, 12), mat); s.position.copy(q); g.add(s);
+  }
+  return g;
+}
+
+/**
+ * p = {
+ *   conchaInclina: rad (0 = boca para baixo; ~1.0 = boca para a frente), conchaGira: rad em y,
+ *   conchaEscala, saida: quanto o corpo sai da boca, olhar: inclinação do caranguejo,
+ *   garraGrande: escala da garra direita, garras: {d:[x,y,z], e:[x,y,z]} rotação das garras,
+ *   passo: 0..1 (pernas alternadas), piscar, antenas: true, cam: {...}
+ * }
+ */
+window.renderPose = (p) => {
+  if (grupo) scene.remove(grupo);
+  grupo = new THREE.Group(); scene.add(grupo);
+
+  // ---- concha deitada ----
+  const concha = src.getObjectByName('concha').clone();
+  const S = p.conchaEscala ?? 1.75;
+  concha.position.set(0, 0, 0); concha.scale.set(p.espelhar ? -S : S, S, S);
+  concha.rotation.set(-(p.conchaInclina ?? 1.05), p.conchaGira ?? 0, p.conchaRola ?? 0, 'YXZ');
+  grupo.add(concha); concha.updateMatrixWorld(true);
+  const n = V(0, -1, 0).applyQuaternion(concha.quaternion).normalize();    // para onde a boca aponta
+  // a concha vai carregada: a boca fica à altura do corpo e o chão (y = 0) é onde as pernas alcançam
+  concha.position.y = p.alturaBoca ?? 0.78; concha.updateMatrixWorld(true);
+  const boca = concha.position.clone();
+
+  // ---- caranguejo: a frente saindo da boca ----
+  const crab = src.getObjectByName('laranja').clone();
+  crab.position.set(0, 0, 0); crab.rotation.set(0, 0, 0); crab.scale.setScalar(1);
+  crab.traverse((o) => { if (o.name.startsWith('laranja-perna')) o.visible = false; });
+  const k = p.crabEscala ?? 1.0; crab.scale.setScalar(k);
+  // o caranguejo olha na direção da boca (só no plano), com um pouco da inclinação dela
+  const yaw = Math.atan2(n.x, n.z);
+  crab.rotation.set(p.olhar ?? 0.1, yaw, 0, 'YXZ');
+  crab.updateMatrixWorld(true);
+  const centroLocal = V(0, 0.55, 0).applyEuler(crab.rotation).multiplyScalar(k);
+  const alvo = boca.clone().addScaledVector(n, p.saida ?? 0.34).add(V(0, p.subir ?? 0, 0));
+  crab.position.copy(alvo.sub(centroLocal));
+  grupo.add(crab); crab.updateMatrixWorld(true);
+
+  // garras: a direita maior; rotação no ombro
+  const gd = crab.getObjectByName('laranja-garra-d'), ge = crab.getObjectByName('laranja-garra-e');
+  gd.scale.setScalar(p.garraGrande ?? 1.4);
+  if (p.garras?.d) gd.rotation.set(...p.garras.d); if (p.garras?.e) ge.rotation.set(...p.garras.e);
+  for (const lado of p.piscar ?? []) {
+    const h = crab.getObjectByName('laranja-haste-' + lado);
+    h.children.find((c) => c.name.startsWith('laranja-olho')).scale.set(1, 0.12, 1);
+  }
+  crab.updateMatrixWorld(true);
+  const W = (x, y, z) => crab.localToWorld(V(x, y, z));
+
+  // pernas articuladas: dois pares de cada lado saem da parte de baixo da boca e vão até o chão
+  const passo = p.passo ?? 0;
+  const lado = V(1, 0, 0).applyQuaternion(crab.quaternion), frente = V(0, 0, 1).applyQuaternion(crab.quaternion);
+  [[0.12, 0.0], [-0.12, 0.5]].forEach(([dz, fase], par) => {
+    for (const s of [-1, 1]) {
+      const q = 0.5 + 0.5 * Math.sin(Math.PI * 2 * (passo + fase + (s > 0 ? 0.5 : 0)));
+      const quadril = W(s * 0.42, 0.32, dz);
+      const abre = 0.55 + 0.25 * par;
+      const joelho = quadril.clone().addScaledVector(lado, s * abre).addScaledVector(frente, 0.25 - 0.35 * par + 0.15 * q).setY(quadril.y + 0.22 + 0.1 * q);
+      const pe = quadril.clone().addScaledVector(lado, s * (abre + 0.45)).addScaledVector(frente, 0.3 - 0.45 * par + 0.25 * q).setY(0.0 + 0.12 * q * (p.passo === undefined ? 0 : 1));
+      const tornozelo = joelho.clone().lerp(pe, 0.55).addScaledVector(lado, s * 0.12).setY(Math.max(joelho.y, pe.y) * 0.55 + 0.12);
+      grupo.add(membro([quadril, joelho, tornozelo, pe], 0.085, 0.045, mats.crab));
+    }
+  });
+
+  // antenas longas e finas, saindo entre os olhos
+  if (p.antenas !== false) for (const s of [-1, 1]) {
+    const a0 = W(s * 0.09, 0.62, 0.38);
+    const pts = [a0, W(s * 0.2, 0.95, 0.62), W(s * 0.5, 1.25, 0.45), W(s * 0.85, 1.32, 0.05)];
+    grupo.add(membro(pts, 0.018, 0.01, mats.crabDark));
+  }
+
+  // ---- câmera ----
+  const c = p.cam ?? {};
+  const caixaTudo = new THREE.Box3().setFromObject(grupo), meio = caixaTudo.getCenter(V());
+  const target = c.target ? V(...c.target) : meio.add(V(0, c.dy ?? 0, 0));
+  // azRel: ângulo da câmera medido a partir de para onde o caranguejo olha (90 = perfil)
+  const az = c.azRel !== undefined ? yaw + THREE.MathUtils.degToRad(c.azRel) : THREE.MathUtils.degToRad(c.az ?? 0), el = THREE.MathUtils.degToRad(c.el ?? 10), d = c.dist ?? 9;
+  camera.fov = c.fov ?? 28; camera.updateProjectionMatrix();
+  camera.position.set(target.x + d * Math.cos(el) * Math.sin(az), target.y + d * Math.sin(el), target.z + d * Math.cos(el) * Math.cos(az));
+  camera.lookAt(target);
+  renderer.render(scene, camera);
+  return renderer.domElement.toDataURL('image/png');
+};
+window.ready = true;
+</script></body></html>
